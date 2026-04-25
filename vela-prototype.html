@@ -13,11 +13,13 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="Vela">
 
-<!-- Inline SVG App Icon (다크 배경 + 흰 V + 시안 dot) -->
-<link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="%230a0a0a"/><text x="256" y="380" font-family="Georgia,serif" font-style="italic" font-weight="900" font-size="380" text-anchor="middle" fill="white">V</text><circle cx="380" cy="130" r="22" fill="%235eead4"/></svg>'>
-<link rel="apple-touch-icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="%230a0a0a"/><text x="256" y="380" font-family="Georgia,serif" font-style="italic" font-weight="900" font-size="380" text-anchor="middle" fill="white">V</text><circle cx="380" cy="130" r="22" fill="%235eead4"/></svg>'>
+<!-- App Icon · Vela CI Monogram (외부 SVG 파일) -->
+<link rel="icon" type="image/svg+xml" href="./vela-icon.svg">
+<link rel="apple-touch-icon" href="./vela-icon.svg">
+<link rel="mask-icon" href="./vela-icon.svg" color="#5eead4">
 
-<link rel="manifest" href='data:application/manifest+json,{"name":"Vela — AI Intelligence Magazine","short_name":"Vela","description":"Personal AI intelligence magazine","start_url":"./vela-prototype.html","display":"standalone","background_color":"%230a0a0a","theme_color":"%230a0a0a","orientation":"portrait","icons":[{"src":"data:image/svg%2Bxml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><rect width=%22512%22 height=%22512%22 fill=%22%230a0a0a%22/><text x=%22256%22 y=%22380%22 font-family=%22Georgia,serif%22 font-style=%22italic%22 font-weight=%22900%22 font-size=%22380%22 text-anchor=%22middle%22 fill=%22white%22>V</text><circle cx=%22380%22 cy=%22130%22 r=%2222%22 fill=%22%235eead4%22/></svg>","sizes":"512x512","type":"image/svg+xml","purpose":"any"}]}'>
+<!-- PWA Manifest (외부 파일 - 데스크톱 PWA 설치 필수) -->
+<link rel="manifest" href="./vela-manifest.json">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -157,13 +159,13 @@
   .nav::-webkit-scrollbar { display: none; }
   .nav-inner { max-width: 1400px; margin: 0 auto; display: flex; gap: 4px; padding: 0 32px; }
   .nav-item {
-    font-family: var(--mono); font-size: 11px; font-weight: 400;
-    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-mute);
-    padding: 16px 18px; background: transparent; border: none;
+    font-family: var(--mono); font-size: 13px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-soft);
+    padding: 18px 20px; background: transparent; border: none;
     border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap;
     transition: all 0.2s ease;
   }
-  .nav-item:hover { color: var(--text); }
+  .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.02); }
   .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
 
   /* COVER */
@@ -540,20 +542,30 @@
     letter-spacing: 0.1em; text-transform: uppercase; text-align: right; line-height: 1.8;
   }
 
-  /* RESPONSIVE */
+  /* ============================================================
+     RESPONSIVE · 모바일 최적화 강화
+     ============================================================ */
+
+  /* iOS notch / safe area */
+  @supports (padding: max(0px)) {
+    .masthead { padding-left: max(32px, env(safe-area-inset-left)); padding-right: max(32px, env(safe-area-inset-right)); }
+    .nav-inner { padding-left: max(32px, env(safe-area-inset-left)); padding-right: max(32px, env(safe-area-inset-right)); }
+    .cover, .section, .colophon { padding-left: max(32px, env(safe-area-inset-left)); padding-right: max(32px, env(safe-area-inset-right)); }
+    body { padding-bottom: env(safe-area-inset-bottom); }
+  }
+
+  /* 태블릿 · 작은 데스크톱 */
   @media (max-width: 900px) {
     .masthead { padding: 14px 16px; }
-    .masthead-inner { gap: 12px; flex-wrap: wrap; }
+    .masthead-inner { gap: 12px; }
     .brand-tag { display: none; }
-    .brand-logo { font-size: 30px; }
-    .install-btn { padding: 8px 12px; font-size: 10px; }
-    .issue-meta { font-size: 9px; }
+    .brand-logo { font-size: 32px; }
     .nav-inner { padding: 0 16px; }
-    .cover { padding: 32px 16px 48px; }
-    .section { padding: 40px 16px; }
+    .cover { padding: 32px 16px 56px; }
+    .section { padding: 48px 16px; }
     .featured-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
-    .watch-grid { grid-template-columns: 1fr; gap: 16px; }
-    .ci-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .watch-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .ci-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
     .signal-row { grid-template-columns: 100px 1fr; gap: 14px; padding: 18px 0; }
     .signal-num, .signal-actions { display: none; }
     .signal-title { font-size: 16px; }
@@ -561,12 +573,65 @@
     .colophon-inner { grid-template-columns: 1fr; gap: 16px; }
     .colophon-meta { text-align: left; }
     .colophon-brand { font-size: 44px; }
+    .brand-mission { padding-left: 20px; margin-bottom: 40px; }
   }
-  @media (max-width: 560px) {
-    .featured-grid { grid-template-columns: 1fr; }
+
+  /* 모바일 표준 (iPhone 12 ~) */
+  @media (max-width: 640px) {
+    .masthead-inner {
+      flex-wrap: nowrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .brand { gap: 0; flex-shrink: 1; min-width: 0; }
+    .brand-logo { font-size: 28px; }
+    .head-actions { gap: 8px; flex-shrink: 0; }
+    .install-btn { padding: 9px 12px; font-size: 10px; gap: 6px; min-height: 36px; }
+    .install-btn .label-full { display: none; }
+    .install-btn .label-short { display: inline; }
+    .issue-meta { display: none; }
+    .nav-item { padding: 16px 16px; font-size: 12px; }
+    .cover { padding: 24px 16px 40px; }
+    .section { padding: 40px 16px; }
+    .section-header { margin-bottom: 28px; }
+    .cover-headline { font-size: clamp(28px, 8vw, 40px); margin-bottom: 18px; }
+    .cover-deck { font-size: 16px; margin-bottom: 22px; }
+    .cover-byline { font-size: 10px; gap: 10px; }
+    .featured-grid { grid-template-columns: 1fr; gap: 28px; }
+    .feature-image { aspect-ratio: 16 / 10; }
+    .feature-title { font-size: 22px; }
+    .watch-grid { grid-template-columns: 1fr; gap: 14px; }
+    .ci-grid { grid-template-columns: 1fr; gap: 12px; }
+    .ci-stage { aspect-ratio: 16 / 9; }
+    .ci-stage .vela-mark { font-size: 64px; }
+    .ci-stage.monogram .vela-mark { font-size: 110px; }
+    .ci-quote { font-size: 12px; padding: 12px 16px; }
+    .signal-row { grid-template-columns: 90px 1fr; gap: 12px; padding: 16px 0; }
+    .toolbar { padding: 12px 0; }
+    .filter-chip { font-size: 9px; padding: 5px 10px; }
+    .brand-mission-quote { font-size: clamp(26px, 7vw, 34px); }
+    .brand-mission-text { font-size: 15px; }
+    .colophon-brand { font-size: 36px; }
     .play-button { width: 56px; height: 56px; font-size: 18px; }
     .modal { padding: 24px 20px; }
     .modal-title { font-size: 26px; }
+  }
+
+  /* 작은 모바일 (iPhone SE 등 ~ 375px) */
+  @media (max-width: 380px) {
+    .brand-logo { font-size: 24px; }
+    .install-btn { padding: 8px 10px; }
+    .install-btn .label-short { display: none; }
+    .install-btn .icon { font-size: 16px; }
+    .nav-item { padding: 14px 12px; font-size: 11px; }
+    .cover-headline { font-size: 26px; }
+    .ci-stage .vela-mark { font-size: 54px; }
+  }
+
+  /* PWA 설치 후 (standalone 모드) — 헤더 살짝 다르게 */
+  @media (display-mode: standalone) {
+    .install-btn { display: none !important; }
+    .masthead { padding-top: max(18px, env(safe-area-inset-top)); }
   }
 </style>
 </head>
@@ -581,7 +646,8 @@
       <div class="head-actions">
         <button class="install-btn" id="install-btn" title="앱 설치">
           <span class="icon">↓</span>
-          <span>INSTALL APP</span>
+          <span class="label-full">INSTALL APP</span>
+          <span class="label-short" style="display:none;">INSTALL</span>
         </button>
         <div class="issue-meta">
           <div>Issue <strong id="issue-num">001</strong></div>
@@ -742,7 +808,7 @@
     <div class="watch-grid" id="watch-grid"></div>
   </section>
 
-  <section class="section section-divider">
+  <section class="section section-divider" id="signals-section">
     <div class="section-header">
       <h2 class="section-title">Latest <em>Signals</em></h2>
       <div class="section-meta" id="signal-count">— results</div>
@@ -771,7 +837,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.5.0</strong> · Phase 1</div>
+        <div><strong style="color:var(--accent);">v0.7.0</strong> · Phase 1</div>
       </div>
     </div>
   </footer>
@@ -975,6 +1041,13 @@
       btn.classList.add('active');
       state.filter = btn.dataset.filter;
       renderSignals();
+      // 클릭한 카테고리의 시그널 섹션으로 부드럽게 스크롤 (스티키 헤더 보정)
+      const target = document.getElementById('signals-section');
+      if (target) {
+        const headerOffset = 100;
+        const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
     });
   });
   document.querySelectorAll('[data-sort]').forEach(btn => {
@@ -993,7 +1066,15 @@
     });
   });
 
-  // PWA INSTALL
+  // PWA INSTALL · Service Worker 등록 (데스크톱 PWA 설치 필수)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./vela-sw.js').catch(err => {
+        console.log('[Vela] SW 등록 실패 (vela-sw.js 파일 미업로드 시 무시 가능):', err);
+      });
+    });
+  }
+
   let deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
@@ -1032,7 +1113,6 @@
     });
   });
   window.addEventListener('appinstalled', () => { installBtn.style.display = 'none'; });
-  if (window.matchMedia('(display-mode: standalone)').matches) { installBtn.style.display = 'none'; }
 
   function init() {
     const now = new Date();
