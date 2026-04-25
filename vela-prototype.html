@@ -176,6 +176,7 @@
     background: linear-gradient(135deg, #1a3a3a 0%, #0a1a2a 50%, #2a1a1a 100%);
     background-size: cover; background-position: center;
     position: relative; overflow: hidden;
+    cursor: pointer;
   }
   .cover-image::after {
     content: ''; position: absolute; inset: 0;
@@ -385,6 +386,75 @@
     text-transform: uppercase; color: var(--text-dim);
   }
 
+  /* ============================================================
+     THIS MONTH IN AI · 이달의 AI 하이라이트
+     ============================================================ */
+  .month-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .month-card {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .month-card:hover { transform: translateY(-4px); }
+  .month-card:hover .month-image-bg { transform: scale(1.05); }
+  .month-image {
+    aspect-ratio: 1 / 1;
+    background: var(--bg-card);
+    margin-bottom: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .month-image-bg {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    transition: transform 0.6s ease;
+  }
+  .month-image::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.6));
+  }
+  .month-date {
+    position: absolute;
+    top: 12px; left: 12px;
+    background: rgba(10,10,10,0.85);
+    color: var(--accent-warm);
+    font-family: var(--mono); font-size: 11px;
+    font-weight: 500; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    z-index: 2;
+    backdrop-filter: blur(4px);
+  }
+  .month-category {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px;
+  }
+  .month-title {
+    font-family: var(--serif); font-weight: 600;
+    font-size: 19px; line-height: 1.25;
+    letter-spacing: -0.015em;
+    color: var(--text); margin-bottom: 8px;
+  }
+  .month-deck {
+    font-family: var(--sans); font-size: 13px;
+    line-height: 1.5; color: var(--text-mute);
+  }
+
+  /* 카테고리 chip toolbar (한 줄 추가) */
+  .toolbar-cats {
+    border-bottom: none;
+    padding-bottom: 8px;
+  }
+  .toolbar-cats .filter-group {
+    flex-wrap: wrap;
+  }
+
   /* WATCH */
   .watch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
   .watch-card {
@@ -526,6 +596,84 @@
     font-weight: 500; flex-shrink: 0; width: 24px;
   }
 
+  /* ============================================================
+     VIDEO MODAL · 비디오 lightbox
+     ============================================================ */
+  .video-modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 2000;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 24px;
+    animation: fadeIn 0.2s ease;
+  }
+  .video-modal.active { display: flex; }
+  .video-modal-content {
+    width: 100%; max-width: 1200px;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px var(--border-strong);
+  }
+  .video-modal-content iframe {
+    width: 100%; height: 100%; border: none; display: block;
+  }
+  .video-modal-close {
+    position: absolute;
+    top: -48px; right: 0;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    width: 40px; height: 40px;
+    font-family: var(--mono);
+    font-size: 16px; cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+  .video-modal-close:hover {
+    background: var(--accent); color: var(--ink); border-color: var(--accent);
+    transform: rotate(90deg);
+  }
+
+  /* ============================================================
+     SCROLL TO TOP · 우측 하단 floating 버튼
+     ============================================================ */
+  .scroll-top {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    width: 48px; height: 48px;
+    background: var(--accent); color: var(--ink);
+    border: none; border-radius: 50%;
+    cursor: pointer; z-index: 99;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 22px; font-weight: 600;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5), 0 0 0 1px rgba(94,234,212,0.3);
+    opacity: 0; pointer-events: none;
+    transform: translateY(8px) scale(0.95);
+    transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .scroll-top.visible {
+    opacity: 1; pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+  .scroll-top:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 28px rgba(94,234,212,0.4);
+  }
+  @supports (padding: max(0px)) {
+    .scroll-top {
+      bottom: max(24px, env(safe-area-inset-bottom, 24px));
+      right: max(24px, env(safe-area-inset-right, 24px));
+    }
+  }
+  @media (max-width: 640px) {
+    .scroll-top { width: 44px; height: 44px; bottom: 18px; right: 18px; font-size: 20px; }
+    .video-modal { padding: 16px; }
+    .video-modal-close { top: -44px; }
+  }
+
   /* COLOPHON */
   .colophon { border-top: 1px solid var(--border); margin-top: 80px; padding: 48px 32px 32px; }
   .colophon-inner {
@@ -566,6 +714,7 @@
     .featured-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
     .watch-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
     .ci-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+    .month-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
     .signal-row { grid-template-columns: 100px 1fr; gap: 14px; padding: 18px 0; }
     .signal-num, .signal-actions { display: none; }
     .signal-title { font-size: 16px; }
@@ -602,6 +751,8 @@
     .feature-title { font-size: 22px; }
     .watch-grid { grid-template-columns: 1fr; gap: 14px; }
     .ci-grid { grid-template-columns: 1fr; gap: 12px; }
+    .month-grid { grid-template-columns: 1fr; gap: 28px; }
+    .month-image { aspect-ratio: 16 / 10; }
     .ci-stage { aspect-ratio: 16 / 9; }
     .ci-stage .vela-mark { font-size: 64px; }
     .ci-stage.monogram .vela-mark { font-size: 110px; }
@@ -659,15 +810,12 @@
 
   <nav class="nav">
     <div class="nav-inner">
-      <button class="nav-item active" data-filter="all">All</button>
-      <button class="nav-item" data-filter="LLM">Language</button>
-      <button class="nav-item" data-filter="Vision">Vision</button>
-      <button class="nav-item" data-filter="Audio">Audio</button>
-      <button class="nav-item" data-filter="Agent">Agents</button>
-      <button class="nav-item" data-filter="Robotics">Robotics</button>
-      <button class="nav-item" data-filter="Tool">Tools</button>
-      <button class="nav-item" data-filter="Infra">Infrastructure</button>
-      <button class="nav-item" data-filter="Safety">Safety</button>
+      <button class="nav-item active" data-section="home">Home</button>
+      <button class="nav-item" data-section="month">This Month</button>
+      <button class="nav-item" data-section="featured">Featured</button>
+      <button class="nav-item" data-section="watch">Watch</button>
+      <button class="nav-item" data-section="signals">Signals</button>
+      <button class="nav-item" data-section="brand">Brand</button>
     </div>
   </nav>
 
@@ -688,14 +836,72 @@
     </article>
   </section>
 
-  <!-- BRAND IDENTITY · 미션 + 6개 CI 카드 -->
-  <section class="section section-divider">
+  <!-- THIS MONTH IN AI · 이달의 AI 하이라이트 (Brand 자리에 신규) -->
+  <section class="section section-divider" id="month-section">
+    <div class="section-header">
+      <h2 class="section-title">This Month in <em>AI</em></h2>
+      <div class="section-meta" id="month-meta">— · Highlights</div>
+    </div>
+    <div class="month-grid" id="month-grid"></div>
+  </section>
+
+  <section class="section section-divider" id="featured-section">
+    <div class="section-header">
+      <h2 class="section-title">This <em>Week</em></h2>
+      <div class="section-meta">3 Featured · Curated</div>
+    </div>
+    <div class="featured-grid" id="featured-grid"></div>
+  </section>
+
+  <section class="section section-divider" id="watch-section">
+    <div class="section-header">
+      <h2 class="section-title"><em>Watch</em></h2>
+      <div class="section-meta">Demos & Talks</div>
+    </div>
+    <div class="watch-grid" id="watch-grid"></div>
+  </section>
+
+  <section class="section section-divider" id="signals-section">
+    <div class="section-header">
+      <h2 class="section-title">Latest <em>Signals</em></h2>
+      <div class="section-meta" id="signal-count">— results</div>
+    </div>
+    <div class="toolbar toolbar-cats">
+      <div class="filter-group">
+        <span style="margin-right: 8px;">CATEGORY</span>
+        <button class="filter-chip active" data-cat="all">All</button>
+        <button class="filter-chip" data-cat="LLM">Language</button>
+        <button class="filter-chip" data-cat="Vision">Vision</button>
+        <button class="filter-chip" data-cat="Audio">Audio</button>
+        <button class="filter-chip" data-cat="Agent">Agents</button>
+        <button class="filter-chip" data-cat="Robotics">Robotics</button>
+        <button class="filter-chip" data-cat="Tool">Tools</button>
+        <button class="filter-chip" data-cat="Infra">Infrastructure</button>
+        <button class="filter-chip" data-cat="Safety">Safety</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="filter-group">
+        <span style="margin-right: 8px;">SORT</span>
+        <button class="filter-chip active" data-sort="score">Score</button>
+        <button class="filter-chip" data-sort="date">Date</button>
+        <button class="filter-chip" data-sort="source">Source</button>
+      </div>
+      <div class="filter-group">
+        <span style="margin-right: 8px;">VIEW</span>
+        <button class="filter-chip" data-view="starred">★ Starred</button>
+      </div>
+    </div>
+    <div class="signal-list" id="signal-list"></div>
+  </section>
+
+  <!-- BRAND IDENTITY · 페이지 하단으로 이동 (메뉴에서 BRAND 클릭 시 도착) -->
+  <section class="section section-divider" id="brand-section">
     <div class="section-header">
       <h2 class="section-title">Brand <em>Identity</em></h2>
       <div class="section-meta">CI System · 6 Variants</div>
     </div>
 
-    <!-- VISION · MISSION -->
     <div class="brand-mission">
       <div class="brand-mission-mark">— Vision · Mission</div>
       <blockquote class="brand-mission-quote">
@@ -719,9 +925,7 @@
           <div class="ci-name">Primary</div>
           <div class="ci-usage">Main Mark</div>
         </div>
-        <div class="ci-quote">
-          정체성의 출발점. 모든 표식 위에 놓이는 항해의 깃발.
-        </div>
+        <div class="ci-quote">정체성의 출발점. 모든 표식 위에 놓이는 항해의 깃발.</div>
       </article>
 
       <article class="ci-card">
@@ -732,9 +936,7 @@
           <div class="ci-name">Inverse</div>
           <div class="ci-usage">Subtle · UI</div>
         </div>
-        <div class="ci-quote">
-          일상의 흐름 안, 노이즈 없이 조용히 머무는 표식.
-        </div>
+        <div class="ci-quote">일상의 흐름 안, 노이즈 없이 조용히 머무는 표식.</div>
       </article>
 
       <article class="ci-card">
@@ -745,9 +947,7 @@
           <div class="ci-name">Heavy</div>
           <div class="ci-usage">Hero · Display</div>
         </div>
-        <div class="ci-quote">
-          큰 화면일수록 깊어지는, 신호의 무게.
-        </div>
+        <div class="ci-quote">큰 화면일수록 깊어지는, 신호의 무게.</div>
       </article>
 
       <article class="ci-card">
@@ -758,9 +958,7 @@
           <div class="ci-name">Outline</div>
           <div class="ci-usage">Watermark</div>
         </div>
-        <div class="ci-quote">
-          내용 뒤에 머무는, 보이지 않으나 항상 함께 있는 표식.
-        </div>
+        <div class="ci-quote">내용 뒤에 머무는, 보이지 않으나 항상 함께 있는 표식.</div>
       </article>
 
       <article class="ci-card">
@@ -771,9 +969,7 @@
           <div class="ci-name">Monogram</div>
           <div class="ci-usage">App Icon · Favicon</div>
         </div>
-        <div class="ci-quote">
-          한 글자에 담긴 항해. 라틴어 Vela — 돛.
-        </div>
+        <div class="ci-quote">한 글자에 담긴 항해. 라틴어 Vela — 돛.</div>
       </article>
 
       <article class="ci-card">
@@ -784,48 +980,10 @@
           <div class="ci-name">Glow</div>
           <div class="ci-usage">Promo · Accent</div>
         </div>
-        <div class="ci-quote">
-          주목해야 할 순간을 비추는 한 점의 빛.
-        </div>
+        <div class="ci-quote">주목해야 할 순간을 비추는 한 점의 빛.</div>
       </article>
 
     </div>
-  </section>
-
-  <section class="section section-divider">
-    <div class="section-header">
-      <h2 class="section-title">This <em>Week</em></h2>
-      <div class="section-meta">3 Featured · Curated</div>
-    </div>
-    <div class="featured-grid" id="featured-grid"></div>
-  </section>
-
-  <section class="section section-divider">
-    <div class="section-header">
-      <h2 class="section-title"><em>Watch</em></h2>
-      <div class="section-meta">Demos & Talks</div>
-    </div>
-    <div class="watch-grid" id="watch-grid"></div>
-  </section>
-
-  <section class="section section-divider" id="signals-section">
-    <div class="section-header">
-      <h2 class="section-title">Latest <em>Signals</em></h2>
-      <div class="section-meta" id="signal-count">— results</div>
-    </div>
-    <div class="toolbar">
-      <div class="filter-group">
-        <span style="margin-right: 8px;">SORT</span>
-        <button class="filter-chip active" data-sort="score">Score</button>
-        <button class="filter-chip" data-sort="date">Date</button>
-        <button class="filter-chip" data-sort="source">Source</button>
-      </div>
-      <div class="filter-group">
-        <span style="margin-right: 8px;">VIEW</span>
-        <button class="filter-chip" data-view="starred">★ Starred</button>
-      </div>
-    </div>
-    <div class="signal-list" id="signal-list"></div>
   </section>
 
   <footer class="colophon">
@@ -837,7 +995,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.7.0</strong> · Phase 1</div>
+        <div><strong style="color:var(--accent);">v0.9.0</strong> · Phase 1</div>
       </div>
     </div>
   </footer>
@@ -876,6 +1034,17 @@
     </div>
   </div>
 
+  <!-- VIDEO MODAL -->
+  <div class="video-modal" id="video-modal">
+    <div class="video-modal-content" id="video-modal-content" onclick="event.stopPropagation()">
+      <button class="video-modal-close" id="video-modal-close" title="닫기 (ESC)">✕</button>
+      <iframe id="video-iframe" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- SCROLL TO TOP -->
+  <button class="scroll-top" id="scroll-top" title="맨 위로" aria-label="맨 위로 이동">↑</button>
+
 <script>
   const IMG = {
     cover: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1600&q=80',
@@ -889,7 +1058,11 @@
     s2: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=70',
     s3: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70',
     s4: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=70',
-    s5: 'https://images.unsplash.com/photo-1620207418302-439b387441b0?w=400&q=70'
+    s5: 'https://images.unsplash.com/photo-1620207418302-439b387441b0?w=400&q=70',
+    m1: 'https://images.unsplash.com/photo-1696258686454-60082b4d633c?w=600&q=70',
+    m2: 'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=70',
+    m3: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70',
+    m4: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=70'
   };
 
   const COVER = {
@@ -898,7 +1071,8 @@
     deck: '베일에 싸여 있던 차세대 추론 엔진의 내부 구조와, 그것이 산업에 가져올 변화를 가장 깊이 들여다본 분석.',
     byline: ['By VELA EDITORIAL', '12 MIN READ', 'APR 25 · 2026'],
     image: IMG.cover,
-    credit: 'Photo · Unsplash'
+    videoId: 'kCc8FmEb1nY',
+    credit: 'Photo · Unsplash · Click to play'
   };
 
   const FEATURED = [
@@ -908,9 +1082,37 @@
   ];
 
   const VIDEOS = [
-    { source: 'YouTube', title: '60초 안에 보는 새로운 Diffusion 모델 데모', byline: 'DeepLearning AI · 1.2M views', thumb: IMG.v1, duration: '0:58' },
-    { source: 'YouTube', title: 'AI 로보틱스: 이번 분기의 결정적 돌파구', byline: 'Lex Fridman · 480K views', thumb: IMG.v2, duration: '12:34' },
-    { source: 'YouTube', title: 'Anthropic Engineering — Constitutional AI 2026', byline: 'Anthropic · 220K views', thumb: IMG.v3, duration: '28:11' }
+    { source: 'YouTube', title: '60초 안에 보는 새로운 Diffusion 모델 데모', byline: 'DeepLearning AI · 1.2M views', thumb: IMG.v1, duration: '0:58', videoId: 'jNQXAC9IVRw' },
+    { source: 'YouTube', title: 'AI 로보틱스: 이번 분기의 결정적 돌파구', byline: 'Lex Fridman · 480K views', thumb: IMG.v2, duration: '12:34', videoId: 'kCc8FmEb1nY' },
+    { source: 'YouTube', title: 'Anthropic Engineering — Constitutional AI 2026', byline: 'Anthropic · 220K views', thumb: IMG.v3, duration: '28:11', videoId: 'aircAruvnKk' }
+  ];
+
+  // 이달의 AI · 4개 핵심 이벤트
+  const THIS_MONTH = [
+    {
+      date: 'APR 04', category: 'Model Launch',
+      title: 'Anthropic Claude 4.7 정식 출시',
+      deck: '추론 모드 확장과 200K 컨텍스트, 코딩·수학 벤치마크 SOTA를 갱신했다.',
+      image: IMG.m1, url: 'https://www.anthropic.com/news'
+    },
+    {
+      date: 'APR 12', category: 'Industry',
+      title: 'OpenAI Sora 2 공개',
+      deck: '4K 30초 영상 생성 + 음성 동기화. 영상 산업 워크플로우의 임계점.',
+      image: IMG.m2, url: 'https://openai.com/sora'
+    },
+    {
+      date: 'APR 18', category: 'Research',
+      title: 'DeepSeek V3 — 256B MoE 오픈소스',
+      deck: '활성 파라미터 25B로 GPT-5 수준 추론 달성. 가중치 공개 전략의 새 표준.',
+      image: IMG.m3, url: 'https://github.com/deepseek-ai'
+    },
+    {
+      date: 'APR 22', category: 'Tool',
+      title: 'Claude Code 1.0 정식 릴리즈',
+      deck: '터미널 기반 코딩 에이전트. 출시 2주 만에 30k+ 다운로드 돌파.',
+      image: IMG.m4, url: 'https://docs.claude.com/code'
+    }
   ];
 
   const SIGNALS = [
@@ -952,9 +1154,30 @@
       </article>`).join('');
   }
 
+  function renderThisMonth() {
+    const now = new Date();
+    const monthName = now.toLocaleString('en-US', { month: 'long' });
+    document.getElementById('month-meta').textContent = `${monthName} ${now.getFullYear()} · Highlights`;
+    document.getElementById('month-grid').innerHTML = THIS_MONTH.map(m => `
+      <article class="month-card" data-url="${m.url}">
+        <div class="month-image">
+          <div class="month-image-bg" style="background-image:url('${m.image}')"></div>
+          <span class="month-date">${m.date}</span>
+        </div>
+        <div class="month-category">${m.category}</div>
+        <h3 class="month-title">${m.title}</h3>
+        <p class="month-deck">${m.deck}</p>
+      </article>`).join('');
+    document.querySelectorAll('.month-card').forEach(card => {
+      card.addEventListener('click', () => {
+        if (card.dataset.url) window.open(card.dataset.url, '_blank', 'noopener');
+      });
+    });
+  }
+
   function renderWatch() {
-    document.getElementById('watch-grid').innerHTML = VIDEOS.map(v => `
-      <article class="watch-card">
+    document.getElementById('watch-grid').innerHTML = VIDEOS.map((v, i) => `
+      <article class="watch-card" data-vid-idx="${i}">
         <div class="watch-thumb" style="background-image:url('${v.thumb}')">
           <span class="watch-duration">${v.duration}</span>
         </div>
@@ -964,6 +1187,12 @@
           <div class="watch-byline">${v.byline}</div>
         </div>
       </article>`).join('');
+    document.querySelectorAll('.watch-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const v = VIDEOS[parseInt(card.dataset.vidIdx)];
+        if (v && v.videoId) openVideoModal(v.videoId);
+      });
+    });
   }
 
   function getFilteredSignals() {
@@ -1035,19 +1264,39 @@
     renderSignals();
   }
 
+  // NAV · 메뉴 클릭 시 해당 페이지 섹션으로 스크롤
+  const SECTION_MAP = {
+    home: null, // page top
+    month: 'month-section',
+    featured: 'featured-section',
+    watch: 'watch-section',
+    signals: 'signals-section',
+    brand: 'brand-section'
+  };
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      state.filter = btn.dataset.filter;
-      renderSignals();
-      // 클릭한 카테고리의 시그널 섹션으로 부드럽게 스크롤 (스티키 헤더 보정)
-      const target = document.getElementById('signals-section');
-      if (target) {
-        const headerOffset = 100;
-        const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
-        window.scrollTo({ top, behavior: 'smooth' });
+      const sectionId = SECTION_MAP[btn.dataset.section];
+      if (!sectionId) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const target = document.getElementById(sectionId);
+        if (target) {
+          const top = target.getBoundingClientRect().top + window.scrollY - 100;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
       }
+    });
+  });
+
+  // CATEGORY · Signals 섹션 안 카테고리 chip
+  document.querySelectorAll('[data-cat]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-cat]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.filter = btn.dataset.cat;
+      renderSignals();
     });
   });
   document.querySelectorAll('[data-sort]').forEach(btn => {
@@ -1114,6 +1363,57 @@
   });
   window.addEventListener('appinstalled', () => { installBtn.style.display = 'none'; });
 
+  // ============================================================
+  // VIDEO MODAL · 커버 + Watch 카드 클릭 시 lightbox 영상 재생
+  // ============================================================
+  const videoModal = document.getElementById('video-modal');
+  const videoIframe = document.getElementById('video-iframe');
+  const videoModalClose = document.getElementById('video-modal-close');
+
+  function openVideoModal(videoId) {
+    videoIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+    videoModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeVideoModal() {
+    videoIframe.src = ''; // 재생 정지
+    videoModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  videoModal.addEventListener('click', closeVideoModal);
+  videoModalClose.addEventListener('click', closeVideoModal);
+
+  // 커버 이미지 클릭 → 비디오 재생
+  document.getElementById('cover-image').addEventListener('click', () => {
+    if (COVER.videoId) openVideoModal(COVER.videoId);
+  });
+
+  // ============================================================
+  // SCROLL TO TOP · 우측 하단 floating 버튼
+  // ============================================================
+  const scrollTopBtn = document.getElementById('scroll-top');
+  let scrollTicking = false;
+  window.addEventListener('scroll', () => {
+    if (!scrollTicking) {
+      requestAnimationFrame(() => {
+        scrollTopBtn.classList.toggle('visible', window.scrollY > 600);
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
+  });
+  scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ESC 키로 모든 모달 닫기
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (videoModal.classList.contains('active')) closeVideoModal();
+      if (installModal.classList.contains('active')) installModal.classList.remove('active');
+    }
+  });
+
   function init() {
     const now = new Date();
     const month = now.toLocaleString('en-US', { month: 'short' }).toUpperCase();
@@ -1121,6 +1421,7 @@
     const year = now.getFullYear();
     document.getElementById('issue-date').textContent = `${month} ${day} · ${year}`;
     renderCover();
+    renderThisMonth();
     renderFeatured();
     renderWatch();
     renderSignals();
