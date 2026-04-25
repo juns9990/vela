@@ -40,6 +40,8 @@ KST = timezone(timedelta(hours=9))
 USER_AGENT = "Mozilla/5.0 (compatible; VelaBot/1.0; +https://juns9990.github.io/vela/)"
 TIMEOUT = 15
 OUTPUT_PATH = "vela-issue.json"
+ARCHIVE_INDEX_PATH = "vela-archive.json"
+RSS_PATH = "vela-rss.xml"
 
 # 카테고리 키워드 매핑 (제목/abstract 매칭)
 CATEGORY_RULES = [
@@ -429,7 +431,137 @@ def main():
     print(f"  Featured: {len(featured)} items")
     print(f"  Videos: {len(valid_videos[:3])} items")
     print(f"  Signals: {len(validated[:8])} items")
+
+    # 5. 과거 이슈 아카이브 — 이번 주 스냅샷 별도 파일로 저장
+    print("\n[5/6] Archiving snapshot...")
+    archive_filename = f"vela-issue-{meta['issue_year']}-W{meta['issue_week']:02d}.json"
+    with open(archive_filename, "w", encoding="utf-8") as f:
+        json.dump(issue, f, ensure_ascii=False, indent=2)
+    print(f"  ✓ Snapshot: {archive_filename}")
+    update_archive_index(issue, archive_filename)
+
+    # 6. RSS 피드 생성
+    print("\n[6/6] Generating RSS feed...")
+    write_rss(issue)
+    print(f"  ✓ RSS: {RSS_PATH}")
+
     print("=" * 60)
+
+
+def update_archive_index(issue, snapshot_filename):
+    """vela-archive.json 인덱스 파일 갱신 — 모든 과거 이슈의 메타데이터 누적."""
+    import os
+    meta = issue["meta"]
+    cover = issue["cover"]
+    headline_plain = re.sub(r"<[^>]+>", "", cover.get("headline", "")).strip()
+
+    new_entry = {
+        "file": snapshot_filename,
+        "year": meta["issue_year"],
+        "week": meta["issue_week"],
+        "monday": meta["monday"],
+        "headline": headline_plain[:120],
+        "signal_count": len(issue.get("signals", []))
+    }
+
+    # 기존 인덱스 읽기
+    archive = {"version": "1.0", "issues": []}
+    if os.path.exists(ARCHIVE_INDEX_PATH):
+        try:
+            with open(ARCHIVE_INDEX_PATH, encoding="utf-8") as f:
+                archive = json.load(f)
+        except Exception as e:
+            print(f"  ⚠️ archive read failed, starting fresh: {e}", file=sys.stderr)
+            archive = {"version": "1.0", "issues": []}
+
+    # 같은 주 항목 있으면 교체, 없으면 추가
+    issues = [i for i in archive.get("issues", []) if not (i.get("year") == new_entry["year"] and i.get("week") == new_entry["week"])]
+    issues.append(new_entry)
+    # 최신순 정렬 (year/week DESC)
+    issues.sort(key=lambda x: (x.get("year", 0), x.get("week", 0)), reverse=True)
+    archive["issues"] = issues
+    archive["updated_at"] = datetime.now(KST).isoformat()
+
+    with open(ARCHIVE_INDEX_PATH, "w", encoding="utf-8") as f:
+        json.dump(archive, f, ensure_ascii=False, indent=2)
+    print(f"  ✓ Archive index: {len(issues)} issues total")
+
+
+def xml_escape(s):
+    """RSS XML escape."""
+    return (str(s or "")
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace("\"", "&quot;")
+            .replace("'", "&apos;"))
+
+
+def write_rss(issue):
+    """vela-rss.xml 생성 — 이번 주 핵심 항목들로 RSS 2.0 피드."""
+    meta = issue["meta"]
+    site_url = "https://juns9990.github.io/vela/vela-prototype.html"
+    pub_date = datetime.now(KST).strftime("%a, %d %b %Y %H:%M:%S +0900")
+
+    items_xml = []
+
+    # Cover (영상이라 site URL로)
+    cover = issue.get("cover", {})
+    if cover:
+        headline = re.sub(r"<[^>]+>", "", cover.get("headline", ""))
+        items_xml.append(f"""    <item>
+      <title>[Cover] {xml_escape(headline)}</title>
+      <link>{xml_escape(site_url)}</link>
+      <guid isPermaLink="false">vela-cover-{meta['issue_year']}-W{meta['issue_week']:02d}</guid>
+      <description>{xml_escape(cover.get('deck', ''))}</description>
+      <pubDate>{pub_date}</pubDate>
+      <category>Cover Story</category>
+    </item>""")
+
+    # Signals (각 항목)
+    for s in issue.get("signals", []):
+        cat = (s.get("tags") or ["AI"])[0]
+        items_xml.append(f"""    <item>
+      <title>[{xml_escape(cat)}] {xml_escape(s.get('title', ''))}</title>
+      <link>{xml_escape(s.get('url', ''))}</link>
+      <guid isPermaLink="true">{xml_escape(s.get('url', ''))}</guid>
+      <description>{xml_escape(s.get('abstract', ''))}</description>
+      <pubDate>{pub_date}</pubDate>
+      <category>{xml_escape(cat)}</category>
+      <source url="{xml_escape(site_url)}">{xml_escape(s.get('sourceLabel', 'Vela'))}</source>
+    </item>""")
+
+    # Featured
+    for f in issue.get("featured", []):
+        if not f.get("url"):
+            continue
+        items_xml.append(f"""    <item>
+      <title>[Featured] {xml_escape(f.get('title', ''))}</title>
+      <link>{xml_escape(f.get('url', ''))}</link>
+      <guid isPermaLink="true">{xml_escape(f.get('url', ''))}</guid>
+      <description>{xml_escape(f.get('deck', ''))}</description>
+      <pubDate>{pub_date}</pubDate>
+      <category>Featured</category>
+    </item>""")
+
+    rss_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Vela — AI Intelligence Magazine</title>
+    <link>{xml_escape(site_url)}</link>
+    <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
+    <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
+    <language>ko</language>
+    <pubDate>{pub_date}</pubDate>
+    <lastBuildDate>{pub_date}</lastBuildDate>
+    <generator>Vela Weekly Collector</generator>
+    <ttl>10080</ttl>
+{chr(10).join(items_xml)}
+  </channel>
+</rss>
+"""
+    with open(RSS_PATH, "w", encoding="utf-8") as f:
+        f.write(rss_xml)
 
 
 if __name__ == "__main__":
