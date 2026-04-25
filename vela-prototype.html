@@ -60,7 +60,7 @@
   }
   .vela-mark .accent { color: var(--accent); }
 
-  /* PRIMARY · 흰글자 + 검정 그림자 (메인 CI · 업로드 이미지 톤) */
+  /* PRIMARY · 흰글자 + 검정 그림자 (메인 CI · Vela 공식 마크) */
   .vela-mark.primary {
     color: white;
     text-shadow:
@@ -69,48 +69,6 @@
       3px 3px 0 var(--ink),
       4px 4px 0 var(--ink);
     -webkit-text-stroke: 1.2px var(--ink);
-  }
-
-  /* INVERSE · 그림자 없는 깔끔한 흰글자 */
-  .vela-mark.inverse { color: white; }
-
-  /* HEAVY · 더 강한 그림자 (8단) */
-  .vela-mark.heavy {
-    color: white;
-    text-shadow:
-      1px 1px 0 var(--ink), 2px 2px 0 var(--ink),
-      3px 3px 0 var(--ink), 4px 4px 0 var(--ink),
-      5px 5px 0 var(--ink), 6px 6px 0 var(--ink),
-      7px 7px 0 var(--ink), 8px 8px 0 var(--ink);
-    -webkit-text-stroke: 1.5px var(--ink);
-  }
-
-  /* OUTLINE · 외곽선만 */
-  .vela-mark.outline {
-    color: transparent;
-    -webkit-text-stroke: 2px white;
-  }
-  .vela-mark.outline .accent { -webkit-text-stroke-color: var(--accent); }
-
-  /* CYAN · 시안 글자 + 흰 l */
-  .vela-mark.cyan {
-    color: var(--accent);
-    text-shadow:
-      1px 1px 0 var(--ink), 2px 2px 0 var(--ink), 3px 3px 0 var(--ink);
-    -webkit-text-stroke: 1px var(--ink);
-  }
-  .vela-mark.cyan .accent { color: white; }
-
-  /* GLOW · 시안 글로우 효과 */
-  .vela-mark.glow {
-    color: white;
-    text-shadow:
-      0 0 12px rgba(94,234,212,0.6),
-      0 0 24px rgba(94,234,212,0.35);
-  }
-  .vela-mark.glow .accent {
-    color: var(--accent);
-    text-shadow: 0 0 16px rgba(94,234,212,0.9);
   }
 
   /* ============================================================
@@ -427,91 +385,6 @@
   .connect-value {
     font-family: var(--sans); font-size: 14px; font-weight: 500;
     color: var(--text); word-break: break-all;
-  }
-
-  /* ============================================================
-     BRAND IDENTITY GALLERY · 모든 카드 다크 톤 통일
-     ============================================================ */
-  .ci-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-  }
-  .ci-card {
-    border: 1px solid var(--border);
-    overflow: hidden;
-    display: flex; flex-direction: column;
-  }
-  .ci-stage {
-    aspect-ratio: 4 / 3;
-    display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden;
-  }
-  .ci-stage.bg-dark { background: var(--bg); }
-  .ci-stage.bg-elev { background: var(--bg-elev); }
-  .ci-stage.bg-warm { background: var(--bg-warm); }
-  .ci-stage.bg-card { background: var(--bg-card); }
-  .ci-stage.bg-glow {
-    background: var(--bg);
-    background-image: radial-gradient(circle at 50% 50%, rgba(94,234,212,0.12), transparent 60%);
-  }
-  .ci-stage.bg-grid {
-    background: var(--bg-elev);
-    background-image:
-      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 24px 24px;
-  }
-
-  /* CI 갤러리에서 워드마크 크기 일관성 */
-  .ci-stage .vela-mark { font-size: clamp(56px, 8vw, 96px); }
-  .ci-stage.monogram .vela-mark {
-    font-size: clamp(96px, 14vw, 160px);
-    position: relative;
-  }
-  /* 모노그램 V 우상단 시안 dot accent (l accent의 시각적 메아리) */
-  .ci-stage.monogram .vela-mark::after {
-    content: '';
-    position: absolute;
-    top: 8%; right: -10%;
-    width: 14%; aspect-ratio: 1;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 16px rgba(94,234,212,0.6);
-  }
-
-  .ci-info {
-    padding: 16px 18px;
-    background: var(--bg-card);
-    display: flex; justify-content: space-between; align-items: center; gap: 12px;
-  }
-  .ci-name {
-    font-family: var(--mono); font-size: 11px; font-weight: 500;
-    letter-spacing: 0.15em; text-transform: uppercase; color: var(--text);
-  }
-  .ci-usage {
-    font-family: var(--mono); font-size: 9px;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--text-mute);
-  }
-
-  /* CI 카드 안 글귀 */
-  .ci-quote {
-    padding: 14px 18px;
-    background: var(--bg-warm);
-    border-top: 1px solid var(--border);
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 12.5px;
-    line-height: 1.5;
-    color: var(--text-soft);
-    letter-spacing: -0.005em;
-  }
-
-  /* CI 텍스처 (다크 그레인 통일) */
-  .ci-stage::after {
-    content: ''; position: absolute; inset: 0;
-    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.025) 1px, transparent 0);
-    background-size: 4px 4px;
-    pointer-events: none;
   }
 
   /* FEATURED */
@@ -1250,10 +1123,10 @@
           <span class="connect-label">— Source</span>
           <span class="connect-value">github.com/juns9990/vela</span>
         </a>
-        <a class="connect-item" href="#" id="connect-install">
+        <button class="connect-item" id="connect-install" type="button" style="font: inherit; text-align: left;">
           <span class="connect-label">— Install</span>
           <span class="connect-value">Add to Home Screen</span>
-        </a>
+        </button>
       </div>
     </div>
 
@@ -1268,7 +1141,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.13.0</strong> · Phase 1</div>
+        <div><strong style="color:var(--accent);">v0.14.0</strong> · Phase 1</div>
       </div>
     </div>
   </footer>
@@ -1450,7 +1323,7 @@
   const SIGNAL_POOL = [
     { id: "arxiv-1706.03762", source: "arxiv", sourceLabel: "ArXiv", title: "Attention Is All You Need — 트랜스포머의 시작", abstract: "RNN·CNN 없이 attention 메커니즘만으로 시퀀스 변환을 수행하는 새 아키텍처. 모든 현대 LLM의 토대가 된 2017년 논문.", url: "https://arxiv.org/abs/1706.03762", published: "2026-04-25", tags: ["LLM", "Architecture"], score: 5, authors: "Vaswani et al.", thumb: IMG.s1 },
     { id: "arxiv-2412.19437", source: "arxiv", sourceLabel: "ArXiv", title: "DeepSeek-V3 — 671B MoE, 활성 37B로 GPT-4 수준 달성", abstract: "오픈소스 가중치 공개. 수학·코딩 벤치마크에서 SOTA 갱신. 학습 비용은 GPT-4 대비 약 1/10 수준.", url: "https://arxiv.org/abs/2412.19437", published: "2026-04-25", tags: ["LLM", "Reasoning"], score: 5, authors: "DeepSeek-AI", thumb: IMG.s2 },
-    { id: "github-autogen", source: "github", sourceLabel: "GitHub", title: "AutoGen — Microsoft의 멀티 에이전트 프레임워크", abstract: "여러 LLM 에이전트가 협업해 복잡한 작업을 처리한다. 도구 호출·메모리·다단계 추론 빌트인.", url: "https://github.com/microsoft/autogen", published: "2026-04-24", tags: ["Agent", "Tool"], score: 5, authors: "37k ★", thumb: IMG.s3 },
+    { id: "github-langgraph", source: "github", sourceLabel: "GitHub", title: "LangGraph — 그래프 기반 에이전트 오케스트레이션", abstract: "Klarna·Replit·Uber·LinkedIn이 사용하는 저수준 에이전트 프레임워크. 영속 실행, human-in-the-loop, 메모리 빌트인.", url: "https://github.com/langchain-ai/langgraph", published: "2026-04-24", tags: ["Agent", "Tool"], score: 5, authors: "29.8k ★", thumb: IMG.s3 },
     { id: "openai-sora", source: "blog", sourceLabel: "OpenAI", title: "Sora — 영상 생성 모델은 세계 시뮬레이터다", abstract: "1분 길이 고해상도 영상 생성. 시공간 패치 학습으로 물리적 세계의 패턴을 모사한다는 OpenAI의 주장.", url: "https://openai.com/index/video-generation-models-as-world-simulators/", published: "2026-04-24", tags: ["Vision", "Generation"], score: 4, authors: "OpenAI", thumb: IMG.s4 },
     { id: "arxiv-2212.08073", source: "arxiv", sourceLabel: "ArXiv", title: "Constitutional AI — AI 피드백을 통한 정렬", abstract: "사람의 직접 라벨링 없이 원칙(Constitution)만으로 AI를 정렬한다. Anthropic의 RLAIF 핵심 논문.", url: "https://arxiv.org/abs/2212.08073", published: "2026-04-23", tags: ["Safety", "LLM"], score: 4, authors: "Bai et al.", thumb: IMG.s5 },
     { id: "github-whisper", source: "github", sourceLabel: "GitHub", title: "Whisper — OpenAI의 다국어 음성 인식 모델", abstract: "68만 시간 다국어 음성으로 학습. 99개 언어 지원, 영어 STT에서 사람 수준 정확도를 달성한다.", url: "https://github.com/openai/whisper", published: "2026-04-23", tags: ["Audio", "Multimodal"], score: 4, authors: "70k ★", thumb: IMG.s1 },
@@ -1748,10 +1621,7 @@
   // Connect 섹션의 "Install" 버튼 → install 플로우 트리거
   const connectInstall = document.getElementById('connect-install');
   if (connectInstall) {
-    connectInstall.addEventListener('click', (e) => {
-      e.preventDefault();
-      installBtn.click();
-    });
+    connectInstall.addEventListener('click', () => installBtn.click());
   }
 
   // ============================================================
