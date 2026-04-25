@@ -5,207 +5,219 @@
     "issue_week": 17,
     "monday": "2026-04-20",
     "next_monday": "2026-04-27",
-    "generated_at": "2026-04-26T00:00:00+09:00"
+    "generated_at": "2026-04-26T07:36:25.269627+09:00"
   },
   "cover": {
     "label": "Cover Story · Week 17",
-    "headline": "Karpathy의 1시간 강의 — <em>LLM의 모든 것</em>",
-    "deck": "OpenAI 창립 멤버이자 전 Tesla AI 디렉터 Andrej Karpathy가 짚어주는 거대 언어 모델의 작동 원리, 학습 방식, 그리고 다가올 미래.",
-    "byline": ["By ANDREJ KARPATHY", "60 MIN WATCH", "Curated"],
+    "headline": "Let's build GPT · 처음부터 만드는 GPT",
+    "deck": "이번 주 Vela가 추천하는 깊이 있는 강의. Andrej Karpathy의 시그니처.",
+    "byline": [
+      "By ANDREJ KARPATHY",
+      "1:56:20",
+      "Curated"
+    ],
     "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1600&q=80",
-    "videoId": "zjkBMFhNj_g",
+    "videoId": "kCc8FmEb1nY",
     "credit": "Click image to play"
   },
   "thisMonth": [
     {
-      "date": "APR 04",
-      "category": "Model Launch",
-      "title": "Anthropic Claude 4.7 정식 출시",
-      "deck": "추론 모드 확장과 200K 컨텍스트, 코딩·수학 벤치마크 SOTA를 갱신했다.",
-      "image": "https://images.unsplash.com/photo-1696258686454-60082b4d633c?w=600&q=70",
-      "url": "https://www.anthropic.com/news"
+      "date": "APR 23",
+      "category": "Agent",
+      "title": "From Research Question to Scientific Workflow: Leveraging Agentic AI for Science",
+      "deck": "Scientific workflow systems automate execution -- scheduling, fault tolerance, resource management -- but not the semantic translation that ",
+      "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
+      "url": "https://arxiv.org/abs/2604.21910v1"
     },
     {
-      "date": "APR 12",
-      "category": "Industry",
-      "title": "OpenAI Sora 2 공개",
-      "deck": "4K 30초 영상 생성 + 음성 동기화. 영상 산업 워크플로우의 임계점.",
-      "image": "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=70",
-      "url": "https://openai.com/index/video-generation-models-as-world-simulators/"
+      "date": "APR 23",
+      "category": "Agent",
+      "title": "Nemobot Games: Crafting Strategic AI Gaming Agents for Interactive Learning with",
+      "deck": "This paper introduces a new paradigm for AI game programming, leveraging large language models (LLMs) to extend and operationalize Claude Sh",
+      "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
+      "url": "https://arxiv.org/abs/2604.21896v1"
     },
     {
-      "date": "APR 18",
-      "category": "Research",
-      "title": "DeepSeek V3 — 256B MoE 오픈소스",
-      "deck": "활성 파라미터 25B로 GPT-5 수준 추론 달성. 가중치 공개 전략의 새 표준.",
-      "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70",
-      "url": "https://github.com/deepseek-ai/DeepSeek-V3"
-    },
-    {
-      "date": "APR 22",
-      "category": "Tool",
-      "title": "Claude Code 1.0 정식 릴리즈",
-      "deck": "터미널 기반 코딩 에이전트. 출시 2주 만에 30k+ 다운로드 돌파.",
-      "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=70",
-      "url": "https://www.anthropic.com/claude-code"
+      "date": "APR 23",
+      "category": "LLM",
+      "title": "MathDuels: Evaluating LLMs as Problem Posers and Solvers",
+      "deck": "As frontier language models attain near-ceiling performance on static mathematical benchmarks, existing evaluations are increasingly unable ",
+      "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "url": "https://arxiv.org/abs/2604.21916v1"
     }
   ],
   "featured": [
     {
-      "label": "Benchmark",
-      "title": "Claude 4.7과 GPT-5, 12개 과제에서의 정면 비교",
-      "deck": "추론, 코딩, 시각, 장문 이해까지. 두 모델의 강점과 약점을 데이터로 풀어낸다.",
-      "byline": "BENCHMARK · 8 MIN",
-      "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
-      "url": "https://www.anthropic.com/news"
+      "label": "Agent",
+      "title": "From Research Question to Scientific Workflow: Leveraging Agentic AI for Science",
+      "deck": "Scientific workflow systems automate execution -- scheduling, fault tolerance, resource management -- but not the semantic translation that ",
+      "byline": "ARXIV · Bartosz Balis et al.",
+      "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
+      "url": "https://arxiv.org/abs/2604.21910v1"
     },
     {
-      "label": "Architecture",
-      "title": "Mixture-of-Experts는 정말로 어떻게 작동하는가",
-      "deck": "라우팅과 게이팅의 수학적 직관을 처음부터 다시 짚는다. 그림과 함께.",
-      "byline": "TECHNICAL · 14 MIN",
-      "image": "https://images.unsplash.com/photo-1655720828018-edd2daec9349?w=800&q=80",
-      "url": "https://arxiv.org/abs/2401.04088"
+      "label": "Agent",
+      "title": "Nemobot Games: Crafting Strategic AI Gaming Agents for Interactive Learning with",
+      "deck": "This paper introduces a new paradigm for AI game programming, leveraging large language models (LLMs) to extend and operationalize Claude Sh",
+      "byline": "ARXIV · Chee Wei Tan et al.",
+      "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
+      "url": "https://arxiv.org/abs/2604.21896v1"
     },
     {
-      "label": "Field Report",
-      "title": "프로덕션에 진입한 AI 에이전트의 현재",
-      "deck": "실리콘밸리 12개 스타트업의 사례로 본 에이전트 워크플로우의 임계점.",
-      "byline": "REPORT · 10 MIN",
-      "image": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80",
-      "url": "https://github.com/langchain-ai/langgraph"
+      "label": "LLM",
+      "title": "MathDuels: Evaluating LLMs as Problem Posers and Solvers",
+      "deck": "As frontier language models attain near-ceiling performance on static mathematical benchmarks, existing evaluations are increasingly unable ",
+      "byline": "ARXIV · Zhiqiu Xu et al.",
+      "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "url": "https://arxiv.org/abs/2604.21916v1"
     }
   ],
   "videos": [
     {
-      "source": "YouTube",
       "title": "Let's build GPT — 처음부터 만드는 GPT",
-      "byline": "Andrej Karpathy · 6.2M views",
-      "thumb": "https://i.ytimg.com/vi/kCc8FmEb1nY/hqdefault.jpg",
+      "byline": "Andrej Karpathy",
       "duration": "1:56:20",
-      "videoId": "kCc8FmEb1nY"
+      "videoId": "kCc8FmEb1nY",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/kCc8FmEb1nY/hqdefault.jpg"
     },
     {
+      "title": "[1시간] LLM 입문 강의",
+      "byline": "Andrej Karpathy",
+      "duration": "59:48",
+      "videoId": "zjkBMFhNj_g",
       "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/zjkBMFhNj_g/hqdefault.jpg"
+    },
+    {
       "title": "But what is a GPT? — 트랜스포머 시각 입문",
-      "byline": "3Blue1Brown · 4.5M views",
-      "thumb": "https://i.ytimg.com/vi/wjZofJX0v4M/hqdefault.jpg",
+      "byline": "3Blue1Brown",
       "duration": "27:14",
-      "videoId": "wjZofJX0v4M"
-    },
-    {
+      "videoId": "wjZofJX0v4M",
       "source": "YouTube",
-      "title": "신경망의 본질 — Deep Learning Chapter 1",
-      "byline": "3Blue1Brown · 18M views",
-      "thumb": "https://i.ytimg.com/vi/aircAruvnKk/hqdefault.jpg",
-      "duration": "18:40",
-      "videoId": "aircAruvnKk"
+      "thumb": "https://i.ytimg.com/vi/wjZofJX0v4M/hqdefault.jpg"
     }
   ],
   "signals": [
     {
-      "id": "arxiv-1706.03762",
+      "id": "arxiv-2604.21910",
       "source": "arxiv",
       "sourceLabel": "ArXiv",
-      "title": "Attention Is All You Need — 트랜스포머의 시작",
-      "abstract": "RNN·CNN 없이 attention 메커니즘만으로 시퀀스 변환을 수행하는 새 아키텍처. 모든 현대 LLM의 토대가 된 2017년 논문.",
-      "url": "https://arxiv.org/abs/1706.03762",
-      "published": "2026-04-25",
-      "tags": ["LLM", "Architecture"],
-      "score": 5,
-      "authors": "Vaswani et al.",
-      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70"
+      "title": "From Research Question to Scientific Workflow: Leveraging Agentic AI for Science Automation",
+      "abstract": "Scientific workflow systems automate execution -- scheduling, fault tolerance, resource management -- but not the semantic translation that precedes it. Scientists still manually convert research questions into workflow specifications, a task requiring both domain knowledge and i",
+      "url": "https://arxiv.org/abs/2604.21910v1",
+      "published": "2026-04-23",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Bartosz Balis et al.",
+      "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
+      "score": 5
     },
     {
-      "id": "arxiv-2412.19437",
+      "id": "arxiv-2604.21896",
       "source": "arxiv",
       "sourceLabel": "ArXiv",
-      "title": "DeepSeek-V3 — 671B MoE, 활성 37B로 GPT-4 수준 달성",
-      "abstract": "오픈소스 가중치 공개. 수학·코딩 벤치마크에서 SOTA 갱신. 학습 비용은 GPT-4 대비 약 1/10 수준.",
-      "url": "https://arxiv.org/abs/2412.19437",
-      "published": "2026-04-25",
-      "tags": ["LLM", "Reasoning"],
-      "score": 5,
-      "authors": "DeepSeek-AI",
-      "thumb": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=70"
+      "title": "Nemobot Games: Crafting Strategic AI Gaming Agents for Interactive Learning with Large Language Models",
+      "abstract": "This paper introduces a new paradigm for AI game programming, leveraging large language models (LLMs) to extend and operationalize Claude Shannon's taxonomy of game-playing machines. Central to this paradigm is Nemobot, an interactive agentic engineering environment that enables ",
+      "url": "https://arxiv.org/abs/2604.21896v1",
+      "published": "2026-04-23",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Chee Wei Tan et al.",
+      "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
+      "score": 5
     },
     {
-      "id": "github-langgraph",
-      "source": "github",
-      "sourceLabel": "GitHub",
-      "title": "LangGraph — 그래프 기반 에이전트 오케스트레이션",
-      "abstract": "Klarna·Replit·Uber·LinkedIn이 사용하는 저수준 에이전트 프레임워크. 영속 실행, human-in-the-loop, 메모리 빌트인.",
-      "url": "https://github.com/langchain-ai/langgraph",
-      "published": "2026-04-24",
-      "tags": ["Agent", "Tool"],
-      "score": 5,
-      "authors": "29.8k ★",
-      "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70"
+      "id": "arxiv-2604.21916",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "MathDuels: Evaluating LLMs as Problem Posers and Solvers",
+      "abstract": "As frontier language models attain near-ceiling performance on static mathematical benchmarks, existing evaluations are increasingly unable to differentiate model capabilities, largely because they cast models solely as solvers of fixed problem sets. We introduce MathDuels, a sel",
+      "url": "https://arxiv.org/abs/2604.21916v1",
+      "published": "2026-04-23",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Zhiqiu Xu et al.",
+      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "score": 4
     },
     {
-      "id": "openai-sora",
+      "id": "g-44de458f",
       "source": "blog",
-      "sourceLabel": "OpenAI",
-      "title": "Sora — 영상 생성 모델은 세계 시뮬레이터다",
-      "abstract": "1분 길이 고해상도 영상 생성. 시공간 패치 학습으로 물리적 세계의 패턴을 모사한다는 OpenAI의 주장.",
-      "url": "https://openai.com/index/video-generation-models-as-world-simulators/",
-      "published": "2026-04-24",
-      "tags": ["Vision", "Generation"],
-      "score": 4,
-      "authors": "OpenAI",
-      "thumb": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=70"
+      "sourceLabel": "Google Research",
+      "title": "Evaluating alignment of behavioral dispositions in LLMs",
+      "abstract": "Generative AI",
+      "url": "https://research.google/blog/evaluating-alignment-of-behavioral-dispositions-in-llms/",
+      "published": "2026-04-03",
+      "tags": [
+        "Safety"
+      ],
+      "authors": "Google Research",
+      "thumb": "https://images.unsplash.com/photo-1620207418302-439b387441b0?w=400&q=70",
+      "score": 3
     },
     {
-      "id": "arxiv-2212.08073",
-      "source": "arxiv",
-      "sourceLabel": "ArXiv",
-      "title": "Constitutional AI — AI 피드백을 통한 정렬",
-      "abstract": "사람의 직접 라벨링 없이 원칙(Constitution)만으로 AI를 정렬한다. Anthropic의 RLAIF 핵심 논문.",
-      "url": "https://arxiv.org/abs/2212.08073",
-      "published": "2026-04-23",
-      "tags": ["Safety", "LLM"],
-      "score": 4,
-      "authors": "Bai et al.",
-      "thumb": "https://images.unsplash.com/photo-1620207418302-439b387441b0?w=400&q=70"
+      "id": "g-55c12cf8",
+      "source": "blog",
+      "sourceLabel": "Google Research",
+      "title": "Improving the academic workflow: Introducing two AI agents for better figures and peer review",
+      "abstract": "Generative AI",
+      "url": "https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/",
+      "published": "2026-04-08",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Google Research",
+      "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
+      "score": 3
     },
     {
-      "id": "github-whisper",
-      "source": "github",
-      "sourceLabel": "GitHub",
-      "title": "Whisper — OpenAI의 다국어 음성 인식 모델",
-      "abstract": "68만 시간 다국어 음성으로 학습. 99개 언어 지원, 영어 STT에서 사람 수준 정확도를 달성한다.",
-      "url": "https://github.com/openai/whisper",
-      "published": "2026-04-23",
-      "tags": ["Audio", "Multimodal"],
-      "score": 4,
-      "authors": "70k ★",
-      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70"
+      "id": "g-217f9a8d",
+      "source": "blog",
+      "sourceLabel": "Google Research",
+      "title": "ConvApparel: Measuring and bridging the realism gap in user simulators",
+      "abstract": "Generative AI",
+      "url": "https://research.google/blog/convapparel-measuring-and-bridging-the-realism-gap-in-user-simulators/",
+      "published": "2026-04-09",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google Research",
+      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "score": 3
     },
     {
-      "id": "github-vllm",
-      "source": "github",
-      "sourceLabel": "GitHub",
-      "title": "vLLM — 고성능 LLM 추론 엔진",
-      "abstract": "PagedAttention으로 GPU 메모리 효율 24배 향상. 대규모 LLM 서빙의 사실상 표준 라이브러리.",
-      "url": "https://github.com/vllm-project/vllm",
-      "published": "2026-04-22",
-      "tags": ["Infra", "LLM"],
-      "score": 4,
-      "authors": "30k ★",
-      "thumb": "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=400&q=70"
+      "id": "g-1a17798f",
+      "source": "blog",
+      "sourceLabel": "Google Research",
+      "title": "Towards developing future-ready skills with generative AI",
+      "abstract": "Education Innovation",
+      "url": "https://research.google/blog/towards-developing-future-ready-skills-with-generative-ai/",
+      "published": "2026-04-13",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google Research",
+      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "score": 3
     },
     {
-      "id": "arxiv-2407.21783",
-      "source": "arxiv",
-      "sourceLabel": "ArXiv",
-      "title": "Llama 3.1 — Meta의 405B 오픈 가중치 모델",
-      "abstract": "GPT-4 수준 성능의 가중치 공개 모델. 128K 컨텍스트, 8개 언어 지원, 학계·산업 모두에 영향력.",
-      "url": "https://arxiv.org/abs/2407.21783",
-      "published": "2026-04-22",
-      "tags": ["LLM", "Architecture"],
-      "score": 4,
-      "authors": "Meta AI",
-      "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70"
+      "id": "g-c120c964",
+      "source": "blog",
+      "sourceLabel": "Google Research",
+      "title": "Designing synthetic datasets for the real world: Mechanism design and reasoning from first principles",
+      "abstract": "Generative AI",
+      "url": "https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/",
+      "published": "2026-04-16",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google Research",
+      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "score": 3
     }
   ]
 }
