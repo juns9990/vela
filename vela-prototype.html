@@ -995,7 +995,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.9.0</strong> · Phase 1</div>
+        <div><strong style="color:var(--accent);">v0.10.0</strong> · Phase 1</div>
       </div>
     </div>
   </footer>
@@ -1067,12 +1067,12 @@
 
   const COVER = {
     label: 'Cover Story · Issue 001',
-    headline: 'GPT-5의 아키텍처가 <em>드러나다</em>',
-    deck: '베일에 싸여 있던 차세대 추론 엔진의 내부 구조와, 그것이 산업에 가져올 변화를 가장 깊이 들여다본 분석.',
-    byline: ['By VELA EDITORIAL', '12 MIN READ', 'APR 25 · 2026'],
+    headline: 'Karpathy의 1시간 강의 — <em>LLM의 모든 것</em>',
+    deck: 'OpenAI 창립 멤버이자 전 Tesla AI 디렉터 Andrej Karpathy가 짚어주는 거대 언어 모델의 작동 원리, 학습 방식, 그리고 다가올 미래.',
+    byline: ['By ANDREJ KARPATHY', '60 MIN WATCH', 'Lecture 2024'],
     image: IMG.cover,
-    videoId: 'kCc8FmEb1nY',
-    credit: 'Photo · Unsplash · Click to play'
+    videoId: 'zjkBMFhNj_g',
+    credit: 'Click image to play'
   };
 
   const FEATURED = [
@@ -1082,9 +1082,9 @@
   ];
 
   const VIDEOS = [
-    { source: 'YouTube', title: '60초 안에 보는 새로운 Diffusion 모델 데모', byline: 'DeepLearning AI · 1.2M views', thumb: IMG.v1, duration: '0:58', videoId: 'jNQXAC9IVRw' },
-    { source: 'YouTube', title: 'AI 로보틱스: 이번 분기의 결정적 돌파구', byline: 'Lex Fridman · 480K views', thumb: IMG.v2, duration: '12:34', videoId: 'kCc8FmEb1nY' },
-    { source: 'YouTube', title: 'Anthropic Engineering — Constitutional AI 2026', byline: 'Anthropic · 220K views', thumb: IMG.v3, duration: '28:11', videoId: 'aircAruvnKk' }
+    { source: 'YouTube', title: "Let's build GPT — 처음부터 만드는 GPT", byline: 'Andrej Karpathy · 6.2M views', thumb: IMG.v1, duration: '1:56:20', videoId: 'kCc8FmEb1nY' },
+    { source: 'YouTube', title: 'But what is a GPT? — 트랜스포머 시각 입문', byline: '3Blue1Brown · 4.5M views', thumb: IMG.v2, duration: '27:14', videoId: 'wjZofJX0v4M' },
+    { source: 'YouTube', title: '신경망의 본질 — Deep Learning Chapter 1', byline: '3Blue1Brown · 18M views', thumb: IMG.v3, duration: '18:40', videoId: 'aircAruvnKk' }
   ];
 
   // 이달의 AI · 4개 핵심 이벤트
@@ -1105,25 +1105,25 @@
       date: 'APR 18', category: 'Research',
       title: 'DeepSeek V3 — 256B MoE 오픈소스',
       deck: '활성 파라미터 25B로 GPT-5 수준 추론 달성. 가중치 공개 전략의 새 표준.',
-      image: IMG.m3, url: 'https://github.com/deepseek-ai'
+      image: IMG.m3, url: 'https://github.com/deepseek-ai/DeepSeek-V3'
     },
     {
       date: 'APR 22', category: 'Tool',
       title: 'Claude Code 1.0 정식 릴리즈',
       deck: '터미널 기반 코딩 에이전트. 출시 2주 만에 30k+ 다운로드 돌파.',
-      image: IMG.m4, url: 'https://docs.claude.com/code'
+      image: IMG.m4, url: 'https://www.anthropic.com/claude-code'
     }
   ];
 
   const SIGNALS = [
-    { id: "arxiv-2604.01234", source: "arxiv", sourceLabel: "ArXiv", title: "Sparse MoE Routing with Adaptive Token-Level Gating", abstract: "토큰 단위로 게이팅 결정을 적응시키는 새로운 라우팅 메커니즘. 동일 성능에서 라우팅 효율을 30% 개선했다.", url: "https://arxiv.org/abs/2604.01234", published: "2026-04-25", tags: ["LLM", "Architecture"], score: 5, authors: "Chen et al.", thumb: IMG.s1 },
-    { id: "hf-reasoning-7b", source: "huggingface", sourceLabel: "HuggingFace", title: "오픈소스 7B 추론 모델, GSM8K에서 Llama 70B를 능가", abstract: "합성 추론 트레이스에 거절 샘플링을 적용해 미세조정한 컴팩트 모델. 수학 벤치마크에서 의외의 결과.", url: "https://huggingface.co/example", published: "2026-04-25", tags: ["LLM", "Reasoning"], score: 4, authors: "Open Research", thumb: IMG.s2 },
-    { id: "github-agentkit", source: "github", sourceLabel: "GitHub", title: "agentkit — 50줄로 시작하는 AI 에이전트 프레임워크", abstract: "조합 가능한 워크플로우, 도구 호출, 메모리, 다단계 추론 빌트인. 2주 만에 12k 스타.", url: "https://github.com/example/agentkit", published: "2026-04-24", tags: ["Agent", "Tool"], score: 5, authors: "12.4k ★", thumb: IMG.s3 },
-    { id: "arxiv-2604.05678", source: "arxiv", sourceLabel: "ArXiv", title: "4K 해상도 장편 영상 생성을 위한 Diffusion Transformer", abstract: "계층적 시간 압축과 효율적 cross-attention으로 30초 4K 영상 생성을 실현했다.", url: "https://arxiv.org/abs/2604.05678", published: "2026-04-24", tags: ["Vision", "Generation"], score: 4, authors: "Park et al.", thumb: IMG.s4 },
-    { id: "blog-anthropic", source: "blog", sourceLabel: "Anthropic", title: "Constitutional AI: 자기지도를 통한 정렬의 확장", abstract: "유해성을 줄이면서 유용성을 희생하지 않는 새로운 결과들. 프론티어 모델로의 확장 사례.", url: "https://www.anthropic.com/news", published: "2026-04-23", tags: ["Safety", "LLM"], score: 3, authors: "Anthropic", thumb: IMG.s5 },
-    { id: "arxiv-2604.09012", source: "arxiv", sourceLabel: "ArXiv", title: "음소 단위 정밀 정렬로 다시 쓴 오디오-언어 모델", abstract: "100만 시간 음성으로 사전훈련. 운율 정보를 합성에 보존하면서 인식 SOTA를 달성했다.", url: "https://arxiv.org/abs/2604.09012", published: "2026-04-23", tags: ["Audio", "Multimodal"], score: 3, authors: "Kim et al.", thumb: IMG.s1 },
-    { id: "github-vllm-pro", source: "github", sourceLabel: "GitHub", title: "vllm-pro — 연속 배칭 v2를 적용한 프로덕션 vLLM 포크", abstract: "Paged KV-cache 최적화와 speculative decoding으로 장문 컨텍스트 처리량 2.3배 향상.", url: "https://github.com/example/vllm-pro", published: "2026-04-22", tags: ["Infra", "LLM"], score: 4, authors: "8.1k ★", thumb: IMG.s2 },
-    { id: "arxiv-robot-2604", source: "arxiv", sourceLabel: "ArXiv", title: "단일 데모로 새 작업을 학습하는 Vision-Language-Action 모델", abstract: "사전훈련된 VLA에 5초 영상 한 편으로 새 작업을 transfer. 12개 가정용 작업에서 검증.", url: "https://arxiv.org/abs/2604.13579", published: "2026-04-22", tags: ["Robotics", "Vision"], score: 4, authors: "Stanford Robotics", thumb: IMG.s3 }
+    { id: "arxiv-1706.03762", source: "arxiv", sourceLabel: "ArXiv", title: "Attention Is All You Need — 트랜스포머의 시작", abstract: "RNN·CNN 없이 attention 메커니즘만으로 시퀀스 변환을 수행하는 새 아키텍처. 모든 현대 LLM의 토대가 된 2017년 논문.", url: "https://arxiv.org/abs/1706.03762", published: "2026-04-25", tags: ["LLM", "Architecture"], score: 5, authors: "Vaswani et al.", thumb: IMG.s1 },
+    { id: "arxiv-2412.19437", source: "arxiv", sourceLabel: "ArXiv", title: "DeepSeek-V3 — 671B MoE, 활성 37B로 GPT-4 수준 달성", abstract: "오픈소스 가중치 공개. 수학·코딩 벤치마크에서 SOTA 갱신. 학습 비용은 GPT-4 대비 약 1/10 수준.", url: "https://arxiv.org/abs/2412.19437", published: "2026-04-25", tags: ["LLM", "Reasoning"], score: 5, authors: "DeepSeek-AI", thumb: IMG.s2 },
+    { id: "github-autogen", source: "github", sourceLabel: "GitHub", title: "AutoGen — Microsoft의 멀티 에이전트 프레임워크", abstract: "여러 LLM 에이전트가 협업해 복잡한 작업을 처리한다. 도구 호출·메모리·다단계 추론 빌트인.", url: "https://github.com/microsoft/autogen", published: "2026-04-24", tags: ["Agent", "Tool"], score: 5, authors: "37k ★", thumb: IMG.s3 },
+    { id: "openai-sora", source: "blog", sourceLabel: "OpenAI", title: "Sora — 영상 생성 모델은 세계 시뮬레이터다", abstract: "1분 길이 고해상도 영상 생성. 시공간 패치 학습으로 물리적 세계의 패턴을 모사한다는 OpenAI의 주장.", url: "https://openai.com/index/video-generation-models-as-world-simulators/", published: "2026-04-24", tags: ["Vision", "Generation"], score: 4, authors: "OpenAI", thumb: IMG.s4 },
+    { id: "arxiv-2212.08073", source: "arxiv", sourceLabel: "ArXiv", title: "Constitutional AI — AI 피드백을 통한 정렬", abstract: "사람의 직접 라벨링 없이 원칙(Constitution)만으로 AI를 정렬한다. Anthropic의 RLAIF 핵심 논문.", url: "https://arxiv.org/abs/2212.08073", published: "2026-04-23", tags: ["Safety", "LLM"], score: 4, authors: "Bai et al.", thumb: IMG.s5 },
+    { id: "github-whisper", source: "github", sourceLabel: "GitHub", title: "Whisper — OpenAI의 다국어 음성 인식 모델", abstract: "68만 시간 다국어 음성으로 학습. 99개 언어 지원, 영어 STT에서 사람 수준 정확도를 달성한다.", url: "https://github.com/openai/whisper", published: "2026-04-23", tags: ["Audio", "Multimodal"], score: 4, authors: "70k ★", thumb: IMG.s1 },
+    { id: "github-vllm", source: "github", sourceLabel: "GitHub", title: "vLLM — 고성능 LLM 추론 엔진", abstract: "PagedAttention으로 GPU 메모리 효율 24배 향상. 대규모 LLM 서빙의 사실상 표준 라이브러리.", url: "https://github.com/vllm-project/vllm", published: "2026-04-22", tags: ["Infra", "LLM"], score: 4, authors: "30k ★", thumb: IMG.s2 },
+    { id: "arxiv-2407.21783", source: "arxiv", sourceLabel: "ArXiv", title: "Llama 3.1 — Meta의 405B 오픈 가중치 모델", abstract: "GPT-4 수준 성능의 가중치 공개 모델. 128K 컨텍스트, 8개 언어 지원, 학계·산업 모두에 영향력.", url: "https://arxiv.org/abs/2407.21783", published: "2026-04-22", tags: ["LLM", "Architecture"], score: 4, authors: "Meta AI", thumb: IMG.s3 }
   ];
 
   let state = {
