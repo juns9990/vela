@@ -16,13 +16,15 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      # actions/checkout@v5 (Node.js 24 사용, 2026년 6월 deprecation 영향 없음)
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
+      # actions/setup-python@v6 (Node.js 24 사용)
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Run Vela weekly collector
         run: python vela-collect.py
