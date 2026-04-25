@@ -1,12 +1,13 @@
-// Vela Service Worker · v0.15.0
-// Phase 2: vela-issue.json 자동 갱신 대응 (네트워크 우선)
+// Vela Service Worker · v0.17.0
+// Phase 2 + 추가 기능: vela-archive.json, vela-rss.xml 캐싱
 
-const CACHE_NAME = 'vela-cache-v0.15.0';
+const CACHE_NAME = 'vela-cache-v0.17.0';
 const CORE_ASSETS = [
   './vela-prototype.html',
   './vela-manifest.json',
   './vela-icon.svg',
-  './vela-issue.json'
+  './vela-issue.json',
+  './vela-archive.json'
 ];
 
 // 설치: 핵심 리소스 캐싱
