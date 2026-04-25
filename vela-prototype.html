@@ -664,6 +664,87 @@
   .filter-chip:hover { color: var(--text); border-color: var(--border-strong); }
   .filter-chip.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
+  /* HERO SIGNAL · TODAY'S TOP STORY 강조 */
+  .hero-signal-container { margin-bottom: 28px; }
+  .hero-signal {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-warm) 100%);
+    border: 1px solid var(--accent);
+    padding: 32px 36px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .hero-signal:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 36px rgba(94,234,212,0.18), 0 0 0 1px var(--accent);
+  }
+  .hero-signal::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: hero-shimmer 3.5s ease-in-out infinite;
+  }
+  @keyframes hero-shimmer {
+    0%, 100% { opacity: 0.5; transform: translateX(-30%); }
+    50% { opacity: 1; transform: translateX(30%); }
+  }
+  .hero-signal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--ink);
+    background: var(--accent);
+    padding: 6px 12px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .hero-signal-meta {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-mute);
+    margin-bottom: 14px;
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  }
+  .hero-signal-meta .source-tag { color: var(--accent); font-weight: 500; }
+  .hero-signal-meta .divider { color: var(--text-dim); }
+  .hero-signal-title {
+    font-family: var(--serif); font-weight: 700;
+    font-size: clamp(22px, 3.2vw, 32px);
+    line-height: 1.2; letter-spacing: -0.02em;
+    color: var(--text); margin-bottom: 14px;
+  }
+  .hero-signal-deck {
+    font-family: var(--serif); font-size: 16px;
+    line-height: 1.6; color: var(--text-soft);
+    margin-bottom: 18px; max-width: 760px;
+  }
+  .hero-signal-tags { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+  .hero-signal-tags .tag {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text-mute);
+    border: 1px solid var(--border-strong);
+    padding: 3px 8px; letter-spacing: 0.05em;
+  }
+  .hero-signal-action {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 12px; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent);
+    padding-top: 4px;
+    border-top: 1px dashed var(--border-strong);
+  }
+  .hero-signal-action .arrow { transition: transform 0.2s ease; }
+  .hero-signal:hover .hero-signal-action .arrow { transform: translateX(4px); }
+  @media (max-width: 640px) {
+    .hero-signal { padding: 24px 22px; }
+    .hero-signal-deck { font-size: 14.5px; }
+  }
+
   /* SIGNAL LIST */
   .signal-list { display: flex; flex-direction: column; }
   .signal-row {
@@ -1062,6 +1143,7 @@
         <button class="filter-chip" data-view="starred">★ Starred</button>
       </div>
     </div>
+    <div class="hero-signal-container" id="hero-signal-container"></div>
     <div class="signal-list" id="signal-list"></div>
   </section>
 
@@ -1186,7 +1268,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.11.1</strong> · Phase 1</div>
+        <div><strong style="color:var(--accent);">v0.12.0</strong> · Phase 1</div>
       </div>
     </div>
   </footer>
@@ -1237,6 +1319,36 @@
   <button class="scroll-top" id="scroll-top" title="맨 위로" aria-label="맨 위로 이동">↑</button>
 
 <script>
+  // ============================================================
+  // DAILY ROTATION · 매일 새벽 06:00 KST 기준 콘텐츠 자동 회전
+  // (Phase 2 자동 수집 전까지의 임시 솔루션)
+  // ============================================================
+  function seedRandom(seed) {
+    return function() {
+      seed = (seed + 0x6D2B79F5) | 0;
+      let t = seed;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function getKstDayKey() {
+    const now = new Date();
+    const kst = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (9 * 3600000));
+    if (kst.getUTCHours() < 6) kst.setUTCDate(kst.getUTCDate() - 1); // 06:00 KST 경계
+    return kst.getUTCFullYear() * 10000 + (kst.getUTCMonth() + 1) * 100 + kst.getUTCDate();
+  }
+  function getDailyPick(pool, count, salt = 0) {
+    const seed = getKstDayKey() + salt;
+    const rng = seedRandom(seed);
+    const arr = [...pool];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr.slice(0, count);
+  }
+
   const IMG = {
     cover: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1600&q=80',
     f1: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80',
@@ -1256,15 +1368,37 @@
     m4: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=70'
   };
 
-  const COVER = {
-    label: 'Cover Story · Issue 001',
-    headline: 'Karpathy의 1시간 강의 — <em>LLM의 모든 것</em>',
-    deck: 'OpenAI 창립 멤버이자 전 Tesla AI 디렉터 Andrej Karpathy가 짚어주는 거대 언어 모델의 작동 원리, 학습 방식, 그리고 다가올 미래.',
-    byline: ['By ANDREJ KARPATHY', '60 MIN WATCH', 'Lecture 2024'],
-    image: IMG.cover,
-    videoId: 'zjkBMFhNj_g',
-    credit: 'Click image to play'
-  };
+  const COVER_POOL = [
+    {
+      label: 'Cover Story · Today',
+      headline: 'Karpathy의 1시간 강의 — <em>LLM의 모든 것</em>',
+      deck: 'OpenAI 창립 멤버이자 전 Tesla AI 디렉터 Andrej Karpathy가 짚어주는 거대 언어 모델의 작동 원리, 학습 방식, 그리고 다가올 미래.',
+      byline: ['By ANDREJ KARPATHY', '60 MIN WATCH', 'Lecture 2024'],
+      image: IMG.cover, videoId: 'zjkBMFhNj_g', credit: 'Click image to play'
+    },
+    {
+      label: 'Cover Story · Today',
+      headline: '직접 만드는 GPT — <em>코드 라이브</em>',
+      deck: '약 2시간 동안 처음부터 끝까지, GPT를 코드로 구현해 나간다. Karpathy의 시그니처 라이브 강의.',
+      byline: ['By ANDREJ KARPATHY', '1:56 HRS', 'Build from scratch'],
+      image: IMG.f1, videoId: 'kCc8FmEb1nY', credit: 'Click image to play'
+    },
+    {
+      label: 'Cover Story · Today',
+      headline: '트랜스포머의 시각화 — <em>What is a GPT?</em>',
+      deck: '트랜스포머의 작동 원리를 가장 명료한 시각 언어로 풀어낸다. 3Blue1Brown의 27분 입문.',
+      byline: ['By 3BLUE1BROWN', '27 MIN', 'Visual Intro'],
+      image: IMG.f2, videoId: 'wjZofJX0v4M', credit: 'Click image to play'
+    },
+    {
+      label: 'Cover Story · Today',
+      headline: '신경망의 본질 — <em>Chapter 1</em>',
+      deck: '딥러닝의 출발점. 신경망이 왜 작동하는지를, 추상적인 수학 없이도 직관적으로 이해하게 만드는 명작.',
+      byline: ['By 3BLUE1BROWN', '18 MIN', 'Deep Learning Series'],
+      image: IMG.f3, videoId: 'aircAruvnKk', credit: 'Click image to play'
+    }
+  ];
+  const COVER = getDailyPick(COVER_POOL, 1, 0)[0];
 
   const FEATURED = [
     { label: 'Benchmark', title: 'Claude 4.7과 GPT-5, 12개 과제에서의 정면 비교', deck: '추론, 코딩, 시각, 장문 이해까지. 두 모델의 강점과 약점을 데이터로 풀어낸다.', byline: 'BENCHMARK · 8 MIN', image: IMG.f1 },
@@ -1272,11 +1406,13 @@
     { label: 'Field Report', title: '프로덕션에 진입한 AI 에이전트의 현재', deck: '실리콘밸리 12개 스타트업의 사례로 본 에이전트 워크플로우의 임계점.', byline: 'REPORT · 10 MIN', image: IMG.f3 }
   ];
 
-  const VIDEOS = [
+  const VIDEOS_POOL = [
     { source: 'YouTube', title: "Let's build GPT — 처음부터 만드는 GPT", byline: 'Andrej Karpathy · 6.2M views', thumb: IMG.v1, duration: '1:56:20', videoId: 'kCc8FmEb1nY' },
     { source: 'YouTube', title: 'But what is a GPT? — 트랜스포머 시각 입문', byline: '3Blue1Brown · 4.5M views', thumb: IMG.v2, duration: '27:14', videoId: 'wjZofJX0v4M' },
-    { source: 'YouTube', title: '신경망의 본질 — Deep Learning Chapter 1', byline: '3Blue1Brown · 18M views', thumb: IMG.v3, duration: '18:40', videoId: 'aircAruvnKk' }
+    { source: 'YouTube', title: '신경망의 본질 — Deep Learning Chapter 1', byline: '3Blue1Brown · 18M views', thumb: IMG.v3, duration: '18:40', videoId: 'aircAruvnKk' },
+    { source: 'YouTube', title: '[1시간] LLM 입문 강의', byline: 'Andrej Karpathy · 2.8M views', thumb: IMG.v1, duration: '59:48', videoId: 'zjkBMFhNj_g' }
   ];
+  const VIDEOS = getDailyPick(VIDEOS_POOL, 3, 1);
 
   // 이달의 AI · 4개 핵심 이벤트
   const THIS_MONTH = [
@@ -1306,7 +1442,7 @@
     }
   ];
 
-  const SIGNALS = [
+  const SIGNAL_POOL = [
     { id: "arxiv-1706.03762", source: "arxiv", sourceLabel: "ArXiv", title: "Attention Is All You Need — 트랜스포머의 시작", abstract: "RNN·CNN 없이 attention 메커니즘만으로 시퀀스 변환을 수행하는 새 아키텍처. 모든 현대 LLM의 토대가 된 2017년 논문.", url: "https://arxiv.org/abs/1706.03762", published: "2026-04-25", tags: ["LLM", "Architecture"], score: 5, authors: "Vaswani et al.", thumb: IMG.s1 },
     { id: "arxiv-2412.19437", source: "arxiv", sourceLabel: "ArXiv", title: "DeepSeek-V3 — 671B MoE, 활성 37B로 GPT-4 수준 달성", abstract: "오픈소스 가중치 공개. 수학·코딩 벤치마크에서 SOTA 갱신. 학습 비용은 GPT-4 대비 약 1/10 수준.", url: "https://arxiv.org/abs/2412.19437", published: "2026-04-25", tags: ["LLM", "Reasoning"], score: 5, authors: "DeepSeek-AI", thumb: IMG.s2 },
     { id: "github-autogen", source: "github", sourceLabel: "GitHub", title: "AutoGen — Microsoft의 멀티 에이전트 프레임워크", abstract: "여러 LLM 에이전트가 협업해 복잡한 작업을 처리한다. 도구 호출·메모리·다단계 추론 빌트인.", url: "https://github.com/microsoft/autogen", published: "2026-04-24", tags: ["Agent", "Tool"], score: 5, authors: "37k ★", thumb: IMG.s3 },
@@ -1314,8 +1450,17 @@
     { id: "arxiv-2212.08073", source: "arxiv", sourceLabel: "ArXiv", title: "Constitutional AI — AI 피드백을 통한 정렬", abstract: "사람의 직접 라벨링 없이 원칙(Constitution)만으로 AI를 정렬한다. Anthropic의 RLAIF 핵심 논문.", url: "https://arxiv.org/abs/2212.08073", published: "2026-04-23", tags: ["Safety", "LLM"], score: 4, authors: "Bai et al.", thumb: IMG.s5 },
     { id: "github-whisper", source: "github", sourceLabel: "GitHub", title: "Whisper — OpenAI의 다국어 음성 인식 모델", abstract: "68만 시간 다국어 음성으로 학습. 99개 언어 지원, 영어 STT에서 사람 수준 정확도를 달성한다.", url: "https://github.com/openai/whisper", published: "2026-04-23", tags: ["Audio", "Multimodal"], score: 4, authors: "70k ★", thumb: IMG.s1 },
     { id: "github-vllm", source: "github", sourceLabel: "GitHub", title: "vLLM — 고성능 LLM 추론 엔진", abstract: "PagedAttention으로 GPU 메모리 효율 24배 향상. 대규모 LLM 서빙의 사실상 표준 라이브러리.", url: "https://github.com/vllm-project/vllm", published: "2026-04-22", tags: ["Infra", "LLM"], score: 4, authors: "30k ★", thumb: IMG.s2 },
-    { id: "arxiv-2407.21783", source: "arxiv", sourceLabel: "ArXiv", title: "Llama 3.1 — Meta의 405B 오픈 가중치 모델", abstract: "GPT-4 수준 성능의 가중치 공개 모델. 128K 컨텍스트, 8개 언어 지원, 학계·산업 모두에 영향력.", url: "https://arxiv.org/abs/2407.21783", published: "2026-04-22", tags: ["LLM", "Architecture"], score: 4, authors: "Meta AI", thumb: IMG.s3 }
+    { id: "arxiv-2407.21783", source: "arxiv", sourceLabel: "ArXiv", title: "Llama 3.1 — Meta의 405B 오픈 가중치 모델", abstract: "GPT-4 수준 성능의 가중치 공개 모델. 128K 컨텍스트, 8개 언어 지원, 학계·산업 모두에 영향력.", url: "https://arxiv.org/abs/2407.21783", published: "2026-04-22", tags: ["LLM", "Architecture"], score: 4, authors: "Meta AI", thumb: IMG.s3 },
+    { id: "arxiv-2308.12950", source: "arxiv", sourceLabel: "ArXiv", title: "Code Llama — 코딩 전용 오픈 모델 패밀리", abstract: "Llama 2 기반 코드 특화 모델. Python·Instruct 변형 포함, 100K+ 컨텍스트 지원.", url: "https://arxiv.org/abs/2308.12950", published: "2026-04-21", tags: ["LLM", "Tool"], score: 4, authors: "Meta AI", thumb: IMG.s4 },
+    { id: "github-langchain", source: "github", sourceLabel: "GitHub", title: "LangChain — LLM 애플리케이션 프레임워크", abstract: "체인·에이전트·메모리·도구 호출을 표준화한 라이브러리. 100k+ 스타.", url: "https://github.com/langchain-ai/langchain", published: "2026-04-21", tags: ["Agent", "Tool"], score: 5, authors: "100k ★", thumb: IMG.s5 },
+    { id: "arxiv-2310.06825", source: "arxiv", sourceLabel: "ArXiv", title: "Mistral 7B — 7B 사이즈로 Llama 13B를 넘어선다", abstract: "Sliding window attention과 grouped-query로 효율과 성능을 동시에 잡았다. 유럽 오픈소스 LLM의 시작.", url: "https://arxiv.org/abs/2310.06825", published: "2026-04-20", tags: ["LLM", "Architecture"], score: 4, authors: "Mistral AI", thumb: IMG.s1 },
+    { id: "github-llama-cpp", source: "github", sourceLabel: "GitHub", title: "llama.cpp — C/C++ LLM 추론 엔진", abstract: "GPU 없이도 큰 모델을 돌릴 수 있게 한 양자화·CPU 최적화의 표준. 모바일·임베디드까지.", url: "https://github.com/ggerganov/llama.cpp", published: "2026-04-20", tags: ["Infra", "Tool"], score: 5, authors: "65k ★", thumb: IMG.s2 },
+    { id: "anthropic-claude35", source: "blog", sourceLabel: "Anthropic", title: "Claude 3.5 Sonnet — 추론·코딩에서 더 깊어진 모델", abstract: "이전 세대 Opus를 능가하는 성능을 빠른 속도와 합리적 가격에. Anthropic의 새 플래그십.", url: "https://www.anthropic.com/news/claude-3-5-sonnet", published: "2026-04-19", tags: ["LLM", "Reasoning"], score: 5, authors: "Anthropic", thumb: IMG.s3 },
+    { id: "arxiv-2403.05530", source: "arxiv", sourceLabel: "ArXiv", title: "Gemini 1.5 — 1M 토큰 컨텍스트의 시대", abstract: "100만 토큰 컨텍스트를 안정적으로 다루는 새 아키텍처. 영상·오디오·코드 등 멀티모달 통합.", url: "https://arxiv.org/abs/2403.05530", published: "2026-04-19", tags: ["LLM", "Multimodal"], score: 4, authors: "Google DeepMind", thumb: IMG.s4 },
+    { id: "github-comfyui", source: "github", sourceLabel: "GitHub", title: "ComfyUI — 노드 기반 Stable Diffusion 워크플로우", abstract: "이미지 생성 파이프라인을 시각적으로 구성한다. 영상 생성, 인페인팅, ControlNet까지.", url: "https://github.com/comfyanonymous/ComfyUI", published: "2026-04-18", tags: ["Vision", "Tool"], score: 4, authors: "55k ★", thumb: IMG.s5 },
+    { id: "arxiv-2401.04088", source: "arxiv", sourceLabel: "ArXiv", title: "Mixtral 8x7B — Sparse Mixture-of-Experts 오픈소스", abstract: "8개 expert 중 2개만 활성화. 효율과 성능의 균형을 보여준 MoE 오픈소스의 분수령.", url: "https://arxiv.org/abs/2401.04088", published: "2026-04-18", tags: ["LLM", "Architecture"], score: 4, authors: "Mistral AI", thumb: IMG.s1 }
   ];
+  const SIGNALS = getDailyPick(SIGNAL_POOL, 8, 2);
 
   let state = {
     filter: 'all', sort: 'score', showStarred: false,
@@ -1408,8 +1553,49 @@
 
   function renderSignals() {
     const list = document.getElementById('signal-list');
-    const items = getFilteredSignals();
+    const heroBox = document.getElementById('hero-signal-container');
+    let items = getFilteredSignals();
     document.getElementById('signal-count').textContent = `${items.length} ${items.length === 1 ? 'result' : 'results'}`;
+
+    // TODAY'S TOP STORY 분리: 필터/정렬이 기본 상태일 때만 score 5 첫 항목을 hero로
+    let hero = null;
+    if (state.filter === 'all' && !state.showStarred && state.sort === 'score') {
+      hero = items.find(s => s.score === 5) || null;
+      if (hero) items = items.filter(s => s.id !== hero.id);
+    }
+
+    if (hero) {
+      heroBox.innerHTML = `
+        <article class="hero-signal" data-url="${hero.url}">
+          <div class="hero-signal-badge">★ TODAY'S TOP STORY</div>
+          <div class="hero-signal-meta">
+            <span class="source-tag">${hero.sourceLabel}</span>
+            <span class="divider">·</span>
+            <span>${formatDate(hero.published)}</span>
+            <span class="divider">·</span>
+            <span>${hero.authors}</span>
+            <span class="divider">·</span>
+            <span style="color:var(--accent-warm);">SCORE ${hero.score}</span>
+          </div>
+          <h3 class="hero-signal-title">${hero.title}</h3>
+          <p class="hero-signal-deck">${hero.abstract}</p>
+          <div class="hero-signal-tags">
+            ${hero.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+          </div>
+          <div class="hero-signal-action">
+            <span>Read on ${hero.sourceLabel}</span>
+            <span class="arrow">→</span>
+          </div>
+        </article>`;
+      heroBox.style.display = 'block';
+      heroBox.querySelector('.hero-signal').addEventListener('click', () => {
+        window.open(hero.url, '_blank', 'noopener');
+      });
+    } else {
+      heroBox.innerHTML = '';
+      heroBox.style.display = 'none';
+    }
+
     if (items.length === 0) {
       list.innerHTML = `<div style="padding:60px 0;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:12px;">// NO SIGNALS</div>`;
       return;
@@ -1442,8 +1628,8 @@
       btn.addEventListener('click', e => { e.stopPropagation(); toggleStar(btn.dataset.star); });
     });
     list.querySelectorAll('.signal-row').forEach(row => {
+      const item = SIGNALS.find(s => s.id === row.dataset.id);
       row.addEventListener('click', () => {
-        const item = SIGNALS.find(s => s.id === row.dataset.id);
         if (item) window.open(item.url, '_blank', 'noopener');
       });
     });
@@ -1615,11 +1801,18 @@
   });
 
   function init() {
+    // KST 기준 시간 표시 + 새벽 06:00 업데이트 상태
     const now = new Date();
-    const month = now.toLocaleString('en-US', { month: 'short' }).toUpperCase();
-    const day = String(now.getDate()).padStart(2, '0');
-    const year = now.getFullYear();
-    document.getElementById('issue-date').textContent = `${month} ${day} · ${year}`;
+    const kst = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (9 * 3600000));
+    const month = kst.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+    const day = String(kst.getUTCDate()).padStart(2, '0');
+    const year = kst.getUTCFullYear();
+    const isAfter6 = kst.getUTCHours() >= 6;
+    const updateLine = isAfter6
+      ? `<span style="color:var(--accent);font-weight:500;">↻ UPDATED · ${month} ${day}</span>`
+      : `<span style="color:var(--accent-warm);">⌛ Next · 06:00 KST</span>`;
+    document.getElementById('issue-date').innerHTML =
+      `${month} ${day} · ${year}<br>${updateLine}`;
     renderCover();
     renderThisMonth();
     renderFeatured();
