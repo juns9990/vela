@@ -1,11 +1,12 @@
-// Vela Service Worker · v0.14.0
-// 데스크톱 PWA 설치를 위한 최소 기능 SW + 네트워크-우선 캐시 전략
+// Vela Service Worker · v0.15.0
+// Phase 2: vela-issue.json 자동 갱신 대응 (네트워크 우선)
 
-const CACHE_NAME = 'vela-cache-v0.14.0';
+const CACHE_NAME = 'vela-cache-v0.15.0';
 const CORE_ASSETS = [
   './vela-prototype.html',
   './vela-manifest.json',
-  './vela-icon.svg'
+  './vela-icon.svg',
+  './vela-issue.json'
 ];
 
 // 설치: 핵심 리소스 캐싱
