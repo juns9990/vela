@@ -272,6 +272,164 @@
   }
 
   /* ============================================================
+     BRAND PROMO · 홍보 페이지 (Primary 단독 + 노트 + 원칙 + 이름 + 연결)
+     ============================================================ */
+  .ci-hero {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    aspect-ratio: 21 / 9;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    margin-top: 8px;
+  }
+  .ci-hero .vela-mark { font-size: clamp(72px, 12vw, 180px); }
+  .ci-hero::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.025) 1px, transparent 0);
+    background-size: 4px 4px;
+    pointer-events: none;
+  }
+  .ci-hero-caption {
+    display: flex; justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-top: none;
+    margin-bottom: 60px;
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .ci-hero-caption .name { color: var(--text); font-weight: 500; }
+  .ci-hero-caption .usage { color: var(--text-mute); }
+
+  .brand-note {
+    max-width: 720px; margin: 60px auto;
+    padding: 44px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .brand-note-mark {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 18px;
+  }
+  .brand-note-title {
+    font-family: var(--serif); font-weight: 700; font-style: italic;
+    font-size: clamp(24px, 3.5vw, 36px); line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--text); margin-bottom: 24px;
+  }
+  .brand-note-body {
+    font-family: var(--serif); font-size: 16.5px;
+    line-height: 1.75; color: var(--text-soft);
+  }
+  .brand-note-body p { margin-bottom: 16px; }
+  .brand-note-body p:last-child { margin-bottom: 0; }
+  .brand-note-signature {
+    font-family: var(--serif); font-style: italic;
+    color: var(--accent); margin-top: 28px;
+    font-size: 15px;
+  }
+
+  .brand-principles {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+    margin: 60px 0;
+  }
+  .principle-card {
+    border-top: 2px solid var(--accent);
+    padding-top: 22px;
+  }
+  .principle-num {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.25em; color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .principle-title {
+    font-family: var(--serif); font-weight: 700;
+    font-size: 26px; line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text); margin-bottom: 14px;
+  }
+  .principle-title em {
+    font-style: italic; color: var(--accent);
+  }
+  .principle-text {
+    font-family: var(--sans); font-size: 14px;
+    line-height: 1.65; color: var(--text-mute);
+  }
+
+  .brand-name-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 44px;
+    margin: 60px 0;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 44px; align-items: center;
+  }
+  .brand-name-mark {
+    font-family: var(--serif); font-style: italic;
+    font-weight: 800;
+    font-size: clamp(72px, 9vw, 112px);
+    line-height: 1; color: white;
+    text-align: center;
+    text-shadow:
+      1px 1px 0 var(--ink), 2px 2px 0 var(--ink),
+      3px 3px 0 var(--ink), 4px 4px 0 var(--ink);
+    -webkit-text-stroke: 1.2px var(--ink);
+  }
+  .brand-name-text {
+    font-family: var(--sans); font-size: 14.5px;
+    line-height: 1.7; color: var(--text-soft);
+  }
+  .brand-name-text p { margin-bottom: 12px; }
+  .brand-name-text p:last-child { margin-bottom: 0; }
+  .brand-name-text strong {
+    color: var(--accent); font-weight: 500;
+  }
+
+  .brand-connect {
+    margin-top: 60px; padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .brand-connect-title {
+    font-family: var(--serif); font-weight: 700;
+    font-size: 28px; line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--text); margin-bottom: 28px;
+  }
+  .brand-connect-title em { font-style: italic; color: var(--accent); }
+  .brand-connect-list {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  }
+  .connect-item {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 20px 22px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+  }
+  .connect-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    background: var(--bg-warm);
+  }
+  .connect-label {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .connect-value {
+    font-family: var(--sans); font-size: 14px; font-weight: 500;
+    color: var(--text); word-break: break-all;
+  }
+
+  /* ============================================================
      BRAND IDENTITY GALLERY · 모든 카드 다크 톤 통일
      ============================================================ */
   .ci-grid {
@@ -723,6 +881,9 @@
     .colophon-meta { text-align: left; }
     .colophon-brand { font-size: 44px; }
     .brand-mission { padding-left: 20px; margin-bottom: 40px; }
+    .brand-principles { grid-template-columns: 1fr 1fr; gap: 24px; }
+    .brand-name-box { padding: 32px; }
+    .brand-connect-list { grid-template-columns: 1fr 1fr; }
   }
 
   /* 모바일 표준 (iPhone 12 ~) */
@@ -762,6 +923,15 @@
     .filter-chip { font-size: 9px; padding: 5px 10px; }
     .brand-mission-quote { font-size: clamp(26px, 7vw, 34px); }
     .brand-mission-text { font-size: 15px; }
+    .brand-principles { grid-template-columns: 1fr; gap: 28px; }
+    .brand-name-box { grid-template-columns: 1fr; gap: 24px; padding: 28px; margin: 40px 0; }
+    .brand-name-mark { font-size: 80px; }
+    .brand-connect-list { grid-template-columns: 1fr; }
+    .ci-hero { aspect-ratio: 16 / 9; }
+    .ci-hero-caption { margin-bottom: 40px; flex-direction: column; gap: 4px; }
+    .brand-note { padding: 32px 0; margin: 40px auto; }
+    .brand-note-title { font-size: 22px; }
+    .brand-note-body { font-size: 15px; }
     .colophon-brand { font-size: 36px; }
     .play-button { width: 56px; height: 56px; font-size: 18px; }
     .modal { padding: 24px 20px; }
@@ -895,13 +1065,14 @@
     <div class="signal-list" id="signal-list"></div>
   </section>
 
-  <!-- BRAND IDENTITY · 페이지 하단으로 이동 (메뉴에서 BRAND 클릭 시 도착) -->
+  <!-- BRAND · Vela 브랜드 홍보 페이지 (Primary 로고만, 홍보 콘텐츠) -->
   <section class="section section-divider" id="brand-section">
     <div class="section-header">
       <h2 class="section-title">Brand <em>Identity</em></h2>
-      <div class="section-meta">CI System · 6 Variants</div>
+      <div class="section-meta">A magazine for the AI age</div>
     </div>
 
+    <!-- Vision · Mission -->
     <div class="brand-mission">
       <div class="brand-mission-mark">— Vision · Mission</div>
       <blockquote class="brand-mission-quote">
@@ -915,75 +1086,95 @@
       </p>
     </div>
 
-    <div class="ci-grid">
-
-      <article class="ci-card">
-        <div class="ci-stage bg-dark">
-          <span class="vela-mark primary">Ve<span class="accent">l</span>a</span>
-        </div>
-        <div class="ci-info">
-          <div class="ci-name">Primary</div>
-          <div class="ci-usage">Main Mark</div>
-        </div>
-        <div class="ci-quote">정체성의 출발점. 모든 표식 위에 놓이는 항해의 깃발.</div>
-      </article>
-
-      <article class="ci-card">
-        <div class="ci-stage bg-elev">
-          <span class="vela-mark inverse">Ve<span class="accent">l</span>a</span>
-        </div>
-        <div class="ci-info">
-          <div class="ci-name">Inverse</div>
-          <div class="ci-usage">Subtle · UI</div>
-        </div>
-        <div class="ci-quote">일상의 흐름 안, 노이즈 없이 조용히 머무는 표식.</div>
-      </article>
-
-      <article class="ci-card">
-        <div class="ci-stage bg-warm">
-          <span class="vela-mark heavy">Ve<span class="accent">l</span>a</span>
-        </div>
-        <div class="ci-info">
-          <div class="ci-name">Heavy</div>
-          <div class="ci-usage">Hero · Display</div>
-        </div>
-        <div class="ci-quote">큰 화면일수록 깊어지는, 신호의 무게.</div>
-      </article>
-
-      <article class="ci-card">
-        <div class="ci-stage bg-card">
-          <span class="vela-mark outline">Ve<span class="accent">l</span>a</span>
-        </div>
-        <div class="ci-info">
-          <div class="ci-name">Outline</div>
-          <div class="ci-usage">Watermark</div>
-        </div>
-        <div class="ci-quote">내용 뒤에 머무는, 보이지 않으나 항상 함께 있는 표식.</div>
-      </article>
-
-      <article class="ci-card">
-        <div class="ci-stage bg-glow monogram">
-          <span class="vela-mark primary">V</span>
-        </div>
-        <div class="ci-info">
-          <div class="ci-name">Monogram</div>
-          <div class="ci-usage">App Icon · Favicon</div>
-        </div>
-        <div class="ci-quote">한 글자에 담긴 항해. 라틴어 Vela — 돛.</div>
-      </article>
-
-      <article class="ci-card">
-        <div class="ci-stage bg-grid">
-          <span class="vela-mark glow">Ve<span class="accent">l</span>a</span>
-        </div>
-        <div class="ci-info">
-          <div class="ci-name">Glow</div>
-          <div class="ci-usage">Promo · Accent</div>
-        </div>
-        <div class="ci-quote">주목해야 할 순간을 비추는 한 점의 빛.</div>
-      </article>
-
+    <!-- Primary 로고 단독 (메인 마크) -->
+    <div class="ci-hero">
+      <span class="vela-mark primary">Ve<span class="accent">l</span>a</span>
     </div>
+    <div class="ci-hero-caption">
+      <span class="name">Primary · Main Mark</span>
+      <span class="usage">The only mark we use</span>
+    </div>
+
+    <!-- Maker's Note -->
+    <article class="brand-note">
+      <div class="brand-note-mark">— A Note from the Maker</div>
+      <h3 class="brand-note-title">매거진의 호흡으로, 다시 천천히 읽는다</h3>
+      <div class="brand-note-body">
+        <p>
+          매일 쏟아지는 AI 기술 정보의 양은 한 사람이 따라잡을 수 있는 한계를 한참 넘어섰다.
+          ArXiv에는 매일 수백 편의 논문이 올라오고, GitHub에는 새 프로젝트가 끊임없이 등장하며,
+          타임라인은 노이즈와 신호가 뒤섞여 흐른다.
+        </p>
+        <p>
+          Vela는 이 흐름 속에서 잠시 멈춰 정리할 수 있는 공간이다.
+          파편화된 정보를 자동으로 모으고, 매거진의 형태로 다시 조립해
+          매일 아침 30분 동안 천천히 읽을 수 있는 한 권의 잡지로 만든다.
+        </p>
+        <p>
+          광고도, 추천 알고리즘도, 트래픽 압박도 없다.
+          오직 한 명의 독자를 위한 한 권의 매거진.
+        </p>
+        <div class="brand-note-signature">— Juns</div>
+      </div>
+    </article>
+
+    <!-- Three Principles -->
+    <div class="brand-principles">
+      <div class="principle-card">
+        <div class="principle-num">01</div>
+        <h4 class="principle-title"><em>Signal</em><br>over Noise</h4>
+        <p class="principle-text">
+          많이 보여주지 않는다. 오늘 정말 알아야 하는 것만 골라낸다.
+          score 기반 우선순위, 명확한 카테고리, 군더더기 없는 메타.
+        </p>
+      </div>
+      <div class="principle-card">
+        <div class="principle-num">02</div>
+        <h4 class="principle-title"><em>Depth</em><br>over Width</h4>
+        <p class="principle-text">
+          피상적인 헤드라인보다 구조적인 이해를. 매거진의 호흡으로 읽어야
+          남는 것이 있다는 믿음에서 출발한다.
+        </p>
+      </div>
+      <div class="principle-card">
+        <div class="principle-num">03</div>
+        <h4 class="principle-title"><em>Calm</em><br>over Urgent</h4>
+        <p class="principle-text">
+          실시간 알림도, 빨간 점도 없다. 매일 아침 한 번,
+          조용한 톤으로 정리된 흐름만이 도착한다.
+        </p>
+      </div>
+    </div>
+
+    <!-- The Name -->
+    <div class="brand-name-box">
+      <div class="brand-name-mark">Ve<span style="color:var(--accent);">l</span>a</div>
+      <div class="brand-name-text">
+        <p><strong>Vela</strong>는 라틴어로 <strong>돛(sails)</strong>.</p>
+        <p>남반구 별자리 용골자리(Vela)에서 따왔다. 바람을 받아 항해를 가능하게 만드는, 가장 단순하고 본질적인 도구.</p>
+        <p>정보의 바다 위에서, Vela는 당신의 항로를 밝히는 돛이 된다.</p>
+      </div>
+    </div>
+
+    <!-- Connect -->
+    <div class="brand-connect">
+      <h3 class="brand-connect-title">Where to <em>find</em></h3>
+      <div class="brand-connect-list">
+        <a class="connect-item" href="https://juns9990.github.io/vela/vela-prototype.html" target="_blank" rel="noopener">
+          <span class="connect-label">— Web</span>
+          <span class="connect-value">juns9990.github.io/vela</span>
+        </a>
+        <a class="connect-item" href="https://github.com/juns9990/vela" target="_blank" rel="noopener">
+          <span class="connect-label">— Source</span>
+          <span class="connect-value">github.com/juns9990/vela</span>
+        </a>
+        <a class="connect-item" href="#" id="connect-install">
+          <span class="connect-label">— Install</span>
+          <span class="connect-value">Add to Home Screen</span>
+        </a>
+      </div>
+    </div>
+
   </section>
 
   <footer class="colophon">
@@ -995,7 +1186,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.10.0</strong> · Phase 1</div>
+        <div><strong style="color:var(--accent);">v0.11.1</strong> · Phase 1</div>
       </div>
     </div>
   </footer>
@@ -1362,6 +1553,15 @@
     });
   });
   window.addEventListener('appinstalled', () => { installBtn.style.display = 'none'; });
+
+  // Connect 섹션의 "Install" 버튼 → install 플로우 트리거
+  const connectInstall = document.getElementById('connect-install');
+  if (connectInstall) {
+    connectInstall.addEventListener('click', (e) => {
+      e.preventDefault();
+      installBtn.click();
+    });
+  }
 
   // ============================================================
   // VIDEO MODAL · 커버 + Watch 카드 클릭 시 lightbox 영상 재생
