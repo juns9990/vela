@@ -1,0 +1,28 @@
+{
+  "name": "Vela — AI Intelligence Magazine",
+  "short_name": "Vela",
+  "description": "Personal AI intelligence magazine. 파편화된 AI 기술을 매거진의 흐름으로.",
+  "start_url": "./vela-prototype.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "categories": ["news", "magazines", "productivity"],
+  "lang": "ko",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "./vela-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./vela-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
