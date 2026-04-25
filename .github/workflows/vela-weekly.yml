@@ -49,8 +49,9 @@ jobs:
         run: |
           git config --local user.email "vela-bot@users.noreply.github.com"
           git config --local user.name "Vela Bot"
-          git add vela-issue.json
-          # 변경사항이 있을 때만 commit (의미 있는 변화 없으면 빈 커밋 안 만듦)
+          # 메인 이슈 + 아카이브 인덱스 + 주차별 스냅샷 + RSS 모두 add
+          git add vela-issue.json vela-archive.json vela-rss.xml 'vela-issue-*.json' 2>/dev/null || true
+          # 변경사항이 있을 때만 commit
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
