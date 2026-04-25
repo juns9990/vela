@@ -1,0 +1,59 @@
+name: Vela Weekly Issue
+
+# 매주 월요일 06:00 KST = 일요일 21:00 UTC 자동 실행
+# 수동 실행도 가능 (Actions 탭 → "Run workflow")
+on:
+  schedule:
+    - cron: '0 21 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-issue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Vela weekly collector
+        run: python vela-collect.py
+        # 표준 라이브러리만 사용 - pip install 불필요
+
+      - name: Show issue summary
+        run: |
+          echo "=== Issue summary ==="
+          python -c "
+          import json
+          with open('vela-issue.json') as f:
+              d = json.load(f)
+          m = d['meta']
+          print(f\"Issue {m['issue_year']}-W{m['issue_week']} · Monday {m['monday']}\")
+          print(f\"Cover: {d['cover']['headline'][:60]}\")
+          print(f\"Signals: {len(d['signals'])}\")
+          print(f\"Videos: {len(d['videos'])}\")
+          print(f\"Featured: {len(d['featured'])}\")
+          "
+
+      - name: Commit & push if changed
+        run: |
+          git config --local user.email "vela-bot@users.noreply.github.com"
+          git config --local user.name "Vela Bot"
+          git add vela-issue.json
+          # 변경사항이 있을 때만 commit (의미 있는 변화 없으면 빈 커밋 안 만듦)
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            ISSUE=$(python -c "import json; d=json.load(open('vela-issue.json')); print(f\"{d['meta']['issue_year']}-W{d['meta']['issue_week']}\")")
+            git commit -m "📡 Weekly issue ${ISSUE} (auto)"
+            git push
+            echo "✓ Pushed weekly issue ${ISSUE}"
+          fi
