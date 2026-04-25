@@ -37,6 +37,29 @@
     --sans: 'Pretendard', system-ui, sans-serif;
     --mono: 'JetBrains Mono', ui-monospace, monospace;
   }
+  /* ===== 라이트 모드 ===== */
+  [data-theme="light"] {
+    --bg: #f5f0e6; --bg-elev: #ebe4d4; --bg-card: #ffffff; --bg-warm: #faf6ec;
+    --text: #1a1a1a; --text-soft: #3d3a35; --text-mute: #6b6660; --text-dim: #a8a59f;
+    --ink: #1a1a1a;
+    --accent: #0e7a6a; --accent-warm: #b8860b; --hot: #d63333;
+    --border: rgba(26, 26, 26, 0.08); --border-strong: rgba(26, 26, 26, 0.16);
+  }
+  /* 라이트 모드에서 마스트헤드 배경 */
+  [data-theme="light"] .masthead { background: rgba(245, 240, 230, 0.85); }
+
+  /* ===== 읽기 진행률 바 (페이지 최상단) ===== */
+  .read-progress {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 2px; z-index: 200;
+    pointer-events: none;
+  }
+  .read-progress-fill {
+    height: 100%; width: 0;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    transition: width 0.05s linear;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
     background: var(--bg); color: var(--text);
@@ -106,6 +129,104 @@
   }
   .install-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(94,234,212,0.3); }
   .install-btn .icon { font-size: 14px; line-height: 1; }
+
+  /* 헤더 아이콘 버튼 (검색·테마) */
+  .icon-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-mute);
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s ease;
+    font-family: var(--mono); font-size: 14px;
+  }
+  .icon-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ===== 검색 모달 ===== */
+  .search-modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+    z-index: 1500;
+    display: none;
+    align-items: flex-start; justify-content: center;
+    padding: 80px 24px 24px;
+    animation: fadeIn 0.2s ease;
+  }
+  [data-theme="light"] .search-modal { background: rgba(245, 240, 230, 0.85); }
+  .search-modal.active { display: flex; }
+  .search-box {
+    width: 100%; max-width: 720px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border-strong);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+    animation: slideUp 0.25s ease;
+  }
+  .search-input-wrap {
+    display: flex; align-items: center; gap: 12px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+  }
+  .search-input-wrap .icon { color: var(--accent); font-size: 18px; }
+  .search-input {
+    flex: 1; background: transparent; border: none; outline: none;
+    color: var(--text);
+    font-family: var(--serif); font-size: 22px; font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .search-input::placeholder { color: var(--text-dim); }
+  .search-hint {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text-dim); letter-spacing: 0.1em;
+    border: 1px solid var(--border); padding: 3px 7px;
+  }
+  .search-results { max-height: 60vh; overflow-y: auto; }
+  .search-result {
+    padding: 14px 22px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.15s ease;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center;
+  }
+  .search-result:hover { background: var(--bg-warm); }
+  .search-result-section {
+    font-family: var(--mono); font-size: 9px;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent);
+    padding: 3px 8px; border: 1px solid var(--border);
+  }
+  .search-result-title {
+    font-family: var(--serif); font-weight: 500; font-size: 15px;
+    color: var(--text); line-height: 1.3;
+  }
+  .search-result-meta {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text-mute); letter-spacing: 0.05em;
+  }
+  .search-empty {
+    padding: 40px 22px; text-align: center;
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text-dim); letter-spacing: 0.1em;
+  }
+
+  /* ===== 카드별 읽음 표시 ===== */
+  .signal-row.read .signal-title { color: var(--text-mute); }
+  .signal-row.read .signal-thumb { opacity: 0.55; }
+  .signal-row.read::before {
+    content: '✓';
+    position: absolute; left: 32px; top: 28px;
+    font-family: var(--mono); font-size: 10px;
+    color: var(--accent); opacity: 0.7;
+  }
+  .signal-row { position: relative; }
+  .feature-card.read .feature-image-bg { opacity: 0.6; }
+  .feature-card.read .feature-title { color: var(--text-mute); }
+  .month-card.read .month-image-bg { opacity: 0.6; }
+  .month-card.read .month-title { color: var(--text-mute); }
+  .hero-signal.read .hero-signal-title { color: var(--text-mute); }
+  .hero-signal.read::after {
+    content: '✓ READ';
+    position: absolute; top: 24px; right: 24px;
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.15em; color: var(--accent); opacity: 0.6;
+  }
   .issue-meta {
     font-family: var(--mono); font-size: 10px; color: var(--text-mute);
     text-align: right; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.6;
@@ -656,6 +777,34 @@
   .star-btn:hover { color: var(--text); border-color: var(--border-strong); }
   .star-btn.starred { color: var(--accent-warm); border-color: var(--accent-warm); }
 
+  /* ===== Archive List ===== */
+  .archive-list { display: flex; flex-direction: column; }
+  .archive-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px; align-items: baseline;
+    padding: 22px 0; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: padding 0.2s ease, background 0.15s ease;
+  }
+  .archive-item:hover { background: var(--bg-warm); padding-left: 12px; padding-right: 12px; }
+  .archive-week {
+    font-family: var(--mono); font-weight: 500; font-size: 11px;
+    color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase;
+    min-width: 90px;
+  }
+  .archive-headline {
+    font-family: var(--serif); font-weight: 600; font-size: 18px;
+    color: var(--text); line-height: 1.3; letter-spacing: -0.01em;
+  }
+  .archive-meta-text {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text-mute); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  @media (max-width: 640px) {
+    .archive-item { grid-template-columns: 1fr; gap: 6px; padding: 16px 0; }
+    .archive-headline { font-size: 16px; }
+  }
+
   /* INSTALL MODAL */
   .modal-bg {
     position: fixed; inset: 0; background: rgba(0,0,0,0.85);
@@ -853,6 +1002,7 @@
     .install-btn { padding: 9px 12px; font-size: 10px; gap: 6px; min-height: 36px; }
     .install-btn .label-full { display: none; }
     .install-btn .label-short { display: inline; }
+    .icon-btn { width: 34px; height: 34px; }
     .issue-meta { display: none; }
     .nav-item { padding: 16px 16px; font-size: 12px; }
     .cover { padding: 24px 16px 40px; }
@@ -912,6 +1062,9 @@
 </head>
 <body>
 
+  <!-- 읽기 진행률 바 -->
+  <div class="read-progress"><div class="read-progress-fill" id="read-progress-fill"></div></div>
+
   <header class="masthead">
     <div class="masthead-inner">
       <div class="brand">
@@ -919,6 +1072,8 @@
         <div class="brand-tag">AI Intelligence Magazine</div>
       </div>
       <div class="head-actions">
+        <button class="icon-btn" id="search-btn" title="검색 (Ctrl+K)" aria-label="검색">🔍</button>
+        <button class="icon-btn" id="theme-btn" title="테마 전환" aria-label="다크/라이트 모드">◐</button>
         <button class="install-btn" id="install-btn" title="앱 설치">
           <span class="icon">↓</span>
           <span class="label-full">INSTALL APP</span>
@@ -940,6 +1095,7 @@
       <button class="nav-item" data-section="watch">Watch</button>
       <button class="nav-item" data-section="signals">Signals</button>
       <button class="nav-item" data-section="brand">Brand</button>
+      <button class="nav-item" data-section="archive">Archive</button>
     </div>
   </nav>
 
@@ -1132,6 +1288,19 @@
 
   </section>
 
+  <!-- ARCHIVE · 과거 이슈 아카이브 -->
+  <section class="section section-divider" id="archive-section">
+    <div class="section-header">
+      <h2 class="section-title">Past <em>Issues</em></h2>
+      <div class="section-meta" id="archive-meta">— issues archived</div>
+    </div>
+    <div class="archive-list" id="archive-list">
+      <div style="padding:40px 0;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:11px;letter-spacing:0.1em;">
+        // LOADING ARCHIVE...
+      </div>
+    </div>
+  </section>
+
   <footer class="colophon">
     <div class="colophon-inner">
       <div>
@@ -1141,7 +1310,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.15.0</strong> · Phase 2 · Auto</div>
+        <div><strong style="color:var(--accent);">v0.17.0</strong> · Phase 2 · Auto</div>
       </div>
     </div>
   </footer>
@@ -1176,6 +1345,20 @@
         <div class="install-step"><span class="install-step-num">1</span><span>Chrome/Edge 주소창 우측의 <strong>⊕ 설치 아이콘</strong> 클릭</span></div>
         <div class="install-step"><span class="install-step-num">2</span><span>또는 <strong>⋮ 메뉴 → "Vela 설치"</strong> 선택</span></div>
         <div class="install-step"><span class="install-step-num">3</span><span><strong>설치</strong> 클릭하면 독립 창으로 실행됨</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH MODAL -->
+  <div class="search-modal" id="search-modal">
+    <div class="search-box" onclick="event.stopPropagation()">
+      <div class="search-input-wrap">
+        <span class="icon">🔍</span>
+        <input type="text" class="search-input" id="search-input" placeholder="검색 — 제목, abstract, 태그, 출처…" autocomplete="off">
+        <span class="search-hint">ESC</span>
+      </div>
+      <div class="search-results" id="search-results">
+        <div class="search-empty">// 검색어를 입력하세요</div>
       </div>
     </div>
   </div>
@@ -1225,8 +1408,17 @@
 
   let state = {
     filter: 'all', sort: 'score', showStarred: false,
-    starred: new Set(JSON.parse(localStorage.getItem('vela.starred') || '[]'))
+    starred: new Set(JSON.parse(localStorage.getItem('vela.starred') || '[]')),
+    read: new Set(JSON.parse(localStorage.getItem('vela.read') || '[]'))
   };
+
+  // 읽음 표시 토글 (URL을 키로 사용 — id 없는 항목도 처리)
+  function markAsRead(key) {
+    if (!key) return;
+    state.read.add(key);
+    localStorage.setItem('vela.read', JSON.stringify([...state.read]));
+  }
+  function isRead(key) { return state.read.has(key); }
 
   function renderCover() {
     document.getElementById('cover-label').textContent = COVER.label;
@@ -1241,17 +1433,24 @@
   }
 
   function renderFeatured() {
-    document.getElementById('featured-grid').innerHTML = FEATURED.map(f => `
-      <article class="feature-card" data-url="${f.url || ''}">
+    document.getElementById('featured-grid').innerHTML = FEATURED.map(f => {
+      const readCls = f.url && isRead(f.url) ? 'read' : '';
+      return `
+      <article class="feature-card ${readCls}" data-url="${f.url || ''}">
         <div class="feature-image"><div class="feature-image-bg" style="background-image:url('${f.image}')"></div></div>
         <div class="feature-label">${f.label}</div>
         <h3 class="feature-title">${f.title}</h3>
         <p class="feature-deck">${f.deck}</p>
         <div class="feature-byline">${f.byline}</div>
-      </article>`).join('');
+      </article>`;
+    }).join('');
     document.querySelectorAll('.feature-card').forEach(card => {
       card.addEventListener('click', () => {
-        if (card.dataset.url) window.open(card.dataset.url, '_blank', 'noopener');
+        if (card.dataset.url) {
+          markAsRead(card.dataset.url);
+          window.open(card.dataset.url, '_blank', 'noopener');
+          card.classList.add('read');
+        }
       });
     });
   }
@@ -1265,8 +1464,10 @@
         '<div style="grid-column:1/-1;padding:40px 0;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:11px;">// No highlights this month</div>';
       return;
     }
-    document.getElementById('month-grid').innerHTML = THIS_MONTH.map(m => `
-      <article class="month-card" data-url="${m.url}">
+    document.getElementById('month-grid').innerHTML = THIS_MONTH.map(m => {
+      const readCls = m.url && isRead(m.url) ? 'read' : '';
+      return `
+      <article class="month-card ${readCls}" data-url="${m.url}">
         <div class="month-image">
           <div class="month-image-bg" style="background-image:url('${m.image}')"></div>
           <span class="month-date">${m.date}</span>
@@ -1274,10 +1475,15 @@
         <div class="month-category">${m.category}</div>
         <h3 class="month-title">${m.title}</h3>
         <p class="month-deck">${m.deck}</p>
-      </article>`).join('');
+      </article>`;
+    }).join('');
     document.querySelectorAll('.month-card').forEach(card => {
       card.addEventListener('click', () => {
-        if (card.dataset.url) window.open(card.dataset.url, '_blank', 'noopener');
+        if (card.dataset.url) {
+          markAsRead(card.dataset.url);
+          window.open(card.dataset.url, '_blank', 'noopener');
+          card.classList.add('read');
+        }
       });
     });
   }
@@ -1336,8 +1542,9 @@
     }
 
     if (hero) {
+      const heroRead = isRead(hero.url) ? 'read' : '';
       heroBox.innerHTML = `
-        <article class="hero-signal" data-url="${hero.url}">
+        <article class="hero-signal ${heroRead}" data-url="${hero.url}">
           <div class="hero-signal-badge">★ TODAY'S TOP STORY</div>
           <div class="hero-signal-meta">
             <span class="source-tag">${hero.sourceLabel}</span>
@@ -1360,7 +1567,9 @@
         </article>`;
       heroBox.style.display = 'block';
       heroBox.querySelector('.hero-signal').addEventListener('click', () => {
+        markAsRead(hero.url);
         window.open(hero.url, '_blank', 'noopener');
+        renderSignals();
       });
     } else {
       heroBox.innerHTML = '';
@@ -1373,8 +1582,9 @@
     }
     list.innerHTML = items.map((s, i) => {
       const starred = state.starred.has(s.id);
+      const readCls = isRead(s.url) ? 'read' : '';
       return `
-        <article class="signal-row" data-id="${s.id}">
+        <article class="signal-row ${readCls}" data-id="${s.id}">
           <div class="signal-num">${String(i + 1).padStart(2, '0')}</div>
           <div class="signal-thumb" style="background-image:url('${s.thumb}')"></div>
           <div class="signal-content">
@@ -1401,7 +1611,11 @@
     list.querySelectorAll('.signal-row').forEach(row => {
       const item = SIGNALS.find(s => s.id === row.dataset.id);
       row.addEventListener('click', () => {
-        if (item) window.open(item.url, '_blank', 'noopener');
+        if (item) {
+          markAsRead(item.url);
+          window.open(item.url, '_blank', 'noopener');
+          row.classList.add('read');
+        }
       });
     });
   }
@@ -1414,12 +1628,13 @@
 
   // NAV · 메뉴 클릭 시 해당 페이지 섹션으로 스크롤
   const SECTION_MAP = {
-    home: null, // page top
+    home: null,
     month: 'month-section',
     featured: 'featured-section',
     watch: 'watch-section',
     signals: 'signals-section',
-    brand: 'brand-section'
+    brand: 'brand-section',
+    archive: 'archive-section'
   };
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1560,13 +1775,155 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  // ESC 키로 모든 모달 닫기
+  // ESC 키로 video / install 모달 닫기 (search 모달은 자체 핸들러)
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       if (videoModal.classList.contains('active')) closeVideoModal();
       if (installModal.classList.contains('active')) installModal.classList.remove('active');
     }
   });
+
+  // ============================================================
+  // 추가 기능 (v0.17.0)
+  // ============================================================
+
+  // [기능 2] 다크/라이트 테마 토글
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('vela.theme', theme);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', theme === 'light' ? '#f5f0e6' : '#0a0a0a');
+  }
+  const savedTheme = localStorage.getItem('vela.theme') || 'dark';
+  applyTheme(savedTheme);
+  document.getElementById('theme-btn').addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  });
+
+  // [기능 3] 읽기 진행률 바
+  const progressFill = document.getElementById('read-progress-fill');
+  let scrollProgressTicking = false;
+  window.addEventListener('scroll', () => {
+    if (!scrollProgressTicking) {
+      requestAnimationFrame(() => {
+        const h = document.documentElement;
+        const max = h.scrollHeight - h.clientHeight;
+        const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+        progressFill.style.width = pct + '%';
+        scrollProgressTicking = false;
+      });
+      scrollProgressTicking = true;
+    }
+  }, { passive: true });
+
+  // [기능 1] 검색 기능
+  const searchModal = document.getElementById('search-modal');
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  const searchBtn = document.getElementById('search-btn');
+
+  function openSearch() {
+    searchModal.classList.add('active');
+    setTimeout(() => searchInput.focus(), 50);
+    if (!searchInput.value) doSearch('');
+  }
+  function closeSearch() {
+    searchModal.classList.remove('active');
+    searchInput.value = '';
+  }
+  searchBtn.addEventListener('click', openSearch);
+  searchModal.addEventListener('click', closeSearch);
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function doSearch(query) {
+    const q = (query || '').toLowerCase().trim();
+    if (!q) {
+      searchResults.innerHTML = '<div class="search-empty">// 검색어를 입력하세요</div>';
+      return;
+    }
+    const all = [];
+    if (COVER) all.push({ section: 'COVER', title: COVER.headline.replace(/<[^>]+>/g, ''), meta: COVER.deck, videoId: COVER.videoId });
+    THIS_MONTH.forEach(m => all.push({ section: 'MONTH', title: m.title, meta: m.deck + ' · ' + m.category, url: m.url }));
+    FEATURED.forEach(f => all.push({ section: 'FEATURED', title: f.title, meta: f.deck + ' · ' + f.label, url: f.url }));
+    VIDEOS.forEach(v => all.push({ section: 'WATCH', title: v.title, meta: v.byline + ' · ' + v.duration, videoId: v.videoId }));
+    SIGNALS.forEach(s => all.push({ section: 'SIGNAL', title: s.title, meta: s.abstract + ' · ' + (s.tags || []).join(' '), url: s.url }));
+
+    const matches = all.filter(item => (item.title + ' ' + item.meta).toLowerCase().includes(q));
+    if (matches.length === 0) {
+      searchResults.innerHTML = '<div class="search-empty">// 결과 없음 — 다른 키워드로 시도해 보세요</div>';
+      return;
+    }
+    searchResults.innerHTML = matches.slice(0, 30).map((m, i) => `
+      <div class="search-result" data-idx="${i}">
+        <span class="search-result-section">${m.section}</span>
+        <div>
+          <div class="search-result-title">${escapeHtml(m.title)}</div>
+          <div class="search-result-meta">${escapeHtml(m.meta).slice(0, 110)}${m.meta.length > 110 ? '…' : ''}</div>
+        </div>
+        <span class="search-result-meta">↗</span>
+      </div>
+    `).join('');
+    searchResults.querySelectorAll('.search-result').forEach((el, i) => {
+      el.addEventListener('click', () => {
+        const m = matches[i];
+        if (m.videoId) { closeSearch(); openVideoModal(m.videoId); }
+        else if (m.url) { markAsRead(m.url); window.open(m.url, '_blank', 'noopener'); }
+      });
+    });
+  }
+
+  let searchDebounce;
+  searchInput.addEventListener('input', e => {
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(() => doSearch(e.target.value), 120);
+  });
+
+  // 키보드: Ctrl+K / Cmd+K = 검색 열기 (ESC는 위 핸들러에서 처리)
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      openSearch();
+    } else if (e.key === 'Escape' && searchModal.classList.contains('active')) {
+      closeSearch();
+    }
+  });
+
+  // [기능 5] 과거 이슈 아카이브 — vela-archive.json 로드
+  async function loadArchive() {
+    const list = document.getElementById('archive-list');
+    try {
+      const res = await fetch('./vela-archive.json?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const issues = (data.issues || []).filter(i => i.file !== 'vela-issue.json');
+      document.getElementById('archive-meta').textContent = `${issues.length} ${issues.length === 1 ? 'issue' : 'issues'} archived`;
+      if (issues.length === 0) {
+        list.innerHTML = '<div style="padding:40px 0;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:11px;letter-spacing:0.1em;">// 아직 보관된 과거 이슈가 없습니다 — 매주 월요일 자동으로 추가됩니다</div>';
+        return;
+      }
+      list.innerHTML = issues.map(it => `
+        <article class="archive-item" data-file="${it.file}">
+          <div class="archive-week">${it.year}-W${String(it.week).padStart(2,'0')}</div>
+          <div>
+            <div class="archive-headline">${escapeHtml(it.headline || '(No headline)')}</div>
+            <div class="archive-meta-text">Week of ${it.monday || '—'}${it.signal_count ? ' · ' + it.signal_count + ' signals' : ''}</div>
+          </div>
+          <div class="archive-meta-text">↗ View</div>
+        </article>
+      `).join('');
+      list.querySelectorAll('.archive-item').forEach(el => {
+        el.addEventListener('click', () => window.open('./' + el.dataset.file, '_blank', 'noopener'));
+      });
+    } catch (e) {
+      console.log('[Vela] Archive not yet available:', e.message);
+      document.getElementById('archive-meta').textContent = '0 issues archived';
+      list.innerHTML = '<div style="padding:40px 0;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:11px;letter-spacing:0.1em;">// 아카이브 시스템 활성 대기 중 — 다음 월요일부터 누적됩니다</div>';
+    }
+  }
 
   async function init() {
     // 1) JSON 발행본 로드 (실패 시 에러 표시)
@@ -1614,6 +1971,7 @@
     renderFeatured();
     renderWatch();
     renderSignals();
+    loadArchive();
   }
   init();
 </script>
