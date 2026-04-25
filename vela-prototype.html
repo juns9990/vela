@@ -1268,7 +1268,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.12.0</strong> · Phase 1</div>
+        <div><strong style="color:var(--accent);">v0.13.0</strong> · Phase 1</div>
       </div>
     </div>
   </footer>
@@ -1320,7 +1320,7 @@
 
 <script>
   // ============================================================
-  // DAILY ROTATION · 매일 새벽 06:00 KST 기준 콘텐츠 자동 회전
+  // WEEKLY ROTATION · 매주 월요일 06:00 KST 경계로 새 이슈 발행
   // (Phase 2 자동 수집 전까지의 임시 솔루션)
   // ============================================================
   function seedRandom(seed) {
@@ -1332,14 +1332,19 @@
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
   }
-  function getKstDayKey() {
+  function getKstWeekKey() {
     const now = new Date();
     const kst = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (9 * 3600000));
-    if (kst.getUTCHours() < 6) kst.setUTCDate(kst.getUTCDate() - 1); // 06:00 KST 경계
+    // 1) 새벽 06:00 이전이면 전날로 보정
+    if (kst.getUTCHours() < 6) kst.setUTCDate(kst.getUTCDate() - 1);
+    // 2) 그 주의 월요일까지 거슬러 올라감 (한 주의 시작점 = 월요일 06:00 KST)
+    const dow = kst.getUTCDay(); // 0=일, 1=월, ..., 6=토
+    const offset = (dow === 0 ? 6 : dow - 1);
+    kst.setUTCDate(kst.getUTCDate() - offset);
     return kst.getUTCFullYear() * 10000 + (kst.getUTCMonth() + 1) * 100 + kst.getUTCDate();
   }
-  function getDailyPick(pool, count, salt = 0) {
-    const seed = getKstDayKey() + salt;
+  function getWeeklyPick(pool, count, salt = 0) {
+    const seed = getKstWeekKey() + salt;
     const rng = seedRandom(seed);
     const arr = [...pool];
     for (let i = arr.length - 1; i > 0; i--) {
@@ -1398,7 +1403,7 @@
       image: IMG.f3, videoId: 'aircAruvnKk', credit: 'Click image to play'
     }
   ];
-  const COVER = getDailyPick(COVER_POOL, 1, 0)[0];
+  const COVER = getWeeklyPick(COVER_POOL, 1, 0)[0];
 
   const FEATURED = [
     { label: 'Benchmark', title: 'Claude 4.7과 GPT-5, 12개 과제에서의 정면 비교', deck: '추론, 코딩, 시각, 장문 이해까지. 두 모델의 강점과 약점을 데이터로 풀어낸다.', byline: 'BENCHMARK · 8 MIN', image: IMG.f1 },
@@ -1412,7 +1417,7 @@
     { source: 'YouTube', title: '신경망의 본질 — Deep Learning Chapter 1', byline: '3Blue1Brown · 18M views', thumb: IMG.v3, duration: '18:40', videoId: 'aircAruvnKk' },
     { source: 'YouTube', title: '[1시간] LLM 입문 강의', byline: 'Andrej Karpathy · 2.8M views', thumb: IMG.v1, duration: '59:48', videoId: 'zjkBMFhNj_g' }
   ];
-  const VIDEOS = getDailyPick(VIDEOS_POOL, 3, 1);
+  const VIDEOS = getWeeklyPick(VIDEOS_POOL, 3, 1);
 
   // 이달의 AI · 4개 핵심 이벤트
   const THIS_MONTH = [
@@ -1460,7 +1465,7 @@
     { id: "github-comfyui", source: "github", sourceLabel: "GitHub", title: "ComfyUI — 노드 기반 Stable Diffusion 워크플로우", abstract: "이미지 생성 파이프라인을 시각적으로 구성한다. 영상 생성, 인페인팅, ControlNet까지.", url: "https://github.com/comfyanonymous/ComfyUI", published: "2026-04-18", tags: ["Vision", "Tool"], score: 4, authors: "55k ★", thumb: IMG.s5 },
     { id: "arxiv-2401.04088", source: "arxiv", sourceLabel: "ArXiv", title: "Mixtral 8x7B — Sparse Mixture-of-Experts 오픈소스", abstract: "8개 expert 중 2개만 활성화. 효율과 성능의 균형을 보여준 MoE 오픈소스의 분수령.", url: "https://arxiv.org/abs/2401.04088", published: "2026-04-18", tags: ["LLM", "Architecture"], score: 4, authors: "Mistral AI", thumb: IMG.s1 }
   ];
-  const SIGNALS = getDailyPick(SIGNAL_POOL, 8, 2);
+  const SIGNALS = getWeeklyPick(SIGNAL_POOL, 8, 2);
 
   let state = {
     filter: 'all', sort: 'score', showStarred: false,
@@ -1801,18 +1806,32 @@
   });
 
   function init() {
-    // KST 기준 시간 표시 + 새벽 06:00 업데이트 상태
+    // KST 기준, 이번 주의 시작(월요일 06:00) / 다음 발행(다음 월요일)
     const now = new Date();
     const kst = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (9 * 3600000));
-    const month = kst.toLocaleString('en-US', { month: 'short' }).toUpperCase();
-    const day = String(kst.getUTCDate()).padStart(2, '0');
-    const year = kst.getUTCFullYear();
-    const isAfter6 = kst.getUTCHours() >= 6;
-    const updateLine = isAfter6
-      ? `<span style="color:var(--accent);font-weight:500;">↻ UPDATED · ${month} ${day}</span>`
-      : `<span style="color:var(--accent-warm);">⌛ Next · 06:00 KST</span>`;
+
+    // 이번 주의 월요일 계산 (06:00 KST 이전이면 전날 기준)
+    const eff = new Date(kst);
+    if (eff.getUTCHours() < 6) eff.setUTCDate(eff.getUTCDate() - 1);
+    const dow = eff.getUTCDay();
+    const offset = (dow === 0 ? 6 : dow - 1);
+    const monday = new Date(eff);
+    monday.setUTCDate(eff.getUTCDate() - offset);
+    const nextMonday = new Date(monday);
+    nextMonday.setUTCDate(monday.getUTCDate() + 7);
+
+    const fmt = d => `${d.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }).toUpperCase()} ${String(d.getUTCDate()).padStart(2,'0')}`;
+    const mondayLabel = fmt(monday);
+    const nextLabel = fmt(nextMonday);
+
+    // 발행 후 오늘이 월요일 06:00 이상인지 (이번 주 새 이슈 활성)
+    const isThisWeekIssued = true; // 항상 이번 주 이슈가 활성
+
     document.getElementById('issue-date').innerHTML =
-      `${month} ${day} · ${year}<br>${updateLine}`;
+      `WEEK OF ${mondayLabel} · ${monday.getUTCFullYear()}<br>` +
+      `<span style="color:var(--accent);font-weight:500;">↻ Issued · ${mondayLabel}</span><br>` +
+      `<span style="color:var(--accent-warm);font-size:9px;">⌛ Next · ${nextLabel} 06:00 KST</span>`;
+
     renderCover();
     renderThisMonth();
     renderFeatured();
