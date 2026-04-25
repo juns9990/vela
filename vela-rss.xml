@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Vela — AI Intelligence Magazine</title>
+    <link>https://juns9990.github.io/vela/vela-prototype.html</link>
+    <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
+    <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
+    <language>ko</language>
+    <pubDate>Sun, 26 Apr 2026 08:06:02 +0900</pubDate>
+    <lastBuildDate>Sun, 26 Apr 2026 08:06:02 +0900</lastBuildDate>
+    <generator>Vela Weekly Collector</generator>
+    <ttl>10080</ttl>
+    <item>
+      <title>[Cover] Let&apos;s build GPT · 처음부터 만드는 GPT</title>
+      <link>https://juns9990.github.io/vela/vela-prototype.html</link>
+      <guid isPermaLink="false">vela-cover-2026-W17</guid>
+      <description>이번 주 Vela가 추천하는 깊이 있는 강의. Andrej Karpathy의 시그니처.</description>
+      <pubDate>Sun, 26 Apr 2026 08:06:02 +0900</pubDate>
+      <category>Cover Story</category>
+    </item>
+    <item>
+      <title>[Agent] From Research Question to Scientific Workflow: Leveraging Agentic AI for Science Automation</title>
+      <link>https://arxiv.org/abs/2604.21910v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2604.21910v1</guid>
+      <description>Scientific workflow systems automate execution -- scheduling, fault tolerance, resource management -- but not the semantic translation that precedes it. Scientists still manually convert research questions into workflow specifications, a task requiring both domain knowledge and i</description>
+      <pubDate>Sun, 26 Apr 2026 08:06:02 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Agent] Nemobot Games: Crafting Strategic AI Gaming Agents for Interactive Learning with Large Language Models</title>
+      <link>https://arxiv.org/abs/2604.21896v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2604.21896v1</guid>
+      <description>This paper introduces a new paradigm for AI game programming, leveraging large language models (LLMs) to extend and operationalize Claude Shannon&apos;s taxonomy of game-playing machines. Central to this paradigm is Nemobot, an interactive agentic engineering environment that enables </description>
+      <pubDate>Sun, 26 Apr 2026 08:06:02 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[LLM] MathDuels: Evaluating LLMs as Problem Posers and Solvers</title>
+      <link>https://arxiv.org/abs/2604.21916v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2604.21916v1</guid>
+      <description>As frontier language models attain near-ceiling performance on static mathematical benchmarks, existing evaluations are increasingly unable to differentiate model capabilities, largely because they cast models solely as solvers of fixed problem sets. We introduce MathDuels, a sel</description>
+      <pubDate>Sun, 26 Apr 2026 08:06:02 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Safety] Evaluating alignment of behavioral dispositions in LLMs</title>
+      <link>https://research.google/blog/evaluating-alignment-of-behavioral-dispositions-in-llms/</link>
+      <guid isPermaLink="true">https://research.google/blog/evaluating-alignment-of-behavioral-dispositions-in-llms/</guid>
+      <description>Generative AI</description>
+      <pubDate>Sun, 26 Apr 2026 08:06:02 +0900</pubDate>
+      <category>Safety</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
+    </item>
+    <item>
+      <title>[Agent] Improving the academic workflow: Introducing two AI agents for better figures and peer review</title>
+      <link>https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/</link>
+      <guid isPermaLink="true">https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/</guid>
+      <description>Generative AI</description>
+      <pubDate>Sun, 26 Apr 2026 08:06:02 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
+    </item>
+    <item>
+      <title>[LLM] ConvApparel: Measuring and bridging the realism gap in user simulators</title>
+      <link>https://research.google/blog/convapparel-measuring-and-bridging-the-realism-gap-in-user-simulators/</link>
+      <guid isPermaLink="true">https://research.google/blog/convapparel-measuring-and-bridging-the-realism-gap-in-user-simulators/</guid>
+      <description>Generative AI</description>
+      <pubDate>Sun, 26 Apr 2026 08:06:02 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
+    </item>
+    <item>
+      <title>[LLM] Towards developing future-ready skills with generative AI</title>
+      <link>https://research.google/blog/towards-developing-future-ready-skills-with-generative-ai/</link>
+      <guid isPermaLink="true">https://research.google/blog/towards-developing-future-ready-skills-with-generative-ai/</guid>
+      <description>Education Innovation</description>
+      <pubDate>Sun, 26 Apr 2026 08:06:02 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
+    </item>
+    <item>
+      <title>[LLM] Designing synthetic datasets for the real world: Mechanism design and reasoning from first principles</title>
+      <link>https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/</link>
+      <guid isPermaLink="true">https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/</guid>
+      <description>Generative AI</description>
+      <pubDate>Sun, 26 Apr 2026 08:06:02 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
+    </item>
+    <item>
+      <title>[Featured] From Research Question to Scientific Workflow: Leveraging Agentic AI for Science</title>
+      <link>https://arxiv.org/abs/2604.21910v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2604.21910v1</guid>
+      <description>Scientific workflow systems automate execution -- scheduling, fault tolerance, resource management -- but not the semantic translation that </description>
+      <pubDate>Sun, 26 Apr 2026 08:06:02 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] Nemobot Games: Crafting Strategic AI Gaming Agents for Interactive Learning with</title>
+      <link>https://arxiv.org/abs/2604.21896v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2604.21896v1</guid>
+      <description>This paper introduces a new paradigm for AI game programming, leveraging large language models (LLMs) to extend and operationalize Claude Sh</description>
+      <pubDate>Sun, 26 Apr 2026 08:06:02 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] MathDuels: Evaluating LLMs as Problem Posers and Solvers</title>
+      <link>https://arxiv.org/abs/2604.21916v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2604.21916v1</guid>
+      <description>As frontier language models attain near-ceiling performance on static mathematical benchmarks, existing evaluations are increasingly unable </description>
+      <pubDate>Sun, 26 Apr 2026 08:06:02 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+  </channel>
+</rss>
