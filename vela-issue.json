@@ -5,7 +5,7 @@
     "issue_week": 17,
     "monday": "2026-04-20",
     "next_monday": "2026-04-27",
-    "generated_at": "2026-04-26T08:05:52.307569+09:00"
+    "generated_at": "2026-04-26T09:54:35.036591+09:00"
   },
   "cover": {
     "label": "Cover Story · Week 17",
@@ -24,24 +24,24 @@
     {
       "date": "APR 23",
       "category": "Agent",
-      "title": "From Research Question to Scientific Workflow: Leveraging Agentic AI for Science",
-      "deck": "Scientific workflow systems automate execution -- scheduling, fault tolerance, resource management -- but not the semantic translation that ",
+      "title": "AI, 과학 자동화의 핵심",
+      "deck": "과학 워크플로우 시스템은 실행을 자동화하지만 의미 번역은 수동으로 진행된다. 연구 질문을 워크플로우로 변환하는 작업은 도메인 지식과 기술이 필요하다. Agentic AI는 이 과정을 자동화할 수 있다.",
       "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
       "url": "https://arxiv.org/abs/2604.21910v1"
     },
     {
       "date": "APR 23",
       "category": "Agent",
-      "title": "Nemobot Games: Crafting Strategic AI Gaming Agents for Interactive Learning with",
-      "deck": "This paper introduces a new paradigm for AI game programming, leveraging large language models (LLMs) to extend and operationalize Claude Sh",
+      "title": "인공지능 게임 에이전트",
+      "deck": "대형 언어 모델을 활용한 게임 프로그래밍 새로운 패러다임을 소개합니다. Nemobot은 상호작용 에이전트를 구축하는 환경을 제공합니다.",
       "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
       "url": "https://arxiv.org/abs/2604.21896v1"
     },
     {
       "date": "APR 23",
       "category": "LLM",
-      "title": "MathDuels: Evaluating LLMs as Problem Posers and Solvers",
-      "deck": "As frontier language models attain near-ceiling performance on static mathematical benchmarks, existing evaluations are increasingly unable ",
+      "title": "수학 대결",
+      "deck": "최신 언어 모델은 정적 수학 벤치마크에서 거의 완벽한 성능을 보이고 있습니다. MathDuels는 이러한 모델을 평가하기 위한 새로운 접근법입니다.",
       "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
       "url": "https://arxiv.org/abs/2604.21916v1"
     }
@@ -49,24 +49,24 @@
   "featured": [
     {
       "label": "Agent",
-      "title": "From Research Question to Scientific Workflow: Leveraging Agentic AI for Science",
-      "deck": "Scientific workflow systems automate execution -- scheduling, fault tolerance, resource management -- but not the semantic translation that ",
+      "title": "AI, 과학 자동화의 핵심",
+      "deck": "과학 워크플로우 시스템은 실행을 자동화하지만 의미 번역은 수동으로 진행된다. 연구 질문을 워크플로우로 변환하는 작업은 도메인 지식과 기술이 필요하다. Agentic AI는 이 과정을 자동화할 수 있다.",
       "byline": "ARXIV · Bartosz Balis et al.",
       "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
       "url": "https://arxiv.org/abs/2604.21910v1"
     },
     {
       "label": "Agent",
-      "title": "Nemobot Games: Crafting Strategic AI Gaming Agents for Interactive Learning with",
-      "deck": "This paper introduces a new paradigm for AI game programming, leveraging large language models (LLMs) to extend and operationalize Claude Sh",
+      "title": "인공지능 게임 에이전트",
+      "deck": "대형 언어 모델을 활용한 게임 프로그래밍 새로운 패러다임을 소개합니다. Nemobot은 상호작용 에이전트를 구축하는 환경을 제공합니다.",
       "byline": "ARXIV · Chee Wei Tan et al.",
       "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
       "url": "https://arxiv.org/abs/2604.21896v1"
     },
     {
       "label": "LLM",
-      "title": "MathDuels: Evaluating LLMs as Problem Posers and Solvers",
-      "deck": "As frontier language models attain near-ceiling performance on static mathematical benchmarks, existing evaluations are increasingly unable ",
+      "title": "수학 대결",
+      "deck": "최신 언어 모델은 정적 수학 벤치마크에서 거의 완벽한 성능을 보이고 있습니다. MathDuels는 이러한 모델을 평가하기 위한 새로운 접근법입니다.",
       "byline": "ARXIV · Zhiqiu Xu et al.",
       "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
       "url": "https://arxiv.org/abs/2604.21916v1"
@@ -103,8 +103,8 @@
       "id": "arxiv-2604.21910",
       "source": "arxiv",
       "sourceLabel": "ArXiv",
-      "title": "From Research Question to Scientific Workflow: Leveraging Agentic AI for Science Automation",
-      "abstract": "Scientific workflow systems automate execution -- scheduling, fault tolerance, resource management -- but not the semantic translation that precedes it. Scientists still manually convert research questions into workflow specifications, a task requiring both domain knowledge and i",
+      "title": "AI, 과학 자동화의 핵심",
+      "abstract": "과학 워크플로우 시스템은 실행을 자동화하지만 의미 번역은 수동으로 진행된다. 연구 질문을 워크플로우로 변환하는 작업은 도메인 지식과 기술이 필요하다. Agentic AI는 이 과정을 자동화할 수 있다.",
       "url": "https://arxiv.org/abs/2604.21910v1",
       "published": "2026-04-23",
       "tags": [
@@ -118,8 +118,8 @@
       "id": "arxiv-2604.21896",
       "source": "arxiv",
       "sourceLabel": "ArXiv",
-      "title": "Nemobot Games: Crafting Strategic AI Gaming Agents for Interactive Learning with Large Language Models",
-      "abstract": "This paper introduces a new paradigm for AI game programming, leveraging large language models (LLMs) to extend and operationalize Claude Shannon's taxonomy of game-playing machines. Central to this paradigm is Nemobot, an interactive agentic engineering environment that enables ",
+      "title": "인공지능 게임 에이전트",
+      "abstract": "대형 언어 모델을 활용한 게임 프로그래밍 새로운 패러다임을 소개합니다. Nemobot은 상호작용 에이전트를 구축하는 환경을 제공합니다.",
       "url": "https://arxiv.org/abs/2604.21896v1",
       "published": "2026-04-23",
       "tags": [
@@ -133,8 +133,8 @@
       "id": "arxiv-2604.21916",
       "source": "arxiv",
       "sourceLabel": "ArXiv",
-      "title": "MathDuels: Evaluating LLMs as Problem Posers and Solvers",
-      "abstract": "As frontier language models attain near-ceiling performance on static mathematical benchmarks, existing evaluations are increasingly unable to differentiate model capabilities, largely because they cast models solely as solvers of fixed problem sets. We introduce MathDuels, a sel",
+      "title": "수학 대결",
+      "abstract": "최신 언어 모델은 정적 수학 벤치마크에서 거의 완벽한 성능을 보이고 있습니다. MathDuels는 이러한 모델을 평가하기 위한 새로운 접근법입니다.",
       "url": "https://arxiv.org/abs/2604.21916v1",
       "published": "2026-04-23",
       "tags": [
@@ -148,8 +148,8 @@
       "id": "g-44de458f",
       "source": "blog",
       "sourceLabel": "Google Research",
-      "title": "Evaluating alignment of behavioral dispositions in LLMs",
-      "abstract": "Generative AI",
+      "title": "LLM의 행동 성향",
+      "abstract": "생성형 AI의 행동 성향을 평가한다. LLM의 성향이 일치하는지 확인한다.",
       "url": "https://research.google/blog/evaluating-alignment-of-behavioral-dispositions-in-llms/",
       "published": "2026-04-03",
       "tags": [
@@ -163,8 +163,8 @@
       "id": "g-55c12cf8",
       "source": "blog",
       "sourceLabel": "Google Research",
-      "title": "Improving the academic workflow: Introducing two AI agents for better figures and peer review",
-      "abstract": "Generative AI",
+      "title": "AI, 연구 효율 극대화",
+      "abstract": "학술 연구를 더 효율적으로 만드는 두 가지 AI 에이전트를 소개합니다. 인공지능은 연구 워크플로우를 개선할 수 있습니다.",
       "url": "https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/",
       "published": "2026-04-08",
       "tags": [
@@ -178,8 +178,8 @@
       "id": "g-217f9a8d",
       "source": "blog",
       "sourceLabel": "Google Research",
-      "title": "ConvApparel: Measuring and bridging the realism gap in user simulators",
-      "abstract": "Generative AI",
+      "title": "사용자 시뮬레이터의 현실성 갭",
+      "abstract": "사용자 시뮬레이터의 현실성 갭을 측정하고 연결하는 ConvApparel. 사용자 시뮬레이터의 한계를 극복하고자 하는 연구",
       "url": "https://research.google/blog/convapparel-measuring-and-bridging-the-realism-gap-in-user-simulators/",
       "published": "2026-04-09",
       "tags": [
@@ -193,8 +193,8 @@
       "id": "g-1a17798f",
       "source": "blog",
       "sourceLabel": "Google Research",
-      "title": "Towards developing future-ready skills with generative AI",
-      "abstract": "Education Innovation",
+      "title": "미래 직업을 위한 AI",
+      "abstract": "교육 혁신을 위한 생성형 AI 활용, 새로운 기술을 배우는 방법",
       "url": "https://research.google/blog/towards-developing-future-ready-skills-with-generative-ai/",
       "published": "2026-04-13",
       "tags": [
@@ -208,8 +208,8 @@
       "id": "g-c120c964",
       "source": "blog",
       "sourceLabel": "Google Research",
-      "title": "Designing synthetic datasets for the real world: Mechanism design and reasoning from first principles",
-      "abstract": "Generative AI",
+      "title": "현실 세계를 위한 합성 데이터셋",
+      "abstract": "생성적 AI를 위한 새로운 접근법, 메커니즘 디자인과 기본 원리",
       "url": "https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/",
       "published": "2026-04-16",
       "tags": [
