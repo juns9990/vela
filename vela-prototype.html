@@ -60,6 +60,42 @@
     box-shadow: 0 0 8px var(--accent);
     transition: width 0.05s linear;
   }
+
+  /* ===== 과거 이슈 알림 바 ===== */
+  .past-issue-bar {
+    position: sticky; top: 0; z-index: 150;
+    background: var(--accent);
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  .past-issue-bar-inner {
+    max-width: 1280px; margin: 0 auto;
+    padding: 10px 24px;
+    display: flex; align-items: center; gap: 18px;
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.05em;
+  }
+  .past-issue-label { font-weight: 600; }
+  .past-issue-week {
+    font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1.5px solid var(--ink);
+  }
+  .past-issue-back {
+    margin-left: auto;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 4px 12px;
+    border: 1.5px solid var(--ink);
+    transition: background 0.15s ease;
+    font-weight: 600;
+  }
+  .past-issue-back:hover { background: var(--ink); color: var(--accent); }
+  @media (max-width: 640px) {
+    .past-issue-bar-inner { padding: 8px 16px; gap: 10px; flex-wrap: wrap; font-size: 11px; }
+    .past-issue-back { margin-left: 0; padding: 3px 8px; font-size: 10px; }
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
     background: var(--bg); color: var(--text);
@@ -1065,6 +1101,15 @@
   <!-- 읽기 진행률 바 -->
   <div class="read-progress"><div class="read-progress-fill" id="read-progress-fill"></div></div>
 
+  <!-- 과거 이슈 알림 바 (URL에 ?issue=YYYY-WXX 있을 때만 표시) -->
+  <div class="past-issue-bar" id="past-issue-bar" style="display:none;">
+    <div class="past-issue-bar-inner">
+      <span class="past-issue-label">📚 과거 이슈를 보고 있습니다</span>
+      <span class="past-issue-week" id="past-issue-week">—</span>
+      <a href="./vela-prototype.html" class="past-issue-back">← 현재 이슈로 돌아가기</a>
+    </div>
+  </div>
+
   <header class="masthead">
     <div class="masthead-inner">
       <div class="brand">
@@ -1310,7 +1355,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.18.0</strong> · Phase 2 · Auto + 한글</div>
+        <div><strong style="color:var(--accent);">v0.18.1</strong> · Phase 2 · Auto + 한글</div>
       </div>
     </div>
   </footer>
@@ -1388,8 +1433,15 @@
 
   async function loadIssue() {
     try {
+      // URL 파라미터로 과거 이슈 지정 가능: ?issue=2026-W17
+      const urlParams = new URLSearchParams(window.location.search);
+      const issueParam = urlParams.get('issue');
+      const issueFile = issueParam
+        ? `./vela-issue-${issueParam}.json`
+        : './vela-issue.json';
+
       // 캐시 무효화: 매번 fresh 로드 (브라우저가 옛날 발행본 보여주지 않게)
-      const res = await fetch('./vela-issue.json?t=' + Date.now(), { cache: 'no-store' });
+      const res = await fetch(issueFile + '?t=' + Date.now(), { cache: 'no-store' });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       COVER = data.cover;
@@ -1398,9 +1450,13 @@
       VIDEOS = data.videos || [];
       SIGNALS = data.signals || [];
       ISSUE_META = data.meta || null;
+      // 과거 이슈인지 표시
+      ISSUE_META = ISSUE_META || {};
+      ISSUE_META._isPast = !!issueParam;
+      ISSUE_META._issueParam = issueParam;
       return true;
     } catch (e) {
-      console.error('[Vela] Failed to load vela-issue.json:', e);
+      console.error('[Vela] Failed to load issue:', e);
       return false;
     }
   }
@@ -1906,7 +1962,7 @@
         return;
       }
       list.innerHTML = issues.map(it => `
-        <article class="archive-item" data-file="${it.file}">
+        <article class="archive-item" data-week="${it.year}-W${String(it.week).padStart(2,'0')}">
           <div class="archive-week">${it.year}-W${String(it.week).padStart(2,'0')}</div>
           <div>
             <div class="archive-headline">${escapeHtml(it.headline || '(No headline)')}</div>
@@ -1916,7 +1972,10 @@
         </article>
       `).join('');
       list.querySelectorAll('.archive-item').forEach(el => {
-        el.addEventListener('click', () => window.open('./' + el.dataset.file, '_blank', 'noopener'));
+        el.addEventListener('click', () => {
+          // 같은 페이지에서 ?issue=YYYY-WXX 파라미터로 과거 이슈 매거진 보기
+          window.location.href = `./vela-prototype.html?issue=${el.dataset.week}`;
+        });
       });
     } catch (e) {
       console.log('[Vela] Archive not yet available:', e.message);
@@ -1964,6 +2023,19 @@
       `WEEK OF ${mondayLabel} · ${mondayYear}<br>` +
       `<span style="color:var(--accent);font-weight:500;">↻ Issued · ${mondayLabel}</span><br>` +
       `<span style="color:var(--accent-warm);font-size:9px;">⌛ Next · ${nextLabel} 06:00 KST</span>`;
+
+    // 과거 이슈 모드라면 알림 바 표시
+    if (ISSUE_META._isPast) {
+      const bar = document.getElementById('past-issue-bar');
+      const weekLabel = ISSUE_META._issueParam || `${ISSUE_META.issue_year}-W${String(ISSUE_META.issue_week).padStart(2,'0')}`;
+      document.getElementById('past-issue-week').textContent = weekLabel;
+      bar.style.display = 'block';
+      // 마스트헤드의 "Next" 줄을 "Past Issue"로 교체 (다음 발행은 의미 없음)
+      document.getElementById('issue-date').innerHTML =
+        `WEEK OF ${mondayLabel} · ${mondayYear}<br>` +
+        `<span style="color:var(--accent);font-weight:500;">📚 Past Issue</span><br>` +
+        `<span style="color:var(--text-mute);font-size:9px;">아카이브에서 보기</span>`;
+    }
 
     // 3) 모든 섹션 렌더
     renderCover();
