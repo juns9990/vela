@@ -2,6 +2,14 @@
   "version": "1.0",
   "issues": [
     {
+      "file": "vela-issue-2026-W18.json",
+      "year": 2026,
+      "week": 18,
+      "monday": "2026-04-27",
+      "headline": "Let's build GPT · 처음부터 만드는 GPT",
+      "signal_count": 8
+    },
+    {
       "file": "vela-issue-2026-W17.json",
       "year": 2026,
       "week": 17,
@@ -10,5 +18,5 @@
       "signal_count": 8
     }
   ],
-  "updated_at": "2026-04-26T09:55:22.803854+09:00"
+  "updated_at": "2026-04-27T06:30:30.893066+09:00"
 }

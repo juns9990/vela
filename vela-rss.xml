@@ -6,24 +6,24 @@
     <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
     <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
     <language>ko</language>
-    <pubDate>Sun, 26 Apr 2026 09:55:22 +0900</pubDate>
-    <lastBuildDate>Sun, 26 Apr 2026 09:55:22 +0900</lastBuildDate>
+    <pubDate>Mon, 27 Apr 2026 06:30:30 +0900</pubDate>
+    <lastBuildDate>Mon, 27 Apr 2026 06:30:30 +0900</lastBuildDate>
     <generator>Vela Weekly Collector</generator>
     <ttl>10080</ttl>
     <item>
       <title>[Cover] Let&apos;s build GPT · 처음부터 만드는 GPT</title>
       <link>https://juns9990.github.io/vela/vela-prototype.html</link>
-      <guid isPermaLink="false">vela-cover-2026-W17</guid>
+      <guid isPermaLink="false">vela-cover-2026-W18</guid>
       <description>이번 주 Vela가 추천하는 깊이 있는 강의. Andrej Karpathy의 시그니처.</description>
-      <pubDate>Sun, 26 Apr 2026 09:55:22 +0900</pubDate>
+      <pubDate>Mon, 27 Apr 2026 06:30:30 +0900</pubDate>
       <category>Cover Story</category>
     </item>
     <item>
       <title>[Agent] AI, 과학 자동화의 핵심</title>
       <link>https://arxiv.org/abs/2604.21910v1</link>
       <guid isPermaLink="true">https://arxiv.org/abs/2604.21910v1</guid>
-      <description>과학 워크플로우 시스템은 실행을 자동화하지만 의미 번역은 수동으로 진행된다. 연구 질문을 워크플로우로 변환하는 작업은 도메인 지식과 기술이 필요하다. Agentic AI는 이 과정을 자동화할 수 있다.</description>
-      <pubDate>Sun, 26 Apr 2026 09:55:22 +0900</pubDate>
+      <description>과학 워크플로우 시스템은 실행을 자동화하지만 의미 번역은 수동으로 진행된다. 연구 질문을 워크플로우 사양으로 변환하는 작업은 도메인 지식과 기술이 필요하다.</description>
+      <pubDate>Mon, 27 Apr 2026 06:30:30 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
@@ -31,8 +31,8 @@
       <title>[Agent] 인공지능 게임 에이전트</title>
       <link>https://arxiv.org/abs/2604.21896v1</link>
       <guid isPermaLink="true">https://arxiv.org/abs/2604.21896v1</guid>
-      <description>대형 언어 모델을 활용한 게임 프로그래밍 새로운 패러다임을 소개합니다. Nemobot은 상호작용 에이전트를 구축하는 환경을 제공합니다.</description>
-      <pubDate>Sun, 26 Apr 2026 09:55:22 +0900</pubDate>
+      <description>인공지능 게임 프로그래밍의 새로운 패러다임을 제시합니다. 대형 언어 모델을 활용하여 게임 에이전트를 개발합니다. Nemobot은 이에 핵심적인 역할을 합니다.</description>
+      <pubDate>Mon, 27 Apr 2026 06:30:30 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
@@ -40,8 +40,8 @@
       <title>[LLM] 수학 대결</title>
       <link>https://arxiv.org/abs/2604.21916v1</link>
       <guid isPermaLink="true">https://arxiv.org/abs/2604.21916v1</guid>
-      <description>최신 언어 모델은 정적 수학 벤치마크에서 거의 완벽한 성능을 보이고 있습니다. MathDuels는 이러한 모델을 평가하기 위한 새로운 접근법입니다.</description>
-      <pubDate>Sun, 26 Apr 2026 09:55:22 +0900</pubDate>
+      <description>최신 언어 모델이 정적 수학 벤치마크에서 최고 성능에 근접함에 따라 기존 평가 방법은 모델의 능력을 구분하기 어렵게 되었다. MathDuels는 모델을 문제 제시자와 해결자로 평가하는 새로운 프레임워크이다.</description>
+      <pubDate>Mon, 27 Apr 2026 06:30:30 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
@@ -49,44 +49,44 @@
       <title>[Safety] LLM의 행동 성향</title>
       <link>https://research.google/blog/evaluating-alignment-of-behavioral-dispositions-in-llms/</link>
       <guid isPermaLink="true">https://research.google/blog/evaluating-alignment-of-behavioral-dispositions-in-llms/</guid>
-      <description>생성형 AI의 행동 성향을 평가한다. LLM의 성향이 일치하는지 확인한다.</description>
-      <pubDate>Sun, 26 Apr 2026 09:55:22 +0900</pubDate>
+      <description>생성형 AI의 행동 성향을 평가한다. LLM의 성향은 어떻게 평가할까?</description>
+      <pubDate>Mon, 27 Apr 2026 06:30:30 +0900</pubDate>
       <category>Safety</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
     </item>
     <item>
-      <title>[Agent] AI, 연구 효율 극대화</title>
+      <title>[Agent] AI, 연구 흐름 개선하다</title>
       <link>https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/</link>
       <guid isPermaLink="true">https://research.google/blog/improving-the-academic-workflow-introducing-two-ai-agents-for-better-figures-and-peer-review/</guid>
-      <description>학술 연구를 더 효율적으로 만드는 두 가지 AI 에이전트를 소개합니다. 인공지능은 연구 워크플로우를 개선할 수 있습니다.</description>
-      <pubDate>Sun, 26 Apr 2026 09:55:22 +0900</pubDate>
+      <description>학술 연구의 효율성을 높이는 두 가지 AI 에이전트를 소개합니다. 연구 결과를 더 잘 표현하고, 피어 리뷰를 개선하는 방법입니다.</description>
+      <pubDate>Mon, 27 Apr 2026 06:30:30 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
     </item>
     <item>
-      <title>[LLM] 사용자 시뮬레이터의 현실성 갭</title>
+      <title>[LLM] 가상 사용자 시뮬레이터의 현실감 갭</title>
       <link>https://research.google/blog/convapparel-measuring-and-bridging-the-realism-gap-in-user-simulators/</link>
       <guid isPermaLink="true">https://research.google/blog/convapparel-measuring-and-bridging-the-realism-gap-in-user-simulators/</guid>
-      <description>사용자 시뮬레이터의 현실성 갭을 측정하고 연결하는 ConvApparel. 사용자 시뮬레이터의 한계를 극복하고자 하는 연구</description>
-      <pubDate>Sun, 26 Apr 2026 09:55:22 +0900</pubDate>
+      <description>사용자 시뮬레이터의 현실감을 높이기 위한 ConvApparel이 등장했다. 사용자 시뮬레이터의 한계를 극복하고 현실적인 사용자 상호작용을 구현하는 데 목표를 두고 있다.</description>
+      <pubDate>Mon, 27 Apr 2026 06:30:30 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
     </item>
     <item>
-      <title>[LLM] 미래 직업을 위한 AI</title>
+      <title>[LLM] 미래를 위한 AI 교육</title>
       <link>https://research.google/blog/towards-developing-future-ready-skills-with-generative-ai/</link>
       <guid isPermaLink="true">https://research.google/blog/towards-developing-future-ready-skills-with-generative-ai/</guid>
-      <description>교육 혁신을 위한 생성형 AI 활용, 새로운 기술을 배우는 방법</description>
-      <pubDate>Sun, 26 Apr 2026 09:55:22 +0900</pubDate>
+      <description>교육 혁신을 위한 생성형 AI 활용, 새로운 기술을 배우는 방법은?</description>
+      <pubDate>Mon, 27 Apr 2026 06:30:30 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
     </item>
     <item>
-      <title>[LLM] 현실 세계를 위한 합성 데이터셋</title>
+      <title>[LLM] 합성 데이터셋 설계</title>
       <link>https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/</link>
       <guid isPermaLink="true">https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/</guid>
-      <description>생성적 AI를 위한 새로운 접근법, 메커니즘 디자인과 기본 원리</description>
-      <pubDate>Sun, 26 Apr 2026 09:55:22 +0900</pubDate>
+      <description>실제 세계를 위한 합성 데이터셋을 설계하고, 제일 원리에서 출발하여 기계학적 설계와推론을 수행하는 방법을 소개합니다. 이것은 생성적 AI의 한계를 극복하는 데 도움이 됩니다.</description>
+      <pubDate>Mon, 27 Apr 2026 06:30:30 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
     </item>
@@ -94,24 +94,24 @@
       <title>[Featured] AI, 과학 자동화의 핵심</title>
       <link>https://arxiv.org/abs/2604.21910v1</link>
       <guid isPermaLink="true">https://arxiv.org/abs/2604.21910v1</guid>
-      <description>과학 워크플로우 시스템은 실행을 자동화하지만 의미 번역은 수동으로 진행된다. 연구 질문을 워크플로우로 변환하는 작업은 도메인 지식과 기술이 필요하다. Agentic AI는 이 과정을 자동화할 수 있다.</description>
-      <pubDate>Sun, 26 Apr 2026 09:55:22 +0900</pubDate>
+      <description>과학 워크플로우 시스템은 실행을 자동화하지만 의미 번역은 수동으로 진행된다. 연구 질문을 워크플로우 사양으로 변환하는 작업은 도메인 지식과 기술이 필요하다.</description>
+      <pubDate>Mon, 27 Apr 2026 06:30:30 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
       <title>[Featured] 인공지능 게임 에이전트</title>
       <link>https://arxiv.org/abs/2604.21896v1</link>
       <guid isPermaLink="true">https://arxiv.org/abs/2604.21896v1</guid>
-      <description>대형 언어 모델을 활용한 게임 프로그래밍 새로운 패러다임을 소개합니다. Nemobot은 상호작용 에이전트를 구축하는 환경을 제공합니다.</description>
-      <pubDate>Sun, 26 Apr 2026 09:55:22 +0900</pubDate>
+      <description>인공지능 게임 프로그래밍의 새로운 패러다임을 제시합니다. 대형 언어 모델을 활용하여 게임 에이전트를 개발합니다. Nemobot은 이에 핵심적인 역할을 합니다.</description>
+      <pubDate>Mon, 27 Apr 2026 06:30:30 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
       <title>[Featured] 수학 대결</title>
       <link>https://arxiv.org/abs/2604.21916v1</link>
       <guid isPermaLink="true">https://arxiv.org/abs/2604.21916v1</guid>
-      <description>최신 언어 모델은 정적 수학 벤치마크에서 거의 완벽한 성능을 보이고 있습니다. MathDuels는 이러한 모델을 평가하기 위한 새로운 접근법입니다.</description>
-      <pubDate>Sun, 26 Apr 2026 09:55:22 +0900</pubDate>
+      <description>최신 언어 모델이 정적 수학 벤치마크에서 최고 성능에 근접함에 따라 기존 평가 방법은 모델의 능력을 구분하기 어렵게 되었다. MathDuels는 모델을 문제 제시자와 해결자로 평가하는 새로운 프레임워크이다.</description>
+      <pubDate>Mon, 27 Apr 2026 06:30:30 +0900</pubDate>
       <category>Featured</category>
     </item>
   </channel>
