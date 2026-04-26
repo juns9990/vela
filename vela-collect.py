@@ -24,6 +24,7 @@ Vela Weekly Issue Collector · Phase 2
 """
 
 import json
+import os
 import re
 import sys
 import time
@@ -367,8 +368,16 @@ def main():
         print("\n⚠️  Insufficient validated content. Aborting build to preserve last issue.", file=sys.stderr)
         sys.exit(1)
 
-    # 4. 빌드
-    print("\n[4/4] Building issue JSON...")
+    # 4. 한국어 번역 (Groq 무료 API)
+    print("\n[4/6] Translating to Korean (Groq AI)...")
+    groq_key = os.environ.get("GROQ_API_KEY", "").strip()
+    if groq_key:
+        validated = groq_translate(validated, groq_key)
+    else:
+        print("  ⚠️ GROQ_API_KEY env var not set — content remains in English")
+
+    # 5. 빌드
+    print("\n[5/6] Building issue JSON...")
     # Cover: 가장 점수 높고 영상 있는 항목 우선, 없으면 첫 영상
     cover_video = valid_videos[0]
     cover = {
@@ -432,16 +441,15 @@ def main():
     print(f"  Videos: {len(valid_videos[:3])} items")
     print(f"  Signals: {len(validated[:8])} items")
 
-    # 5. 과거 이슈 아카이브 — 이번 주 스냅샷 별도 파일로 저장
-    print("\n[5/6] Archiving snapshot...")
+    # 6. 과거 이슈 아카이브 — 이번 주 스냅샷 별도 파일로 저장
+    print("\n[6/6] Archiving snapshot + generating RSS...")
     archive_filename = f"vela-issue-{meta['issue_year']}-W{meta['issue_week']:02d}.json"
     with open(archive_filename, "w", encoding="utf-8") as f:
         json.dump(issue, f, ensure_ascii=False, indent=2)
     print(f"  ✓ Snapshot: {archive_filename}")
     update_archive_index(issue, archive_filename)
 
-    # 6. RSS 피드 생성
-    print("\n[6/6] Generating RSS feed...")
+    # 7. RSS 피드 생성
     write_rss(issue)
     print(f"  ✓ RSS: {RSS_PATH}")
 
@@ -562,6 +570,86 @@ def write_rss(issue):
 """
     with open(RSS_PATH, "w", encoding="utf-8") as f:
         f.write(rss_xml)
+
+
+# ============================================================
+# Groq AI 한국어 번역 (무료 API)
+# ============================================================
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+GROQ_MODEL = "llama-3.3-70b-versatile"  # 한국어 지원 우수, 빠름
+
+def groq_translate(items, api_key):
+    """
+    영문 abstract → 매거진 톤의 한국어 번역.
+    items: dicts with 'title' and 'abstract' keys
+    실패한 항목은 원문 그대로 반환 (전체 빌드는 계속).
+    """
+    if not api_key:
+        print("  ⚠️ GROQ_API_KEY not set — skipping translation", file=sys.stderr)
+        return items
+
+    print(f"  Translating {len(items)} items via Groq ({GROQ_MODEL})...")
+    success = 0
+    for i, item in enumerate(items):
+        # 한글이 이미 들어있으면 스킵 (시드 데이터 보존)
+        if any('\uAC00' <= c <= '\uD7A3' for c in item.get("title", "")):
+            continue
+
+        prompt = f"""당신은 AI 매거진 'Vela'의 한국어 번역 에디터입니다.
+아래 영문 논문/기사의 제목과 abstract를 매거진 톤(간결, 직관적, 호기심 자극)의 한국어로 번역해주세요.
+
+규칙:
+- 제목: 30자 이내, 매거진 헤드라인 톤 (의역 가능, 핵심 강조)
+- abstract: 2~3문장, 140자 이내, 본문 첫 문장처럼 자연스럽게
+- 기술 용어는 영어 원어 유지 가능 (예: Transformer, attention, MoE)
+- 출력은 반드시 JSON 형식: {{"title": "...", "abstract": "..."}}
+
+원본:
+Title: {item.get('title', '')[:200]}
+Abstract: {item.get('abstract', '')[:600]}
+
+JSON만 출력:"""
+
+        try:
+            req = urllib.request.Request(
+                GROQ_API_URL,
+                data=json.dumps({
+                    "model": GROQ_MODEL,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "temperature": 0.4,
+                    "max_tokens": 400,
+                    "response_format": {"type": "json_object"}
+                }).encode("utf-8"),
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                    "User-Agent": USER_AGENT
+                },
+                method="POST"
+            )
+            with urllib.request.urlopen(req, timeout=20) as r:
+                data = json.loads(r.read().decode("utf-8"))
+                content = data["choices"][0]["message"]["content"].strip()
+                # JSON 파싱
+                translated = json.loads(content)
+                if translated.get("title"):
+                    item["title"] = translated["title"][:120]
+                if translated.get("abstract"):
+                    item["abstract"] = translated["abstract"][:280]
+                success += 1
+        except urllib.error.HTTPError as e:
+            err_body = ""
+            try: err_body = e.read().decode("utf-8")[:200]
+            except: pass
+            print(f"  ✗ Translate failed [{i+1}/{len(items)}]: HTTP {e.code} {err_body}", file=sys.stderr)
+        except Exception as e:
+            print(f"  ✗ Translate failed [{i+1}/{len(items)}]: {e}", file=sys.stderr)
+
+        # Rate limit 보호 (Groq 무료 30 RPM = 2초당 1회 안전)
+        time.sleep(2.1)
+
+    print(f"  ✓ Translated {success}/{len(items)} items")
+    return items
 
 
 if __name__ == "__main__":
