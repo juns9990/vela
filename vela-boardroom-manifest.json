@@ -1,0 +1,48 @@
+{
+  "name": "Vela Boardroom",
+  "short_name": "Boardroom",
+  "description": "5인 베테랑 페르소나 아이디어 회의실 — 1인 사업자 의사결정 도구",
+  "start_url": "./vela-boardroom-prototype.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0a0b",
+  "theme_color": "#0a0a0b",
+  "lang": "ko",
+  "dir": "ltr",
+  "categories": ["productivity", "business", "utilities"],
+  "icons": [
+    {
+      "src": "vela-boardroom-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "vela-boardroom-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "vela-boardroom-icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "vela-boardroom-icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "새 회의 시작",
+      "short_name": "새 회의",
+      "description": "빈 안건으로 보드룸 진입",
+      "url": "./vela-boardroom-prototype.html?action=new"
+    }
+  ]
+}
