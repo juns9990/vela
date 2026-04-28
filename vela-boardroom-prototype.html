@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Boardroom v0.5.0 — 아이디어 회의실</title>
+<title>Vela Boardroom v0.5.1 — 아이디어 회의실</title>
 <meta name="description" content="Vela Boardroom — 5인 베테랑 페르소나 아이디어 회의실. 1인 사업자를 위한 의사결정 도구." />
 
 <!-- PWA -->
@@ -919,7 +919,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.5.0</span>
+    <span>v0.5.1</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1089,7 +1089,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-boardroom · v0.5.0</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-boardroom · v0.5.1</div>
   <div>Local-First · BYOK · No Account</div>
 </footer>
 
@@ -1170,11 +1170,11 @@
 
 <script>
 /* ============================================================
- * Vela Boardroom v0.5.0
+ * Vela Boardroom v0.5.1
  * Single-file prototype. Local-first. BYOK.
  * ============================================================ */
 
-const VERSION = 'v0.5.0';
+const VERSION = 'v0.5.1';
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
   sessions: 'vela.boardroom.sessions'
@@ -1203,10 +1203,10 @@ const LLM_CONFIG = {
     keyPlaceholder: 'gsk_...',
     keyHint: 'console.groq.com 에서 발급 (카드 등록 불필요)',
     free: true,
-    pricingNote: '무료 티어 — 분당 30회 / 일 1,000회 제한. 보드룸 1회 = 5호출이라 하루 ~200회 가능.',
+    pricingNote: '무료 — 카드 등록 X. ⚠ 토론 모드(R1~R4)는 토큰이 많이 들어 Llama 8B 권장. 70B는 분당 12K 한도라 R2에서 막힐 수 있음.',
     models: [
-      { id: 'llama-3.3-70b-versatile',  label: 'Llama 3.3 70B (권장 — 한국어 OK)',   tag: 'LLAMA 70B' },
-      { id: 'llama-3.1-8b-instant',     label: 'Llama 3.1 8B (더 빠름, 한국어 약함)', tag: 'LLAMA 8B' }
+      { id: 'llama-3.1-8b-instant',     label: 'Llama 3.1 8B (권장 — 토론 모드)',         tag: 'LLAMA 8B' },
+      { id: 'llama-3.3-70b-versatile',  label: 'Llama 3.3 70B (한국어 강함, 한도 작음)',  tag: 'LLAMA 70B' }
     ]
   }
 };
@@ -1800,7 +1800,19 @@ async function callLLM(systemPrompt, userMessage) {
       })
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data?.error?.message || `Anthropic API error ${res.status}`);
+    if (!res.ok) {
+      const raw = data?.error?.message || `Anthropic API error ${res.status}`;
+      if (res.status === 401) {
+        throw new Error('Anthropic API key가 올바르지 않습니다. SETTINGS에서 다시 확인해주세요.');
+      }
+      if (res.status === 429) {
+        throw new Error(`Anthropic API 사용 한도 초과 — console.anthropic.com에서 잔액을 확인해주세요.`);
+      }
+      if (res.status === 400 && /credit balance/i.test(raw)) {
+        throw new Error('Anthropic 계정 잔액이 부족합니다. console.anthropic.com → Billing에서 충전하세요.');
+      }
+      throw new Error(raw);
+    }
     return (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
   }
 
@@ -1822,7 +1834,26 @@ async function callLLM(systemPrompt, userMessage) {
       })
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data?.error?.message || `Groq API error ${res.status}`);
+    if (!res.ok) {
+      const raw = data?.error?.message || `Groq API error ${res.status}`;
+      // Rate limit 에러 한국어화
+      if (res.status === 429) {
+        const waitMatch = raw.match(/try again in ([\d.]+)s/i);
+        const wait = waitMatch ? Math.ceil(parseFloat(waitMatch[1])) : null;
+        const e = new Error(
+          wait
+            ? `Groq 무료 티어 한도 초과 — ${wait}초 후 재시도 가능. 더 자주 굴리려면 Llama 8B 또는 Anthropic으로 전환하세요.`
+            : `Groq 무료 티어 한도 초과 — Llama 8B 또는 Anthropic으로 전환하세요.`
+        );
+        e.code = 'RATE_LIMIT';
+        e.retryAfter = wait;
+        throw e;
+      }
+      if (res.status === 401) {
+        throw new Error('Groq API key가 올바르지 않습니다. SETTINGS에서 다시 확인해주세요.');
+      }
+      throw new Error(raw);
+    }
     return data?.choices?.[0]?.message?.content || '';
   }
 
@@ -1867,6 +1898,17 @@ async function startMeeting() {
   setProgress({ r1: 'active', r2: 'pending', r3: 'pending', r4: r4Enabled ? 'pending' : 'skipped' });
   PERSONAS.forEach(p => setCardThinking(p.id, true, 'personasGrid'));
 
+  // 에러 추적 — rate limit 발생 시 다음 라운드 중단
+  let rateLimitHit = false;
+  const handleErr = (err, personaId, round) => {
+    const isRateLimit = err.code === 'RATE_LIMIT' || /rate limit|429|tokens per minute|TPM/i.test(err.message);
+    if (isRateLimit) rateLimitHit = true;
+    const friendly = isRateLimit
+      ? (err.retryAfter ? `한도 초과 — ${err.retryAfter}초 후 재시도` : '한도 초과')
+      : (err.message.length > 100 ? err.message.slice(0, 100) + '…' : err.message);
+    return { RAW: '⚠ ' + friendly };
+  };
+
   try {
     // ====== ROUND 1 — Opening (5명 동시) ======
     await Promise.allSettled(PERSONAS.map(async (p) => {
@@ -1879,11 +1921,17 @@ async function startMeeting() {
         renderPersonaResult(p.id, parsed, 'personasGrid', 'R1 · OPENING');
       } catch (err) {
         setCardThinking(p.id, false, 'personasGrid');
-        const errParsed = { RAW: 'Error: ' + err.message };
+        const errParsed = handleErr(err, p.id, 'R1');
         state.personaResults[p.id] = errParsed;
         renderPersonaResult(p.id, errParsed, 'personasGrid', 'R1 · OPENING');
       }
     }));
+
+    if (rateLimitHit) {
+      toast('⚠ Groq 무료 한도 초과 — Llama 8B로 전환하거나 1분 후 재시도. SETTINGS에서 모델 변경 가능.', true);
+      setProgress({ r1: 'done', r2: 'skipped', r3: 'skipped', r4: 'skipped' });
+      throw new Error('R1에서 한도 초과로 회의 중단');
+    }
     setProgress({ r1: 'done', r2: 'active', r3: 'pending', r4: r4Enabled ? 'pending' : 'skipped' });
 
     // ====== ROUND 2 — Cross Rebuttal (5명 동시, 다른 4명 의견 컨텍스트로) ======
@@ -1901,11 +1949,19 @@ async function startMeeting() {
         renderPersonaResult(p.id, parsed, 'rebuttalGrid', 'R2 · REBUTTAL', 'rebuttal');
       } catch (err) {
         setCardThinking(p.id, false, 'rebuttalGrid');
-        const errParsed = { RAW: 'Error: ' + err.message };
+        const errParsed = handleErr(err, p.id, 'R2');
         state.rebuttalResults[p.id] = errParsed;
         renderPersonaResult(p.id, errParsed, 'rebuttalGrid', 'R2 · REBUTTAL', 'rebuttal');
       }
     }));
+
+    if (rateLimitHit) {
+      toast('⚠ R2에서 Groq 한도 초과 — R3/R4 진행 중단. SETTINGS에서 Llama 8B 또는 Anthropic으로 전환 후 다시 시도하세요.', true);
+      setProgress({ r1: 'done', r2: 'done', r3: 'skipped', r4: 'skipped' });
+      $('#memoSection').style.display = 'block';
+      $('#memoInput').value = state.memo || '';
+      return; // R3/R4 스킵하고 메모 단계로
+    }
     setProgress({ r1: 'done', r2: 'done', r3: 'active', r4: r4Enabled ? 'pending' : 'skipped' });
 
     // ====== ROUND 3 — Devil's Advocate ======
@@ -1919,8 +1975,16 @@ async function startMeeting() {
       state.devilResult = devilParsed;
       renderDevilResult(devilParsed);
     } catch (err) {
-      state.devilResult = { RAW: 'Error: ' + err.message };
+      state.devilResult = handleErr(err, 'devil', 'R3');
       renderDevilResult(state.devilResult);
+    }
+
+    if (rateLimitHit) {
+      toast('⚠ R3에서 한도 초과 — R4 진행 중단. 모델/Provider 변경 후 다시 시도하세요.', true);
+      setProgress({ r1: 'done', r2: 'done', r3: 'done', r4: 'skipped' });
+      $('#memoSection').style.display = 'block';
+      $('#memoInput').value = state.memo || '';
+      return;
     }
     setProgress({ r1: 'done', r2: 'done', r3: 'done', r4: r4Enabled ? 'active' : 'skipped' });
 
@@ -1940,11 +2004,15 @@ async function startMeeting() {
           renderPersonaResult(p.id, parsed, 'closingGrid', 'R4 · CLOSING', 'closing');
         } catch (err) {
           setCardThinking(p.id, false, 'closingGrid');
-          const errParsed = { RAW: 'Error: ' + err.message };
+          const errParsed = handleErr(err, p.id, 'R4');
           state.closingResults[p.id] = errParsed;
           renderPersonaResult(p.id, errParsed, 'closingGrid', 'R4 · CLOSING', 'closing');
         }
       }));
+
+      if (rateLimitHit) {
+        toast('⚠ R4에서 한도 초과 일부 — 받은 응답까지만 표시.', true);
+      }
       setProgress({ r1: 'done', r2: 'done', r3: 'done', r4: 'done' });
     }
 
