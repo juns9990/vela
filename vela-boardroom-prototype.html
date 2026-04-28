@@ -2,9 +2,22 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Vela Boardroom v0.2.1 — 아이디어 회의실</title>
-<meta name="description" content="Vela Boardroom — AI 5인 페르소나 아이디어 회의실. 1인 사업자를 위한 의사결정 도구." />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Vela Boardroom v0.4.0 — 아이디어 회의실</title>
+<meta name="description" content="Vela Boardroom — 5인 베테랑 페르소나 아이디어 회의실. 1인 사업자를 위한 의사결정 도구." />
+
+<!-- PWA -->
+<link rel="manifest" href="vela-boardroom-manifest.json" />
+<meta name="theme-color" content="#0a0a0b" />
+<meta name="color-scheme" content="dark" />
+
+<!-- iOS Safari (홈 화면 추가 시 standalone 동작) -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Boardroom" />
+<link rel="apple-touch-icon" href="vela-boardroom-icon-180.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="vela-boardroom-icon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="vela-boardroom-icon-512.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -106,6 +119,66 @@
   .masthead-meta button:hover {
     border-color: var(--cyan);
     color: var(--cyan);
+  }
+  .btn-install {
+    background: var(--cyan) !important;
+    color: var(--bg) !important;
+    border-color: var(--cyan) !important;
+    font-weight: 700 !important;
+  }
+  .btn-install:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(94, 234, 212, 0.3);
+  }
+  /* PWA standalone 모드 — 시스템 status bar 영역 보정 */
+  @supports (padding: max(0px)) {
+    .masthead {
+      padding-top: max(22px, env(safe-area-inset-top));
+      padding-left: max(28px, env(safe-area-inset-left));
+      padding-right: max(28px, env(safe-area-inset-right));
+    }
+    .colophon {
+      padding-bottom: max(32px, env(safe-area-inset-bottom));
+    }
+  }
+  /* standalone 모드일 때만 추가 처리 */
+  @media (display-mode: standalone) {
+    body {
+      /* 인스톨된 PWA는 install 버튼 영구 숨김 */
+    }
+    .btn-install { display: none !important; }
+  }
+  /* iOS 가이드 단계 */
+  .ios-step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+  }
+  .ios-step .num {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--cyan);
+    font-weight: 700;
+    flex-shrink: 0;
+    min-width: 24px;
+  }
+  .ios-step .text {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .ios-step .text code {
+    font-family: var(--mono);
+    background: var(--bg);
+    padding: 1px 6px;
+    border-radius: 2px;
+    color: var(--cyan);
+    font-size: 12px;
   }
 
   /* ============ ISSUE STRIP ============ */
@@ -637,7 +710,8 @@
     <div class="brand-sub">아이디어 회의실 / 1인 사업자용</div>
   </div>
   <div class="masthead-meta">
-    <span id="modelTag">SONNET 4.6</span>
+    <span id="modelTag">—</span>
+    <button id="btnInstall" class="btn-install" hidden>＋ INSTALL</button>
     <button id="btnSessions">SESSIONS</button>
     <button id="btnSettings">SETTINGS</button>
   </div>
@@ -646,7 +720,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.2.1</span>
+    <span>v0.4.0</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -735,7 +809,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-boardroom · v0.2.1</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-boardroom · v0.4.0</div>
   <div>Local-First · BYOK · No Account</div>
 </footer>
 
@@ -747,23 +821,58 @@
       <button class="modal-close" data-close>닫기 ✕</button>
     </div>
 
-    <label>Anthropic API Key</label>
+    <label>Provider</label>
+    <select id="inputProvider">
+      <option value="anthropic">Anthropic Claude (유료, 최고 품질)</option>
+      <option value="groq">Groq + Llama (무료, 한국어 OK)</option>
+    </select>
+    <div class="modal-info" id="providerInfo">회의 1회당 약 130원 (Sonnet 4.6 기준).</div>
+
+    <label id="labelApiKey">API Key</label>
     <input type="password" id="inputApiKey" placeholder="sk-ant-..." autocomplete="off" />
-    <div class="modal-info">
-      이 키는 <code>localStorage</code>에만 저장되며 외부로 전송되지 않습니다 (Anthropic 서버 제외). 키는 console.anthropic.com 에서 발급받을 수 있습니다.
+    <div class="modal-info" id="apiKeyHint">
+      이 키는 <code>localStorage</code>에만 저장되며 외부로 전송되지 않습니다.
     </div>
 
     <label>Model</label>
     <select id="inputModel">
-      <option value="claude-sonnet-4-6">Sonnet 4.6 (권장 — 가성비)</option>
-      <option value="claude-opus-4-7">Opus 4.7 (최고 품질, 비쌈)</option>
-      <option value="claude-haiku-4-5-20251001">Haiku 4.5 (빠름, 저렴)</option>
+      <!-- options injected by JS based on provider -->
     </select>
-    <div class="modal-info">회의 1회당 약 130원 (Sonnet 4.6 기준 / 6번 API 호출).</div>
 
     <div class="modal-actions">
       <button class="btn-ghost" data-close>취소</button>
       <button class="btn-primary" id="btnSaveSettings">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ iOS INSTALL GUIDE MODAL ============ -->
+<div class="modal-backdrop" id="modalIosInstall">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 class="modal-title">홈 화면에 추가</h3>
+      <button class="modal-close" data-close>닫기 ✕</button>
+    </div>
+
+    <p class="modal-info" style="margin-bottom: 18px;">iPhone Safari에서 보드룸을 앱처럼 사용하려면 홈 화면에 추가하세요.</p>
+
+    <div class="ios-step">
+      <span class="num">1</span>
+      <div class="text">화면 하단의 <code>공유</code> 아이콘 (□↑) 을 누릅니다.</div>
+    </div>
+    <div class="ios-step">
+      <span class="num">2</span>
+      <div class="text">메뉴를 아래로 스크롤해서 <code>홈 화면에 추가</code> 를 선택합니다.</div>
+    </div>
+    <div class="ios-step">
+      <span class="num">3</span>
+      <div class="text">우상단 <code>추가</code> 를 누르면 끝. 홈 화면에서 일반 앱처럼 실행됩니다.</div>
+    </div>
+
+    <p class="modal-info" style="margin-top: 16px;">⚠️ Chrome 등 다른 브라우저는 이 기능을 지원하지 않습니다. 반드시 Safari에서 진행하세요.</p>
+
+    <div class="modal-actions">
+      <button class="btn-primary" data-close>확인</button>
     </div>
   </div>
 </div>
@@ -781,15 +890,45 @@
 
 <script>
 /* ============================================================
- * Vela Boardroom v0.2.1
+ * Vela Boardroom v0.4.0
  * Single-file prototype. Local-first. BYOK.
  * ============================================================ */
 
-const VERSION = 'v0.2.1';
+const VERSION = 'v0.4.0';
 const STORAGE_KEYS = {
-  apiKey: 'vela.boardroom.apiKey',
-  model: 'vela.boardroom.model',
+  provider: 'vela.boardroom.provider',
   sessions: 'vela.boardroom.sessions'
+};
+const apiKeyStorageKey = (p) => `vela.boardroom.apiKey.${p}`;
+const modelStorageKey = (p) => `vela.boardroom.model.${p}`;
+
+/* ============ LLM PROVIDERS ============ */
+const LLM_CONFIG = {
+  anthropic: {
+    name: 'Anthropic',
+    endpoint: 'https://api.anthropic.com/v1/messages',
+    keyPlaceholder: 'sk-ant-...',
+    keyHint: 'console.anthropic.com 에서 발급',
+    free: false,
+    pricingNote: '회의 1회당 약 130원 (Sonnet 4.6 기준).',
+    models: [
+      { id: 'claude-sonnet-4-6',           label: 'Sonnet 4.6 (권장 — 가성비)',     tag: 'SONNET 4.6' },
+      { id: 'claude-opus-4-7',             label: 'Opus 4.7 (최고 품질, 비쌈)',      tag: 'OPUS 4.7' },
+      { id: 'claude-haiku-4-5-20251001',   label: 'Haiku 4.5 (빠름, 저렴)',         tag: 'HAIKU 4.5' }
+    ]
+  },
+  groq: {
+    name: 'Groq',
+    endpoint: 'https://api.groq.com/openai/v1/chat/completions',
+    keyPlaceholder: 'gsk_...',
+    keyHint: 'console.groq.com 에서 발급 (카드 등록 불필요)',
+    free: true,
+    pricingNote: '무료 티어 — 분당 30회 / 일 1,000회 제한. 보드룸 1회 = 5호출이라 하루 ~200회 가능.',
+    models: [
+      { id: 'llama-3.3-70b-versatile',  label: 'Llama 3.3 70B (권장 — 한국어 OK)',   tag: 'LLAMA 70B' },
+      { id: 'llama-3.1-8b-instant',     label: 'Llama 3.1 8B (더 빠름, 한국어 약함)', tag: 'LLAMA 8B' }
+    ]
+  }
 };
 
 /* ============ PERSONA DEFINITIONS ============ */
@@ -1056,8 +1195,9 @@ const DEVIL = {
 
 /* ============ STATE ============ */
 let state = {
-  apiKey: localStorage.getItem(STORAGE_KEYS.apiKey) || '',
-  model: localStorage.getItem(STORAGE_KEYS.model) || 'claude-sonnet-4-6',
+  provider: localStorage.getItem(STORAGE_KEYS.provider) || 'anthropic',
+  apiKey: '',  // 현재 provider의 키 (loadProviderKeys로 동기화)
+  model: '',   // 현재 provider의 모델
   agenda: '',
   personaResults: {},
   devilResult: null,
@@ -1065,6 +1205,12 @@ let state = {
   sessionId: null,
   inProgress: false
 };
+function loadProviderKeys() {
+  state.apiKey = localStorage.getItem(apiKeyStorageKey(state.provider)) || '';
+  state.model = localStorage.getItem(modelStorageKey(state.provider))
+             || LLM_CONFIG[state.provider].models[0].id;
+}
+loadProviderKeys();
 
 /* ============ DOM REFS ============ */
 const $ = (sel) => document.querySelector(sel);
@@ -1089,15 +1235,29 @@ function bindEvents() {
 
   // Settings modal
   $('#btnSettings').addEventListener('click', () => {
-    $('#inputApiKey').value = state.apiKey;
-    $('#inputModel').value = state.model;
+    renderSettingsModal();
     openModal('modalSettings');
   });
+  $('#inputProvider').addEventListener('change', (e) => {
+    // provider 미리보기 — 저장은 안 함, UI만 갱신
+    const newProvider = e.target.value;
+    renderSettingsModalForProvider(newProvider);
+  });
   $('#btnSaveSettings').addEventListener('click', () => {
-    state.apiKey = $('#inputApiKey').value.trim();
-    state.model = $('#inputModel').value;
-    localStorage.setItem(STORAGE_KEYS.apiKey, state.apiKey);
-    localStorage.setItem(STORAGE_KEYS.model, state.model);
+    const newProvider = $('#inputProvider').value;
+    const newKey = $('#inputApiKey').value.trim();
+    const newModel = $('#inputModel').value;
+
+    // 현재 provider의 저장소에 키/모델 저장 (다음에 그 provider 선택하면 자동 로드)
+    localStorage.setItem(apiKeyStorageKey(newProvider), newKey);
+    localStorage.setItem(modelStorageKey(newProvider), newModel);
+    localStorage.setItem(STORAGE_KEYS.provider, newProvider);
+
+    // state 동기화
+    state.provider = newProvider;
+    state.apiKey = newKey;
+    state.model = newModel;
+
     refreshApiStatus();
     refreshModelTag();
     closeModal('modalSettings');
@@ -1141,12 +1301,47 @@ function refreshApiStatus() {
   }
 }
 function refreshModelTag() {
-  const tagMap = {
-    'claude-sonnet-4-6': 'SONNET 4.6',
-    'claude-opus-4-7': 'OPUS 4.7',
-    'claude-haiku-4-5-20251001': 'HAIKU 4.5'
-  };
-  $('#modelTag').textContent = tagMap[state.model] || state.model;
+  // 모든 provider의 모델에서 태그 검색
+  for (const cfg of Object.values(LLM_CONFIG)) {
+    const found = cfg.models.find(m => m.id === state.model);
+    if (found) {
+      $('#modelTag').textContent = found.tag;
+      return;
+    }
+  }
+  $('#modelTag').textContent = state.model || 'NO MODEL';
+}
+
+/* ============ SETTINGS MODAL — dynamic render ============ */
+function renderSettingsModal() {
+  // 현재 state 기준으로 provider, key, model 채움
+  $('#inputProvider').value = state.provider;
+  renderSettingsModalForProvider(state.provider);
+}
+function renderSettingsModalForProvider(provider) {
+  const cfg = LLM_CONFIG[provider];
+  if (!cfg) return;
+
+  // 해당 provider의 저장된 키 로드 (현재 입력 중인 게 다른 provider면 본인 거 표시)
+  const storedKey = localStorage.getItem(apiKeyStorageKey(provider)) || '';
+  const storedModel = localStorage.getItem(modelStorageKey(provider)) || cfg.models[0].id;
+
+  $('#labelApiKey').textContent = `${cfg.name} API Key`;
+  $('#inputApiKey').placeholder = cfg.keyPlaceholder;
+  $('#inputApiKey').value = storedKey;
+  $('#apiKeyHint').innerHTML = `이 키는 <code>localStorage</code>에만 저장됩니다. ${cfg.keyHint}.`;
+  $('#providerInfo').textContent = cfg.pricingNote;
+
+  // 모델 옵션 동적 생성
+  const modelSelect = $('#inputModel');
+  modelSelect.innerHTML = '';
+  cfg.models.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m.id;
+    opt.textContent = m.label;
+    if (m.id === storedModel) opt.selected = true;
+    modelSelect.appendChild(opt);
+  });
 }
 
 function openModal(id) { $('#'+id).classList.add('open'); }
@@ -1261,35 +1456,56 @@ function parseSections(text) {
   return result;
 }
 
-/* ============ API CALL ============ */
-async function callClaude(systemPrompt, userMessage) {
+/* ============ API CALL — provider-aware ============ */
+async function callLLM(systemPrompt, userMessage) {
   if (!state.apiKey) throw new Error('API key가 설정되지 않았습니다');
-  const body = {
-    model: state.model,
-    max_tokens: 1024,
-    system: systemPrompt,
-    messages: [{ role: 'user', content: userMessage }]
-  };
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': state.apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-  const data = await res.json();
-  if (!res.ok) {
-    const msg = data?.error?.message || `API error ${res.status}`;
-    throw new Error(msg);
+  const cfg = LLM_CONFIG[state.provider];
+  if (!cfg) throw new Error('알 수 없는 provider: ' + state.provider);
+
+  if (state.provider === 'anthropic') {
+    const res = await fetch(cfg.endpoint, {
+      method: 'POST',
+      headers: {
+        'x-api-key': state.apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: state.model,
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMessage }]
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error?.message || `Anthropic API error ${res.status}`);
+    return (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
   }
-  // data.content is array of blocks
-  const text = (data.content || [])
-    .filter(b => b.type === 'text')
-    .map(b => b.text).join('\n');
-  return text;
+
+  if (state.provider === 'groq') {
+    // OpenAI-compatible chat completions
+    const res = await fetch(cfg.endpoint, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${state.apiKey}`,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: state.model,
+        max_tokens: 1024,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMessage }
+        ]
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error?.message || `Groq API error ${res.status}`);
+    return data?.choices?.[0]?.message?.content || '';
+  }
+
+  throw new Error('지원되지 않는 provider');
 }
 
 /* ============ MEETING FLOW ============ */
@@ -1325,7 +1541,7 @@ async function startMeeting() {
     const personaPromises = PERSONAS.map(async (p) => {
       try {
         const userMsg = `[안건]\n${agenda}`;
-        const reply = await callClaude(p.system, userMsg);
+        const reply = await callLLM(p.system, userMsg);
         const parsed = parseSections(reply);
         state.personaResults[p.id] = parsed;
         setCardThinking(p.id, false);
@@ -1348,7 +1564,7 @@ async function startMeeting() {
 
     const devilContext = buildDevilContext(agenda, state.personaResults);
     try {
-      const devilReply = await callClaude(DEVIL.system, devilContext);
+      const devilReply = await callLLM(DEVIL.system, devilContext);
       const devilParsed = parseSections(devilReply);
       state.devilResult = devilParsed;
       renderDevilResult(devilParsed);
@@ -1516,6 +1732,114 @@ function newSession() {
   $('#btnStart').textContent = '회의 시작 →';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+/* ============ PWA INSTALL ============ */
+let deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Chrome/Edge — 설치 가능 시점 캐치
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const btn = $('#btnInstall');
+  if (btn) btn.hidden = false;
+});
+
+function handleInstallClick() {
+  // iOS Safari — beforeinstallprompt 미지원, 안내 모달
+  const ua = navigator.userAgent;
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                    || window.navigator.standalone === true;
+
+  if (isStandalone) {
+    toast('이미 앱으로 설치되어 있습니다');
+    return;
+  }
+
+  if (isIOS) {
+    openModal('modalIosInstall');
+    return;
+  }
+
+  if (!deferredInstallPrompt) {
+    // Android Chrome인데 prompt 미수령 — 메뉴 안내
+    toast('브라우저 메뉴(⋮)에서 "홈 화면에 추가"를 선택하세요');
+    return;
+  }
+
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.then((choice) => {
+    if (choice.outcome === 'accepted') {
+      toast('설치되었습니다');
+      $('#btnInstall').hidden = true;
+    }
+    deferredInstallPrompt = null;
+  });
+}
+
+window.addEventListener('appinstalled', () => {
+  $('#btnInstall').hidden = true;
+  deferredInstallPrompt = null;
+  toast('홈 화면에 설치 완료');
+});
+
+/* ============ SERVICE WORKER ============ */
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  // file:// 에서는 SW 등록 불가 — GitHub Pages 등 https 환경에서만
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost') return;
+
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('vela-boardroom-sw.js', { scope: './' })
+      .then((reg) => {
+        console.log('[boardroom] SW registered:', reg.scope);
+      })
+      .catch((err) => {
+        console.warn('[boardroom] SW registration failed:', err);
+      });
+  });
+}
+
+/* ============ URL ACTION (PWA shortcut) ============ */
+function handleUrlAction() {
+  const params = new URLSearchParams(location.search);
+  if (params.get('action') === 'new') {
+    // 홈 화면 단축아이콘 → 새 회의로 즉시 진입
+    setTimeout(() => {
+      newSession();
+      $('#agendaInput').focus();
+    }, 100);
+  }
+}
+
+/* ============ INSTALL BUTTON BIND ============ */
+function bindInstallButton() {
+  const btn = $('#btnInstall');
+  if (!btn) return;
+  btn.addEventListener('click', handleInstallClick);
+
+  // 모바일 브라우저인데 beforeinstallprompt가 안 오는 경우 (iOS, 일부 안드로이드)
+  // → 일정 시간 후에도 prompt가 없으면 버튼 노출 (사용자가 직접 누를 수 있게)
+  const ua = navigator.userAgent;
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                    || window.navigator.standalone === true;
+
+  if (isMobile && !isStandalone) {
+    setTimeout(() => {
+      if (!deferredInstallPrompt && btn.hidden) {
+        btn.hidden = false; // iOS Safari 또는 prompt 미수령 안드로이드용
+      }
+    }, 2500);
+  }
+}
+
+// 부팅
+registerServiceWorker();
+window.addEventListener('DOMContentLoaded', () => {
+  bindInstallButton();
+  handleUrlAction();
+});
 </script>
 
 </body>
