@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Boardroom v0.4.0 — 아이디어 회의실</title>
+<title>Vela Boardroom v0.5.0 — 아이디어 회의실</title>
 <meta name="description" content="Vela Boardroom — 5인 베테랑 페르소나 아이디어 회의실. 1인 사업자를 위한 의사결정 도구." />
 
 <!-- PWA -->
@@ -197,6 +197,63 @@
   .issue-strip .left { display: flex; gap: 24px; }
   .issue-strip .dot { color: var(--cyan); }
 
+  /* ============ PROGRESS BAR ============ */
+  .progress-bar {
+    border-bottom: 1px solid var(--line);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(180deg, rgba(94,234,212,0.02), transparent);
+  }
+  .progress-bar[hidden] { display: none; }
+  .progress-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .progress-step .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-faint);
+    transition: all 0.3s ease;
+  }
+  .progress-step .lbl {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    transition: color 0.3s ease;
+  }
+  .progress-step.active .dot {
+    background: var(--cyan);
+    box-shadow: 0 0 0 4px rgba(94,234,212,0.18);
+    animation: pulse-dot 1.4s ease-in-out infinite;
+  }
+  .progress-step.active .lbl { color: var(--cyan); }
+  .progress-step.done .dot { background: var(--cyan); }
+  .progress-step.done .lbl { color: var(--text); }
+  .progress-step.skipped .dot { background: var(--text-faint); opacity: 0.3; }
+  .progress-step.skipped .lbl { color: var(--text-faint); opacity: 0.4; text-decoration: line-through; }
+  .progress-line {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+    min-width: 16px;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(94,234,212,0.18); }
+    50%      { box-shadow: 0 0 0 7px rgba(94,234,212,0.05); }
+  }
+  @media (max-width: 720px) {
+    .progress-bar { padding: 12px 14px; gap: 4px; overflow-x: auto; }
+    .progress-step .lbl { font-size: 9px; letter-spacing: 0.08em; }
+    .progress-line { min-width: 8px; }
+  }
+
   /* ============ MAIN ============ */
   main {
     max-width: 1280px;
@@ -286,6 +343,148 @@
     align-items: center;
     gap: 16px;
     flex-wrap: wrap;
+  }
+  .agenda-controls-left {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  /* Toggle for R4 */
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .toggle input { position: absolute; opacity: 0; pointer-events: none; }
+  .toggle-slider {
+    width: 32px;
+    height: 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    position: relative;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .toggle-slider::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 12px; height: 12px;
+    background: var(--text-faint);
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+  .toggle input:checked ~ .toggle-slider {
+    background: rgba(94, 234, 212, 0.15);
+    border-color: var(--cyan);
+  }
+  .toggle input:checked ~ .toggle-slider::after {
+    transform: translateX(14px);
+    background: var(--cyan);
+  }
+  .toggle-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 auto 36px;
+    max-width: 720px;
+    padding: 0 8px;
+  }
+  .progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .progress-step .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid var(--line);
+    transition: all 0.3s ease;
+  }
+  .progress-step .label {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    transition: color 0.3s ease;
+  }
+  .progress-step.active .dot {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.15);
+    animation: pulse-dot 1.4s ease-in-out infinite;
+  }
+  .progress-step.active .label { color: var(--cyan); }
+  .progress-step.done .dot {
+    background: var(--cyan);
+    border-color: var(--cyan);
+  }
+  .progress-step.done .label { color: var(--text-dim); }
+  .progress-step.skipped .dot {
+    background: transparent;
+    border-color: var(--line-soft);
+    border-style: dashed;
+  }
+  .progress-step.skipped .label { color: var(--text-faint); opacity: 0.5; }
+  .progress-line {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+    margin-bottom: 18px;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+
+  /* Round kicker (subtitle under section label) */
+  .round-kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    margin-bottom: 22px;
+    margin-top: -10px;
+  }
+
+  /* Stack persona cards section labels (R1 / R2 / R4 within same card) */
+  .persona-section-marker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 8px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line-soft);
+    width: 100%;
+  }
+  .persona-section-marker .marker-num {
+    color: var(--cyan);
+    font-weight: 700;
+  }
+  .persona-card .persona-section-marker:first-child {
+    border-top: none;
+    padding-top: 0;
   }
   .agenda-hint {
     font-family: var(--mono);
@@ -720,11 +919,34 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.4.0</span>
+    <span>v0.5.0</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
   <div>2026</div>
+</div>
+
+<!-- Progress bar (회의 진행 시 표시) -->
+<div class="progress-bar" id="progressBar" hidden>
+  <div class="progress-step pending" data-step="r1">
+    <span class="dot"></span>
+    <span class="lbl">R1 · OPENING</span>
+  </div>
+  <div class="progress-line"></div>
+  <div class="progress-step pending" data-step="r2">
+    <span class="dot"></span>
+    <span class="lbl">R2 · REBUTTAL</span>
+  </div>
+  <div class="progress-line"></div>
+  <div class="progress-step pending" data-step="r3">
+    <span class="dot"></span>
+    <span class="lbl">R3 · CRITIC</span>
+  </div>
+  <div class="progress-line"></div>
+  <div class="progress-step pending" data-step="r4">
+    <span class="dot"></span>
+    <span class="lbl">R4 · CLOSING</span>
+  </div>
 </div>
 
 <main>
@@ -737,7 +959,7 @@
       <span class="line"></span>
     </div>
     <h1 class="agenda-headline">오늘의 <em>아이디어</em>를<br/>회의에 부쳐주세요.</h1>
-    <p class="agenda-kicker">5인 페르소나가 동시 검토 → 비판자가 반박합니다.</p>
+    <p class="agenda-kicker">R1 첫 의견 → R2 상호 반박 → R3 비판자 가정 부수기 → R4 최종 입장 (선택)</p>
 
     <div class="agenda-input-wrap">
       <textarea
@@ -748,30 +970,75 @@
     </div>
 
     <div class="agenda-controls">
-      <span class="agenda-hint">⌘/Ctrl + Enter 로 회의 시작</span>
+      <div class="agenda-controls-left">
+        <span class="agenda-hint">⌘/Ctrl + Enter 로 회의 시작</span>
+        <label class="toggle">
+          <input type="checkbox" id="toggleR4" />
+          <span class="toggle-slider"></span>
+          <span class="toggle-label">최종 입장 라운드 (+5 호출)</span>
+        </label>
+      </div>
       <button id="btnStart" class="btn-primary">회의 시작 →</button>
     </div>
   </section>
 
-  <!-- ROUND 1 -->
+  <!-- DEBATE PROGRESS -->
+  <div class="progress-bar" id="progressBar" style="display:none">
+    <div class="progress-step" data-step="r1">
+      <span class="dot"></span>
+      <span class="label">Opening</span>
+    </div>
+    <div class="progress-line"></div>
+    <div class="progress-step" data-step="r2">
+      <span class="dot"></span>
+      <span class="label">Rebuttal</span>
+    </div>
+    <div class="progress-line"></div>
+    <div class="progress-step" data-step="r3">
+      <span class="dot"></span>
+      <span class="label">Critic</span>
+    </div>
+    <div class="progress-line"></div>
+    <div class="progress-step" data-step="r4">
+      <span class="dot"></span>
+      <span class="label">Closing</span>
+    </div>
+  </div>
+
+  <!-- ROUND 1 — Opening -->
   <section class="round" id="round1" style="display:none">
     <div class="section-label">
       <span class="num">§ 02</span>
       <span class="title">Round 01 — Opening Remarks</span>
       <span class="line"></span>
     </div>
+    <div class="round-kicker">5인이 동시에 첫 의견을 냅니다.</div>
     <div class="personas-grid" id="personasGrid">
       <!-- cards injected -->
     </div>
   </section>
 
-  <!-- ROUND 2 -->
+  <!-- ROUND 2 — Rebuttal -->
   <section class="round" id="round2" style="display:none">
     <div class="section-label">
       <span class="num">§ 03</span>
-      <span class="title">Round 02 — Devil's Advocate</span>
+      <span class="title">Round 02 — Cross Rebuttal</span>
       <span class="line"></span>
     </div>
+    <div class="round-kicker">각자 다른 4명의 의견을 보고 동의 / 반박 / 보완합니다.</div>
+    <div class="personas-grid" id="rebuttalGrid">
+      <!-- rebuttal cards injected (one per persona) -->
+    </div>
+  </section>
+
+  <!-- ROUND 3 — Devil's Advocate -->
+  <section class="round" id="round3" style="display:none">
+    <div class="section-label">
+      <span class="num">§ 04</span>
+      <span class="title">Round 03 — Devil's Advocate</span>
+      <span class="line"></span>
+    </div>
+    <div class="round-kicker">비판자가 모두의 가정을 부숩니다.</div>
     <div class="devil-section" id="devilCard">
       <div class="devil-head">
         <div>
@@ -786,10 +1053,23 @@
     </div>
   </section>
 
+  <!-- ROUND 4 — Closing (optional) -->
+  <section class="round" id="round4" style="display:none">
+    <div class="section-label">
+      <span class="num">§ 05</span>
+      <span class="title">Round 04 — Closing Statements</span>
+      <span class="line"></span>
+    </div>
+    <div class="round-kicker">비판자 의견을 들은 후 각자 최종 입장을 정리합니다.</div>
+    <div class="personas-grid" id="closingGrid">
+      <!-- closing cards injected -->
+    </div>
+  </section>
+
   <!-- MEMO -->
   <section class="memo-section" id="memoSection" style="display:none">
     <div class="section-label">
-      <span class="num">§ 04</span>
+      <span class="num">§ 06</span>
       <span class="title">Memo by the Chair (Juns)</span>
       <span class="line"></span>
     </div>
@@ -809,7 +1089,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-boardroom · v0.4.0</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-boardroom · v0.5.0</div>
   <div>Local-First · BYOK · No Account</div>
 </footer>
 
@@ -890,11 +1170,11 @@
 
 <script>
 /* ============================================================
- * Vela Boardroom v0.4.0
+ * Vela Boardroom v0.5.0
  * Single-file prototype. Local-first. BYOK.
  * ============================================================ */
 
-const VERSION = 'v0.4.0';
+const VERSION = 'v0.5.0';
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
   sessions: 'vela.boardroom.sessions'
@@ -1357,7 +1637,18 @@ function toast(msg, isError = false) {
 
 /* ============ RENDER PERSONA CARDS ============ */
 function renderPersonaCards() {
-  const grid = $('#personasGrid');
+  // R1 — Opening
+  buildCardsInto($('#personasGrid'));
+}
+function renderRebuttalCards() {
+  buildCardsInto($('#rebuttalGrid'));
+}
+function renderClosingCards() {
+  buildCardsInto($('#closingGrid'));
+}
+
+function buildCardsInto(grid) {
+  if (!grid) return;
   grid.innerHTML = '';
   PERSONAS.forEach(p => {
     const card = document.createElement('article');
@@ -1377,8 +1668,10 @@ function renderPersonaCards() {
   });
 }
 
-function setCardThinking(personaId, thinking) {
-  const card = document.querySelector(`.persona-card[data-persona="${personaId}"]`);
+function setCardThinking(personaId, thinking, gridId) {
+  const grid = gridId ? document.getElementById(gridId) : $('#personasGrid');
+  if (!grid) return;
+  const card = grid.querySelector(`.persona-card[data-persona="${personaId}"]`);
   if (!card) return;
   card.classList.toggle('thinking', !!thinking);
   if (thinking) {
@@ -1386,13 +1679,41 @@ function setCardThinking(personaId, thinking) {
   }
 }
 
-function renderPersonaResult(personaId, parsed) {
-  const body = document.querySelector(`.persona-body[data-body="${personaId}"]`);
+// 섹션 키 → 한글 라벨 매핑 (라운드별)
+const SECTION_LABELS = {
+  // R1
+  CORE:           '핵심 의견',
+  RISK:           '우려',
+  NEXT:           '다음 액션',
+  // R2
+  RESPONSES:      '동료 의견에 대한 반응',
+  REVISED:        '본인 입장 수정',
+  // R4
+  STANCE:         '최종 입장',
+  RECOMMENDATION: '의장께 드리는 권고',
+};
+
+// renderPersonaResult(personaId, parsed, gridId, label, kind)
+// label: 표시할 라벨 (현재 미사용 — 미래용)
+// kind: 'opening' | 'rebuttal' | 'closing'
+function renderPersonaResult(personaId, parsed, gridId, label, kind) {
+  // label이 'rebuttal'/'closing' 같이 들어왔거나 kind 누락 시 자동 보정
+  if (!kind && (label === 'rebuttal' || label === 'closing' || label === 'opening')) {
+    kind = label;
+  }
+  const grid = gridId ? document.getElementById(gridId) : $('#personasGrid');
+  if (!grid) return;
+  const body = grid.querySelector(`.persona-body[data-body="${personaId}"]`);
   if (!body) return;
+
+  let order = ['CORE', 'RISK', 'NEXT'];
+  if (kind === 'rebuttal') order = ['RESPONSES', 'REVISED'];
+  if (kind === 'closing')  order = ['STANCE', 'RECOMMENDATION'];
+
   let html = '';
-  if (parsed.CORE) html += sectionHtml('핵심 의견', parsed.CORE);
-  if (parsed.RISK) html += sectionHtml('우려', parsed.RISK);
-  if (parsed.NEXT) html += sectionHtml('다음 액션', parsed.NEXT);
+  order.forEach(key => {
+    if (parsed[key]) html += sectionHtml(SECTION_LABELS[key] || key, parsed[key]);
+  });
   if (!html) html = `<p class="empty">${escapeHtml(parsed.RAW || '응답 없음')}</p>`;
   body.innerHTML = html;
 }
@@ -1508,7 +1829,7 @@ async function callLLM(systemPrompt, userMessage) {
   throw new Error('지원되지 않는 provider');
 }
 
-/* ============ MEETING FLOW ============ */
+/* ============ MEETING FLOW — 4-round debate ============ */
 async function startMeeting() {
   if (state.inProgress) return;
   const agenda = $('#agendaInput').value.trim();
@@ -1522,55 +1843,109 @@ async function startMeeting() {
     return;
   }
 
+  const r4Enabled = $('#toggleR4').checked;
+
   state.inProgress = true;
   state.agenda = agenda;
   state.personaResults = {};
+  state.rebuttalResults = {};
+  state.closingResults = {};
   state.devilResult = null;
+  state.r4Enabled = r4Enabled;
   state.sessionId = 'sess_' + Date.now();
   $('#btnStart').disabled = true;
   $('#btnStart').textContent = '회의 진행 중...';
 
-  // Show round 1
+  // Reset UI
   $('#round1').style.display = 'block';
   $('#round2').style.display = 'none';
+  $('#round3').style.display = 'none';
+  $('#round4').style.display = 'none';
   $('#memoSection').style.display = 'none';
-  PERSONAS.forEach(p => setCardThinking(p.id, true));
+  $('#progressBar').style.display = 'flex';
 
-  // Round 1 — parallel
+  setProgress({ r1: 'active', r2: 'pending', r3: 'pending', r4: r4Enabled ? 'pending' : 'skipped' });
+  PERSONAS.forEach(p => setCardThinking(p.id, true, 'personasGrid'));
+
   try {
-    const personaPromises = PERSONAS.map(async (p) => {
+    // ====== ROUND 1 — Opening (5명 동시) ======
+    await Promise.allSettled(PERSONAS.map(async (p) => {
       try {
         const userMsg = `[안건]\n${agenda}`;
-        const reply = await callLLM(p.system, userMsg);
+        const reply = await callLLM(buildR1System(p), userMsg);
         const parsed = parseSections(reply);
         state.personaResults[p.id] = parsed;
-        setCardThinking(p.id, false);
-        renderPersonaResult(p.id, parsed);
-        return parsed;
+        setCardThinking(p.id, false, 'personasGrid');
+        renderPersonaResult(p.id, parsed, 'personasGrid', 'R1 · OPENING');
       } catch (err) {
-        setCardThinking(p.id, false);
+        setCardThinking(p.id, false, 'personasGrid');
         const errParsed = { RAW: 'Error: ' + err.message };
         state.personaResults[p.id] = errParsed;
-        renderPersonaResult(p.id, errParsed);
-        throw err;
+        renderPersonaResult(p.id, errParsed, 'personasGrid', 'R1 · OPENING');
       }
-    });
+    }));
+    setProgress({ r1: 'done', r2: 'active', r3: 'pending', r4: r4Enabled ? 'pending' : 'skipped' });
 
-    await Promise.allSettled(personaPromises);
-
-    // Round 2 — devil
+    // ====== ROUND 2 — Cross Rebuttal (5명 동시, 다른 4명 의견 컨텍스트로) ======
     $('#round2').style.display = 'block';
+    renderRebuttalCards();
+    PERSONAS.forEach(p => setCardThinking(p.id, true, 'rebuttalGrid'));
+
+    await Promise.allSettled(PERSONAS.map(async (p) => {
+      try {
+        const userMsg = buildRebuttalUserMsg(p, agenda, state.personaResults);
+        const reply = await callLLM(buildR2System(p), userMsg);
+        const parsed = parseSections(reply);
+        state.rebuttalResults[p.id] = parsed;
+        setCardThinking(p.id, false, 'rebuttalGrid');
+        renderPersonaResult(p.id, parsed, 'rebuttalGrid', 'R2 · REBUTTAL', 'rebuttal');
+      } catch (err) {
+        setCardThinking(p.id, false, 'rebuttalGrid');
+        const errParsed = { RAW: 'Error: ' + err.message };
+        state.rebuttalResults[p.id] = errParsed;
+        renderPersonaResult(p.id, errParsed, 'rebuttalGrid', 'R2 · REBUTTAL', 'rebuttal');
+      }
+    }));
+    setProgress({ r1: 'done', r2: 'done', r3: 'active', r4: r4Enabled ? 'pending' : 'skipped' });
+
+    // ====== ROUND 3 — Devil's Advocate ======
+    $('#round3').style.display = 'block';
     $('#devilBody').innerHTML = '<p class="empty" style="color:var(--text-faint);font-family:var(--mono);font-size:11px;font-style:italic">반박 작성 중…</p>';
 
-    const devilContext = buildDevilContext(agenda, state.personaResults);
     try {
-      const devilReply = await callLLM(DEVIL.system, devilContext);
+      const devilCtx = buildDevilContext(agenda, state.personaResults, state.rebuttalResults);
+      const devilReply = await callLLM(DEVIL.system, devilCtx);
       const devilParsed = parseSections(devilReply);
       state.devilResult = devilParsed;
       renderDevilResult(devilParsed);
     } catch (err) {
       state.devilResult = { RAW: 'Error: ' + err.message };
       renderDevilResult(state.devilResult);
+    }
+    setProgress({ r1: 'done', r2: 'done', r3: 'done', r4: r4Enabled ? 'active' : 'skipped' });
+
+    // ====== ROUND 4 — Closing Statements (선택) ======
+    if (r4Enabled) {
+      $('#round4').style.display = 'block';
+      renderClosingCards();
+      PERSONAS.forEach(p => setCardThinking(p.id, true, 'closingGrid'));
+
+      await Promise.allSettled(PERSONAS.map(async (p) => {
+        try {
+          const userMsg = buildClosingUserMsg(p, agenda, state.personaResults, state.rebuttalResults, state.devilResult);
+          const reply = await callLLM(buildR4System(p), userMsg);
+          const parsed = parseSections(reply);
+          state.closingResults[p.id] = parsed;
+          setCardThinking(p.id, false, 'closingGrid');
+          renderPersonaResult(p.id, parsed, 'closingGrid', 'R4 · CLOSING', 'closing');
+        } catch (err) {
+          setCardThinking(p.id, false, 'closingGrid');
+          const errParsed = { RAW: 'Error: ' + err.message };
+          state.closingResults[p.id] = errParsed;
+          renderPersonaResult(p.id, errParsed, 'closingGrid', 'R4 · CLOSING', 'closing');
+        }
+      }));
+      setProgress({ r1: 'done', r2: 'done', r3: 'done', r4: 'done' });
     }
 
     // Memo section
@@ -1585,18 +1960,149 @@ async function startMeeting() {
   }
 }
 
-function buildDevilContext(agenda, results) {
-  let txt = `[원래 아이디어]\n${agenda}\n\n`;
+/* ============ PROGRESS BAR ============ */
+function setProgress(stages) {
+  // stages = { r1: 'active'|'done'|'pending'|'skipped', r2: ..., r3: ..., r4: ... }
+  const bar = $('#progressBar');
+  if (bar) bar.hidden = false; // 회의 시작되면 표시
+  Object.entries(stages).forEach(([key, status]) => {
+    const el = document.querySelector(`.progress-step[data-step="${key.toLowerCase()}"]`);
+    if (!el) return;
+    el.classList.remove('active', 'done', 'skipped');
+    if (status !== 'pending') el.classList.add(status);
+  });
+}
+function hideProgress() {
+  const bar = $('#progressBar');
+  if (bar) bar.hidden = true;
+  document.querySelectorAll('.progress-step').forEach(el => {
+    el.classList.remove('active', 'done', 'skipped');
+  });
+}
+
+/* ============ R2 / R4 SYSTEM PROMPT BUILDERS ============ */
+// R1 = persona의 원본 system 그대로
+function buildR1System(persona) {
+  return persona.system;
+}
+
+// R2 — 같은 페르소나, 다만 임무가 "다른 4명 의견에 동의/반박/보완"
+function buildR2System(persona) {
+  return `${persona.system}
+
+---
+[추가 임무 — Round 2: Cross Rebuttal]
+지금 당신은 라운드 2에 와있습니다. 라운드 1에서 당신과 다른 4명(베테랑 동료들)이 각자 첫 의견을 냈습니다. 이제 그들의 의견을 모두 검토하고 응답하십시오.
+
+원칙:
+- 동료들의 의견을 **이름으로 호명**하여 구체적으로 다루십시오 ("재무님이 말한 BEP 50개는…", "기획자님 D2C 사례에 동의합니다만…").
+- 각 동료의 의견에 대해 **동의(AGREE) / 반박(PUSHBACK) / 보완(EXTEND)** 중 하나를 명확히 선택하십시오.
+- 본인 분야 밖의 일에 대해선 직접 판단하지 말고, 그 분야 동료의 의견에 본인이 어떻게 영향받는지만 말하십시오.
+- 격려하지 마십시오. 베테랑끼리는 정직이 우선입니다.
+- 본인 R1 의견 중 동료 지적으로 인해 **수정해야 할 부분이 있다면 인정**하십시오.
+
+[출력 형식 — 반드시 이 형식으로]
+###RESPONSES
+한국어로 다른 4명 각각에 대해 한 줄씩. 형식: "[동료 이름] · [AGREE/PUSHBACK/EXTEND] · 한 줄 코멘트". 4줄.
+###REVISED
+한국어로 1~3문장. 동료 의견을 들은 후 본인 R1 입장에서 수정/보강해야 할 부분. 수정할 게 없으면 "수정 없음 — 이유" 형식으로.
+
+다른 텍스트는 절대 포함하지 마시오.`;
+}
+
+// R4 — 비판자 의견까지 들은 후 최종 입장
+function buildR4System(persona) {
+  return `${persona.system}
+
+---
+[추가 임무 — Round 4: Closing Statement]
+지금 당신은 라운드 4, 회의의 마지막에 와있습니다. 라운드 1(첫 의견), 라운드 2(상호 반박), 라운드 3(비판자의 가정 부수기)을 모두 거쳤습니다. 이제 본인 분야 관점에서 **최종 입장**을 말하십시오.
+
+원칙:
+- 비판자가 부순 가정을 **명시적으로 인정하거나 반박**하십시오.
+- 라운드 1과 비교하여 **입장이 변했는지 그대로인지** 분명히 하십시오.
+- 본인 분야 관점에서 **Juns(의장)에게 권고하는 단 하나의 액션**을 제시하십시오.
+- 격려, 균형, 위로 금지. 베테랑의 최종 권고만.
+
+[출력 형식 — 반드시 이 형식으로]
+###STANCE
+한국어로 2~3문장. 비판자 의견을 들은 후 본인의 최종 입장. R1과 비교해 무엇이 변했는지 명시.
+###RECOMMENDATION
+한국어로 1~2문장. Juns에게 권고하는 단 하나의 다음 액션. 구체적이고 실행 가능해야 함.
+
+다른 텍스트는 절대 포함하지 마시오.`;
+}
+
+/* ============ R2 / R4 USER MESSAGE BUILDERS ============ */
+function buildRebuttalUserMsg(currentPersona, agenda, r1Results) {
+  let txt = `[원래 안건]\n${agenda}\n\n[당신의 R1 의견]\n`;
+  const myR1 = r1Results[currentPersona.id];
+  if (myR1) {
+    if (myR1.CORE) txt += `핵심: ${myR1.CORE}\n`;
+    if (myR1.RISK) txt += `우려: ${myR1.RISK}\n`;
+    if (myR1.NEXT) txt += `다음: ${myR1.NEXT}\n`;
+  }
+  txt += `\n[다른 4명 동료의 R1 의견]\n`;
   PERSONAS.forEach(p => {
-    const r = results[p.id];
+    if (p.id === currentPersona.id) return;
+    const r = r1Results[p.id];
     if (!r) return;
-    txt += `\n[${p.tag} — ${p.name}의 의견]\n`;
+    txt += `\n— ${p.name} (${p.role}) —\n`;
     if (r.CORE) txt += `핵심: ${r.CORE}\n`;
     if (r.RISK) txt += `우려: ${r.RISK}\n`;
     if (r.NEXT) txt += `다음: ${r.NEXT}\n`;
     if (!r.CORE && r.RAW) txt += r.RAW + '\n';
   });
-  txt += `\n위 4명의 의견에 깔린 숨은 가정을 부수고, 이 아이디어를 죽일 수 있는 시나리오를 제시하시오.`;
+  txt += `\n이제 당신의 차례입니다. 4명 각각에 대해 동의/반박/보완하고, 본인 R1 입장 수정 여부를 밝히시오.`;
+  return txt;
+}
+
+function buildClosingUserMsg(currentPersona, agenda, r1, r2, devil) {
+  let txt = `[원래 안건]\n${agenda}\n\n[당신의 R1 의견 — 첫 입장]\n`;
+  const myR1 = r1[currentPersona.id];
+  if (myR1) {
+    if (myR1.CORE) txt += `핵심: ${myR1.CORE}\n`;
+    if (myR1.RISK) txt += `우려: ${myR1.RISK}\n`;
+    if (myR1.NEXT) txt += `다음: ${myR1.NEXT}\n`;
+  }
+  const myR2 = r2[currentPersona.id];
+  if (myR2) {
+    txt += `\n[당신의 R2 반박 — 동료 의견 후]\n`;
+    if (myR2.RESPONSES) txt += `반응: ${myR2.RESPONSES}\n`;
+    if (myR2.REVISED) txt += `수정: ${myR2.REVISED}\n`;
+  }
+  txt += `\n[비판자(30년차 어드바이저)의 R3 — 가정 부수기]\n`;
+  if (devil) {
+    if (devil.ASSUMPTION) txt += `위험한 가정: ${devil.ASSUMPTION}\n`;
+    if (devil.TRAP) txt += `함정: ${devil.TRAP}\n`;
+    if (devil.KILLER) txt += `사인: ${devil.KILLER}\n`;
+  }
+  txt += `\n비판자 의견을 본 후, 본인의 최종 입장과 Juns에게 드리는 단 하나의 권고를 밝히시오.`;
+  return txt;
+}
+
+/* ============ DEVIL CONTEXT BUILDER (R1+R2 모두 포함) ============ */
+function buildDevilContext(agenda, r1Results, r2Results) {
+  let txt = `[원래 아이디어]\n${agenda}\n\n[Round 1 — 4명의 첫 의견]\n`;
+  PERSONAS.forEach(p => {
+    const r = r1Results[p.id];
+    if (!r) return;
+    txt += `\n— ${p.tag} · ${p.name} —\n`;
+    if (r.CORE) txt += `핵심: ${r.CORE}\n`;
+    if (r.RISK) txt += `우려: ${r.RISK}\n`;
+    if (r.NEXT) txt += `다음: ${r.NEXT}\n`;
+    if (!r.CORE && r.RAW) txt += r.RAW + '\n';
+  });
+  txt += `\n[Round 2 — 4명의 상호 반박]\n`;
+  PERSONAS.forEach(p => {
+    const r = r2Results[p.id];
+    if (!r) return;
+    txt += `\n— ${p.tag} · ${p.name} —\n`;
+    if (r.RESPONSES) txt += `반응: ${r.RESPONSES}\n`;
+    if (r.REVISED) txt += `수정: ${r.REVISED}\n`;
+    if (!r.RESPONSES && r.RAW) txt += r.RAW + '\n';
+  });
+  txt += `\n위 R1과 R2 의견 전체에 깔린 숨은 가정을 부수고, 이 아이디어를 죽일 수 있는 시나리오를 제시하시오.`;
   return txt;
 }
 
@@ -1610,10 +2116,11 @@ function exportMarkdown() {
   let md = `# Vela Boardroom Session\n\n`;
   md += `> ${date} · vela-boardroom ${VERSION}\n\n`;
   md += `## Agenda\n\n${state.agenda}\n\n`;
-  md += `---\n\n## Round 01 — Opening Remarks\n\n`;
 
+  // ROUND 1
+  md += `---\n\n## Round 01 — Opening Remarks\n\n`;
   PERSONAS.forEach(p => {
-    const r = state.personaResults[p.id];
+    const r = state.personaResults?.[p.id];
     md += `### ${p.tag} · ${p.name}\n_${p.role}_\n\n`;
     if (!r) { md += `(응답 없음)\n\n`; return; }
     if (r.CORE) md += `**핵심 의견** — ${r.CORE}\n\n`;
@@ -1622,13 +2129,40 @@ function exportMarkdown() {
     if (!r.CORE && r.RAW) md += r.RAW + '\n\n';
   });
 
-  md += `---\n\n## Round 02 — Devil's Advocate\n\n`;
+  // ROUND 2 — Rebuttal
+  if (state.rebuttalResults && Object.keys(state.rebuttalResults).length > 0) {
+    md += `---\n\n## Round 02 — Cross Rebuttal\n\n`;
+    PERSONAS.forEach(p => {
+      const r = state.rebuttalResults[p.id];
+      md += `### ${p.tag} · ${p.name}\n\n`;
+      if (!r) { md += `(응답 없음)\n\n`; return; }
+      if (r.RESPONSES) md += `**동료 의견에 대한 반응**\n${r.RESPONSES}\n\n`;
+      if (r.REVISED) md += `**본인 입장 수정** — ${r.REVISED}\n\n`;
+      if (!r.RESPONSES && r.RAW) md += r.RAW + '\n\n';
+    });
+  }
+
+  // ROUND 3 — Devil
+  md += `---\n\n## Round 03 — Devil's Advocate\n\n`;
   const d = state.devilResult;
   if (d) {
     if (d.ASSUMPTION) md += `**가장 위험한 가정** — ${d.ASSUMPTION}\n\n`;
     if (d.TRAP) md += `**보지 못한 함정**\n${d.TRAP}\n\n`;
     if (d.KILLER) md += `**이 아이디어의 사인** — ${d.KILLER}\n\n`;
     if (!d.ASSUMPTION && d.RAW) md += d.RAW + '\n\n';
+  }
+
+  // ROUND 4 — Closing (선택)
+  if (state.closingResults && Object.keys(state.closingResults).length > 0) {
+    md += `---\n\n## Round 04 — Closing Statements\n\n`;
+    PERSONAS.forEach(p => {
+      const r = state.closingResults[p.id];
+      md += `### ${p.tag} · ${p.name}\n\n`;
+      if (!r) { md += `(응답 없음)\n\n`; return; }
+      if (r.STANCE) md += `**최종 입장** — ${r.STANCE}\n\n`;
+      if (r.RECOMMENDATION) md += `**의장께 드리는 권고** — ${r.RECOMMENDATION}\n\n`;
+      if (!r.STANCE && r.RAW) md += r.RAW + '\n\n';
+    });
   }
 
   md += `---\n\n## Memo by the Chair (Juns)\n\n${state.memo || '(작성되지 않음)'}\n`;
@@ -1665,12 +2199,14 @@ function saveSession() {
     date: new Date().toISOString(),
     agenda: state.agenda,
     personaResults: state.personaResults,
+    rebuttalResults: state.rebuttalResults || {},
     devilResult: state.devilResult,
+    closingResults: state.closingResults || {},
+    r4Enabled: !!state.r4Enabled,
     memo: state.memo
   };
   if (idx >= 0) sessions[idx] = record;
   else sessions.unshift(record);
-  // Keep last 50
   saveSessions(sessions.slice(0, 50));
   toast('저장됨 (총 ' + Math.min(sessions.length, 50) + '개)');
 }
@@ -1700,20 +2236,64 @@ function loadSession(id) {
   state.sessionId = s.id;
   state.agenda = s.agenda;
   state.personaResults = s.personaResults || {};
+  state.rebuttalResults = s.rebuttalResults || {};
   state.devilResult = s.devilResult;
+  state.closingResults = s.closingResults || {};
+  state.r4Enabled = !!s.r4Enabled;
   state.memo = s.memo || '';
 
   $('#agendaInput').value = state.agenda;
+  $('#toggleR4').checked = state.r4Enabled;
+  $('#progressBar').style.display = 'flex';
   $('#round1').style.display = 'block';
-  $('#round2').style.display = 'block';
+  $('#round2').style.display = Object.keys(state.rebuttalResults).length ? 'block' : 'none';
+  $('#round3').style.display = state.devilResult ? 'block' : 'none';
+  $('#round4').style.display = Object.keys(state.closingResults).length ? 'block' : 'none';
   $('#memoSection').style.display = 'block';
-  PERSONAS.forEach(p => {
-    setCardThinking(p.id, false);
-    if (state.personaResults[p.id]) renderPersonaResult(p.id, state.personaResults[p.id]);
-  });
-  if (state.devilResult) renderDevilResult(state.devilResult);
-  $('#memoInput').value = state.memo;
 
+  // R1 cards
+  renderPersonaCards();
+  PERSONAS.forEach(p => {
+    setCardThinking(p.id, false, 'personasGrid');
+    if (state.personaResults[p.id]) {
+      renderPersonaResult(p.id, state.personaResults[p.id], 'personasGrid', 'opening');
+    }
+  });
+
+  // R2 cards
+  if (Object.keys(state.rebuttalResults).length) {
+    renderRebuttalCards();
+    PERSONAS.forEach(p => {
+      setCardThinking(p.id, false, 'rebuttalGrid');
+      if (state.rebuttalResults[p.id]) {
+        renderPersonaResult(p.id, state.rebuttalResults[p.id], 'rebuttalGrid', 'rebuttal');
+      }
+    });
+  }
+
+  // R3 devil
+  if (state.devilResult) renderDevilResult(state.devilResult);
+
+  // R4 cards
+  if (Object.keys(state.closingResults).length) {
+    renderClosingCards();
+    PERSONAS.forEach(p => {
+      setCardThinking(p.id, false, 'closingGrid');
+      if (state.closingResults[p.id]) {
+        renderPersonaResult(p.id, state.closingResults[p.id], 'closingGrid', 'closing');
+      }
+    });
+  }
+
+  // Progress bar — 모두 done
+  setProgress({
+    r1: 'done',
+    r2: Object.keys(state.rebuttalResults).length ? 'done' : 'pending',
+    r3: state.devilResult ? 'done' : 'pending',
+    r4: Object.keys(state.closingResults).length ? 'done' : (state.r4Enabled ? 'pending' : 'skipped')
+  });
+
+  $('#memoInput').value = state.memo;
   closeModal('modalSessions');
   toast('회의 불러옴');
 }
@@ -1721,13 +2301,18 @@ function loadSession(id) {
 function newSession() {
   state.agenda = '';
   state.personaResults = {};
+  state.rebuttalResults = {};
   state.devilResult = null;
+  state.closingResults = {};
   state.memo = '';
   state.sessionId = null;
   $('#agendaInput').value = '';
   $('#memoInput').value = '';
+  $('#progressBar').style.display = 'none';
   $('#round1').style.display = 'none';
   $('#round2').style.display = 'none';
+  $('#round3').style.display = 'none';
+  $('#round4').style.display = 'none';
   $('#memoSection').style.display = 'none';
   $('#btnStart').textContent = '회의 시작 →';
   window.scrollTo({ top: 0, behavior: 'smooth' });
