@@ -1,7 +1,7 @@
 {
-  "name": "Vela Boardroom",
-  "short_name": "Boardroom",
-  "description": "5인 베테랑 페르소나 아이디어 회의실 — 1인 사업자 의사결정 도구",
+  "name": "Vela Compass",
+  "short_name": "Compass",
+  "description": "4인 베테랑 페르소나가 분야별 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구",
   "start_url": "./vela-boardroom-prototype.html",
   "scope": "./",
   "display": "standalone",
@@ -10,7 +10,11 @@
   "theme_color": "#0a0a0b",
   "lang": "ko",
   "dir": "ltr",
-  "categories": ["productivity", "business", "utilities"],
+  "categories": [
+    "productivity",
+    "business",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "vela-boardroom-icon-192.png",
@@ -41,7 +45,7 @@
     {
       "name": "새 회의 시작",
       "short_name": "새 회의",
-      "description": "빈 안건으로 보드룸 진입",
+      "description": "빈 안건으로 Compass 진입",
       "url": "./vela-boardroom-prototype.html?action=new"
     }
   ]
