@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.7.0 — 팩트시트</title>
+<title>Vela Compass v0.7.3 — 팩트시트</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
@@ -129,21 +129,7 @@
       3px 3px 0 #0a0a0a;
     -webkit-text-stroke: 0.8px #0a0a0a;
   }
-  @media (max-width: 720px) {
-    .brand-logo { font-size: 30px; }
-  }
-  @media (max-width: 380px) {
-    .brand-logo { font-size: 26px; }
-  }
 
-  .brand-name {
-    font-family: var(--serif);
-    font-weight: 800;
-    font-size: clamp(26px, 5vw, 42px);
-    letter-spacing: -0.03em;
-    line-height: 1;
-  }
-  .brand-name .accent { color: var(--cyan); font-style: italic; }
   .brand-sub {
     font-family: var(--mono);
     font-size: 11px;
@@ -550,33 +536,6 @@
     font-weight: 600;
   }
 
-  /* 옛 fact-list li (호환용 — 단일 팩트만 있을 때 fallback) */
-  .fact-list > li {
-    position: relative;
-    padding: 8px 0 8px 20px;
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--text);
-    border-bottom: 1px dashed var(--line-soft);
-    word-break: keep-all;
-  }
-  .fact-list > li:last-child { border-bottom: none; }
-  .fact-list > li::before {
-    content: '·';
-    position: absolute;
-    left: 6px;
-    top: 8px;
-    color: var(--text-faint);
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 1.4;
-  }
-  .fact-list > li.warn::before {
-    content: '⚠';
-    font-size: 12px;
-    top: 9px;
-    color: var(--c-warn);
-  }
   .fact-empty {
     font-family: var(--mono);
     font-size: 11px;
@@ -1002,6 +961,39 @@
   .colophon .credit { color: var(--text-dim); }
   .colophon .credit b { color: var(--text); font-weight: 700; letter-spacing: 0.16em; }
 
+  /* ============ SCROLL TO TOP ============ */
+  .btn-to-top {
+    position: fixed;
+    right: 22px;
+    bottom: 28px;
+    width: 44px;
+    height: 44px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    z-index: 50;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s, border-color 0.15s ease, color 0.15s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  }
+  .btn-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .btn-to-top:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
   /* ============ MOBILE ============ */
   @media (max-width: 720px) {
     main { padding: 36px 18px 60px; }
@@ -1010,6 +1002,11 @@
     .colophon { padding: 22px 18px 24px; }
     .agenda-headline { font-size: 30px; }
     .fact-card { min-height: auto; }
+    .brand-logo { font-size: 30px; }
+    .btn-to-top { right: 14px; bottom: 18px; width: 40px; height: 40px; }
+  }
+  @media (max-width: 380px) {
+    .brand-logo { font-size: 26px; }
   }
 </style>
 </head>
@@ -1033,7 +1030,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.7.0</span>
+    <span>v0.7.3</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1151,9 +1148,17 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.0 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.3 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
+
+<!-- Scroll to top 버튼 (fixed, 일정 스크롤 후 표시) -->
+<button id="btnToTop" class="btn-to-top" type="button" aria-label="맨 위로" title="맨 위로">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="19" x2="12" y2="5"/>
+    <polyline points="5 12 12 5 19 12"/>
+  </svg>
+</button>
 
 <!-- ============ SETTINGS MODAL ============ -->
 <div class="modal-backdrop" id="modalSettings">
@@ -1232,14 +1237,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.7.0 — Factsheet mode
+ * Vela Compass v0.7.3 — Factsheet mode
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const VERSION = 'v0.7.0';
+const VERSION = 'v0.7.3';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -1275,7 +1280,31 @@ const LLM_CONFIG = {
   }
 };
 
-/* ============ PERSONAS — 팩트 전용 ============ */
+/* ============ PERSONAS — 팩트 + 방향성 페어 ============ */
+
+// 공통 출력 규칙 — 4명 페르소나 모두에 공통 (이전엔 4번 반복됨)
+const COMMON_RULES = `[한국어 출력 절대 강제 — 위반 시 응답 무효]
+- 출력은 100% 한국어 음절(가~힣) + 숫자 + 단위(원, 만 원, kg, mm, ℃, %, 일, 개, 시간) + 허용 영어 약자만.
+- 절대 금지: 한자(生産, 制作, 売上 등), 일본어(の, は, です), 베트남어(nhưng, không), 헝가리어(lehet), 러시아어, 아랍어 등 모든 외국어 단어.
+- 외래어는 한국어로: '큐어링' 아닌 '경화', '프로덕션' 아닌 '생산'.
+- 응답 작성 전 자기 점검: 한자나 외국어 단어가 섞이지 않았는지 확인 후 출력.
+
+[엄격한 출력 형식]
+###FACTS
+- 안건 직접 연관 팩트 (50자 이내)
+→ 그 팩트가 의미하는 함의 (60자 이내)
+- 팩트2
+→ 함의2
+- ⚠ 위험 신호 팩트3
+→ 함의3
+
+페어 3개 (최대 4개). 다른 텍스트, 인사말, 결론 모두 금지.
+
+[톤]
+- 추천/명령 금지. 베테랑 진술 톤 ("X가 Y 임계에서 우위", "Z가 ~인 패턴")
+- 정량 수치 우선
+- 안건 키워드와 직접 연관된 팩트만. 일반론·다른 카테고리 사례 금지.`;
+
 const PERSONAS = [
   {
     id: 'product',
@@ -1283,6 +1312,7 @@ const PERSONAS = [
     name: 'The Strategist',
     role: '제품 기획 33년차 / 1인 브랜드 320건 검증',
     color: '#f5b942',
+    allowedAcronyms: 'TPU, FDM, CNC, BEP, MOQ, SEO, ROI, KPI, JTBD, OEM, D2C',
     system: `당신은 33년차 제품 기획자입니다.
 
 [경력]
@@ -1293,32 +1323,15 @@ const PERSONAS = [
 
 [당신이 본 패턴 — 1인 브랜드 죽음의 90%]
 - 분실/소모 빈도 데이터 없이 "있으면 살 것"이라는 가정으로 시작
-- 무배송비 임계 (5,500원) 미만 단품 가격 — 충동구매 동기 붕괴
-- 핸드메이드/소량 생산 신호가 카테고리에 안 맞음 (낚시·공구는 신뢰 약함)
+- 무배송비 임계(5,500원) 미만 단품 가격 — 충동구매 동기 붕괴
+- 핸드메이드/소량 생산 신호가 카테고리에 안 맞음
 - 첫 100명 획득 채널 부재 — 평균 6~9개월 노출 0건
-- 대체재가 더 싸고 즉시 가용 (워엄 1봉 2,500원, 가드 5천원)
+- 대체재가 더 싸고 즉시 가용
 
-[당신의 역할]
-이 안건의 키워드(소재/용도/가격/채널)를 보고 본인이 직접 검증한 사실만 답합니다.
+[역할]
+이 안건의 키워드(소재/용도/가격/채널)에 직접 연관된 사용자·시장 팩트만 답합니다. 광역 시장 통계, 다른 카테고리 사례 금지.
 
-[엄격한 안건 연결 규칙]
-- 안건에 적힌 단어와 직접 연관된 사실만. 일반 시장 통계나 다른 카테고리 데이터 금지.
-- "3D 프린팅 시장이 성장한다" 같은 광역 일반론 금지.
-- 안건이 농어/낚시면 농어 루어인 행동만, 가격대면 그 가격대 임계만.
-
-[한국어 강제]
-출력은 100% 한국어. 영어 약자(TPU, PLA, BEP 등)만 허용. 외국어 단어(러시아어, 아랍어, 일본어 등) 절대 금지. 외래어도 한글로.
-
-[형식]
-###FACTS
-- 안건 직접 연관 팩트 (50자 이내)
-→ 그 팩트가 의미하는 함의 (60자 이내)
-- 팩트2
-→ 함의2
-- ⚠ 위험 신호 팩트3
-→ 함의3
-
-페어 3개 (최대 4개). 다른 텍스트, 인사말, 결론 모두 금지.`
+허용 영어 약자: TPU, FDM, CNC, BEP, MOQ, SEO, ROI, KPI, JTBD, OEM, D2C.`
   },
   {
     id: 'engineer',
@@ -1326,51 +1339,29 @@ const PERSONAS = [
     name: 'The Maker',
     role: '제조 전반 30년차 / 사출·CNC·AM·외주 매칭',
     color: '#5eead4',
+    allowedAcronyms: 'TPU, FDM, CNC, BEP, MOQ, SLA, SLS, MJF, EDM, PETG, ABS, PLA, ASA, AM',
     system: `당신은 30년차 제조 엔지니어입니다. 한국 제조업 현장에서 거의 모든 공정을 직접 다뤄봤습니다.
 
 [경력 — 공정 다양성]
-- 1996~2002: 대우자동차 사출 금형 설계 (사출, 압출, 인서트, 가스 사출 — 자동차 부품 양산 1만건+)
-- 2002~2008: 중소 OEM CNC 가공실장 (5축 CNC, 머시닝 센터, 와이어 EDM — 정밀공차 ±0.05mm)
-- 2008~2014: 판금·프레스 공장 컨설팅 (블랭킹, 벤딩, 딥드로잉, 진공성형 — 가전 외장 50개사)
-- 2014~2020: 산업용 적층제조 도입 평가 (SLS, SLA, MJF, DMLS, 광경화 — 제조업 50개사)
-- 2020~현재: Bambu Lab/Prusa 1인 메이커 코칭 + 외주 가공 매칭 (300건 검증)
+- 1996~2002: 대우자동차 사출 금형 설계 (사출, 압출, 인서트, 가스 사출)
+- 2002~2008: 중소 OEM CNC 가공실장 (5축 CNC, 머시닝 센터, 와이어 EDM, 정밀공차 ±0.05mm)
+- 2008~2014: 판금·프레스 공장 컨설팅 (블랭킹, 벤딩, 딥드로잉, 진공성형)
+- 2014~2020: 산업용 적층제조 도입 평가 (SLS, SLA, MJF, DMLS, 광경화)
+- 2020~현재: Bambu Lab/Prusa 1인 메이커 코칭 + 외주 가공 매칭 (300건)
 
-[당신이 직접 운영해본 공정 — 본인 손으로 만져본 것만 답함]
-사출, 압축 성형, 압출, 진공 성형, 열성형, 인발, 블랭킹, 벤딩, 딥드로잉, 다이캐스팅, 5축 CNC, 와이어 EDM, 사형 주조, 인베스트먼트, FDM, SLA, SLS, MJF, DMLS, 후처리(도색·사포·증착·도금), 한국 외주 가공망(인천·시화·창원·김해)
+[직접 운영해본 공정]
+사출, 압출, 진공성형, 열성형, 인발, 블랭킹, 벤딩, 딥드로잉, 다이캐스팅, 5축 CNC, 와이어 EDM, 사형주조, 인베스트먼트, FDM, SLA, SLS, MJF, DMLS, 후처리(도색·사포·증착·도금), 한국 외주망(인천·시화·창원·김해).
 
-[당신이 본 1인 사업자 공정 선택 실수 — 18개월 사망률 91%의 진짜 원인]
-- 사출 금형 800~3000만 원 부담 회피하려 무조건 FDM 양산 → 1,000개 넘는 시점부터 단가/시간 폭발
-- 5,000개 미만 단발성을 사출로 가려다 BEP 못 맞춤 (MOQ 미달로 1개당 단가 폭증)
-- 단순 형상에 5축 CNC 적용 → 시간당 3.5만 원 가공비로 BEP 붕괴
-- 진공 성형으로 2천 원에 가능한 외장을 FDM으로 1만 원 만듦
-- 외주 가공 견적 비교 없이 자체 설비로 양산 결정 → 본인 시간 폭증으로 진짜 단가 누락
-- 다이캐스팅 적용 가능한 알루미늄 부품을 CNC로 가공 → 50배 비용
+[당신이 본 1인 사업자 공정 선택 실수]
+- 사출 금형(800~3,000만 원) 부담 회피 → 무조건 FDM 양산 → 1,000개 넘는 시점 단가 폭발
+- 5,000개 미만 단발성 사출 시도 → MOQ 미달로 단가 폭증
+- 단순 형상에 5축 CNC 적용 → 시간당 3.5만 원으로 BEP 붕괴
+- 외주 가공 견적 비교 없이 자체 설비 결정 → 본인 시간 폭증
 
-[당신의 역할 — 공정 비교 + 가장 유리한 공정 진술]
-이 안건의 수량/단가/품질 요구를 보고, 한국에서 가용한 공정들을 본인 30년 경험으로 비교해서 **이 안건 조건에서 BEP 우위 공정과 임계점**을 짚습니다.
+[역할 — 공정 비교 + BEP 임계 진술]
+이 안건의 수량/단가/품질 요구를 보고, 가용한 공정들을 비교해서 BEP 우위 공정과 임계점을 짚습니다. 안건 수량이 명시 안 됐으면 50/500/5000개 3구간 비교. 단일 공정 옹호 금지 — 조건 변하면 다른 공정 우위로 전환됨을 짚을 것. 본인 시간당 단가는 1.5만 원 산입.
 
-추천이 아닙니다. "X 공정이 이 조건에서 BEP 우위", "Y 수량 임계 넘으면 Z 공정으로 전환" 같은 베테랑 진술 톤. 공정 비교는 정량(단가, 초기 비용, MOQ, 리드타임) 포함 필수.
-
-[엄격한 규칙]
-- 안건의 수량(예상 양산량)이 명시 안 됐으면 50/500/5000개 3구간으로 비교
-- 단일 공정만 옹호 금지 — 안건 조건 변하면 다른 공정이 유리해짐을 짚을 것 (BEP 임계 명시)
-- 안건과 무관한 일반 소재 카탈로그 정보(PLA 굽힘강도 같은) 절대 금지
-- 안건의 소재/용도 키워드(예: TPU 가드)에 직접 적용되는 공정 비교만
-- 본인 시간당 단가는 1.5만 원으로 산입한 진짜 단가 사용
-
-[한국어 강제]
-출력은 100% 한국어. 영어 약자(TPU, FDM, SLA, SLS, MJF, CNC, MOQ, BEP, EDM, AM 등)만 허용. 외국어 단어(러시아어/아랍어/일본어 등) 절대 금지. '큐어링' 아닌 '경화'.
-
-[형식]
-###FACTS
-- 안건 조건에 적용 가능한 공정 비교 팩트 (50자 이내, 정량 우선)
-→ 어느 공정이 어느 임계에서 BEP 우위인지 함의 (60자 이내)
-- 팩트2
-→ 함의2
-- ⚠ 위험 신호 팩트3 (잘못된 공정 선택의 비용)
-→ 함의3
-
-페어 3개 (최대 4개). 다른 텍스트, 인사말, 결론 모두 금지.`
+허용 영어 약자: TPU, FDM, CNC, BEP, MOQ, SLA, SLS, MJF, EDM, PETG, ABS, PLA, ASA, AM.`
   },
   {
     id: 'marketer',
@@ -1378,42 +1369,26 @@ const PERSONAS = [
     name: 'The Voice',
     role: '디지털 마케팅 28년차 / 1인 셀러 240명 코칭',
     color: '#f06b9b',
+    allowedAcronyms: 'SEO, CTR, ROAS, KPI, CPC, CPM, UGC, B2C, D2C',
     system: `당신은 28년차 디지털 마케터입니다.
 
 [경력]
 - 1998~2006: 다음·네이버 검색광고 1세대 (대기업 키워드 운영)
 - 2006~2014: 페이스북·인스타 한국 진출기 (브랜드 50개 운영)
 - 2014~2021: 유튜브·스마트스토어 상승기 (1인 셀러 D2C 전환)
-- 2021~현재: 숏폼·1인 셀러 코칭 (240명, 월 매출 100만원 돌파율 23%)
+- 2021~현재: 숏폼·1인 셀러 코칭 (240명, 월 매출 100만 원 돌파율 23%)
 
 [당신이 본 패턴 — 신규 1인 셀러 6개월 노출 0건의 진짜 이유]
-- 스마트스토어 단독 채널 = 첫 6개월 SEO 0순위, 매출 기대 불가
-- 카테고리별 채널 적합도 무시: 낚시는 카페+유튜브, 패션은 인스타·릴스, 디지털 도구는 X·블로그
+- 스마트스토어 단독 채널 → 첫 6개월 SEO 0순위, 매출 기대 불가
+- 카테고리별 채널 적합도 무시 (낚시는 카페+유튜브, 패션은 인스타·릴스)
 - 가격 임계 무시: 무배송비 5,500원, 충동구매 5천 미만, 묶음 1만, 프리미엄 2.9만
-- 콘텐츠 누적 50개 미만 = 알고리즘 첫 노출 불가능
-- 협찬 후기는 광고로 인식되어 신뢰도 30% 감소
+- 콘텐츠 누적 50개 미만 → 알고리즘 첫 노출 불가
+- 협찬 후기 = 광고 인식 → 신뢰도 30% 감소
 
-[당신의 역할]
-이 안건의 카테고리/가격/채널 키워드를 보고 본인이 직접 운영한 채널 데이터만 답합니다.
+[역할]
+이 안건의 카테고리/가격/채널에 직접 연관된 채널 팩트만 답합니다. 다른 카테고리 사례, 광역 일반론 금지.
 
-[엄격한 안건 연결 규칙]
-- 안건의 카테고리(낚시면 낚시, 공구면 공구)에 검증된 채널만. 다른 카테고리 사례 금지.
-- 안건의 가격대 임계만. 일반 마케팅 통계 금지.
-- "콘텐츠 마케팅이 중요하다" 같은 광역 일반론 금지.
-
-[한국어 강제]
-출력은 100% 한국어. 영어 약자(SEO, CTR, ROAS, KPI 등)만 허용. 외국어 단어 절대 금지. '인플루언서' 아닌 '인플루언서'(한글 표기), 외래어 한글로.
-
-[형식]
-###FACTS
-- 안건 카테고리/가격에 직접 적용되는 채널 팩트 (50자 이내)
-→ 그 패턴이 의미하는 함의 (60자 이내)
-- 팩트2
-→ 함의2
-- ⚠ 위험 신호 팩트3
-→ 함의3
-
-페어 3개 (최대 4개). 다른 텍스트, 인사말, 결론 모두 금지.`
+허용 영어 약자: SEO, CTR, ROAS, KPI, CPC, CPM, UGC, B2C, D2C.`
   },
   {
     id: 'finance',
@@ -1421,44 +1396,31 @@ const PERSONAS = [
     name: 'The Ledger',
     role: '회계·세무 31년차 / 1인 사업자 1,800건',
     color: '#a3e635',
+    allowedAcronyms: 'BEP, ROI, COGS, KPI',
     system: `당신은 31년차 세무사 출신 회계 전문가입니다.
 
 [경력]
 - 1995~2004: 안진·삼일 회계법인 감사 (제조업 50개사)
-- 2004~2012: 세무사 개업 (중소 제조·도소매 200개 고객)
+- 2004~2012: 세무사 개업 (중소 제조·도소매 200개)
 - 2012~2020: 온라인 셀러 전문 (스마트스토어·쿠팡 셀러 800명)
-- 2020~현재: 1인 사업자 재무 코칭 (1,800명 누적, 흑자도산 사례 97건 직접 정리)
+- 2020~현재: 1인 사업자 재무 코칭 (1,800명, 흑자도산 사례 97건 정리)
 
-[당신이 본 패턴 — 1인 사업자 흑자도산 진짜 원인]
-- 본인 인건비 0원 가정 → 진짜 단가 30~80% 누락, 마진율 환상
-- 매출 회수 시점 무시 (스마트스토어 60일 후 정산) → 200개 양산 후 3개월 현금 0
-- 간이과세 8천만 한도 의식 못 함 → 8천 넘기는 시점 부가세 폭탄 (300~600만)
-- 재고 평가 누락 → 종소세 시 매입원가만 보고 진짜 마진 못 잡음
-- 최저 손익분기점(BEP) 계산 시 영업·CS·반품 시간 빼먹음 → 실제 BEP 1.4~1.8배
+[당신이 본 흑자도산 진짜 원인]
+- 본인 인건비 0원 가정 → 진짜 단가 30~80% 누락
+- 매출 회수 시점 무시 (스마트스토어 60일 후) → 양산 후 3개월 현금 0
+- 간이 8천만 한도 의식 못 함 → 8천 넘기는 시점 부가세 폭탄(300~600만)
+- 재고 평가 누락 → 종소세 시 진짜 마진 미파악
+- BEP 계산 시 영업·CS·반품 시간 제외 → 실제 BEP 1.4~1.8배
 
-[당신의 역할]
-이 안건의 가격/원가/채널/예상 수량 키워드를 보고 본인이 직접 본 1,800건의 단가 산식만 답합니다.
+[역할]
+이 안건의 가격/원가/수량에 직접 연관된 단가 산식만 답합니다. 본인 시간당 단가는 1.5만 원 강제 산입. 광역 세무 일반론 금지.
 
-[엄격한 안건 연결 규칙]
-- 안건의 가격대/원가 구조에 직접 적용되는 단가 산식만. 일반 세금 정보 금지.
-- 본인 시간당 단가는 항상 1.5만 원으로 산입 (2026년 1인 사업자 평균).
-- "세금이 중요하다" 같은 광역 일반론 금지.
-
-[한국어 강제]
-출력은 100% 한국어. 영어 약자(BEP, ROI 등)만 허용. 외국어 단어 절대 금지.
-
-[형식]
-###FACTS
-- 안건 단가에 직접 적용되는 회계 팩트 (50자 이내, 가능하면 정확한 숫자)
-→ 그 숫자가 의미하는 함의 (60자 이내)
-- 팩트2
-→ 함의2
-- ⚠ 위험 신호 팩트3
-→ 함의3
-
-페어 3개 (최대 4개). 다른 텍스트, 인사말, 결론 모두 금지.`
+허용 영어 약자: BEP, ROI, COGS, KPI.`
   }
 ];
+
+// 페르소나의 system prompt에 공통 규칙을 자동 결합
+PERSONAS.forEach(p => { p.system = p.system + '\n\n' + COMMON_RULES; });
 
 /* ============ STATE ============ */
 let state = {
@@ -1595,6 +1557,18 @@ function bindEvents() {
   $('#btnSave').addEventListener('click', saveSession);
   $('#btnNew').addEventListener('click', newSession);
   $('#memoInput').addEventListener('input', (e) => { state.memo = e.target.value; });
+
+  // Scroll to top — 일정 스크롤 후 페이드인, 클릭 시 부드럽게 맨 위로
+  const btnToTop = $('#btnToTop');
+  if (btnToTop) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 480) btnToTop.classList.add('visible');
+      else btnToTop.classList.remove('visible');
+    }, { passive: true });
+    btnToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 }
 
 function refreshApiStatus() {
@@ -1787,16 +1761,73 @@ function renderFactList(personaId, parsed) {
 }
 
 /* ============ PARSER ============ */
+
+// 한자 → 한국어 매핑 (가장 흔한 케이스만 — 응답 의미 보존)
+const HANJA_MAP = {
+  '生産': '생산', '製作': '제작', '制作': '제작', '製造': '제조',
+  '加工': '가공', '販売': '판매', '購買': '구매', '消費': '소비',
+  '利益': '이익', '損失': '손실', '売上': '매출', '在庫': '재고',
+  '原価': '원가', '価格': '가격', '費用': '비용', '収入': '수입',
+  '顧客': '고객', '市場': '시장', '商品': '상품', '製品': '제품',
+  '関係': '관계', '管理': '관리', '運営': '운영', '会社': '회사',
+  '工場': '공장', '工程': '공정', '部品': '부품', '素材': '소재',
+  '品質': '품질', '機械': '기계', '設備': '설비', '技術': '기술',
+  '時間': '시간', '空間': '공간', '数量': '수량', '価値': '가치',
+  '可能': '가능', '不可': '불가', '必要': '필요', '重要': '중요',
+  '同時': '동시', '以上': '이상', '以下': '이하', '未満': '미만',
+  '初期': '초기', '最終': '최종', '増加': '증가', '減少': '감소'
+};
+
+// 베트남어/헝가리어 등 외국어 의심 단어 → 한국어 대체
+const FOREIGN_WORD_MAP = {
+  'nhưng': '그러나', 'không': '없음', 'lehet': '가능',
+  'kann': '가능', 'możliwe': '가능'
+};
+
+function sanitizeKorean(text) {
+  if (!text) return text;
+  let s = text;
+
+  // 1. 한자 단어 매핑 (의미 보존)
+  Object.entries(HANJA_MAP).forEach(([cn, ko]) => {
+    s = s.split(cn).join(ko);
+  });
+
+  // 2. 남은 개별 한자 제거 (CJK Unified Ideographs)
+  s = s.replace(/[\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]/g, '');
+
+  // 3. 알려진 외국어 단어 매핑
+  Object.entries(FOREIGN_WORD_MAP).forEach(([fw, ko]) => {
+    const re = new RegExp('\\b' + fw + '\\b', 'gi');
+    s = s.replace(re, ko);
+  });
+
+  // 4. 베트남어/헝가리어 등 diacritic 라틴 문자 제거 (영어엔 없음)
+  s = s.replace(/[ăâđêôơưĂÂĐÊÔƠƯőűŐŰ]/g, '');
+  // 결합 문자(combining marks) — 베트남어 톤 등
+  s = s.replace(/[\u0300-\u036F]/g, '');
+
+  // 5. 일본어 히라가나/가타카나 제거 (한국어 텍스트에 의미 없음)
+  s = s.replace(/[\u3040-\u309F\u30A0-\u30FF]/g, '');
+
+  // 6. 연속 공백 정리
+  s = s.replace(/[ \t]+/g, ' ').replace(/ +\n/g, '\n').replace(/\n +/g, '\n');
+  // 빈 줄 누적 정리
+  s = s.replace(/\n{3,}/g, '\n\n').trim();
+
+  return s;
+}
+
 function parseSections(text) {
-  const result = { RAW: text };
+  const cleaned = sanitizeKorean(text);
+  const result = { RAW: cleaned };
   const re = /###([A-Z]+)\s*\n?([\s\S]*?)(?=###[A-Z]+|$)/g;
   let m;
-  while ((m = re.exec(text)) !== null) {
+  while ((m = re.exec(cleaned)) !== null) {
     result[m[1]] = m[2].trim();
   }
-  // 만약 ###FACTS가 없으면 전체를 FACTS로 간주
-  if (!result.FACTS && text && text.trim()) {
-    result.FACTS = text.trim();
+  if (!result.FACTS && cleaned && cleaned.trim()) {
+    result.FACTS = cleaned.trim();
   }
   return result;
 }
@@ -2013,11 +2044,6 @@ function startVoiceInput(targetSelector) {
 }
 
 /* ============ VOICE OUTPUT (Speech Synthesis) ============ */
-function getKoreanVoices() {
-  if (!('speechSynthesis' in window)) return [];
-  const all = window.speechSynthesis.getVoices();
-  return all.filter(v => v.lang.startsWith('ko'));
-}
 
 // 페르소나별 발화 텍스트 정리 — 마커 제거하고 자연스러운 한국어로
 function buildSpeechText(persona, parsed) {
@@ -2043,11 +2069,49 @@ function buildSpeechText(persona, parsed) {
   return parts.join(' ');
 }
 
-function speakCard(personaId) {
+// 공통 발화 헬퍼 — speakCard / speakFollowup이 공유
+function _speakUtterance(text, btnSelector, personaId) {
   if (!('speechSynthesis' in window)) {
     toast('이 브라우저는 음성 합성을 지원하지 않습니다', true);
     return;
   }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ko-KR';
+  u.rate = state.voiceRate || 1.0;
+  if (state.voiceURI) {
+    const v = window.speechSynthesis.getVoices().find(x => x.voiceURI === state.voiceURI);
+    if (v) u.voice = v;
+  }
+  const resetBtns = () => {
+    document.querySelectorAll('.btn-speak').forEach(b => {
+      b.classList.remove('playing');
+      b.textContent = '▶';
+    });
+  };
+  u.onstart = () => {
+    if (personaId) state.speakingPersona = personaId;
+    resetBtns();
+    if (btnSelector) {
+      const btn = document.querySelector(btnSelector);
+      if (btn) { btn.classList.add('playing'); btn.textContent = '■'; }
+    }
+  };
+  u.onend = () => {
+    state.speakingPersona = null;
+    resetBtns();
+  };
+  u.onerror = (e) => {
+    state.speakingPersona = null;
+    resetBtns();
+    if (e.error !== 'interrupted' && e.error !== 'canceled') {
+      toast('음성 재생 오류: ' + e.error, true);
+    }
+  };
+  window.speechSynthesis.speak(u);
+}
+
+function speakCard(personaId) {
   // 같은 카드 다시 누르면 중지
   if (state.speakingPersona === personaId) {
     window.speechSynthesis.cancel();
@@ -2058,67 +2122,12 @@ function speakCard(personaId) {
     });
     return;
   }
-
   const persona = PERSONAS.find(p => p.id === personaId);
   const facts = state.facts[personaId];
-  if (!persona || !facts) {
-    toast('읽을 팩트가 없습니다', true);
-    return;
-  }
+  if (!persona || !facts) { toast('읽을 팩트가 없습니다', true); return; }
   const text = buildSpeechText(persona, facts);
-  if (!text) {
-    toast('읽을 팩트가 없습니다', true);
-    return;
-  }
-
-  // 이전 발화 모두 중지
-  window.speechSynthesis.cancel();
-
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'ko-KR';
-  utterance.rate = state.voiceRate || 1.0;
-  utterance.pitch = 1.0;
-
-  // 선택된 음성 적용
-  if (state.voiceURI) {
-    const voices = window.speechSynthesis.getVoices();
-    const v = voices.find(x => x.voiceURI === state.voiceURI);
-    if (v) utterance.voice = v;
-  }
-
-  utterance.onstart = () => {
-    state.speakingPersona = personaId;
-    document.querySelectorAll('.btn-speak').forEach(b => {
-      b.classList.remove('playing');
-      b.textContent = '▶';
-    });
-    const myBtn = document.querySelector(`.btn-speak[data-speak="${personaId}"]`);
-    if (myBtn) {
-      myBtn.classList.add('playing');
-      myBtn.textContent = '■';
-    }
-  };
-  utterance.onend = () => {
-    state.speakingPersona = null;
-    const myBtn = document.querySelector(`.btn-speak[data-speak="${personaId}"]`);
-    if (myBtn) {
-      myBtn.classList.remove('playing');
-      myBtn.textContent = '▶';
-    }
-  };
-  utterance.onerror = (e) => {
-    state.speakingPersona = null;
-    const myBtn = document.querySelector(`.btn-speak[data-speak="${personaId}"]`);
-    if (myBtn) {
-      myBtn.classList.remove('playing');
-      myBtn.textContent = '▶';
-    }
-    if (e.error !== 'interrupted' && e.error !== 'canceled') {
-      toast('음성 재생 오류: ' + e.error, true);
-    }
-  };
-
-  window.speechSynthesis.speak(utterance);
+  if (!text) { toast('읽을 팩트가 없습니다', true); return; }
+  _speakUtterance(text, `.btn-speak[data-speak="${personaId}"]`, personaId);
 }
 
 /* ============ FOLLOW-UP MODE ============ */
@@ -2239,7 +2248,8 @@ async function sendFollowup() {
   const runOne = async (persona) => {
     try {
       const userMsg = buildFollowupContext(persona, question);
-      const reply = await callLLM(persona.system, userMsg);
+      const rawReply = await callLLM(persona.system, userMsg);
+      const reply = sanitizeKorean(rawReply);
       const answerObj = { personaId: persona.id, text: reply, ts: Date.now() };
       followup.answers.push(answerObj);
       renderFollowupAnswer(followup, persona, reply, false);
@@ -2337,20 +2347,7 @@ function speakFollowup(followupId, personaId) {
   if (!ans) return;
   const persona = PERSONAS.find(p => p.id === personaId);
   if (!persona) return;
-  // speakCard와 같은 로직 재활용 — 단순 텍스트 발화
-  if (!('speechSynthesis' in window)) {
-    toast('이 브라우저는 음성 합성을 지원하지 않습니다', true);
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(`${persona.name}. ${ans.text}`);
-  utterance.lang = 'ko-KR';
-  utterance.rate = state.voiceRate || 1.0;
-  if (state.voiceURI) {
-    const v = window.speechSynthesis.getVoices().find(x => x.voiceURI === state.voiceURI);
-    if (v) utterance.voice = v;
-  }
-  window.speechSynthesis.speak(utterance);
+  _speakUtterance(`${persona.name}. ${ans.text}`, null, null);
 }
 
 /* ============ EXPORT MARKDOWN ============ */
