@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.7.7 — 팩트시트</title>
+<title>Vela Compass v0.7.9 — 팩트시트</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
@@ -167,6 +167,10 @@
     border-color: var(--cyan);
     color: var(--cyan);
   }
+
+  /* 라벨 — 데스크탑은 full, 좁은 모바일은 short */
+  .label-short { display: none; }
+  .label-full { display: inline; }
   .btn-install {
     background: var(--cyan) !important;
     color: var(--bg) !important;
@@ -1097,16 +1101,65 @@
   /* ============ MOBILE ============ */
   @media (max-width: 720px) {
     main { padding: 36px 18px 60px; }
-    .masthead { padding: 18px 18px 14px; }
+    .masthead {
+      padding: 16px 16px 14px;
+      gap: 8px;
+    }
     .issue-strip { padding: 8px 18px; }
     .colophon { padding: 22px 18px 24px; }
     .agenda-headline { font-size: 30px; }
     .fact-card { min-height: auto; }
     .brand-logo { font-size: 30px; }
     .btn-to-top { right: 14px; bottom: 18px; width: 40px; height: 40px; }
+    .masthead-meta { gap: 6px; }
+    .masthead-meta button {
+      padding: 6px 9px;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+    }
+    .btn-install { padding: 6px 10px !important; gap: 5px; }
+    .btn-install svg { width: 11px; height: 11px; }
+  }
+  /* 좁은 모바일 (대부분 폰 세로) — 라벨 한글 짧게 + 부제 숨김 */
+  @media (max-width: 480px) {
+    .masthead {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .brand {
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand-sub {
+      font-size: 9.5px;
+      letter-spacing: 0.1em;
+    }
+    .masthead-meta {
+      justify-content: flex-end;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .masthead-meta::-webkit-scrollbar { display: none; }
+    .masthead-meta #modelTag {
+      margin-right: auto;
+      font-size: 9.5px;
+      flex-shrink: 0;
+    }
+    .masthead-meta button {
+      flex-shrink: 0;
+      padding: 6px 10px;
+      font-size: 10.5px;
+    }
+    .label-full { display: none; }
+    .label-short { display: inline; }
   }
   @media (max-width: 380px) {
-    .brand-logo { font-size: 26px; }
+    .brand-logo { font-size: 24px; }
+    .brand-sub { font-size: 9px; }
+    .masthead-meta button { padding: 5px 8px; font-size: 10px; }
   }
 </style>
 </head>
@@ -1127,17 +1180,21 @@
         <polyline points="7 10 12 15 17 10"/>
         <line x1="12" y1="15" x2="12" y2="3"/>
       </svg>
-      <span>앱 설치</span>
+      <span class="label-full">앱 설치</span><span class="label-short">설치</span>
     </button>
-    <button id="btnSessions">SESSIONS</button>
-    <button id="btnSettings">SETTINGS</button>
+    <button id="btnSessions">
+      <span class="label-full">SESSIONS</span><span class="label-short">기록</span>
+    </button>
+    <button id="btnSettings">
+      <span class="label-full">SETTINGS</span><span class="label-short">설정</span>
+    </button>
   </div>
 </header>
 
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.7.7</span>
+    <span>v0.7.9</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1255,7 +1312,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.7 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.9 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -1349,14 +1406,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.7.7 — Factsheet mode
+ * Vela Compass v0.7.9 — Factsheet mode
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const VERSION = 'v0.7.7';
+const VERSION = 'v0.7.9';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -2817,6 +2874,36 @@ if ('serviceWorker' in navigator
     && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('vela-boardroom-sw.js', { scope: './' })
+      .then((reg) => {
+        // 페이지 진입 시 SW update 강제 체크
+        reg.update().catch(() => {});
+
+        // 1시간마다 update 체크 (장시간 PWA 사용 시)
+        setInterval(() => reg.update().catch(() => {}), 60 * 60 * 1000);
+
+        // 새 SW가 활성화 대기 중일 때 — 자동 활성화
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          if (!newWorker) return;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // 새 SW 설치됨 → 즉시 활성화 (skipWaiting)
+              newWorker.postMessage({ type: 'SKIP_WAITING' });
+              setTimeout(() => {
+                if (typeof toast === 'function') toast('새 버전으로 업데이트됨 — 새로고침 권장');
+              }, 500);
+            }
+          });
+        });
+
+        // SW가 controller 변경되면 (새 버전 활성화) 페이지 새로고침
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (refreshing) return;
+          refreshing = true;
+          window.location.reload();
+        });
+      })
       .catch(err => console.warn('[boardroom] SW register failed:', err));
   });
 }
