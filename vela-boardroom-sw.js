@@ -1,6 +1,6 @@
 /* =============================================================
  * Vela Boardroom — Service Worker
- * v0.7.10
+ * v0.7.11
  *
  * 전략:
  * - HTML + manifest.json은 network-first (즉시 업데이트 반영)
@@ -9,7 +9,7 @@
  * - 폰트 CDN은 stale-while-revalidate (오프라인 대비)
  * ============================================================= */
 
-const CACHE_VERSION = 'vela-boardroom-v0.7.10';
+const CACHE_VERSION = 'vela-boardroom-v0.7.11';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const FONT_CACHE = `${CACHE_VERSION}-fonts`;
 
