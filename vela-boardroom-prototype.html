@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.7.10 — 팩트시트</title>
+<title>Vela Compass v0.7.11 — 팩트시트</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
@@ -1197,7 +1197,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.7.10</span>
+    <span>v0.7.11</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1315,7 +1315,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.10 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.11 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -1409,14 +1409,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.7.10 — Factsheet mode
+ * Vela Compass v0.7.11 — Factsheet mode
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const VERSION = 'v0.7.10';
+const VERSION = 'v0.7.11';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -2876,7 +2876,20 @@ function handleUrlAction() {
 if ('serviceWorker' in navigator
     && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('vela-boardroom-sw.js', { scope: './' })
+    // 옛 scope의 Compass SW가 있으면 정리 (매거진 SW는 안 건드림 — 다른 파일이라 안전)
+    navigator.serviceWorker.getRegistrations().then((regs) => {
+      regs.forEach((r) => {
+        const isBoardroomSW = r.active && r.active.scriptURL.includes('vela-boardroom-sw.js');
+        const isCorrectScope = r.scope.endsWith('vela-boardroom-prototype.html')
+                            || r.scope.endsWith('vela-boardroom-prototype.html/');
+        if (isBoardroomSW && !isCorrectScope) {
+          console.log('[boardroom] Unregistering old SW scope:', r.scope);
+          r.unregister().catch(() => {});
+        }
+      });
+    });
+
+    navigator.serviceWorker.register('vela-boardroom-sw.js', { scope: './vela-boardroom-prototype.html' })
       .then((reg) => {
         // 페이지 진입 시 SW update 강제 체크
         reg.update().catch(() => {});
