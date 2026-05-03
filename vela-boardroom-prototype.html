@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.6.5 — 팩트시트</title>
+<title>Vela Compass v0.7.0 — 팩트시트</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
@@ -584,6 +584,190 @@
     font-style: italic;
   }
 
+  /* ============ FOLLOW-UP ============ */
+  .followup-section { margin-top: 56px; }
+
+  .followup-routing {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .routing-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+  .routing-chip {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    padding: 7px 12px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .routing-chip:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+  .routing-chip.active {
+    background: var(--cyan);
+    color: var(--bg);
+    border-color: var(--cyan);
+    font-weight: 600;
+  }
+  .routing-chip .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .followup-input-wrap {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .followup-input {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 18px 22px;
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    min-height: 90px;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+    border-radius: 2px;
+    word-break: keep-all;
+  }
+  .followup-input:focus {
+    outline: none;
+    border-color: var(--cyan);
+  }
+  .followup-input::placeholder {
+    color: var(--text-faint);
+    font-style: italic;
+  }
+
+  .followup-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+
+  .followup-log {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* 후속 질문/응답 묶음 */
+  .followup-thread {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .followup-q {
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--text);
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border-left: 2px solid var(--cyan);
+    border-radius: 2px;
+    word-break: keep-all;
+  }
+  .followup-q .q-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .followup-answers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-left: 14px;
+  }
+
+  .followup-a {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--c-engineer);
+    padding: 14px 56px 14px 18px;
+    border-radius: 2px;
+    word-break: keep-all;
+  }
+  .followup-a[data-persona="product"]   { border-left-color: var(--c-product); }
+  .followup-a[data-persona="engineer"]  { border-left-color: var(--c-engineer); }
+  .followup-a[data-persona="marketer"]  { border-left-color: var(--c-marketer); }
+  .followup-a[data-persona="finance"]   { border-left-color: var(--c-finance); }
+
+  .followup-a-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .followup-a-name {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+  .followup-a[data-persona="product"]  .followup-a-name { color: var(--c-product); }
+  .followup-a[data-persona="engineer"] .followup-a-name { color: var(--c-engineer); }
+  .followup-a[data-persona="marketer"] .followup-a-name { color: var(--c-marketer); }
+  .followup-a[data-persona="finance"]  .followup-a-name { color: var(--c-finance); }
+  .followup-a-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+  }
+  .followup-a-text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+  .followup-a-text.warn { color: var(--c-warn); }
+  .followup-a .btn-speak {
+    top: 12px;
+    right: 12px;
+  }
+  .followup-a-thinking {
+    color: var(--text-faint);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-style: italic;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
   /* ============ MEMO ============ */
   .memo-section { margin-top: 64px; }
   .memo-input {
@@ -849,7 +1033,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.6.5</span>
+    <span>v0.7.0</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -902,10 +1086,52 @@
     </div>
   </section>
 
+  <!-- FOLLOW-UP — 추가 질문 모드 -->
+  <section class="followup-section" id="followupSection" hidden>
+    <div class="section-label">
+      <span class="num">§ 03</span>
+      <span class="title">Follow-up — 추가 질문</span>
+      <span class="line"></span>
+    </div>
+
+    <div class="followup-routing">
+      <span class="routing-label">→ 응답 대상</span>
+      <button class="routing-chip active" data-target="auto">자동 라우팅</button>
+      <button class="routing-chip" data-target="all">전원</button>
+      <button class="routing-chip" data-target="product"><span class="dot" style="background:var(--c-product)"></span>Strategist</button>
+      <button class="routing-chip" data-target="engineer"><span class="dot" style="background:var(--c-engineer)"></span>Maker</button>
+      <button class="routing-chip" data-target="marketer"><span class="dot" style="background:var(--c-marketer)"></span>Voice</button>
+      <button class="routing-chip" data-target="finance"><span class="dot" style="background:var(--c-finance)"></span>Ledger</button>
+    </div>
+
+    <div class="followup-input-wrap">
+      <textarea
+        id="followupInput"
+        class="followup-input"
+        placeholder="추가 질문이나 반론을 던져보세요. 예) 외주가 사출보다 싸다고 했는데, 1만 개라면 어떻게 달라져?"
+      ></textarea>
+      <button id="btnFollowupMic" class="btn-mic" type="button" title="음성으로 질문" aria-label="음성으로 질문">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="followup-controls">
+      <span class="agenda-hint">⌘/Ctrl + Enter 로 전송 · 베테랑이 본인 분야 관점으로 답함</span>
+      <button id="btnFollowupSend" class="btn-primary">질문 보내기 →</button>
+    </div>
+
+    <div class="followup-log" id="followupLog"></div>
+  </section>
+
   <!-- MEMO -->
   <section class="memo-section" id="memoSection" hidden>
     <div class="section-label">
-      <span class="num">§ 03</span>
+      <span class="num">§ 04</span>
       <span class="title">Memo by the Chair (Juns)</span>
       <span class="line"></span>
     </div>
@@ -925,7 +1151,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.6.5 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.0 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -1006,14 +1232,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.6.5 — Factsheet mode
+ * Vela Compass v0.7.0 — Factsheet mode
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const VERSION = 'v0.6.5';
+const VERSION = 'v0.7.0';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -1241,6 +1467,8 @@ let state = {
   model: '',
   agenda: '',
   facts: {}, // { product: {FACTS: [...]}, engineer: {...}, ... }
+  followups: [], // [{ id, question, answers: [{personaId, text, ts}], target, ts }]
+  followupTarget: 'auto', // 'auto' | 'all' | personaId
   memo: '',
   sessionId: null,
   inProgress: false,
@@ -1296,6 +1524,23 @@ function bindEvents() {
     }
   });
   $('#btnMic').addEventListener('click', startVoiceInput);
+
+  // Follow-up 이벤트
+  $('#btnFollowupSend').addEventListener('click', sendFollowup);
+  $('#followupInput').addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      sendFollowup();
+    }
+  });
+  $('#btnFollowupMic').addEventListener('click', () => startVoiceInput('#followupInput'));
+  document.querySelectorAll('.routing-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.routing-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      state.followupTarget = chip.dataset.target;
+    });
+  });
 
   $('#btnSettings').addEventListener('click', () => {
     renderSettingsModal();
@@ -1648,7 +1893,12 @@ async function startMeeting() {
   $('#btnStart').textContent = '팩트 수집 중...';
 
   $('#factsheet').hidden = false;
+  $('#followupSection').hidden = true;
   $('#memoSection').hidden = true;
+  // 새 회의 시작 시 후속 대화 초기화
+  state.followups = [];
+  $('#followupLog').innerHTML = '';
+  $('#followupInput').value = '';
   PERSONAS.forEach(p => setCardThinking(p.id, true));
 
   const userMsg = `[안건]\n${agenda}\n\n위 안건에 대해 본인 분야의 팩트만 짚으십시오. 의견·추천 금지.`;
@@ -1682,6 +1932,7 @@ async function startMeeting() {
       await Promise.allSettled(PERSONAS.map(runOne));
     }
 
+    $('#followupSection').hidden = false;
     $('#memoSection').hidden = false;
     $('#memoInput').value = state.memo || '';
   } finally {
@@ -1693,17 +1944,27 @@ async function startMeeting() {
 
 /* ============ VOICE INPUT (Web Speech Recognition) ============ */
 let recognition = null;
-function startVoiceInput() {
+let recognitionTarget = '#agendaInput';
+let recognitionMicBtn = '#btnMic';
+
+function startVoiceInput(targetSelector) {
+  // 인자 — 이벤트 객체일 수도, 문자열일 수도, 없을 수도
+  if (typeof targetSelector === 'string') {
+    recognitionTarget = targetSelector;
+    recognitionMicBtn = (targetSelector === '#followupInput') ? '#btnFollowupMic' : '#btnMic';
+  } else {
+    recognitionTarget = '#agendaInput';
+    recognitionMicBtn = '#btnMic';
+  }
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) {
     toast('이 브라우저는 음성 인식을 지원하지 않습니다 (Chrome/Edge/Safari 권장)', true);
     return;
   }
   if (recognition) {
-    // 이미 녹음 중 → 중지
     try { recognition.stop(); } catch (e) {}
     recognition = null;
-    $('#btnMic').classList.remove('recording');
+    document.querySelectorAll('.btn-mic').forEach(b => b.classList.remove('recording'));
     return;
   }
   recognition = new SR();
@@ -1712,9 +1973,8 @@ function startVoiceInput() {
   recognition.continuous = false;
   recognition.maxAlternatives = 1;
 
-  let finalText = $('#agendaInput').value;
-  const startLen = finalText.length;
-  if (startLen > 0 && !finalText.endsWith(' ')) finalText += ' ';
+  let finalText = $(recognitionTarget).value;
+  if (finalText.length > 0 && !finalText.endsWith(' ')) finalText += ' ';
 
   recognition.onresult = (e) => {
     let interim = '';
@@ -1725,16 +1985,18 @@ function startVoiceInput() {
       else interim += transcript;
     }
     if (appendedFinal) finalText += appendedFinal;
-    $('#agendaInput').value = finalText + interim;
+    $(recognitionTarget).value = finalText + interim;
   };
   recognition.onend = () => {
-    state.agenda = $('#agendaInput').value.trim();
+    if (recognitionTarget === '#agendaInput') {
+      state.agenda = $(recognitionTarget).value.trim();
+    }
     recognition = null;
-    $('#btnMic').classList.remove('recording');
+    document.querySelectorAll('.btn-mic').forEach(b => b.classList.remove('recording'));
   };
   recognition.onerror = (e) => {
     recognition = null;
-    $('#btnMic').classList.remove('recording');
+    document.querySelectorAll('.btn-mic').forEach(b => b.classList.remove('recording'));
     if (e.error === 'no-speech') toast('음성이 감지되지 않았습니다', true);
     else if (e.error === 'not-allowed') toast('마이크 권한이 필요합니다', true);
     else toast('음성 인식 오류: ' + e.error, true);
@@ -1742,7 +2004,7 @@ function startVoiceInput() {
 
   try {
     recognition.start();
-    $('#btnMic').classList.add('recording');
+    $(recognitionMicBtn).classList.add('recording');
     toast('🎤 듣고 있습니다 — 말씀하세요');
   } catch (e) {
     recognition = null;
@@ -1859,6 +2121,238 @@ function speakCard(personaId) {
   window.speechSynthesis.speak(utterance);
 }
 
+/* ============ FOLLOW-UP MODE ============ */
+
+// 키워드 기반 자동 라우팅
+const ROUTING_KEYWORDS = {
+  product: ['고객', '사용자', '시장', '대체재', '수요', '구매', '재구매', '브랜드', '카테고리', '경쟁', '가격대', '포지셔닝', 'JTBD', '니즈', '페르소나'],
+  engineer: ['공정', '소재', '제조', '양산', '출력', '사출', 'CNC', 'FDM', 'SLA', 'SLS', 'MJF', 'TPU', 'PLA', 'ABS', 'PETG', 'ASA', '금형', '외주', '가공', '품질', 'BEP', 'MOQ', '진공', '판금', '다이캐스팅', '리드타임', '공차', '강도'],
+  marketer: ['채널', '마케팅', '광고', '카페', '유튜브', '인스타', '스마트스토어', '쿠팡', '콘텐츠', '쇼츠', '검색', 'SEO', '노출', '협찬', '트래픽', '인플루언서', '커뮤니티'],
+  finance: ['세금', '세무', '단가', '마진', '현금흐름', '부가세', '종소세', '회계', '재고', '간이', '회수', '흑자도산', '손익분기', 'ROI', '수익', '비용', '영업이익', '매출']
+};
+
+function routePersona(question) {
+  const q = question.toLowerCase();
+  const scores = {};
+  Object.entries(ROUTING_KEYWORDS).forEach(([id, kws]) => {
+    scores[id] = kws.filter(kw => q.includes(kw.toLowerCase())).length;
+  });
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  return sorted[0][1] > 0 ? sorted[0][0] : null;
+}
+
+function buildFollowupContext(persona, question) {
+  const myFacts = state.facts[persona.id];
+  const myFactsText = myFacts ? (myFacts.FACTS || myFacts.RAW || '(첫 답변 없음)').slice(0, 500) : '(첫 답변 없음)';
+
+  const otherFacts = PERSONAS
+    .filter(p => p.id !== persona.id)
+    .map(p => {
+      const f = state.facts[p.id];
+      const txt = f ? (f.FACTS || f.RAW || '(없음)').slice(0, 350) : '(없음)';
+      return `[${p.name} · ${p.tag}]\n${txt}`;
+    }).join('\n\n');
+
+  // 이전 후속 대화 (최근 4개)
+  const prevFollowups = state.followups
+    .slice(-4)
+    .map(f => {
+      const ans = (f.answers || []).map(a => {
+        const p = PERSONAS.find(x => x.id === a.personaId);
+        return `→ ${p ? p.name : a.personaId}: ${a.text}`;
+      }).join('\n');
+      return `Q: ${f.question}\n${ans}`;
+    }).filter(Boolean).join('\n\n');
+
+  return `[안건]
+${state.agenda}
+
+[당신의 첫 팩트시트]
+${myFactsText}
+
+[다른 베테랑의 첫 팩트시트 — 참고용]
+${otherFacts}
+${prevFollowups ? `\n[이전 후속 질문/응답]\n${prevFollowups}\n` : ''}
+[Juns의 후속 질문]
+${question}
+
+[당신의 역할 — 후속 응답]
+본인 분야 관점에서 1~3문장으로 짧게 답하시오.
+- 다른 베테랑이 짚은 것 중 보강하거나 반박할 게 있으면 짚으시오 (예: "Maker는 외주가 우위라 했지만 회계 관점에서는 ...").
+- 정량 우선, 추천 금지, 베테랑 진술 톤.
+- 한국어로만. 외국어 단어 금지.
+- 마지막에 추가 팩트+방향성 1페어 짚을 수 있음 (선택).
+- 마크다운 헤더(###) 또는 인사말 금지. 답변 본문만.`;
+}
+
+async function sendFollowup() {
+  if (state.inProgress) return;
+  const question = $('#followupInput').value.trim();
+  if (!question) {
+    toast('질문을 입력해주세요', true);
+    return;
+  }
+  if (!state.apiKey) {
+    toast('SETTINGS에서 API key를 먼저 입력해주세요', true);
+    openModal('modalSettings');
+    return;
+  }
+  if (!state.agenda || Object.keys(state.facts).length === 0) {
+    toast('먼저 안건으로 회의를 열어주세요', true);
+    return;
+  }
+
+  state.inProgress = true;
+  $('#btnFollowupSend').disabled = true;
+  $('#btnFollowupSend').textContent = '응답 중...';
+
+  // 라우팅 결정
+  let targetPersonas = [];
+  if (state.followupTarget === 'auto') {
+    const routed = routePersona(question);
+    if (routed) {
+      targetPersonas = [PERSONAS.find(p => p.id === routed)];
+    } else {
+      // 키워드 매칭 실패 → 전원
+      targetPersonas = PERSONAS;
+    }
+  } else if (state.followupTarget === 'all') {
+    targetPersonas = PERSONAS;
+  } else {
+    targetPersonas = [PERSONAS.find(p => p.id === state.followupTarget)];
+  }
+  targetPersonas = targetPersonas.filter(Boolean);
+
+  // 후속 객체 생성
+  const followup = {
+    id: 'q_' + Date.now(),
+    question,
+    answers: [],
+    target: state.followupTarget,
+    ts: Date.now()
+  };
+  state.followups.push(followup);
+  renderFollowupQ(followup, targetPersonas);
+
+  const isGroq = state.provider === 'groq';
+
+  const runOne = async (persona) => {
+    try {
+      const userMsg = buildFollowupContext(persona, question);
+      const reply = await callLLM(persona.system, userMsg);
+      const answerObj = { personaId: persona.id, text: reply, ts: Date.now() };
+      followup.answers.push(answerObj);
+      renderFollowupAnswer(followup, persona, reply, false);
+    } catch (err) {
+      const friendly = err.message.length > 80 ? err.message.slice(0, 80) + '…' : err.message;
+      const errText = '⚠ ' + friendly;
+      followup.answers.push({ personaId: persona.id, text: errText, ts: Date.now() });
+      renderFollowupAnswer(followup, persona, errText, true);
+    }
+  };
+
+  try {
+    if (isGroq) {
+      for (let i = 0; i < targetPersonas.length; i++) {
+        await runOne(targetPersonas[i]);
+        if (i < targetPersonas.length - 1) await sleep(1500);
+      }
+    } else {
+      await Promise.allSettled(targetPersonas.map(runOne));
+    }
+    $('#followupInput').value = '';
+  } finally {
+    state.inProgress = false;
+    $('#btnFollowupSend').disabled = false;
+    $('#btnFollowupSend').textContent = '질문 보내기 →';
+  }
+}
+
+function renderFollowupQ(followup, targetPersonas) {
+  const log = $('#followupLog');
+  const thread = document.createElement('div');
+  thread.className = 'followup-thread';
+  thread.dataset.id = followup.id;
+
+  const targetLabel = followup.target === 'auto'
+    ? `Q · 자동 라우팅 → ${targetPersonas.map(p => p.name).join(', ')}`
+    : followup.target === 'all'
+    ? 'Q · 전원 응답'
+    : `Q · ${targetPersonas[0] ? targetPersonas[0].name : '—'}`;
+
+  thread.innerHTML = `
+    <div class="followup-q">
+      <span class="q-meta">${escapeHtml(targetLabel)} · ${new Date(followup.ts).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'})}</span>
+      ${escapeHtml(followup.question)}
+    </div>
+    <div class="followup-answers" data-id="${followup.id}">
+      ${targetPersonas.map(p => `
+        <div class="followup-a" data-persona="${p.id}" data-thinking="${p.id}">
+          <div class="followup-a-head">
+            <div class="followup-a-name">${p.name}</div>
+            <div class="followup-a-meta">${p.tag}</div>
+          </div>
+          <div class="followup-a-text"><span class="followup-a-thinking">응답 작성 중…</span></div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  log.appendChild(thread);
+  thread.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function renderFollowupAnswer(followup, persona, text, isError) {
+  const placeholder = document.querySelector(
+    `.followup-answers[data-id="${followup.id}"] .followup-a[data-thinking="${persona.id}"]`
+  );
+  if (!placeholder) return;
+  placeholder.removeAttribute('data-thinking');
+
+  const safeText = isError
+    ? `<span class="followup-a-text warn">${escapeHtml(text)}</span>`
+    : escapeHtml(text).replace(/\n/g, '<br>');
+
+  placeholder.innerHTML = `
+    <button class="btn-speak" data-speak-followup="${followup.id}-${persona.id}" type="button" title="${persona.name} 음성 재생" aria-label="음성 재생">▶</button>
+    <div class="followup-a-head">
+      <div class="followup-a-name">${persona.name}</div>
+      <div class="followup-a-meta">${persona.tag} · ${new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'})}</div>
+    </div>
+    <div class="followup-a-text">${safeText}</div>
+  `;
+  // 재생 버튼 바인딩
+  const speakBtn = placeholder.querySelector('.btn-speak');
+  if (speakBtn) {
+    speakBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      speakFollowup(followup.id, persona.id);
+    });
+  }
+}
+
+function speakFollowup(followupId, personaId) {
+  const followup = state.followups.find(f => f.id === followupId);
+  if (!followup) return;
+  const ans = followup.answers.find(a => a.personaId === personaId);
+  if (!ans) return;
+  const persona = PERSONAS.find(p => p.id === personaId);
+  if (!persona) return;
+  // speakCard와 같은 로직 재활용 — 단순 텍스트 발화
+  if (!('speechSynthesis' in window)) {
+    toast('이 브라우저는 음성 합성을 지원하지 않습니다', true);
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(`${persona.name}. ${ans.text}`);
+  utterance.lang = 'ko-KR';
+  utterance.rate = state.voiceRate || 1.0;
+  if (state.voiceURI) {
+    const v = window.speechSynthesis.getVoices().find(x => x.voiceURI === state.voiceURI);
+    if (v) utterance.voice = v;
+  }
+  window.speechSynthesis.speak(utterance);
+}
+
 /* ============ EXPORT MARKDOWN ============ */
 function exportMarkdown() {
   if (!state.agenda) {
@@ -1881,6 +2375,19 @@ function exportMarkdown() {
       md += r.RAW + '\n\n';
     }
   });
+
+  // 후속 질문/응답
+  if (state.followups && state.followups.length > 0) {
+    md += `---\n\n## Follow-up\n\n`;
+    state.followups.forEach((f, i) => {
+      md += `### Q${i + 1}. ${f.question}\n\n`;
+      (f.answers || []).forEach(a => {
+        const p = PERSONAS.find(x => x.id === a.personaId);
+        const name = p ? `${p.name} (${p.tag})` : a.personaId;
+        md += `**→ ${name}**\n\n${a.text}\n\n`;
+      });
+    });
+  }
 
   md += `---\n\n## Memo by the Chair (Juns)\n\n${state.memo || '(작성되지 않음)'}\n`;
 
@@ -1914,6 +2421,7 @@ function saveSession() {
     date: new Date().toISOString(),
     agenda: state.agenda,
     facts: state.facts,
+    followups: state.followups || [],
     memo: state.memo
   };
   if (idx >= 0) sessions[idx] = record;
@@ -1945,15 +2453,29 @@ function loadSession(id) {
   state.sessionId = s.id;
   state.agenda = s.agenda;
   state.facts = s.facts || {};
+  state.followups = s.followups || [];
   state.memo = s.memo || '';
 
   $('#agendaInput').value = state.agenda;
   $('#factsheet').hidden = false;
+  $('#followupSection').hidden = false;
   $('#memoSection').hidden = false;
   PERSONAS.forEach(p => {
     setCardThinking(p.id, false);
     if (state.facts[p.id]) renderFactList(p.id, state.facts[p.id]);
   });
+
+  // followup 로그 복원
+  $('#followupLog').innerHTML = '';
+  state.followups.forEach(f => {
+    const targetPersonas = (f.answers || []).map(a => PERSONAS.find(p => p.id === a.personaId)).filter(Boolean);
+    renderFollowupQ(f, targetPersonas);
+    (f.answers || []).forEach(a => {
+      const p = PERSONAS.find(x => x.id === a.personaId);
+      if (p) renderFollowupAnswer(f, p, a.text, a.text.startsWith('⚠'));
+    });
+  });
+
   $('#memoInput').value = state.memo;
   closeModal('modalSessions');
   toast('회의 불러옴');
@@ -1961,11 +2483,15 @@ function loadSession(id) {
 function newSession() {
   state.agenda = '';
   state.facts = {};
+  state.followups = [];
   state.memo = '';
   state.sessionId = null;
   $('#agendaInput').value = '';
+  $('#followupInput').value = '';
+  $('#followupLog').innerHTML = '';
   $('#memoInput').value = '';
   $('#factsheet').hidden = true;
+  $('#followupSection').hidden = true;
   $('#memoSection').hidden = true;
   $('#btnStart').textContent = '팩트 받기 →';
   renderFactCards();
