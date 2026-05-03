@@ -4,7 +4,7 @@
   "short_name": "Compass",
   "description": "4인 베테랑 페르소나가 분야별 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구",
   "start_url": "./vela-boardroom-prototype.html",
-  "scope": "./",
+  "scope": "./vela-boardroom-prototype.html",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#0a0a0b",
