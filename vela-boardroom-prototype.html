@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.7.4 — 팩트시트</title>
+<title>Vela Compass v0.7.6 — 팩트시트</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
@@ -172,6 +172,25 @@
     color: var(--bg) !important;
     border-color: var(--cyan) !important;
     font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px !important;
+    box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.4);
+    animation: install-pulse 2.4s ease-in-out infinite;
+    transition: all 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  }
+  .btn-install:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(94, 234, 212, 0.35);
+    animation: none;
+  }
+  .btn-install svg {
+    flex-shrink: 0;
+  }
+  @keyframes install-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(94, 234, 212, 0); }
   }
   @supports (padding: max(0px)) {
     .masthead {
@@ -1102,7 +1121,14 @@
   </div>
   <div class="masthead-meta">
     <span id="modelTag">—</span>
-    <button id="btnInstall" class="btn-install" hidden>＋ INSTALL</button>
+    <button id="btnInstall" class="btn-install" hidden>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      <span>앱 설치</span>
+    </button>
     <button id="btnSessions">SESSIONS</button>
     <button id="btnSettings">SETTINGS</button>
   </div>
@@ -1111,7 +1137,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.7.4</span>
+    <span>v0.7.6</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1127,8 +1153,8 @@
       <span class="title">Agenda — 안건</span>
       <span class="line"></span>
     </div>
-    <h1 class="agenda-headline">검토할 <em>안건</em>을<br/>적어주세요.</h1>
-    <p class="agenda-kicker">4명의 베테랑이 분야별 팩트와 방향성을 짧게 짚어줍니다. 추천·명령 없음.</p>
+    <h1 class="agenda-headline">오늘의 <em>안건</em>을<br/>회의에 올려주세요.</h1>
+    <p class="agenda-kicker">베테랑 4명이 분야별 팩트로 답합니다. 결정은 당신.</p>
 
     <div class="agenda-input-wrap">
       <textarea
@@ -1229,7 +1255,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.4 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.6 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -1294,13 +1320,18 @@
 <div class="modal-backdrop" id="modalIosInstall">
   <div class="modal">
     <div class="modal-head">
-      <h3 class="modal-title">홈 화면에 추가</h3>
+      <h3 class="modal-title">앱처럼 설치</h3>
       <button class="modal-close" data-close>닫기 ✕</button>
     </div>
-    <p class="modal-info" style="margin-bottom: 18px;">iPhone Safari에서 보드룸을 앱처럼 사용하려면 홈 화면에 추가하세요.</p>
-    <div class="ios-step"><span class="num">1</span><div class="text">화면 하단 <code>공유</code> 아이콘 (□↑) 을 누릅니다.</div></div>
-    <div class="ios-step"><span class="num">2</span><div class="text">메뉴를 아래로 스크롤해서 <code>홈 화면에 추가</code> 를 선택합니다.</div></div>
-    <div class="ios-step"><span class="num">3</span><div class="text">우상단 <code>추가</code> 를 누르면 끝.</div></div>
+    <p class="modal-info" style="margin-bottom: 18px;">
+      홈 화면에 추가하면 Compass가 독립 앱처럼 열려요. 주소창·탭 없이 풀스크린.
+    </p>
+    <div class="ios-step"><span class="num">1</span><div class="text">화면 하단 <code>공유</code> 아이콘 (□↑) 누름</div></div>
+    <div class="ios-step"><span class="num">2</span><div class="text">메뉴 스크롤해서 <code>홈 화면에 추가</code> 선택</div></div>
+    <div class="ios-step"><span class="num">3</span><div class="text">우상단 <code>추가</code> 누르면 끝</div></div>
+    <p class="modal-info" style="margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 11.5px;">
+      💡 설치 후 홈 화면에서 Compass 아이콘을 <b>길게 누르면</b> 빠른 메뉴(새 회의 / 음성 시작 / 최근 회의 / 마지막 회의 이어가기)가 나타납니다.
+    </p>
     <div class="modal-actions"><button class="btn-primary" data-close>확인</button></div>
   </div>
 </div>
@@ -1318,14 +1349,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.7.4 — Factsheet mode
+ * Vela Compass v0.7.6 — Factsheet mode
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const VERSION = 'v0.7.4';
+const VERSION = 'v0.7.6';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -2699,23 +2730,31 @@ function bindInstallButton() {
   btn.addEventListener('click', () => {
     const ua = navigator.userAgent;
     const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    const isAndroid = /Android/i.test(ua);
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches
                       || window.navigator.standalone === true;
     if (isStandalone) { toast('이미 설치되어 있습니다'); return; }
     if (isIOS) { openModal('modalIosInstall'); return; }
-    if (!deferredInstallPrompt) {
-      toast('브라우저 메뉴(⋮)에서 "홈 화면에 추가"를 선택하세요');
+    if (deferredInstallPrompt) {
+      // Android Chrome / 데스크탑 Chrome — 네이티브 prompt
+      deferredInstallPrompt.prompt();
+      deferredInstallPrompt.userChoice.then((c) => {
+        if (c.outcome === 'accepted') {
+          toast('홈 화면에 설치되었습니다');
+          btn.hidden = true;
+        }
+        deferredInstallPrompt = null;
+      });
       return;
     }
-    deferredInstallPrompt.prompt();
-    deferredInstallPrompt.userChoice.then((c) => {
-      if (c.outcome === 'accepted') {
-        toast('설치되었습니다');
-        btn.hidden = true;
-      }
-      deferredInstallPrompt = null;
-    });
+    // prompt 미수신 — 브라우저별 메뉴 안내
+    if (isAndroid) {
+      toast('Chrome 메뉴 (⋮) → "앱 설치" 또는 "홈 화면에 추가"', false);
+    } else {
+      toast('주소창 우측 ⊕ 아이콘 또는 메뉴 (⋮) → "Compass 설치"', false);
+    }
   });
+  // 모바일에서 prompt 안 떠도 일정 시간 후 버튼 노출 (iOS 등)
   const ua = navigator.userAgent;
   const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches
@@ -2729,11 +2768,47 @@ function bindInstallButton() {
 
 function handleUrlAction() {
   const params = new URLSearchParams(location.search);
-  if (params.get('action') === 'new') {
+  const action = params.get('action');
+  if (!action) return;
+
+  // URL 파라미터 정리 (PWA shortcut 후 깔끔)
+  setTimeout(() => {
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({}, '', location.pathname);
+    }
+  }, 200);
+
+  if (action === 'new') {
     setTimeout(() => {
       newSession();
       $('#agendaInput').focus();
     }, 100);
+  } else if (action === 'voice') {
+    setTimeout(() => {
+      newSession();
+      // 마이크 자동 시작
+      setTimeout(() => startVoiceInput('#agendaInput'), 400);
+    }, 100);
+  } else if (action === 'sessions') {
+    setTimeout(() => {
+      renderSessionsList();
+      openModal('modalSessions');
+    }, 200);
+  } else if (action === 'resume') {
+    setTimeout(() => {
+      const sessions = loadSessions();
+      if (sessions.length === 0) {
+        toast('이어갈 회의가 없습니다 — 새 회의를 시작하세요', true);
+        return;
+      }
+      // 최근 수정순 정렬해서 최상단 로드
+      sessions.sort((a, b) => {
+        const ta = new Date(a.lastUpdated || a.date).getTime();
+        const tb = new Date(b.lastUpdated || b.date).getTime();
+        return tb - ta;
+      });
+      loadSession(sessions[0].id);
+    }, 200);
   }
 }
 
