@@ -1,6 +1,6 @@
 /* =============================================================
  * Vela Boardroom — Service Worker
- * v0.7.3
+ * v0.7.4
  *
  * 전략:
  * - 보드룸 관련 정적 자산만 캐시 (다른 vela 앱과 격리)
@@ -8,7 +8,7 @@
  * - 폰트 CDN은 stale-while-revalidate (오프라인 대비)
  * ============================================================= */
 
-const CACHE_VERSION = 'vela-boardroom-v0.7.3';
+const CACHE_VERSION = 'vela-boardroom-v0.7.4';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const FONT_CACHE = `${CACHE_VERSION}-fonts`;
 
