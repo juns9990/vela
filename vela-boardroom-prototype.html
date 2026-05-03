@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Boardroom v0.5.1 — 아이디어 회의실</title>
+<title>Vela Boardroom v0.5.2 — 아이디어 회의실</title>
 <meta name="description" content="Vela Boardroom — 5인 베테랑 페르소나 아이디어 회의실. 1인 사업자를 위한 의사결정 도구." />
 
 <!-- PWA -->
@@ -919,7 +919,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.5.1</span>
+    <span>v0.5.2</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1089,7 +1089,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-boardroom · v0.5.1</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-boardroom · v0.5.2</div>
   <div>Local-First · BYOK · No Account</div>
 </footer>
 
@@ -1170,11 +1170,11 @@
 
 <script>
 /* ============================================================
- * Vela Boardroom v0.5.1
+ * Vela Boardroom v0.5.2
  * Single-file prototype. Local-first. BYOK.
  * ============================================================ */
 
-const VERSION = 'v0.5.1';
+const VERSION = 'v0.5.2';
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
   sessions: 'vela.boardroom.sessions'
@@ -1778,7 +1778,9 @@ function parseSections(text) {
 }
 
 /* ============ API CALL — provider-aware ============ */
-async function callLLM(systemPrompt, userMessage) {
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+async function callLLM(systemPrompt, userMessage, retryCount = 0) {
   if (!state.apiKey) throw new Error('API key가 설정되지 않았습니다');
   const cfg = LLM_CONFIG[state.provider];
   if (!cfg) throw new Error('알 수 없는 provider: ' + state.provider);
@@ -1836,15 +1838,17 @@ async function callLLM(systemPrompt, userMessage) {
     const data = await res.json();
     if (!res.ok) {
       const raw = data?.error?.message || `Groq API error ${res.status}`;
-      // Rate limit 에러 한국어화
+      // Rate limit 에러 — 자동 재시도 (1회만)
       if (res.status === 429) {
         const waitMatch = raw.match(/try again in ([\d.]+)s/i);
-        const wait = waitMatch ? Math.ceil(parseFloat(waitMatch[1])) : null;
-        const e = new Error(
-          wait
-            ? `Groq 무료 티어 한도 초과 — ${wait}초 후 재시도 가능. 더 자주 굴리려면 Llama 8B 또는 Anthropic으로 전환하세요.`
-            : `Groq 무료 티어 한도 초과 — Llama 8B 또는 Anthropic으로 전환하세요.`
-        );
+        const wait = waitMatch ? Math.ceil(parseFloat(waitMatch[1])) : 30;
+        if (retryCount < 1) {
+          // 자동 재시도 (대기 + 1초 여유)
+          await sleep((wait + 1) * 1000);
+          return callLLM(systemPrompt, userMessage, retryCount + 1);
+        }
+        // 재시도도 실패 — 에러 throw
+        const e = new Error(`Groq 무료 한도 초과 — 재시도도 실패. SETTINGS에서 모델/Provider 변경 필요.`);
         e.code = 'RATE_LIMIT';
         e.retryAfter = wait;
         throw e;
@@ -1909,26 +1913,54 @@ async function startMeeting() {
     return { RAW: '⚠ ' + friendly };
   };
 
-  try {
-    // ====== ROUND 1 — Opening (5명 동시) ======
-    await Promise.allSettled(PERSONAS.map(async (p) => {
+  // 페르소나 라운드 실행 헬퍼
+  // Groq = 순차 호출 (호출 사이 1.2초 대기) — TPM 한도 회피
+  // Anthropic = 병렬 호출 — 한도 충분
+  async function runPersonaRound(systemBuilder, userBuilder, gridId, label, kind, resultsKey) {
+    const isGroq = state.provider === 'groq';
+    PERSONAS.forEach(p => setCardThinking(p.id, true, gridId));
+
+    const runOne = async (p) => {
       try {
-        const userMsg = `[안건]\n${agenda}`;
-        const reply = await callLLM(buildR1System(p), userMsg);
+        const userMsg = userBuilder(p);
+        const reply = await callLLM(systemBuilder(p), userMsg);
         const parsed = parseSections(reply);
-        state.personaResults[p.id] = parsed;
-        setCardThinking(p.id, false, 'personasGrid');
-        renderPersonaResult(p.id, parsed, 'personasGrid', 'R1 · OPENING');
+        state[resultsKey][p.id] = parsed;
+        setCardThinking(p.id, false, gridId);
+        renderPersonaResult(p.id, parsed, gridId, label, kind);
       } catch (err) {
-        setCardThinking(p.id, false, 'personasGrid');
-        const errParsed = handleErr(err, p.id, 'R1');
-        state.personaResults[p.id] = errParsed;
-        renderPersonaResult(p.id, errParsed, 'personasGrid', 'R1 · OPENING');
+        setCardThinking(p.id, false, gridId);
+        const errParsed = handleErr(err, p.id, label);
+        state[resultsKey][p.id] = errParsed;
+        renderPersonaResult(p.id, errParsed, gridId, label, kind);
       }
-    }));
+    };
+
+    if (isGroq) {
+      // 순차 — 호출 사이 1.2초 대기 (30 RPM 안전)
+      for (const p of PERSONAS) {
+        await runOne(p);
+        if (PERSONAS.indexOf(p) < PERSONAS.length - 1) await sleep(1200);
+      }
+    } else {
+      // 병렬
+      await Promise.allSettled(PERSONAS.map(runOne));
+    }
+  }
+
+  try {
+    // ====== ROUND 1 — Opening (5명, Groq=순차 / Anthropic=병렬) ======
+    await runPersonaRound(
+      buildR1System,
+      (p) => `[안건]\n${agenda}`,
+      'personasGrid',
+      'R1 · OPENING',
+      'opening',
+      'personaResults'
+    );
 
     if (rateLimitHit) {
-      toast('⚠ Groq 무료 한도 초과 — Llama 8B로 전환하거나 1분 후 재시도. SETTINGS에서 모델 변경 가능.', true);
+      toast('⚠ R1에서 한도 초과 — Anthropic으로 전환을 권장합니다. SETTINGS에서 변경 가능.', true);
       setProgress({ r1: 'done', r2: 'skipped', r3: 'skipped', r4: 'skipped' });
       throw new Error('R1에서 한도 초과로 회의 중단');
     }
@@ -1937,36 +1969,39 @@ async function startMeeting() {
     // ====== ROUND 2 — Cross Rebuttal (5명 동시, 다른 4명 의견 컨텍스트로) ======
     $('#round2').style.display = 'block';
     renderRebuttalCards();
-    PERSONAS.forEach(p => setCardThinking(p.id, true, 'rebuttalGrid'));
 
-    await Promise.allSettled(PERSONAS.map(async (p) => {
-      try {
-        const userMsg = buildRebuttalUserMsg(p, agenda, state.personaResults);
-        const reply = await callLLM(buildR2System(p), userMsg);
-        const parsed = parseSections(reply);
-        state.rebuttalResults[p.id] = parsed;
-        setCardThinking(p.id, false, 'rebuttalGrid');
-        renderPersonaResult(p.id, parsed, 'rebuttalGrid', 'R2 · REBUTTAL', 'rebuttal');
-      } catch (err) {
-        setCardThinking(p.id, false, 'rebuttalGrid');
-        const errParsed = handleErr(err, p.id, 'R2');
-        state.rebuttalResults[p.id] = errParsed;
-        renderPersonaResult(p.id, errParsed, 'rebuttalGrid', 'R2 · REBUTTAL', 'rebuttal');
-      }
-    }));
+    // Groq의 경우 R1 직후 R2 호출하면 TPM 한도 누적 — 충분히 대기
+    if (state.provider === 'groq') {
+      toast('R2 준비 중 — Groq TPM 회복 대기 (15초)', false);
+      await sleep(15000);
+    }
+
+    await runPersonaRound(
+      buildR2System,
+      (p) => buildRebuttalUserMsg(p, agenda, state.personaResults),
+      'rebuttalGrid',
+      'R2 · REBUTTAL',
+      'rebuttal',
+      'rebuttalResults'
+    );
 
     if (rateLimitHit) {
-      toast('⚠ R2에서 Groq 한도 초과 — R3/R4 진행 중단. SETTINGS에서 Llama 8B 또는 Anthropic으로 전환 후 다시 시도하세요.', true);
+      toast('⚠ R2에서 한도 초과 — R3/R4 진행 중단. Anthropic 전환 권장.', true);
       setProgress({ r1: 'done', r2: 'done', r3: 'skipped', r4: 'skipped' });
       $('#memoSection').style.display = 'block';
       $('#memoInput').value = state.memo || '';
-      return; // R3/R4 스킵하고 메모 단계로
+      return;
     }
     setProgress({ r1: 'done', r2: 'done', r3: 'active', r4: r4Enabled ? 'pending' : 'skipped' });
 
     // ====== ROUND 3 — Devil's Advocate ======
     $('#round3').style.display = 'block';
     $('#devilBody').innerHTML = '<p class="empty" style="color:var(--text-faint);font-family:var(--mono);font-size:11px;font-style:italic">반박 작성 중…</p>';
+
+    // Groq의 경우 R3 전에도 대기
+    if (state.provider === 'groq') {
+      await sleep(8000);
+    }
 
     try {
       const devilCtx = buildDevilContext(agenda, state.personaResults, state.rebuttalResults);
@@ -1992,23 +2027,20 @@ async function startMeeting() {
     if (r4Enabled) {
       $('#round4').style.display = 'block';
       renderClosingCards();
-      PERSONAS.forEach(p => setCardThinking(p.id, true, 'closingGrid'));
 
-      await Promise.allSettled(PERSONAS.map(async (p) => {
-        try {
-          const userMsg = buildClosingUserMsg(p, agenda, state.personaResults, state.rebuttalResults, state.devilResult);
-          const reply = await callLLM(buildR4System(p), userMsg);
-          const parsed = parseSections(reply);
-          state.closingResults[p.id] = parsed;
-          setCardThinking(p.id, false, 'closingGrid');
-          renderPersonaResult(p.id, parsed, 'closingGrid', 'R4 · CLOSING', 'closing');
-        } catch (err) {
-          setCardThinking(p.id, false, 'closingGrid');
-          const errParsed = handleErr(err, p.id, 'R4');
-          state.closingResults[p.id] = errParsed;
-          renderPersonaResult(p.id, errParsed, 'closingGrid', 'R4 · CLOSING', 'closing');
-        }
-      }));
+      // Groq의 경우 R4 시작 전 대기
+      if (state.provider === 'groq') {
+        await sleep(15000);
+      }
+
+      await runPersonaRound(
+        buildR4System,
+        (p) => buildClosingUserMsg(p, agenda, state.personaResults, state.rebuttalResults, state.devilResult),
+        'closingGrid',
+        'R4 · CLOSING',
+        'closing',
+        'closingResults'
+      );
 
       if (rateLimitHit) {
         toast('⚠ R4에서 한도 초과 일부 — 받은 응답까지만 표시.', true);
