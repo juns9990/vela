@@ -3,13 +3,16 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.7.9 — 팩트시트</title>
+<title>Vela Compass v0.7.10 — 팩트시트</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
 <link rel="manifest" href="vela-boardroom-manifest.json" />
 <meta name="theme-color" content="#0a0a0b" />
 <meta name="color-scheme" content="dark" />
+<!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
+<meta name="mobile-web-app-capable" content="yes" />
+<!-- iOS Safari 호환 meta (apple- prefix) -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Compass" />
@@ -1194,7 +1197,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.7.9</span>
+    <span>v0.7.10</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1312,7 +1315,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.9 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.10 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -1406,14 +1409,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.7.9 — Factsheet mode
+ * Vela Compass v0.7.10 — Factsheet mode
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const VERSION = 'v0.7.9';
+const VERSION = 'v0.7.10';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
