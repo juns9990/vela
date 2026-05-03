@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.7.3 — 팩트시트</title>
+<title>Vela Compass v0.7.4 — 팩트시트</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
@@ -749,6 +749,7 @@
   .footer-actions {
     margin-top: 32px;
     display: flex;
+    align-items: center;
     gap: 12px;
     flex-wrap: wrap;
   }
@@ -884,36 +885,116 @@
 
   .sessions-list { padding: 12px 0; }
   .session-item {
+    position: relative;
     border: 1px solid var(--line);
-    padding: 14px 16px;
+    padding: 14px 40px 14px 16px;
     margin-bottom: 8px;
     cursor: pointer;
-    transition: border-color 0.15s ease;
+    transition: border-color 0.15s ease, background 0.15s ease;
     border-radius: 2px;
   }
-  .session-item:hover { border-color: var(--cyan); }
-  .session-item .meta {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-faint);
-    letter-spacing: 0.1em;
-    margin-bottom: 4px;
+  .session-item:hover {
+    border-color: var(--cyan);
+    background: var(--bg-card);
   }
-  .session-item .preview {
+  .session-item.current {
+    border-left: 3px solid var(--cyan);
+    padding-left: 14px;
+  }
+  .session-time {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .session-time-abs {
+    color: var(--text-dim);
+    font-weight: 600;
+  }
+  .session-time-rel {
+    color: var(--text-faint);
+    font-size: 10px;
+  }
+  .session-preview {
     font-size: 14px;
+    line-height: 1.5;
     color: var(--text);
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     word-break: keep-all;
+    margin-bottom: 6px;
+  }
+  .session-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: 0.06em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .session-meta .badge-current {
+    color: var(--cyan);
+    font-weight: 700;
+  }
+  .session-delete {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    color: var(--text-faint);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all 0.15s;
+  }
+  .session-delete:hover {
+    color: var(--c-warn);
+    background: rgba(239, 68, 68, 0.08);
   }
   .sessions-empty {
     text-align: center;
-    color: var(--text-faint);
-    padding: 40px 20px;
+    padding: 48px 24px;
+  }
+  .sessions-empty-title {
     font-family: var(--mono);
     font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .sessions-empty-sub {
+    font-size: 13px;
+    color: var(--text-faint);
+    line-height: 1.6;
+  }
+
+  /* 자동 저장 표시 */
+  .autosave-indicator {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.06em;
+    align-self: center;
+  }
+  .autosave-indicator:not(:empty)::before {
+    content: '✓ ';
+    color: var(--cyan);
   }
 
   /* ============ TOAST ============ */
@@ -1030,7 +1111,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.7.3</span>
+    <span>v0.7.4</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1140,15 +1221,15 @@
 
     <div class="footer-actions">
       <button id="btnExport" class="btn-ghost">↓ Export Markdown</button>
-      <button id="btnSave" class="btn-ghost">Save Session</button>
       <button id="btnNew" class="btn-ghost">New Session</button>
+      <span id="autoSaveIndicator" class="autosave-indicator"></span>
     </div>
   </section>
 
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.3 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.4 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -1237,14 +1318,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.7.3 — Factsheet mode
+ * Vela Compass v0.7.4 — Factsheet mode
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const VERSION = 'v0.7.3';
+const VERSION = 'v0.7.4';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -1433,6 +1514,7 @@ let state = {
   followupTarget: 'auto', // 'auto' | 'all' | personaId
   memo: '',
   sessionId: null,
+  lastSavedAt: null,
   inProgress: false,
   // 음성 설정
   voiceURI: localStorage.getItem('vela.boardroom.voiceURI') || '',
@@ -1554,9 +1636,11 @@ function bindEvents() {
   });
 
   $('#btnExport').addEventListener('click', exportMarkdown);
-  $('#btnSave').addEventListener('click', saveSession);
   $('#btnNew').addEventListener('click', newSession);
-  $('#memoInput').addEventListener('input', (e) => { state.memo = e.target.value; });
+  $('#memoInput').addEventListener('input', (e) => {
+    state.memo = e.target.value;
+    autoSaveMemoDebounced();
+  });
 
   // Scroll to top — 일정 스크롤 후 페이드인, 클릭 시 부드럽게 맨 위로
   const btnToTop = $('#btnToTop');
@@ -1966,6 +2050,7 @@ async function startMeeting() {
     $('#followupSection').hidden = false;
     $('#memoSection').hidden = false;
     $('#memoInput').value = state.memo || '';
+    autoSave();
   } finally {
     state.inProgress = false;
     $('#btnStart').disabled = false;
@@ -2271,6 +2356,7 @@ async function sendFollowup() {
       await Promise.allSettled(targetPersonas.map(runOne));
     }
     $('#followupInput').value = '';
+    autoSave();
   } finally {
     state.inProgress = false;
     $('#btnFollowupSend').disabled = false;
@@ -2406,43 +2492,137 @@ function loadSessions() {
 function saveSessions(arr) {
   localStorage.setItem(STORAGE_KEYS.sessions, JSON.stringify(arr));
 }
-function saveSession() {
-  if (!state.agenda || !state.sessionId) {
-    toast('저장할 회의가 없습니다', true);
-    return;
-  }
+
+// 한국어 시간 포맷 — "2026-05-03 14:32"
+function formatSessionDate(iso) {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '—';
+  const y = d.getFullYear();
+  const mo = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const h = String(d.getHours()).padStart(2, '0');
+  const mi = String(d.getMinutes()).padStart(2, '0');
+  return `${y}-${mo}-${day} ${h}:${mi}`;
+}
+// 상대 시간 — "방금 전", "5분 전", "어제"
+function formatRelative(iso) {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  const diff = (Date.now() - d.getTime()) / 1000;
+  if (diff < 60) return '방금 전';
+  if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
+  if (diff < 86400 * 2) return '어제';
+  if (diff < 86400 * 7) return `${Math.floor(diff / 86400)}일 전`;
+  return formatSessionDate(iso).split(' ')[0]; // 일주일 넘으면 날짜만
+}
+
+// 자동 저장 — 회의 시작/후속/메모 변경 시 호출. 안건 없으면 저장 X
+function autoSave() {
+  if (!state.agenda || !state.sessionId) return;
   const sessions = loadSessions();
   const idx = sessions.findIndex(s => s.id === state.sessionId);
+  const now = new Date().toISOString();
   const record = {
     id: state.sessionId,
-    date: new Date().toISOString(),
+    date: idx >= 0 ? sessions[idx].date : now,  // 첫 저장 시점 보존
+    lastUpdated: now,
     agenda: state.agenda,
     facts: state.facts,
     followups: state.followups || [],
-    memo: state.memo
+    memo: state.memo || ''
   };
   if (idx >= 0) sessions[idx] = record;
   else sessions.unshift(record);
   saveSessions(sessions.slice(0, 50));
-  toast(`저장됨 (총 ${Math.min(sessions.length, 50)}개)`);
+  state.lastSavedAt = now;
+  updateAutoSaveIndicator();
 }
+
+// memo 자동 저장 debounce
+let memoSaveTimer = null;
+function autoSaveMemoDebounced() {
+  if (memoSaveTimer) clearTimeout(memoSaveTimer);
+  memoSaveTimer = setTimeout(autoSave, 800);
+}
+
+function updateAutoSaveIndicator() {
+  const el = $('#autoSaveIndicator');
+  if (!el) return;
+  if (!state.lastSavedAt) { el.textContent = ''; return; }
+  el.textContent = `자동 저장됨 · ${formatSessionDate(state.lastSavedAt).split(' ')[1]}`;
+}
+
+function deleteSession(id) {
+  if (!confirm('이 회의를 삭제하시겠습니까? 되돌릴 수 없습니다.')) return;
+  const sessions = loadSessions().filter(s => s.id !== id);
+  saveSessions(sessions);
+  // 현재 보고 있는 게 그거면 새 세션으로
+  if (state.sessionId === id) {
+    state.sessionId = null;
+    state.lastSavedAt = null;
+    updateAutoSaveIndicator();
+  }
+  renderSessionsList();
+  toast('회의 삭제됨');
+}
+
 function renderSessionsList() {
   const list = $('#sessionsList');
   const sessions = loadSessions();
+  // 최근 수정순 정렬
+  sessions.sort((a, b) => {
+    const ta = new Date(a.lastUpdated || a.date).getTime();
+    const tb = new Date(b.lastUpdated || b.date).getTime();
+    return tb - ta;
+  });
   if (sessions.length === 0) {
-    list.innerHTML = '<div class="sessions-empty">저장된 회의가 없습니다</div>';
+    list.innerHTML = `
+      <div class="sessions-empty">
+        <div class="sessions-empty-title">저장된 회의가 없습니다</div>
+        <div class="sessions-empty-sub">회의를 시작하면 자동으로 저장됩니다.<br>안건 입력 + 팩트 받기 시점에 첫 저장 발생.</div>
+      </div>
+    `;
     return;
   }
-  list.innerHTML = sessions.map(s => `
-    <div class="session-item" data-id="${s.id}">
-      <div class="meta">${new Date(s.date).toLocaleString('ko-KR')}</div>
-      <div class="preview">${escapeHtml(s.agenda)}</div>
-    </div>
-  `).join('');
+  list.innerHTML = sessions.map(s => {
+    const updated = s.lastUpdated || s.date;
+    const factsCount = Object.keys(s.facts || {}).length;
+    const followupsCount = (s.followups || []).length;
+    const hasMemo = !!(s.memo && s.memo.trim());
+    const isCurrent = state.sessionId === s.id;
+    return `
+      <div class="session-item${isCurrent ? ' current' : ''}" data-id="${s.id}">
+        <button class="session-delete" data-delete="${s.id}" type="button" title="삭제" aria-label="삭제">×</button>
+        <div class="session-time">
+          <span class="session-time-abs">${formatSessionDate(updated)}</span>
+          <span class="session-time-rel">${formatRelative(updated)}</span>
+        </div>
+        <div class="session-preview">${escapeHtml(s.agenda)}</div>
+        <div class="session-meta">
+          ${factsCount > 0 ? `<span>팩트시트 ${factsCount}/4</span>` : ''}
+          ${followupsCount > 0 ? `<span>· 후속 ${followupsCount}개</span>` : ''}
+          ${hasMemo ? '<span>· 메모 ✓</span>' : ''}
+          ${isCurrent ? '<span class="badge-current">· 현재</span>' : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
   list.querySelectorAll('.session-item').forEach(el => {
-    el.addEventListener('click', () => loadSession(el.dataset.id));
+    el.addEventListener('click', (e) => {
+      // 삭제 버튼 클릭은 별도 처리
+      if (e.target.closest('.session-delete')) return;
+      loadSession(el.dataset.id);
+    });
+  });
+  list.querySelectorAll('.session-delete').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteSession(btn.dataset.delete);
+    });
   });
 }
+
 function loadSession(id) {
   const sessions = loadSessions();
   const s = sessions.find(x => x.id === id);
@@ -2452,6 +2632,7 @@ function loadSession(id) {
   state.facts = s.facts || {};
   state.followups = s.followups || [];
   state.memo = s.memo || '';
+  state.lastSavedAt = s.lastUpdated || s.date;
 
   $('#agendaInput').value = state.agenda;
   $('#factsheet').hidden = false;
@@ -2474,15 +2655,19 @@ function loadSession(id) {
   });
 
   $('#memoInput').value = state.memo;
+  $('#btnStart').textContent = '다시 받기 →';
+  updateAutoSaveIndicator();
   closeModal('modalSessions');
-  toast('회의 불러옴');
+  toast('회의 불러옴 — 후속 질문/메모 추가하면 자동 저장됨');
 }
+
 function newSession() {
   state.agenda = '';
   state.facts = {};
   state.followups = [];
   state.memo = '';
   state.sessionId = null;
+  state.lastSavedAt = null;
   $('#agendaInput').value = '';
   $('#followupInput').value = '';
   $('#followupLog').innerHTML = '';
@@ -2492,6 +2677,7 @@ function newSession() {
   $('#memoSection').hidden = true;
   $('#btnStart').textContent = '팩트 받기 →';
   renderFactCards();
+  updateAutoSaveIndicator();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
