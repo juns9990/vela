@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.7.11 — 팩트시트</title>
+<title>Vela Compass v0.7.13 — 팩트시트</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
-<link rel="manifest" href="vela-boardroom-manifest.json" />
+<link rel="manifest" href="vela-boardroom-manifest.json?v=12" />
 <meta name="theme-color" content="#0a0a0b" />
 <meta name="color-scheme" content="dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -261,6 +261,26 @@
     flex: 1;
     height: 1px;
     background: var(--line);
+  }
+
+  /* + 새 회의 chip — agenda 헤더 우측. 회의 진행 중일 때만 보임 */
+  .btn-new-meeting {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    padding: 5px 11px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .btn-new-meeting:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
   }
 
   /* ============ AGENDA ============ */
@@ -1197,7 +1217,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.7.11</span>
+    <span>v0.7.13</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1212,6 +1232,7 @@
       <span class="num">§ 01</span>
       <span class="title">Agenda — 안건</span>
       <span class="line"></span>
+      <button id="btnNewMeetingTop" class="btn-new-meeting" type="button" hidden>+ 새 회의</button>
     </div>
     <h1 class="agenda-headline">오늘의 <em>안건</em>을<br/>회의에 올려주세요.</h1>
     <p class="agenda-kicker">베테랑 4명이 분야별 팩트로 답합니다. 결정은 당신.</p>
@@ -1234,7 +1255,7 @@
 
     <div class="agenda-controls">
       <span class="agenda-hint">⌘/Ctrl + Enter 로 시작 · 🎤 마이크 누르면 음성 입력</span>
-      <button id="btnStart" class="btn-primary">팩트 받기 →</button>
+      <button id="btnStart" class="btn-primary">회의 시작 →</button>
     </div>
   </section>
 
@@ -1315,7 +1336,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.11 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.13 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -1409,14 +1430,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.7.11 — Factsheet mode
+ * Vela Compass v0.7.13 — Factsheet mode
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const VERSION = 'v0.7.11';
+const VERSION = 'v0.7.13';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -1728,6 +1749,7 @@ function bindEvents() {
 
   $('#btnExport').addEventListener('click', exportMarkdown);
   $('#btnNew').addEventListener('click', newSession);
+  $('#btnNewMeetingTop').addEventListener('click', newSession);
   $('#memoInput').addEventListener('input', (e) => {
     state.memo = e.target.value;
     autoSaveMemoDebounced();
@@ -2145,7 +2167,8 @@ async function startMeeting() {
   } finally {
     state.inProgress = false;
     $('#btnStart').disabled = false;
-    $('#btnStart').textContent = '다시 받기 →';
+    $('#btnStart').textContent = '다시 시작 →';
+    $('#btnNewMeetingTop').hidden = false;
   }
 }
 
@@ -2671,7 +2694,7 @@ function renderSessionsList() {
     list.innerHTML = `
       <div class="sessions-empty">
         <div class="sessions-empty-title">저장된 회의가 없습니다</div>
-        <div class="sessions-empty-sub">회의를 시작하면 자동으로 저장됩니다.<br>안건 입력 + 팩트 받기 시점에 첫 저장 발생.</div>
+        <div class="sessions-empty-sub">회의를 시작하면 자동으로 저장됩니다.<br>안건 입력 + 회의 시작 시점에 첫 저장 발생.</div>
       </div>
     `;
     return;
@@ -2746,7 +2769,8 @@ function loadSession(id) {
   });
 
   $('#memoInput').value = state.memo;
-  $('#btnStart').textContent = '다시 받기 →';
+  $('#btnStart').textContent = '다시 시작 →';
+  $('#btnNewMeetingTop').hidden = false;
   updateAutoSaveIndicator();
   closeModal('modalSessions');
   toast('회의 불러옴 — 후속 질문/메모 추가하면 자동 저장됨');
@@ -2766,7 +2790,8 @@ function newSession() {
   $('#factsheet').hidden = true;
   $('#followupSection').hidden = true;
   $('#memoSection').hidden = true;
-  $('#btnStart').textContent = '팩트 받기 →';
+  $('#btnStart').textContent = '회의 시작 →';
+  $('#btnNewMeetingTop').hidden = true;
   renderFactCards();
   updateAutoSaveIndicator();
   window.scrollTo({ top: 0, behavior: 'smooth' });
