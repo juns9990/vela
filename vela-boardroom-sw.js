@@ -1,14 +1,15 @@
 /* =============================================================
  * Vela Boardroom — Service Worker
- * v0.7.7
+ * v0.7.9
  *
  * 전략:
- * - 보드룸 관련 정적 자산만 캐시 (다른 vela 앱과 격리)
+ * - HTML + manifest.json은 network-first (즉시 업데이트 반영)
+ * - 아이콘/이미지는 cache-first (자주 안 바뀜)
  * - Anthropic API 요청은 절대 캐시하지 않음 (network-only)
  * - 폰트 CDN은 stale-while-revalidate (오프라인 대비)
  * ============================================================= */
 
-const CACHE_VERSION = 'vela-boardroom-v0.7.7';
+const CACHE_VERSION = 'vela-boardroom-v0.7.9';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const FONT_CACHE = `${CACHE_VERSION}-fonts`;
 
@@ -29,6 +30,12 @@ function isBoardroomAsset(url) {
   return path.includes('vela-boardroom');
 }
 
+// HTML 또는 manifest인지 — network-first 대상
+function isVersionedAsset(url) {
+  const path = new URL(url).pathname;
+  return path.endsWith('.html') || path.endsWith('manifest.json');
+}
+
 function isFontRequest(url) {
   return /fonts\.googleapis\.com|fonts\.gstatic\.com|cdn\.jsdelivr\.net.*pretendard/i.test(url);
 }
@@ -42,14 +49,20 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => cache.addAll(BOARDROOM_ASSETS).catch((e) => {
-        // 일부 자산이 없어도 SW 설치는 진행
         console.warn('[boardroom-sw] precache partial:', e);
       }))
       .then(() => self.skipWaiting())
   );
 });
 
-/* ===== activate — 이전 보드룸 캐시만 정리 (다른 vela 앱 캐시는 보존) ===== */
+/* ===== HTML이 SKIP_WAITING 명령 보내면 즉시 활성화 ===== */
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
+/* ===== activate — 이전 보드룸 캐시만 정리 ===== */
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -75,8 +88,23 @@ self.addEventListener('fetch', (event) => {
     return; // 기본 fetch 동작
   }
 
-  // 보드룸 자산 — cache-first
+  // 보드룸 자산 처리
   if (isBoardroomAsset(url)) {
+    // HTML / manifest — network-first (즉시 업데이트 반영)
+    if (isVersionedAsset(url)) {
+      event.respondWith(
+        fetch(req).then((fresh) => {
+          if (fresh && fresh.ok && fresh.type === 'basic') {
+            const clone = fresh.clone();
+            caches.open(STATIC_CACHE).then((c) => c.put(req, clone));
+          }
+          return fresh;
+        }).catch(() => caches.match(req)) // 오프라인 시 캐시 fallback
+      );
+      return;
+    }
+
+    // 이미지/아이콘 — cache-first (변경 적음)
     event.respondWith(
       caches.match(req).then((cached) => {
         if (cached) {
