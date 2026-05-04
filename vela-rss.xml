@@ -6,8 +6,8 @@
     <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
     <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
     <language>ko</language>
-    <pubDate>Mon, 04 May 2026 06:33:57 +0900</pubDate>
-    <lastBuildDate>Mon, 04 May 2026 06:33:57 +0900</lastBuildDate>
+    <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+    <lastBuildDate>Mon, 04 May 2026 13:53:41 +0900</lastBuildDate>
     <generator>Vela Weekly Collector</generator>
     <ttl>10080</ttl>
     <item>
@@ -15,87 +15,227 @@
       <link>https://juns9990.github.io/vela/vela-prototype.html</link>
       <guid isPermaLink="false">vela-cover-2026-W19</guid>
       <description>이번 주 Vela가 추천하는 깊이 있는 강의. Andrej Karpathy의 시그니처.</description>
-      <pubDate>Mon, 04 May 2026 06:33:57 +0900</pubDate>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
       <category>Cover Story</category>
     </item>
     <item>
-      <title>[Agent] Claw-Eval-Live: A Live Agent Benchmark for Evolving Real-World Workflows</title>
-      <link>https://arxiv.org/abs/2604.28139v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2604.28139v1</guid>
-      <description>LLM agents are expected to complete end-to-end units of work across software tools, business services, and local workspaces. Yet many agent benchmarks freeze a curated task set at release time and grade mainly the final response, making it difficult to evaluate agents against evo</description>
-      <pubDate>Mon, 04 May 2026 06:33:57 +0900</pubDate>
+      <title>[Robotics] AsgardBench: A benchmark for visually grounded interactive planning</title>
+      <link>https://www.microsoft.com/en-us/research/blog/asgardbench-a-benchmark-for-visually-grounded-interactive-planning/</link>
+      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/asgardbench-a-benchmark-for-visually-grounded-interactive-planning/</guid>
+      <description>Imagine a robot tasked with cleaning a kitchen. It needs to observe its environment, decide what to do, and adjust when things don&amp;#8217;t go as expected, for example, when the mug it was tasked to wash is already clean, or the sink is full</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>Robotics</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
+    </item>
+    <item>
+      <title>[Audio] Gemini 3.1 Flash Live: Making audio AI more natural and reliable</title>
+      <link>https://deepmind.google/blog/gemini-3-1-flash-live-making-audio-ai-more-natural-and-reliable/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/gemini-3-1-flash-live-making-audio-ai-more-natural-and-reliable/</guid>
+      <description>Our latest voice model has improved precision and lower latency to make voice interactions more fluid, natural and precise.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>Audio</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
+    </item>
+    <item>
+      <title>[Agent] Gemma 4: Byte for byte, the most capable open models</title>
+      <link>https://deepmind.google/blog/gemma-4-byte-for-byte-the-most-capable-open-models/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/gemma-4-byte-for-byte-the-most-capable-open-models/</guid>
+      <description>Gemma 4: Our most intelligent open models to date, purpose-built for advanced reasoning and agentic workflows.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
       <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[LLM] ConvApparel: Measuring and bridging the realism gap in user simulators</title>
-      <link>https://research.google/blog/convapparel-measuring-and-bridging-the-realism-gap-in-user-simulators/</link>
-      <guid isPermaLink="true">https://research.google/blog/convapparel-measuring-and-bridging-the-realism-gap-in-user-simulators/</guid>
-      <description>Generative AI</description>
-      <pubDate>Mon, 04 May 2026 06:33:57 +0900</pubDate>
+      <title>[Robotics] Gemini Robotics-ER 1.6: Powering real-world robotics tasks through enhanced embodied reasoning</title>
+      <link>https://deepmind.google/blog/gemini-robotics-er-1-6/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/gemini-robotics-er-1-6/</guid>
+      <description>Gemini Robotics ER 1.6: Enhancing spatial reasoning and multi-view understanding for autonomous robotics.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>Robotics</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
+    </item>
+    <item>
+      <title>[Audio] Gemini 3.1 Flash TTS: the next generation of expressive AI speech</title>
+      <link>https://deepmind.google/blog/gemini-3-1-flash-tts-the-next-generation-of-expressive-ai-speech/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/gemini-3-1-flash-tts-the-next-generation-of-expressive-ai-speech/</guid>
+      <description>Our newest audio model introduces granular audio tags that give you precise control to direct AI speech for expressive audio generation.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>Audio</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
+    </item>
+    <item>
+      <title>[LLM] 7 ways to travel smarter this summer, with help from Google</title>
+      <link>https://blog.google/products-and-platforms/products/search/summer-travel-tips-google-search-ai/</link>
+      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/summer-travel-tips-google-search-ai/</guid>
+      <description>Illustration showing a person with a Pixel phone in a beach town farmers&apos; market by the water</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
       <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[LLM] Towards developing future-ready skills with generative AI</title>
-      <link>https://research.google/blog/towards-developing-future-ready-skills-with-generative-ai/</link>
-      <guid isPermaLink="true">https://research.google/blog/towards-developing-future-ready-skills-with-generative-ai/</guid>
-      <description>Education Innovation</description>
-      <pubDate>Mon, 04 May 2026 06:33:57 +0900</pubDate>
+      <title>[LLM] 3 new ways Ads Advisor is making Google Ads safer and faster</title>
+      <link>https://blog.google/products/ads-commerce/ads-advisor-google-ads/</link>
+      <guid isPermaLink="true">https://blog.google/products/ads-commerce/ads-advisor-google-ads/</guid>
+      <description>The Road to Google Marketing Live graphic. May 20, 2026, 9am PT. White background with colorful bottom gradient.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
       <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[LLM] Designing synthetic datasets for the real world: Mechanism design and reasoning from first principles</title>
-      <link>https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/</link>
-      <guid isPermaLink="true">https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/</guid>
-      <description>Generative AI</description>
-      <pubDate>Mon, 04 May 2026 06:33:57 +0900</pubDate>
+      <title>[LLM] Partnering with industry leaders to accelerate AI transformation</title>
+      <link>https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/</guid>
+      <description>Google DeepMind partners with global consultancies to bring the power of frontier AI to organizations around the world.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
       <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[LLM] AI-generated synthetic neurons speed up brain mapping</title>
-      <link>https://research.google/blog/ai-generated-synthetic-neurons-speed-up-brain-mapping/</link>
-      <guid isPermaLink="true">https://research.google/blog/ai-generated-synthetic-neurons-speed-up-brain-mapping/</guid>
-      <description>General Science</description>
-      <pubDate>Mon, 04 May 2026 06:33:57 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
-    </item>
-    <item>
-      <title>[Agent] ReasoningBank: Enabling agents to learn from experience</title>
-      <link>https://research.google/blog/reasoningbank-enabling-agents-to-learn-from-experience/</link>
-      <guid isPermaLink="true">https://research.google/blog/reasoningbank-enabling-agents-to-learn-from-experience/</guid>
-      <description>Generative AI</description>
-      <pubDate>Mon, 04 May 2026 06:33:57 +0900</pubDate>
+      <title>[Agent] We&apos;re launching two specialized TPUs for the agentic era.</title>
+      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/</guid>
+      <description>The eighth generation of Google’s TPU includes two specialized chips that will power the future of AI.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
       <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[LLM] QIMMA قِمّة ⛰: A Quality-First Arabic LLM Leaderboard</title>
-      <link>https://huggingface.co/blog/tiiuae/qimma-arabic-leaderboard</link>
-      <guid isPermaLink="true">https://huggingface.co/blog/tiiuae/qimma-arabic-leaderboard</guid>
-      <description></description>
-      <pubDate>Mon, 04 May 2026 06:33:57 +0900</pubDate>
+      <title>[Tool] Here’s how our TPUs power increasingly demanding AI workloads.</title>
+      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/what-is-a-tpu/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/what-is-a-tpu/</guid>
+      <description>Learn how Google’s TPUs power increasingly demanding AI workloads with this new video.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Vision] Elevating Austria: Google invests in its first data center in the Alps.</title>
+      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-center-austria/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-center-austria/</guid>
+      <description>Aerial image of the data center</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>Vision</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Agent] OpenAI’s New GPT-5.5 Powers Codex on NVIDIA Infrastructure — and NVIDIA Is Already Putting It to Work</title>
+      <link>https://blogs.nvidia.com/blog/openai-codex-gpt-5-5-ai-agents/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/openai-codex-gpt-5-5-ai-agents/</guid>
+      <description>AI agents have revolutionized developer workflows, and their next frontier is knowledge work: processing information, solving complex problems, coming up with new ideas and driving innovation. Codex, OpenAI’s agentic coding application, is </description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
+    </item>
+    <item>
+      <title>[LLM] 8 Gemini tips for organizing your space (and life)</title>
+      <link>https://blog.google/products-and-platforms/products/gemini/gemini-spring-cleaning-tips/</link>
+      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/gemini/gemini-spring-cleaning-tips/</guid>
+      <description>Black screen with illustrations including a laptop with document and email icons streaming out, a smiling person holding a phone and looking at a checklist, and a user activating Gemini Live</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
       <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">HuggingFace</source>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[LLM] It&apos;s all about the angle: Your photos, re-composed</title>
-      <link>https://research.google/blog/its-all-about-the-angle-your-photos-re-composed/</link>
-      <guid isPermaLink="true">https://research.google/blog/its-all-about-the-angle-your-photos-re-composed/</guid>
-      <description>Generative AI</description>
-      <pubDate>Mon, 04 May 2026 06:33:57 +0900</pubDate>
+      <title>[LLM] OpenAI available at FedRAMP Moderate</title>
+      <link>https://openai.com/index/openai-available-at-fedramp-moderate</link>
+      <guid isPermaLink="true">https://openai.com/index/openai-available-at-fedramp-moderate</guid>
+      <description>OpenAI is available at FedRAMP Moderate authorization for ChatGPT Enterprise and the OpenAI API, enabling secure AI adoption for U.S. federal agencies.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
       <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">OpenAI</source>
     </item>
     <item>
-      <title>[Featured] Claw-Eval-Live: A Live Agent Benchmark for Evolving Real-World Workflows</title>
-      <link>https://arxiv.org/abs/2604.28139v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2604.28139v1</guid>
-      <description>LLM agents are expected to complete end-to-end units of work across software tools, business services, and local workspaces. Yet many agent </description>
-      <pubDate>Mon, 04 May 2026 06:33:57 +0900</pubDate>
+      <title>[LLM] The next phase of the Microsoft OpenAI partnership</title>
+      <link>https://openai.com/index/next-phase-of-microsoft-partnership</link>
+      <guid isPermaLink="true">https://openai.com/index/next-phase-of-microsoft-partnership</guid>
+      <description>OpenAI and Microsoft announce an amended agreement that simplifies the partnership, adds long-term clarity, and supports continued AI innovation at scale.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">OpenAI</source>
+    </item>
+    <item>
+      <title>[Agent] Join the new AI Agents Vibe Coding Course from Google and Kaggle</title>
+      <link>https://blog.google/innovation-and-ai/technology/developers-tools/kaggle-genai-intensive-course-vibe-coding-june-2026/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/developers-tools/kaggle-genai-intensive-course-vibe-coding-june-2026/</guid>
+      <description>A web next to a laptop</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[LLM] Announcing our partnership with the Republic of Korea</title>
+      <link>https://deepmind.google/blog/announcing-our-partnership-with-the-republic-of-korea/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/announcing-our-partnership-with-the-republic-of-korea/</guid>
+      <description>Google DeepMind and Korea partner to accelerate scientific breakthroughs using frontier AI models</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
+    </item>
+    <item>
+      <title>[Safety] Our commitment to community safety</title>
+      <link>https://openai.com/index/our-commitment-to-community-safety</link>
+      <guid isPermaLink="true">https://openai.com/index/our-commitment-to-community-safety</guid>
+      <description>Learn how OpenAI protects community safety in ChatGPT through model safeguards, misuse detection, policy enforcement, and collaboration with safety experts.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>Safety</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">OpenAI</source>
+    </item>
+    <item>
+      <title>[LLM] Celebrating 20 years of Google Translate: Fun facts, tips and new features to try</title>
+      <link>https://blog.google/products-and-platforms/products/translate/fun-facts-google-translate-20-years/</link>
+      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/translate/fun-facts-google-translate-20-years/</guid>
+      <description>The Google Translate logo sits in the middle of colorful illustrated scenes, including people translating live conversations and a birthday cake topped by candles with the numeral 20</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[LLM] Where the goblins came from</title>
+      <link>https://openai.com/index/where-the-goblins-came-from</link>
+      <guid isPermaLink="true">https://openai.com/index/where-the-goblins-came-from</guid>
+      <description>How goblin outputs spread in AI models: timeline, root cause, and fixes behind personality-driven quirks in GPT-5 behavior.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">OpenAI</source>
+    </item>
+    <item>
+      <title>[Featured] 3 new ways Ads Advisor is making Google Ads safer and faster</title>
+      <link>https://blog.google/products/ads-commerce/ads-advisor-google-ads/</link>
+      <guid isPermaLink="true">https://blog.google/products/ads-commerce/ads-advisor-google-ads/</guid>
+      <description>The Road to Google Marketing Live graphic. May 20, 2026, 9am PT. White background with colorful bottom gradient.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] Partnering with industry leaders to accelerate AI transformation</title>
+      <link>https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/</guid>
+      <description>Google DeepMind partners with global consultancies to bring the power of frontier AI to organizations around the world.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] We&apos;re launching two specialized TPUs for the agentic era.</title>
+      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/</guid>
+      <description>The eighth generation of Google’s TPU includes two specialized chips that will power the future of AI.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] Here’s how our TPUs power increasingly demanding AI workloads.</title>
+      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/what-is-a-tpu/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/what-is-a-tpu/</guid>
+      <description>Learn how Google’s TPUs power increasingly demanding AI workloads with this new video.</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] Elevating Austria: Google invests in its first data center in the Alps.</title>
+      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-center-austria/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-center-austria/</guid>
+      <description>Aerial image of the data center</description>
+      <pubDate>Mon, 04 May 2026 13:53:41 +0900</pubDate>
       <category>Featured</category>
     </item>
   </channel>

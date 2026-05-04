@@ -1,11 +1,11 @@
 {
-  "version": "v0.15.0",
+  "version": "v0.19.0",
   "meta": {
     "issue_year": 2026,
     "issue_week": 19,
     "monday": "2026-05-04",
     "next_monday": "2026-05-11",
-    "generated_at": "2026-05-04T06:33:16.740459+09:00"
+    "generated_at": "2026-05-04T13:53:25.387358+09:00"
   },
   "cover": {
     "label": "Cover Story · Week 19",
@@ -22,22 +22,94 @@
   },
   "thisMonth": [
     {
-      "date": "APR 30",
+      "date": "MAR 26",
+      "category": "Robotics",
+      "title": "AsgardBench: A benchmark for visually grounded interactive planning",
+      "deck": "Imagine a robot tasked with cleaning a kitchen. It needs to observe its environment, decide what to do, and adjust when things don&#8217;t g",
+      "image": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=400&q=70",
+      "url": "https://www.microsoft.com/en-us/research/blog/asgardbench-a-benchmark-for-visually-grounded-interactive-planning/"
+    },
+    {
+      "date": "MAR 26",
+      "category": "Audio",
+      "title": "Gemini 3.1 Flash Live: Making audio AI more natural and reliable",
+      "deck": "Our latest voice model has improved precision and lower latency to make voice interactions more fluid, natural and precise.",
+      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=70",
+      "url": "https://deepmind.google/blog/gemini-3-1-flash-live-making-audio-ai-more-natural-and-reliable/"
+    },
+    {
+      "date": "APR 02",
       "category": "Agent",
-      "title": "Claw-Eval-Live: A Live Agent Benchmark for Evolving Real-World Workflows",
-      "deck": "LLM agents are expected to complete end-to-end units of work across software tools, business services, and local workspaces. Yet many agent ",
+      "title": "Gemma 4: Byte for byte, the most capable open models",
+      "deck": "Gemma 4: Our most intelligent open models to date, purpose-built for advanced reasoning and agentic workflows.",
       "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
-      "url": "https://arxiv.org/abs/2604.28139v1"
+      "url": "https://deepmind.google/blog/gemma-4-byte-for-byte-the-most-capable-open-models/"
+    },
+    {
+      "date": "APR 13",
+      "category": "Robotics",
+      "title": "Gemini Robotics-ER 1.6: Powering real-world robotics tasks through enhanced embo",
+      "deck": "Gemini Robotics ER 1.6: Enhancing spatial reasoning and multi-view understanding for autonomous robotics.",
+      "image": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=400&q=70",
+      "url": "https://deepmind.google/blog/gemini-robotics-er-1-6/"
+    },
+    {
+      "date": "APR 15",
+      "category": "Audio",
+      "title": "Gemini 3.1 Flash TTS: the next generation of expressive AI speech",
+      "deck": "Our newest audio model introduces granular audio tags that give you precise control to direct AI speech for expressive audio generation.",
+      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=70",
+      "url": "https://deepmind.google/blog/gemini-3-1-flash-tts-the-next-generation-of-expressive-ai-speech/"
+    },
+    {
+      "date": "APR 17",
+      "category": "LLM",
+      "title": "7 ways to travel smarter this summer, with help from Google",
+      "deck": "Illustration showing a person with a Pixel phone in a beach town farmers' market by the water",
+      "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "url": "https://blog.google/products-and-platforms/products/search/summer-travel-tips-google-search-ai/"
     }
   ],
   "featured": [
     {
+      "label": "LLM",
+      "title": "3 new ways Ads Advisor is making Google Ads safer and faster",
+      "deck": "The Road to Google Marketing Live graphic. May 20, 2026, 9am PT. White background with colorful bottom gradient.",
+      "byline": "GOOGLE AI · Google AI",
+      "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "url": "https://blog.google/products/ads-commerce/ads-advisor-google-ads/"
+    },
+    {
+      "label": "LLM",
+      "title": "Partnering with industry leaders to accelerate AI transformation",
+      "deck": "Google DeepMind partners with global consultancies to bring the power of frontier AI to organizations around the world.",
+      "byline": "DEEPMIND · DeepMind",
+      "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "url": "https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/"
+    },
+    {
       "label": "Agent",
-      "title": "Claw-Eval-Live: A Live Agent Benchmark for Evolving Real-World Workflows",
-      "deck": "LLM agents are expected to complete end-to-end units of work across software tools, business services, and local workspaces. Yet many agent ",
-      "byline": "ARXIV · Chenxin Li et al.",
+      "title": "We're launching two specialized TPUs for the agentic era.",
+      "deck": "The eighth generation of Google’s TPU includes two specialized chips that will power the future of AI.",
+      "byline": "GOOGLE AI · Google AI",
       "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
-      "url": "https://arxiv.org/abs/2604.28139v1"
+      "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/"
+    },
+    {
+      "label": "Tool",
+      "title": "Here’s how our TPUs power increasingly demanding AI workloads.",
+      "deck": "Learn how Google’s TPUs power increasingly demanding AI workloads with this new video.",
+      "byline": "GOOGLE AI · Google AI",
+      "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=70",
+      "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/what-is-a-tpu/"
+    },
+    {
+      "label": "Vision",
+      "title": "Elevating Austria: Google invests in its first data center in the Alps.",
+      "deck": "Aerial image of the data center",
+      "byline": "GOOGLE AI · Google AI",
+      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=70",
+      "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-center-austria/"
     }
   ],
   "videos": [
@@ -64,128 +136,374 @@
       "videoId": "wjZofJX0v4M",
       "source": "YouTube",
       "thumb": "https://i.ytimg.com/vi/wjZofJX0v4M/hqdefault.jpg"
+    },
+    {
+      "title": "신경망의 본질 — Deep Learning Chapter 1",
+      "byline": "3Blue1Brown",
+      "duration": "18:40",
+      "videoId": "aircAruvnKk",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/aircAruvnKk/hqdefault.jpg"
+    }
+  ],
+  "industry": [
+    {
+      "date": "MAY 01",
+      "source": "Wired AI",
+      "title": "A Dark-Money Campaign Is Paying Influencers to Frame Chinese AI as a Threat",
+      "deck": "Build American AI, a nonprofit linked to a super PAC bankrolled by executives at OpenAI and Andreessen Horowitz, is funding a campaign to spread pro-AI messagin",
+      "url": "https://www.wired.com/story/super-pac-backed-by-openai-and-palantir-is-paying-tiktok-influencers-to-fear-monger-about-china/"
+    },
+    {
+      "date": "APR 22",
+      "source": "Ars Technica",
+      "title": "Microsoft issues emergency update for macOS and Linux ASP.NET threat",
+      "deck": "When authentication fails, things can go very, very wrong.",
+      "url": "https://arstechnica.com/security/2026/04/microsoft-issues-emergency-update-for-macos-and-linux-asp-net-threat/"
+    },
+    {
+      "date": "APR 24",
+      "source": "Ars Technica",
+      "title": "Why are top university websites serving porn? It comes down to shoddy housekeeping.",
+      "deck": "Hundreds of subdomains from dozens of universities have been hijacked by scammers.",
+      "url": "https://arstechnica.com/security/2026/04/why-are-top-university-websites-serving-porn-it-comes-down-to-shoddy-housekeeping/"
+    },
+    {
+      "date": "APR 29",
+      "source": "Ars Technica",
+      "title": "Why a recent supply-chain attack singled out security firms Checkmarx and Bitwarden",
+      "deck": "Security firms find themselves especially exposed.",
+      "url": "https://arstechnica.com/information-technology/2026/04/why-a-recent-supply-chain-attack-singled-out-security-firms-checkmarx-and-bitwarden/"
+    },
+    {
+      "date": "APR 30",
+      "source": "Ars Technica",
+      "title": "The most severe Linux threat to surface in years catches the world flat-footed",
+      "deck": "CopyFail threatens multi-tenant servers, CI/CD work flows, Kubernetes containers, and more.",
+      "url": "https://arstechnica.com/security/2026/04/as-the-most-severe-linux-threat-in-years-surfaces-the-world-scrambles/"
+    },
+    {
+      "date": "APR 30",
+      "source": "Wired AI",
+      "title": "Good Luck Getting a Mac Mini for the Next ‘Several Months’",
+      "deck": "Apple CEO Tim Cook told analysts that AI adoption has happened faster than expected.",
+      "url": "https://www.wired.com/story/apple-sold-out-mac-mini-openclaw/"
+    },
+    {
+      "date": "APR 30",
+      "source": "Wired AI",
+      "title": "Musk v. Altman Kicks Off, DOJ Guts Voting Rights Unit, and Is the AI Job Apocalypse Overhyped?",
+      "deck": "In this episode of Uncanny Valley, we get into how the Elon Musk-Sam Altman trial goes way beyond their rivalry and could have major implications both for OpenA",
+      "url": "https://www.wired.com/story/uncanny-valley-podcast-musk-v-altman-doj-guts-voting-rights-unit-is-ai-job-apocalypse-overhyped/"
+    },
+    {
+      "date": "APR 30",
+      "source": "Wired AI",
+      "title": "Elon Musk Seemingly Admits xAI Has Used OpenAI’s Models to Train Its Own",
+      "deck": "While answering questions under oath, Musk argued it’s standard practice for AI labs to use their competitors’ models.",
+      "url": "https://www.wired.com/story/elon-musk-distill-openai-models-partly-xai/"
     }
   ],
   "signals": [
     {
-      "id": "arxiv-2604.28139",
-      "source": "arxiv",
-      "sourceLabel": "ArXiv",
-      "title": "Claw-Eval-Live: A Live Agent Benchmark for Evolving Real-World Workflows",
-      "abstract": "LLM agents are expected to complete end-to-end units of work across software tools, business services, and local workspaces. Yet many agent benchmarks freeze a curated task set at release time and grade mainly the final response, making it difficult to evaluate agents against evo",
-      "url": "https://arxiv.org/abs/2604.28139v1",
-      "published": "2026-04-30",
+      "id": "msr-b6097aee",
+      "source": "blog",
+      "sourceLabel": "Microsoft Research",
+      "title": "AsgardBench: A benchmark for visually grounded interactive planning",
+      "abstract": "Imagine a robot tasked with cleaning a kitchen. It needs to observe its environment, decide what to do, and adjust when things don&#8217;t go as expected, for example, when the mug it was tasked to wash is already clean, or the sink is full",
+      "url": "https://www.microsoft.com/en-us/research/blog/asgardbench-a-benchmark-for-visually-grounded-interactive-planning/",
+      "published": "2026-03-26",
+      "tags": [
+        "Robotics"
+      ],
+      "authors": "Microsoft Research",
+      "thumb": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "dm-161f77b8",
+      "source": "blog",
+      "sourceLabel": "DeepMind",
+      "title": "Gemini 3.1 Flash Live: Making audio AI more natural and reliable",
+      "abstract": "Our latest voice model has improved precision and lower latency to make voice interactions more fluid, natural and precise.",
+      "url": "https://deepmind.google/blog/gemini-3-1-flash-live-making-audio-ai-more-natural-and-reliable/",
+      "published": "2026-03-26",
+      "tags": [
+        "Audio"
+      ],
+      "authors": "DeepMind",
+      "thumb": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "dm-c64eb2c5",
+      "source": "blog",
+      "sourceLabel": "DeepMind",
+      "title": "Gemma 4: Byte for byte, the most capable open models",
+      "abstract": "Gemma 4: Our most intelligent open models to date, purpose-built for advanced reasoning and agentic workflows.",
+      "url": "https://deepmind.google/blog/gemma-4-byte-for-byte-the-most-capable-open-models/",
+      "published": "2026-04-02",
       "tags": [
         "Agent"
       ],
-      "authors": "Chenxin Li et al.",
+      "authors": "DeepMind",
       "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
-      "score": 4
+      "score": 5
     },
     {
-      "id": "g-217f9a8d",
+      "id": "dm-f846584e",
       "source": "blog",
-      "sourceLabel": "Google Research",
-      "title": "ConvApparel: Measuring and bridging the realism gap in user simulators",
-      "abstract": "Generative AI",
-      "url": "https://research.google/blog/convapparel-measuring-and-bridging-the-realism-gap-in-user-simulators/",
-      "published": "2026-04-09",
-      "tags": [
-        "LLM"
-      ],
-      "authors": "Google Research",
-      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-      "score": 3
-    },
-    {
-      "id": "g-1a17798f",
-      "source": "blog",
-      "sourceLabel": "Google Research",
-      "title": "Towards developing future-ready skills with generative AI",
-      "abstract": "Education Innovation",
-      "url": "https://research.google/blog/towards-developing-future-ready-skills-with-generative-ai/",
+      "sourceLabel": "DeepMind",
+      "title": "Gemini Robotics-ER 1.6: Powering real-world robotics tasks through enhanced embodied reasoning",
+      "abstract": "Gemini Robotics ER 1.6: Enhancing spatial reasoning and multi-view understanding for autonomous robotics.",
+      "url": "https://deepmind.google/blog/gemini-robotics-er-1-6/",
       "published": "2026-04-13",
       "tags": [
-        "LLM"
+        "Robotics"
       ],
-      "authors": "Google Research",
-      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-      "score": 3
+      "authors": "DeepMind",
+      "thumb": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=400&q=70",
+      "score": 5
     },
     {
-      "id": "g-c120c964",
+      "id": "dm-1bce4c3e",
       "source": "blog",
-      "sourceLabel": "Google Research",
-      "title": "Designing synthetic datasets for the real world: Mechanism design and reasoning from first principles",
-      "abstract": "Generative AI",
-      "url": "https://research.google/blog/designing-synthetic-datasets-for-the-real-world-mechanism-design-and-reasoning-from-first-principles/",
-      "published": "2026-04-16",
+      "sourceLabel": "DeepMind",
+      "title": "Gemini 3.1 Flash TTS: the next generation of expressive AI speech",
+      "abstract": "Our newest audio model introduces granular audio tags that give you precise control to direct AI speech for expressive audio generation.",
+      "url": "https://deepmind.google/blog/gemini-3-1-flash-tts-the-next-generation-of-expressive-ai-speech/",
+      "published": "2026-04-15",
+      "tags": [
+        "Audio"
+      ],
+      "authors": "DeepMind",
+      "thumb": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "googai-6ce36f8a",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "7 ways to travel smarter this summer, with help from Google",
+      "abstract": "Illustration showing a person with a Pixel phone in a beach town farmers' market by the water",
+      "url": "https://blog.google/products-and-platforms/products/search/summer-travel-tips-google-search-ai/",
+      "published": "2026-04-17",
       "tags": [
         "LLM"
       ],
-      "authors": "Google Research",
+      "authors": "Google AI",
       "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-      "score": 3
+      "score": 5
     },
     {
-      "id": "g-0a7e6d7b",
+      "id": "googai-6741483c",
       "source": "blog",
-      "sourceLabel": "Google Research",
-      "title": "AI-generated synthetic neurons speed up brain mapping",
-      "abstract": "General Science",
-      "url": "https://research.google/blog/ai-generated-synthetic-neurons-speed-up-brain-mapping/",
-      "published": "2026-04-16",
-      "tags": [
-        "LLM"
-      ],
-      "authors": "Google Research",
-      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-      "score": 3
-    },
-    {
-      "id": "g-b452a774",
-      "source": "blog",
-      "sourceLabel": "Google Research",
-      "title": "ReasoningBank: Enabling agents to learn from experience",
-      "abstract": "Generative AI",
-      "url": "https://research.google/blog/reasoningbank-enabling-agents-to-learn-from-experience/",
+      "sourceLabel": "Google AI",
+      "title": "3 new ways Ads Advisor is making Google Ads safer and faster",
+      "abstract": "The Road to Google Marketing Live graphic. May 20, 2026, 9am PT. White background with colorful bottom gradient.",
+      "url": "https://blog.google/products/ads-commerce/ads-advisor-google-ads/",
       "published": "2026-04-21",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "dm-4de0d2dd",
+      "source": "blog",
+      "sourceLabel": "DeepMind",
+      "title": "Partnering with industry leaders to accelerate AI transformation",
+      "abstract": "Google DeepMind partners with global consultancies to bring the power of frontier AI to organizations around the world.",
+      "url": "https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/",
+      "published": "2026-04-21",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "DeepMind",
+      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "googai-6a159b97",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "We're launching two specialized TPUs for the agentic era.",
+      "abstract": "The eighth generation of Google’s TPU includes two specialized chips that will power the future of AI.",
+      "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/",
+      "published": "2026-04-22",
       "tags": [
         "Agent"
       ],
-      "authors": "Google Research",
+      "authors": "Google AI",
       "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
-      "score": 3
+      "score": 5
     },
     {
-      "id": "hf-200ccf22",
+      "id": "googai-d281c973",
       "source": "blog",
-      "sourceLabel": "HuggingFace",
-      "title": "QIMMA قِمّة ⛰: A Quality-First Arabic LLM Leaderboard",
-      "abstract": "",
-      "url": "https://huggingface.co/blog/tiiuae/qimma-arabic-leaderboard",
-      "published": "2026-04-21",
+      "sourceLabel": "Google AI",
+      "title": "Here’s how our TPUs power increasingly demanding AI workloads.",
+      "abstract": "Learn how Google’s TPUs power increasingly demanding AI workloads with this new video.",
+      "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/what-is-a-tpu/",
+      "published": "2026-04-23",
+      "tags": [
+        "Tool"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "googai-85f0e7dc",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "Elevating Austria: Google invests in its first data center in the Alps.",
+      "abstract": "Aerial image of the data center",
+      "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-center-austria/",
+      "published": "2026-04-23",
+      "tags": [
+        "Vision"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "nvid-be9fdc84",
+      "source": "blog",
+      "sourceLabel": "NVIDIA",
+      "title": "OpenAI’s New GPT-5.5 Powers Codex on NVIDIA Infrastructure — and NVIDIA Is Already Putting It to Work",
+      "abstract": "AI agents have revolutionized developer workflows, and their next frontier is knowledge work: processing information, solving complex problems, coming up with new ideas and driving innovation. Codex, OpenAI’s agentic coding application, is ",
+      "url": "https://blogs.nvidia.com/blog/openai-codex-gpt-5-5-ai-agents/",
+      "published": "2026-04-23",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "NVIDIA",
+      "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "googai-0edf8674",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "8 Gemini tips for organizing your space (and life)",
+      "abstract": "Black screen with illustrations including a laptop with document and email icons streaming out, a smiling person holding a phone and looking at a checklist, and a user activating Gemini Live",
+      "url": "https://blog.google/products-and-platforms/products/gemini/gemini-spring-cleaning-tips/",
+      "published": "2026-04-24",
       "tags": [
         "LLM"
       ],
-      "authors": "HuggingFace",
+      "authors": "Google AI",
       "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-      "score": 3
+      "score": 5
     },
     {
-      "id": "g-711ceed0",
+      "id": "oai-6240d320",
       "source": "blog",
-      "sourceLabel": "Google Research",
-      "title": "It's all about the angle: Your photos, re-composed",
-      "abstract": "Generative AI",
-      "url": "https://research.google/blog/its-all-about-the-angle-your-photos-re-composed/",
-      "published": "2026-04-22",
+      "sourceLabel": "OpenAI",
+      "title": "OpenAI available at FedRAMP Moderate",
+      "abstract": "OpenAI is available at FedRAMP Moderate authorization for ChatGPT Enterprise and the OpenAI API, enabling secure AI adoption for U.S. federal agencies.",
+      "url": "https://openai.com/index/openai-available-at-fedramp-moderate",
+      "published": "2026-04-27",
       "tags": [
         "LLM"
       ],
-      "authors": "Google Research",
+      "authors": "OpenAI",
       "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-      "score": 3
+      "score": 5
+    },
+    {
+      "id": "oai-cb70df53",
+      "source": "blog",
+      "sourceLabel": "OpenAI",
+      "title": "The next phase of the Microsoft OpenAI partnership",
+      "abstract": "OpenAI and Microsoft announce an amended agreement that simplifies the partnership, adds long-term clarity, and supports continued AI innovation at scale.",
+      "url": "https://openai.com/index/next-phase-of-microsoft-partnership",
+      "published": "2026-04-27",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "OpenAI",
+      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "googai-29488e13",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "Join the new AI Agents Vibe Coding Course from Google and Kaggle",
+      "abstract": "A web next to a laptop",
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/kaggle-genai-intensive-course-vibe-coding-june-2026/",
+      "published": "2026-04-27",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "dm-86d14870",
+      "source": "blog",
+      "sourceLabel": "DeepMind",
+      "title": "Announcing our partnership with the Republic of Korea",
+      "abstract": "Google DeepMind and Korea partner to accelerate scientific breakthroughs using frontier AI models",
+      "url": "https://deepmind.google/blog/announcing-our-partnership-with-the-republic-of-korea/",
+      "published": "2026-04-27",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "DeepMind",
+      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "oai-1dc472c1",
+      "source": "blog",
+      "sourceLabel": "OpenAI",
+      "title": "Our commitment to community safety",
+      "abstract": "Learn how OpenAI protects community safety in ChatGPT through model safeguards, misuse detection, policy enforcement, and collaboration with safety experts.",
+      "url": "https://openai.com/index/our-commitment-to-community-safety",
+      "published": "2026-04-28",
+      "tags": [
+        "Safety"
+      ],
+      "authors": "OpenAI",
+      "thumb": "https://images.unsplash.com/photo-1620207418302-439b387441b0?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "googai-6d3470cf",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "Celebrating 20 years of Google Translate: Fun facts, tips and new features to try",
+      "abstract": "The Google Translate logo sits in the middle of colorful illustrated scenes, including people translating live conversations and a birthday cake topped by candles with the numeral 20",
+      "url": "https://blog.google/products-and-platforms/products/translate/fun-facts-google-translate-20-years/",
+      "published": "2026-04-28",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "oai-5425e3ec",
+      "source": "blog",
+      "sourceLabel": "OpenAI",
+      "title": "Where the goblins came from",
+      "abstract": "How goblin outputs spread in AI models: timeline, root cause, and fixes behind personality-driven quirks in GPT-5 behavior.",
+      "url": "https://openai.com/index/where-the-goblins-came-from",
+      "published": "2026-04-29",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "OpenAI",
+      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "score": 5
     }
   ]
 }
