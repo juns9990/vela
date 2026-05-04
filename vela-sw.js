@@ -1,7 +1,7 @@
-// Vela Service Worker · v0.19.1
-// Wider Net + 콘텐츠 부실 문제 해결
+// Vela Service Worker · v0.20.0
+// Magazine Edition: Editor's Note + Trends + Numbers + Why It Matters
 
-const CACHE_NAME = 'vela-cache-v0.19.1';
+const CACHE_NAME = 'vela-cache-v0.20.0';
 const CORE_ASSETS = [
   './vela-prototype.html',
   './vela-manifest.json',
