@@ -877,7 +877,13 @@ def write_rss(issue):
 # Groq AI 한국어 번역 (무료 API)
 # ============================================================
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-GROQ_MODEL = "llama-3.3-70b-versatile"  # 한국어 지원 우수, 빠름
+# 번역 모델 폴백 체인 — 첫 모델 실패 시 다음 모델 자동 시도
+GROQ_MODELS = [
+    "llama-3.3-70b-versatile",   # 1순위: 한국어 품질 최고
+    "llama-3.1-8b-instant",       # 2순위: 빠르고 안정적
+    "openai/gpt-oss-120b",        # 3순위: 최신 대형 모델
+]
+GROQ_MODEL = GROQ_MODELS[0]  # 기본값 (호환성)
 
 def groq_translate(items, api_key):
     """
@@ -889,10 +895,48 @@ def groq_translate(items, api_key):
         print("  ⚠️ GROQ_API_KEY not set — skipping translation", file=sys.stderr)
         return items
 
-    print(f"  Translating {len(items)} items via Groq ({GROQ_MODEL})...")
+    # ─── 모델 자동 선택: 폴백 체인에서 첫 번째 작동하는 모델 찾기 ───
+    working_model = None
+    print(f"  Testing Groq models...")
+    for model in GROQ_MODELS:
+        try:
+            test_req = urllib.request.Request(
+                GROQ_API_URL,
+                data=json.dumps({
+                    "model": model,
+                    "messages": [{"role": "user", "content": "Reply with: OK"}],
+                    "max_tokens": 10
+                }).encode("utf-8"),
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                    "User-Agent": USER_AGENT
+                },
+                method="POST"
+            )
+            with urllib.request.urlopen(test_req, timeout=15) as r:
+                data = json.loads(r.read().decode("utf-8"))
+                if data.get("choices"):
+                    working_model = model
+                    print(f"  ✓ Using model: {model}")
+                    break
+        except urllib.error.HTTPError as e:
+            err_body = ""
+            try: err_body = e.read().decode("utf-8")[:200]
+            except: pass
+            print(f"  ✗ Model {model}: HTTP {e.code} — {err_body[:120]}", file=sys.stderr)
+        except Exception as e:
+            print(f"  ✗ Model {model}: {type(e).__name__} — {str(e)[:120]}", file=sys.stderr)
+
+    if not working_model:
+        print(f"  ⚠️ ALL MODELS FAILED — Groq API 접근 불가. 콘텐츠가 영문으로 남습니다.", file=sys.stderr)
+        print(f"  점검 사항: (1) GROQ_API_KEY Secret 등록 (2) https://console.groq.com 에서 키 활성 (3) 한도 초과 여부", file=sys.stderr)
+        return items
+
+    print(f"  Translating {len(items)} items via Groq ({working_model})...")
     success = 0
     fail_count = 0
-    fail_reasons = {}  # 실패 원인 카운트
+    fail_reasons = {}
     skipped_korean = 0
 
     for i, item in enumerate(items):
@@ -920,7 +964,7 @@ JSON만 출력:"""
             req = urllib.request.Request(
                 GROQ_API_URL,
                 data=json.dumps({
-                    "model": GROQ_MODEL,
+                    "model": working_model,
                     "messages": [{"role": "user", "content": prompt}],
                     "temperature": 0.4,
                     "max_tokens": 400,
@@ -950,7 +994,6 @@ JSON만 출력:"""
             except: pass
             reason = f"HTTP {e.code}"
             fail_reasons[reason] = fail_reasons.get(reason, 0) + 1
-            # 처음 3개 실패까지만 자세히 출력
             if fail_count <= 3:
                 print(f"  ✗ Translate failed [{i+1}/{len(items)}]: HTTP {e.code} — {err_body[:200]}", file=sys.stderr)
         except json.JSONDecodeError as e:
