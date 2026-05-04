@@ -1111,26 +1111,27 @@ def generate_editors_note(items, api_key, working_model):
     """이번 주 콘텐츠를 보고 Editor's Note (한 줄 흐름 분석) 생성."""
     if not api_key or not working_model or not items:
         return None
-    # 상위 12개 제목+abstract만 LLM에 전달 (토큰 절약)
-    top = items[:12]
+    # 상위 10개 제목+abstract만 LLM에 전달 (토큰 절약)
+    top = items[:10]
     bullets = "\n".join([
-        f"- {it.get('title', '')[:80]} | {(it.get('tags') or ['?'])[0]}"
+        f"- {it.get('title', '')[:60]}"
         for it in top
     ])
     prompt = f"""당신은 AI 매거진 'Vela'의 편집장입니다.
-이번 주 발견된 12개의 AI 항목을 보고, 매거진 첫 머리에 들어갈 한 단락의 'Editor's Note'를 한국어로 작성해주세요.
+아래 항목들을 보고, 매거진 첫 머리에 들어갈 짧은 'Editor's Note'를 한국어로 작성하세요.
 
-요구사항:
-- 정확히 2~3문장, 총 150~200자
-- 이번 주 AI 흐름의 '공통 주제' 또는 '대비되는 두 흐름'을 짚어내세요
-- 단순 나열이 아닌, 매거진 편집자의 시각으로 의미 부여
-- 한자 사용 금지, 순한글 + 외래어/기술용어만
-- 마지막 문장은 독자에게 던지는 짧은 질문이나 전망으로 마무리
+엄격한 요구사항:
+- 정확히 2문장만 작성. 총 120자 이내. 절대 그 이상 쓰지 마세요.
+- 이번 주 AI 흐름의 핵심 한 가지를 짚으세요
+- 단순 나열 금지. 편집자 시각으로 의미 부여.
+- 한자 절대 사용 금지. 순한글 + 외래어/기술용어만.
+- 따옴표 없이 본문만 출력
+- 반드시 마침표로 마무리할 것 (문장 중간에 끊지 마세요)
 
-이번 주 항목 (제목 | 카테고리):
+이번 주 항목:
 {bullets}
 
-위 흐름을 짚는 Editor's Note (200자 이내, 따옴표 없이 본문만):"""
+위 흐름을 짚는 Editor's Note (2문장, 120자 이내, 마침표로 종료):"""
 
     try:
         req = urllib.request.Request(
@@ -1138,8 +1139,8 @@ def generate_editors_note(items, api_key, working_model):
             data=json.dumps({
                 "model": working_model,
                 "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.7,
-                "max_tokens": 400
+                "temperature": 0.6,
+                "max_tokens": 800  # 한국어는 글자당 토큰 많이 먹어서 여유 크게
             }).encode("utf-8"),
             headers={
                 "Authorization": f"Bearer {api_key}",
@@ -1154,7 +1155,24 @@ def generate_editors_note(items, api_key, working_model):
             note = strip_hanja(note)
             # 마크다운 따옴표/별표 제거
             note = re.sub(r'^["\'\*\s]+|["\'\*\s]+$', '', note)
-            return note[:400] if note else None
+            note = re.sub(r'\s+', ' ', note).strip()
+
+            # 마침표로 끝나지 않으면 마지막 완전한 문장까지만 자르기
+            if not note.endswith(('.', '?', '!', '다', '까', '요', '죠')):
+                # 마지막 마침표/물음표/느낌표 위치 찾기
+                last_period = max(
+                    note.rfind('.'), note.rfind('?'), note.rfind('!'),
+                    note.rfind('다.'), note.rfind('다 ')
+                )
+                if last_period > 30:  # 최소 30자는 있어야 의미 있음
+                    note = note[:last_period + 1].strip()
+                    if not note.endswith(('.', '?', '!')):
+                        note += '.'
+                else:
+                    # 너무 짧게 잘리면 그대로 두고 말줄임표 대신 마침표로
+                    note = note.rstrip('…').rstrip('.') + '.'
+
+            return note[:300] if note else None
     except Exception as e:
         print(f"  ✗ Editor's Note generation failed: {e}", file=sys.stderr)
         return None
