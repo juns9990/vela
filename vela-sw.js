@@ -1,7 +1,7 @@
-// Vela Service Worker · v0.17.0
-// Phase 2 + 추가 기능: vela-archive.json, vela-rss.xml 캐싱
+// Vela Service Worker · v0.19.0
+// Wider Net: 25+ 소스 + Industry 섹션 추가
 
-const CACHE_NAME = 'vela-cache-v0.17.0';
+const CACHE_NAME = 'vela-cache-v0.19.0';
 const CORE_ASSETS = [
   './vela-prototype.html',
   './vela-manifest.json',
