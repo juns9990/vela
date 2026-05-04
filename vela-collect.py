@@ -545,10 +545,10 @@ def main():
         title = (item.get("title") or "").strip()
         abstract = (item.get("abstract") or "").strip()
 
-        # 빈 항목 / 너무 짧은 abstract 제거
+        # 빈 항목 / 너무 짧은 abstract 완화 (20자 → 15자)
         if not url or not title:
             continue
-        if len(abstract) < 30:
+        if len(abstract) < 15:
             continue
 
         # URL 중복
@@ -556,11 +556,12 @@ def main():
         if url_norm in seen_urls:
             continue
 
-        # 제목 유사도 0.6 이상이면 중복 처리 (예: 같은 뉴스 여러 매체)
+        # 제목 유사도 0.75 이상이면 중복 처리 (이전 0.6 → 0.75 완화)
+        # 0.6은 너무 엄격해서 비슷한 주제 논문이 잘림
         toks = title_tokens(title)
         is_dup = False
         for prev in seen_title_tokens:
-            if jaccard(toks, prev) >= 0.6:
+            if jaccard(toks, prev) >= 0.75:
                 is_dup = True; break
         if is_dup:
             continue
@@ -583,23 +584,27 @@ def main():
     industry = [s for s in scored if s.get("source") == "news"]
     print(f"  Academic pool: {len(academic)}, Industry pool: {len(industry)}")
 
-    # ============================================================
-    # 4. 검증 — URL 살아있는지 (학술 25개 + 산업 12개까지)
-    # ============================================================
+    # 4. 검증 — URL 살아있는지 (학술 30개 + 산업 15개까지 시도, 검증 실패해도 보존)
     print("\n[3/6] Validating URLs...")
     validated_academic = []
-    for item in academic[:50]:
+    failed_count = 0
+    for item in academic[:60]:  # 더 많이 시도
         if safe_get_url(item["url"]):
             validated_academic.append(item)
-        if len(validated_academic) >= 25:
+        else:
+            failed_count += 1
+            # ArXiv 항목은 검증 실패해도 보존 (가끔 ArXiv 일시 차단됨)
+            if item.get("source") == "arxiv":
+                validated_academic.append(item)
+        if len(validated_academic) >= 30:
             break
-    print(f"  Academic validated: {len(validated_academic)}")
+    print(f"  Academic validated: {len(validated_academic)} (skipped {failed_count} dead URLs)")
 
     validated_industry = []
-    for item in industry[:25]:
+    for item in industry[:30]:
         if safe_get_url(item["url"]):
             validated_industry.append(item)
-        if len(validated_industry) >= 12:
+        if len(validated_industry) >= 15:
             break
     print(f"  Industry validated: {len(validated_industry)}")
 
@@ -651,8 +656,16 @@ def main():
         "credit": "Click image to play"
     }
 
-    # This Month: 학술 score 4+ 6개
-    top_items = [s for s in validated_academic if s.get("score", 0) >= 4][:6]
+    # This Month: score 3+ 6개 (4+에서 완화 — 카드가 1~2개만 나오는 문제 해결)
+    top_items = [s for s in validated_academic if s.get("score", 0) >= 3][:6]
+    # 그래도 부족하면 점수 무관하게 상위 6개 채우기
+    if len(top_items) < 6:
+        seen_urls = {x.get("url") for x in top_items}
+        for s in validated_academic:
+            if s.get("url") not in seen_urls:
+                top_items.append(s)
+            if len(top_items) >= 6:
+                break
     this_month = []
     for s in top_items:
         d = s.get("published", meta["monday"])
@@ -669,8 +682,16 @@ def main():
             "url": s.get("url", "")
         })
 
-    # Featured: 학술 5개
-    featured_items = validated_academic[:5]
+    # Featured: 학술 5개 (This Month와 다른 항목 우선)
+    used_urls = {x.get("url") for x in this_month}
+    featured_items = [s for s in validated_academic if s.get("url") not in used_urls][:5]
+    # 부족하면 중복 허용해서라도 5개 채움
+    if len(featured_items) < 5:
+        for s in validated_academic:
+            if s not in featured_items:
+                featured_items.append(s)
+            if len(featured_items) >= 5:
+                break
     featured = []
     for s in featured_items:
         featured.append({
@@ -870,9 +891,14 @@ def groq_translate(items, api_key):
 
     print(f"  Translating {len(items)} items via Groq ({GROQ_MODEL})...")
     success = 0
+    fail_count = 0
+    fail_reasons = {}  # 실패 원인 카운트
+    skipped_korean = 0
+
     for i, item in enumerate(items):
         # 한글이 이미 들어있으면 스킵 (시드 데이터 보존)
         if any('\uAC00' <= c <= '\uD7A3' for c in item.get("title", "")):
+            skipped_korean += 1
             continue
 
         prompt = f"""당신은 AI 매거진 'Vela'의 한국어 번역 에디터입니다.
@@ -918,17 +944,36 @@ JSON만 출력:"""
                     item["abstract"] = translated["abstract"][:280]
                 success += 1
         except urllib.error.HTTPError as e:
+            fail_count += 1
             err_body = ""
-            try: err_body = e.read().decode("utf-8")[:200]
+            try: err_body = e.read().decode("utf-8")[:300]
             except: pass
-            print(f"  ✗ Translate failed [{i+1}/{len(items)}]: HTTP {e.code} {err_body}", file=sys.stderr)
+            reason = f"HTTP {e.code}"
+            fail_reasons[reason] = fail_reasons.get(reason, 0) + 1
+            # 처음 3개 실패까지만 자세히 출력
+            if fail_count <= 3:
+                print(f"  ✗ Translate failed [{i+1}/{len(items)}]: HTTP {e.code} — {err_body[:200]}", file=sys.stderr)
+        except json.JSONDecodeError as e:
+            fail_count += 1
+            fail_reasons["JSON parse"] = fail_reasons.get("JSON parse", 0) + 1
+            if fail_count <= 3:
+                print(f"  ✗ Translate failed [{i+1}/{len(items)}]: JSON parse error", file=sys.stderr)
         except Exception as e:
-            print(f"  ✗ Translate failed [{i+1}/{len(items)}]: {e}", file=sys.stderr)
+            fail_count += 1
+            reason = type(e).__name__
+            fail_reasons[reason] = fail_reasons.get(reason, 0) + 1
+            if fail_count <= 3:
+                print(f"  ✗ Translate failed [{i+1}/{len(items)}]: {reason} — {str(e)[:150]}", file=sys.stderr)
 
         # Rate limit 보호 (Groq 무료 30 RPM 안전 마진 — 30+ 항목 대비 보수적)
         time.sleep(2.5)
 
-    print(f"  ✓ Translated {success}/{len(items)} items")
+    total = len(items)
+    print(f"  ✓ Translated {success}/{total} items (skipped {skipped_korean} already-Korean, failed {fail_count})")
+    if fail_reasons:
+        print(f"    Failure breakdown: {dict(fail_reasons)}", file=sys.stderr)
+    if success == 0 and total > skipped_korean:
+        print(f"  ⚠️ ALL TRANSLATIONS FAILED — 콘텐츠가 영문으로 남습니다. GROQ_API_KEY 또는 모델 상태를 확인하세요.", file=sys.stderr)
     return items
 
 
