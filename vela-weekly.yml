@@ -1,6 +1,7 @@
 name: Vela Weekly Issue
 
 # 매주 월요일 06:00 KST = 일요일 21:00 UTC 자동 실행
+# 7시 출근 1시간 전에 매거진 준비 완료
 # 수동 실행도 가능 (Actions 탭 → "Run workflow")
 on:
   schedule:
