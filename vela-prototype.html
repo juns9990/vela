@@ -631,6 +631,135 @@
   }
 
   /* ============================================================
+     EDITORIAL · Editor's Note + Numbers This Week (오프닝)
+     ============================================================ */
+  .editorial-section {
+    padding: 48px 32px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-warm);
+  }
+  .editorial-grid {
+    max-width: 1280px; margin: 0 auto;
+    display: grid; grid-template-columns: 1.6fr 1fr; gap: 56px;
+  }
+  .editorial-note {
+    border-left: 3px solid var(--accent);
+    padding: 8px 0 8px 28px;
+  }
+  .editorial-label {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  .editorial-body {
+    font-family: var(--serif); font-style: italic;
+    font-size: 22px; line-height: 1.55;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    font-weight: 400;
+  }
+  .editorial-sign {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.15em; color: var(--text-mute);
+    margin-top: 22px;
+  }
+  .numbers-box {
+    background: var(--bg-elev);
+    padding: 24px;
+    border: 1px solid var(--border);
+  }
+  .numbers-label {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent-warm);
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .numbers-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px 16px;
+  }
+  .number-cell {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .number-value {
+    font-family: var(--serif); font-weight: 700;
+    font-size: 28px; line-height: 1;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+  .number-value.text {
+    font-size: 14px; font-weight: 600;
+    line-height: 1.3;
+    color: var(--text);
+  }
+  .number-key {
+    font-family: var(--mono); font-size: 9px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-mute);
+  }
+  @media (max-width: 768px) {
+    .editorial-section { padding: 36px 16px; }
+    .editorial-grid { grid-template-columns: 1fr; gap: 32px; }
+    .editorial-body { font-size: 18px; }
+    .numbers-grid { gap: 14px 12px; }
+    .number-value { font-size: 22px; }
+  }
+
+  /* ============================================================
+     WHY IT MATTERS · 카드 안 한 줄 맥락
+     ============================================================ */
+  .why-line {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-strong);
+    line-height: 1.45;
+  }
+  .why-line::before {
+    content: "💡 ";
+    margin-right: 4px;
+  }
+  [data-theme="light"] .why-line::before {
+    content: "→ ";
+  }
+
+  /* ============================================================
+     TRENDS · 주제별 묶음 라벨 (This Month 위에 표시)
+     ============================================================ */
+  .trends-bar {
+    max-width: 1280px; margin: 0 auto 24px;
+    padding: 0 32px;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline;
+  }
+  .trends-label {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-mute);
+    margin-right: 12px;
+  }
+  .trend-chip {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    font-size: 14px;
+    color: var(--accent);
+    padding: 4px 0;
+    letter-spacing: -0.01em;
+  }
+  .trend-chip + .trend-chip::before {
+    content: "·"; margin: 0 8px;
+    color: var(--text-dim); font-style: normal;
+  }
+  @media (max-width: 768px) {
+    .trends-bar { padding: 0 16px; }
+    .trend-chip { font-size: 13px; }
+  }
+
+  /* ============================================================
      THIS MONTH IN AI · 이달의 AI 하이라이트
      ============================================================ */
   .month-grid {
@@ -1218,8 +1347,31 @@
     </article>
   </section>
 
+  <!-- EDITOR'S NOTE + NUMBERS THIS WEEK · 매거진 오프닝 -->
+  <section class="section editorial-section" id="editorial-section">
+    <div class="editorial-grid">
+      <div class="editorial-note" id="editorial-note-box">
+        <div class="editorial-label">— Editor's Note</div>
+        <p class="editorial-body" id="editorial-note-body">
+          이번 주 발견된 흐름을 정리하는 중입니다…
+        </p>
+        <div class="editorial-sign">— Vela</div>
+      </div>
+      <aside class="numbers-box" id="numbers-box">
+        <div class="numbers-label">— Numbers this week</div>
+        <div class="numbers-grid" id="numbers-grid">
+          <!-- JS에서 채움 -->
+        </div>
+      </aside>
+    </div>
+  </section>
+
   <!-- THIS MONTH IN AI · 이달의 AI 하이라이트 (Brand 자리에 신규) -->
   <section class="section section-divider" id="month-section">
+    <div class="trends-bar" id="trends-bar" style="display:none;">
+      <span class="trends-label">— Trends</span>
+      <span id="trends-chips"></span>
+    </div>
     <div class="section-header">
       <h2 class="section-title">This Month in <em>AI</em></h2>
       <div class="section-meta" id="month-meta">— · Highlights</div>
@@ -1417,7 +1569,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.19.2</strong> · Wider Net · 25+ sources</div>
+        <div><strong style="color:var(--accent);">v0.20.0</strong> · Magazine Edition</div>
       </div>
     </div>
   </footer>
@@ -1493,6 +1645,9 @@
   let SIGNALS = [];
   let INDUSTRY = [];
   let ISSUE_META = null;
+  let EDITORS_NOTE = null;
+  let TRENDS = null;
+  let NUMBERS = null;
 
   async function loadIssue() {
     try {
@@ -1513,6 +1668,9 @@
       VIDEOS = data.videos || [];
       SIGNALS = data.signals || [];
       INDUSTRY = data.industry || [];
+      EDITORS_NOTE = data.editorsNote || null;
+      TRENDS = data.trends || null;
+      NUMBERS = data.numbers || null;
       ISSUE_META = data.meta || null;
       // 과거 이슈인지 표시
       ISSUE_META = ISSUE_META || {};
@@ -1560,12 +1718,14 @@
     }
     grid.innerHTML = FEATURED.map(f => {
       const readCls = f.url && isRead(f.url) ? 'read' : '';
+      const whyHtml = f.why ? `<div class="why-line">${escapeHtml(f.why)}</div>` : '';
       return `
       <article class="feature-card ${readCls}" data-url="${f.url || ''}">
         <div class="feature-image"><div class="feature-image-bg" style="background-image:url('${f.image}')"></div></div>
         <div class="feature-label">${f.label}</div>
         <h3 class="feature-title">${f.title}</h3>
         <p class="feature-deck">${f.deck}</p>
+        ${whyHtml}
         <div class="feature-byline">${f.byline}</div>
       </article>`;
     }).join('');
@@ -1591,6 +1751,7 @@
     }
     document.getElementById('month-grid').innerHTML = THIS_MONTH.map(m => {
       const readCls = m.url && isRead(m.url) ? 'read' : '';
+      const whyHtml = m.why ? `<div class="why-line">${escapeHtml(m.why)}</div>` : '';
       return `
       <article class="month-card ${readCls}" data-url="${m.url}">
         <div class="month-image">
@@ -1600,6 +1761,7 @@
         <div class="month-category">${m.category}</div>
         <h3 class="month-title">${m.title}</h3>
         <p class="month-deck">${m.deck}</p>
+        ${whyHtml}
       </article>`;
     }).join('');
     document.querySelectorAll('.month-card').forEach(card => {
@@ -1631,6 +1793,52 @@
         if (v && v.videoId) openVideoModal(v.videoId);
       });
     });
+  }
+
+  function renderEditorial() {
+    const note = document.getElementById('editorial-note-body');
+    const sec = document.getElementById('editorial-section');
+    if (EDITORS_NOTE && EDITORS_NOTE.length > 30) {
+      note.textContent = EDITORS_NOTE;
+    } else {
+      // Editor's Note 없으면 섹션 자체 숨김
+      sec.style.display = 'none';
+    }
+  }
+
+  function renderNumbers() {
+    const grid = document.getElementById('numbers-grid');
+    const sec = document.getElementById('numbers-box');
+    if (!NUMBERS) {
+      sec.style.display = 'none';
+      return;
+    }
+    const cells = [
+      { value: NUMBERS.raw_collected, key: 'sources scanned' },
+      { value: NUMBERS.fresh_this_week, key: 'fresh this week' },
+      { value: NUMBERS.academic_count, key: 'papers' },
+      { value: NUMBERS.industry_count, key: 'industry stories' },
+      { value: NUMBERS.top_category, key: 'top category', text: true },
+    ];
+    grid.innerHTML = cells.map(c => `
+      <div class="number-cell">
+        <div class="number-value ${c.text ? 'text' : ''}">${escapeHtml(String(c.value || '—'))}</div>
+        <div class="number-key">${escapeHtml(c.key)}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderTrends() {
+    const bar = document.getElementById('trends-bar');
+    const chips = document.getElementById('trends-chips');
+    if (!TRENDS || !Array.isArray(TRENDS) || TRENDS.length === 0) {
+      bar.style.display = 'none';
+      return;
+    }
+    chips.innerHTML = TRENDS.map(t =>
+      `<span class="trend-chip">${escapeHtml(t.theme || '')}</span>`
+    ).join('');
+    bar.style.display = 'flex';
   }
 
   function renderIndustry() {
@@ -2149,6 +2357,9 @@
     }
 
     // 3) 모든 섹션 렌더
+    renderEditorial();
+    renderNumbers();
+    renderTrends();
     renderCover();
     renderThisMonth();
     renderFeatured();
