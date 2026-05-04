@@ -189,59 +189,107 @@ def collect_arxiv(category="cs.AI", max_results=15):
 
 
 def collect_rss(url, source_label, source_key):
-    """RSS / Atom 피드 수집."""
+    """RSS / Atom 피드 수집. 다양한 변종 대응."""
     items = []
     try:
         xml = fetch(url, timeout=15)
+        # 네임스페이스 prefix 제거 (atom:, dc:, content: 등)
+        xml = re.sub(r'<(/?)\w+:', r'<\1', xml)
         # RSS 2.0
-        if "<rss" in xml or "<channel" in xml:
-            root = ET.fromstring(xml)
+        if "<rss" in xml[:500] or "<channel" in xml[:1500]:
+            try:
+                root = ET.fromstring(xml)
+            except ET.ParseError:
+                # XML 파싱 실패 시 정규식 폴백
+                return _rss_regex_fallback(xml, source_label, source_key)
             for it in root.findall(".//item")[:8]:
                 title = (it.findtext("title") or "").strip()
                 link = (it.findtext("link") or "").strip()
-                desc = re.sub(r"<[^>]+>", " ", (it.findtext("description") or "")).strip()[:240]
+                desc_raw = (it.findtext("description") or it.findtext("encoded") or "")
+                desc = re.sub(r"<[^>]+>", " ", desc_raw)
+                desc = re.sub(r"&\w+;", " ", desc)  # &nbsp; 등
+                desc = re.sub(r"\s+", " ", desc).strip()[:240]
                 pub_raw = (it.findtext("pubDate") or "")
                 try:
                     pub = datetime.strptime(pub_raw[:25], "%a, %d %b %Y %H:%M:%S").strftime("%Y-%m-%d")
                 except Exception:
                     pub = datetime.now(KST).strftime("%Y-%m-%d")
-                if not (title and link):
+                if not (title and link) or len(desc) < 20:
                     continue
                 cat = categorize(title + " " + desc)
                 items.append({
                     "id": make_id(source_key, link),
                     "source": "blog", "sourceLabel": source_label,
-                    "title": title, "abstract": desc,
+                    "title": title[:200], "abstract": desc,
                     "url": link, "published": pub,
                     "tags": [cat], "authors": source_label,
                     "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
                 })
         # Atom
         else:
-            ns = {"a": "http://www.w3.org/2005/Atom"}
-            root = ET.fromstring(xml)
-            for entry in root.findall("a:entry", ns)[:8]:
-                title = (entry.findtext("a:title", "", ns) or "").strip()
+            try:
+                root = ET.fromstring(xml)
+            except ET.ParseError:
+                return _rss_regex_fallback(xml, source_label, source_key)
+            # 네임스페이스 제거 후라 직접 entry 찾기
+            for entry in root.findall(".//entry")[:8]:
+                title = (entry.findtext("title") or "").strip()
                 link = ""
-                for l in entry.findall("a:link", ns):
+                for l in entry.findall("link"):
                     if l.get("rel") == "alternate" or not l.get("rel"):
-                        link = l.get("href"); break
-                summary = (entry.findtext("a:summary", "", ns) or entry.findtext("a:content", "", ns) or "").strip()
-                summary = re.sub(r"<[^>]+>", " ", summary)[:240]
-                pub = (entry.findtext("a:updated", "", ns) or entry.findtext("a:published", "", ns) or "")[:10]
-                if not (title and link):
+                        link = l.get("href", ""); break
+                if not link:
+                    link = (entry.findtext("id") or "").strip()
+                summary = (entry.findtext("summary") or entry.findtext("content") or "").strip()
+                summary = re.sub(r"<[^>]+>", " ", summary)
+                summary = re.sub(r"&\w+;", " ", summary)
+                summary = re.sub(r"\s+", " ", summary).strip()[:240]
+                pub = (entry.findtext("updated") or entry.findtext("published") or "")[:10]
+                if not (title and link) or len(summary) < 20:
                     continue
                 cat = categorize(title + " " + summary)
                 items.append({
                     "id": make_id(source_key, link),
                     "source": "blog", "sourceLabel": source_label,
-                    "title": title, "abstract": summary,
+                    "title": title[:200], "abstract": summary,
                     "url": link, "published": pub or datetime.now(KST).strftime("%Y-%m-%d"),
                     "tags": [cat], "authors": source_label,
                     "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
                 })
     except Exception as e:
         print(f"[rss {source_label}] error: {e}", file=sys.stderr)
+    return items
+
+
+def _rss_regex_fallback(xml, source_label, source_key):
+    """XML 파싱 실패 시 정규식으로 최소한 추출 시도."""
+    items = []
+    try:
+        # <item>...</item> 또는 <entry>...</entry>
+        blocks = re.findall(r"<(?:item|entry)[^>]*>(.*?)</(?:item|entry)>", xml, re.DOTALL)
+        for block in blocks[:6]:
+            title_m = re.search(r"<title[^>]*>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", block, re.DOTALL)
+            link_m = re.search(r"<link[^>]*>(?:<!\[CDATA\[)?(https?://[^<\]]+)", block)
+            desc_m = re.search(r"<description[^>]*>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</description>", block, re.DOTALL)
+            if not title_m or not link_m:
+                continue
+            title = re.sub(r"<[^>]+>", "", title_m.group(1)).strip()[:200]
+            link = link_m.group(1).strip()
+            desc = re.sub(r"<[^>]+>", " ", desc_m.group(1) if desc_m else "")
+            desc = re.sub(r"\s+", " ", desc).strip()[:240]
+            if len(desc) < 20:
+                continue
+            cat = categorize(title + " " + desc)
+            items.append({
+                "id": make_id(source_key, link),
+                "source": "blog", "sourceLabel": source_label,
+                "title": title, "abstract": desc,
+                "url": link, "published": datetime.now(KST).strftime("%Y-%m-%d"),
+                "tags": [cat], "authors": source_label,
+                "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
+            })
+    except Exception as e:
+        print(f"[rss fallback {source_label}] error: {e}", file=sys.stderr)
     return items
 
 
@@ -285,6 +333,87 @@ def collect_github_trending():
     return items
 
 
+def collect_hackernews_ai():
+    """Hacker News에서 AI 키워드 포함된 인기 글 수집."""
+    items = []
+    try:
+        # HN Algolia API: front_page 글 중 AI 관련
+        url = "https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=30"
+        data = json.loads(fetch(url, timeout=15))
+        ai_keywords = ["ai", "llm", "gpt", "claude", "gemini", "openai", "anthropic",
+                       "machine learning", "neural", "diffusion", "transformer",
+                       "deepseek", "model", "agent", "rag", "embedding"]
+        for hit in data.get("hits", []):
+            title = (hit.get("title") or "").strip()
+            url_link = (hit.get("url") or hit.get("story_url") or "").strip()
+            if not (title and url_link):
+                continue
+            if not any(k in title.lower() for k in ai_keywords):
+                continue
+            # 최소 score (HN points)
+            points = hit.get("points", 0) or 0
+            if points < 30:  # 30점 미만은 노이즈
+                continue
+            cat = categorize(title)
+            items.append({
+                "id": make_id("hn", url_link),
+                "source": "news",
+                "sourceLabel": "Hacker News",
+                "title": title,
+                "abstract": f"Hacker News 인기글. {points}점 · {hit.get('num_comments', 0) or 0}개 댓글.",
+                "url": url_link,
+                "published": (hit.get("created_at") or "")[:10] or datetime.now(KST).strftime("%Y-%m-%d"),
+                "tags": [cat, "Industry"],
+                "authors": f"{points} pts",
+                "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
+            })
+            if len(items) >= 8:
+                break
+    except Exception as e:
+        print(f"[hackernews] error: {e}", file=sys.stderr)
+    return items
+
+
+def collect_hf_daily_papers():
+    """HuggingFace Daily Papers — 매일 큐레이션되는 핫한 논문."""
+    items = []
+    try:
+        html = fetch("https://huggingface.co/papers", timeout=15)
+        # 페이퍼 카드 추출 (a href="/papers/2401.xxxxx")
+        paper_links = list(set(re.findall(r'href="(/papers/\d{4}\.\d{4,5})"', html)))[:8]
+        for link in paper_links:
+            paper_url = "https://huggingface.co" + link
+            arxiv_id = link.split("/")[-1]
+            arxiv_url = f"https://arxiv.org/abs/{arxiv_id}"
+            try:
+                # 페이퍼 페이지에서 제목 추출
+                paper_html = fetch(paper_url, timeout=10)
+                title_m = re.search(r'<title>([^<|]+)', paper_html)
+                title = title_m.group(1).strip() if title_m else f"Paper {arxiv_id}"
+                title = re.sub(r"\s+", " ", title)[:200]
+                # 간단한 description (HF는 abstract를 JS로 그려서 정규식 추출 어려움)
+                desc = "HuggingFace Daily Papers에 큐레이션된 주목받는 논문."
+            except Exception:
+                title = f"HuggingFace Daily Paper · {arxiv_id}"
+                desc = "이번 주 주목받은 논문 중 하나."
+            cat = categorize(title)
+            items.append({
+                "id": f"arxiv-{arxiv_id}",
+                "source": "arxiv",
+                "sourceLabel": "HF Daily",
+                "title": title,
+                "abstract": desc,
+                "url": arxiv_url,
+                "published": datetime.now(KST).strftime("%Y-%m-%d"),
+                "tags": [cat],
+                "authors": "Daily Papers",
+                "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
+            })
+    except Exception as e:
+        print(f"[hf-daily] error: {e}", file=sys.stderr)
+    return items
+
+
 # ============================================================
 # 메인
 # ============================================================
@@ -311,48 +440,171 @@ def main():
     meta = get_issue_meta()
     print(f"Issue: {meta['issue_year']}-W{meta['issue_week']} (Monday {meta['monday']})")
 
-    # 1. 수집
+    # ============================================================
+    # 1. 수집 — 25+ 소스 (학술 / 기업 / 산업뉴스 / 커뮤니티)
+    # ============================================================
     pool = []
-    print("\n[1/4] Collecting from sources...")
-    pool += collect_arxiv("cs.AI", 12);  print(f"  ArXiv cs.AI: {len(pool)}")
-    pool += collect_arxiv("cs.LG", 8);   print(f"  + cs.LG: {len(pool)}")
-    pool += collect_arxiv("cs.CL", 8);   print(f"  + cs.CL: {len(pool)}")
-    pool += collect_rss("https://www.anthropic.com/rss.xml", "Anthropic", "anth");   print(f"  + Anthropic: {len(pool)}")
-    pool += collect_rss("https://openai.com/news/rss.xml", "OpenAI", "oai");          print(f"  + OpenAI: {len(pool)}")
-    pool += collect_rss("https://research.google/blog/rss/", "Google Research", "g"); print(f"  + Google: {len(pool)}")
-    pool += collect_rss("https://huggingface.co/blog/feed.xml", "HuggingFace", "hf"); print(f"  + HF: {len(pool)}")
-    pool += collect_github_trending();   print(f"  + GitHub Trending: {len(pool)}")
-    print(f"  Total raw: {len(pool)}")
+    print("\n[1/6] Collecting from 25+ sources...")
 
-    # 2. 점수 + 정렬
-    print("\n[2/4] Scoring & dedup...")
+    # --- 학술 (ArXiv) ---
+    print("  ▸ Academic")
+    pool += collect_arxiv("cs.AI", 15)
+    pool += collect_arxiv("cs.LG", 10)
+    pool += collect_arxiv("cs.CL", 10)
+    pool += collect_arxiv("cs.CV", 8)   # Vision 추가
+    pool += collect_arxiv("cs.RO", 5)   # Robotics 추가
+    print(f"    ArXiv (5 cats): {len(pool)} items")
+
+    # --- AI 기업·연구소 블로그 (15개) ---
+    print("  ▸ Company/Lab Blogs")
+    BLOG_SOURCES = [
+        ("https://www.anthropic.com/rss.xml",       "Anthropic",       "anth"),
+        ("https://openai.com/news/rss.xml",          "OpenAI",          "oai"),
+        ("https://research.google/blog/rss/",        "Google Research", "goog"),
+        ("https://blog.google/technology/ai/rss/",   "Google AI",       "googai"),
+        ("https://huggingface.co/blog/feed.xml",     "HuggingFace",     "hf"),
+        ("https://ai.meta.com/blog/rss/",            "Meta AI",         "meta"),
+        ("https://machinelearning.apple.com/rss.xml","Apple ML",        "apple"),
+        ("https://blogs.nvidia.com/feed/",           "NVIDIA",          "nvid"),
+        ("https://www.microsoft.com/en-us/research/feed/",  "Microsoft Research", "msr"),
+        ("https://mistral.ai/news/rss.xml",          "Mistral AI",      "mistral"),
+        ("https://deepmind.google/blog/rss.xml",     "DeepMind",        "dm"),
+        ("https://stability.ai/news?format=rss",     "Stability AI",    "stab"),
+        ("https://www.together.ai/blog?format=rss",  "Together AI",     "tog"),
+        ("https://cohere.com/blog/rss.xml",          "Cohere",          "coh"),
+        ("https://lmsys.org/rss.xml",                "LMSYS",           "lmsys"),
+    ]
+    blog_count = 0
+    for url, label, key in BLOG_SOURCES:
+        before = len(pool)
+        pool += collect_rss(url, label, key)
+        added = len(pool) - before
+        if added > 0:
+            blog_count += added
+    print(f"    Blogs: {blog_count} items")
+
+    # --- 산업·뉴스 미디어 ---
+    print("  ▸ Tech News")
+    NEWS_SOURCES = [
+        ("https://techcrunch.com/category/artificial-intelligence/feed/", "TechCrunch",   "tc"),
+        ("https://www.theverge.com/ai-artificial-intelligence/rss/index.xml", "The Verge", "verge"),
+        ("https://venturebeat.com/category/ai/feed/", "VentureBeat",       "vb"),
+        ("https://feeds.arstechnica.com/arstechnica/technology-lab",  "Ars Technica", "ars"),
+        ("https://www.wired.com/feed/tag/ai/latest/rss",  "Wired AI",      "wired"),
+    ]
+    news_count = 0
+    for url, label, key in NEWS_SOURCES:
+        before = len(pool)
+        items = collect_rss(url, label, key)
+        # 뉴스 미디어는 AI 관련만 필터 (제목+description에 AI 키워드)
+        items = [
+            it for it in items
+            if any(k in (it.get("title", "") + " " + it.get("abstract", "")).lower()
+                   for k in ["ai", "artificial intelligence", "llm", "machine learning",
+                             "neural", "gpt", "claude", "gemini", "openai", "anthropic",
+                             "deepseek", "model", "agent"])
+        ]
+        for it in items:
+            it["sourceLabel"] = label
+            it["source"] = "news"
+            it["tags"] = it.get("tags", []) + ["Industry"]
+        pool += items
+        news_count += len(items)
+    print(f"    News (AI-filtered): {news_count} items")
+
+    # --- 커뮤니티 / 큐레이션 ---
+    print("  ▸ Community")
+    pool += collect_hackernews_ai();         print(f"    HN AI: total {len(pool)}")
+    pool += collect_hf_daily_papers();       print(f"    HF Daily Papers: total {len(pool)}")
+    pool += collect_github_trending();       print(f"    GH Trending: total {len(pool)}")
+
+    print(f"\n  Total raw: {len(pool)}")
+
+    # ============================================================
+    # 2. 정리 — URL dedup + 제목 유사도 dedup + 점수
+    # ============================================================
+    print("\n[2/6] Scoring & dedup (URL + title similarity)...")
     seen_urls = set()
+    seen_title_tokens = []  # (set of normalized tokens)
     scored = []
+
+    def title_tokens(title):
+        """제목에서 불용어 제거 후 토큰 셋 반환 (유사도 비교용)."""
+        title = re.sub(r"[^a-zA-Z0-9가-힣\s]", " ", title.lower())
+        stop = {"the", "a", "an", "of", "for", "in", "on", "to", "with", "and", "or",
+                "is", "are", "was", "were", "be", "by", "as", "at", "from", "this",
+                "that", "we", "our", "new", "ai", "model", "models"}
+        return {w for w in title.split() if len(w) > 2 and w not in stop}
+
+    def jaccard(a, b):
+        if not a or not b: return 0.0
+        return len(a & b) / len(a | b)
+
     for item in pool:
-        url = item.get("url", "")
-        if not url or url in seen_urls:
+        url = (item.get("url") or "").strip()
+        title = (item.get("title") or "").strip()
+        abstract = (item.get("abstract") or "").strip()
+
+        # 빈 항목 / 너무 짧은 abstract 제거
+        if not url or not title:
             continue
-        seen_urls.add(url)
+        if len(abstract) < 30:
+            continue
+
+        # URL 중복
+        url_norm = url.split("?")[0].rstrip("/")
+        if url_norm in seen_urls:
+            continue
+
+        # 제목 유사도 0.6 이상이면 중복 처리 (예: 같은 뉴스 여러 매체)
+        toks = title_tokens(title)
+        is_dup = False
+        for prev in seen_title_tokens:
+            if jaccard(toks, prev) >= 0.6:
+                is_dup = True; break
+        if is_dup:
+            continue
+
+        seen_urls.add(url_norm)
+        if len(toks) >= 2:
+            seen_title_tokens.append(toks)
+
         item["score"] = estimate_score(item)
         scored.append(item)
-    scored.sort(key=lambda x: (-x["score"], x.get("published", "")), reverse=False)
-    scored.sort(key=lambda x: -x["score"])
-    print(f"  After dedup: {len(scored)}")
 
-    # 3. 검증 — URL 살아있는지
-    print("\n[3/4] Validating URLs (this takes a moment)...")
-    validated = []
-    for i, item in enumerate(scored[:30]):  # 상위 30개만 검증 (속도)
+    scored.sort(key=lambda x: (-x.get("score", 0), x.get("published", "")), reverse=False)
+    scored.sort(key=lambda x: -x.get("score", 0))
+    print(f"  After dedup: {len(scored)} unique items")
+
+    # ============================================================
+    # 3. 학술 vs 산업 분리
+    # ============================================================
+    academic = [s for s in scored if s.get("source") in ("arxiv", "blog", "github", "huggingface")]
+    industry = [s for s in scored if s.get("source") == "news"]
+    print(f"  Academic pool: {len(academic)}, Industry pool: {len(industry)}")
+
+    # ============================================================
+    # 4. 검증 — URL 살아있는지 (학술 25개 + 산업 12개까지)
+    # ============================================================
+    print("\n[3/6] Validating URLs...")
+    validated_academic = []
+    for item in academic[:50]:
         if safe_get_url(item["url"]):
-            validated.append(item)
-        else:
-            print(f"  ✗ Dead URL skipped: {item['url'][:60]}", file=sys.stderr)
-        if len(validated) >= 16:
+            validated_academic.append(item)
+        if len(validated_academic) >= 25:
             break
-    print(f"  Validated signals: {len(validated)}")
+    print(f"  Academic validated: {len(validated_academic)}")
+
+    validated_industry = []
+    for item in industry[:25]:
+        if safe_get_url(item["url"]):
+            validated_industry.append(item)
+        if len(validated_industry) >= 12:
+            break
+    print(f"  Industry validated: {len(validated_industry)}")
 
     # 영상 검증
-    print("\n  Validating YouTube videos...")
+    print("  Validating YouTube videos...")
     valid_videos = []
     for v in CURATED_VIDEOS:
         if validate_youtube(v["videoId"]):
@@ -362,23 +614,32 @@ def main():
             })
         else:
             print(f"  ✗ Dead video skipped: {v['videoId']} ({v['title']})", file=sys.stderr)
-    print(f"  Validated videos: {len(valid_videos)}")
+    print(f"  Videos validated: {len(valid_videos)}")
 
-    if len(validated) < 5 or len(valid_videos) < 3:
-        print("\n⚠️  Insufficient validated content. Aborting build to preserve last issue.", file=sys.stderr)
+    # 최소 콘텐츠 체크 (전체 기준 완화: academic OR industry 한쪽이라도 충분하면 OK)
+    if len(validated_academic) < 5 or len(valid_videos) < 3:
+        print("\n⚠️  Insufficient validated content. Aborting build.", file=sys.stderr)
         sys.exit(1)
 
-    # 4. 한국어 번역 (Groq 무료 API)
+    # ============================================================
+    # 5. 한국어 번역 (Groq) — 학술 + 산업 모두
+    # ============================================================
     print("\n[4/6] Translating to Korean (Groq AI)...")
     groq_key = os.environ.get("GROQ_API_KEY", "").strip()
     if groq_key:
-        validated = groq_translate(validated, groq_key)
+        # 합쳐서 번역 후 다시 분리 (호출 효율)
+        merged = validated_academic + validated_industry
+        merged = groq_translate(merged, groq_key)
+        # 분리 복구
+        ac_n = len(validated_academic)
+        validated_academic = merged[:ac_n]
+        validated_industry = merged[ac_n:]
     else:
         print("  ⚠️ GROQ_API_KEY env var not set — content remains in English")
 
-    # 5. 빌드
+    # 6. 빌드
     print("\n[5/6] Building issue JSON...")
-    # Cover: 가장 점수 높고 영상 있는 항목 우선, 없으면 첫 영상
+    # Cover: 영상 우선
     cover_video = valid_videos[0]
     cover = {
         "label": f"Cover Story · Week {meta['issue_week']}",
@@ -390,8 +651,8 @@ def main():
         "credit": "Click image to play"
     }
 
-    # This Month in AI: 이번 주 score 5 항목 4개
-    top_items = [s for s in validated if s["score"] >= 4][:4]
+    # This Month: 학술 score 4+ 6개
+    top_items = [s for s in validated_academic if s.get("score", 0) >= 4][:6]
     this_month = []
     for s in top_items:
         d = s.get("published", meta["monday"])
@@ -401,34 +662,52 @@ def main():
             date_label = "THIS WEEK"
         this_month.append({
             "date": date_label,
-            "category": (s["tags"][0] if s.get("tags") else "Update"),
-            "title": s["title"][:80],
-            "deck": s["abstract"][:140],
-            "image": s["thumb"],
-            "url": s["url"]
+            "category": (s.get("tags") or ["Update"])[0],
+            "title": s.get("title", "")[:80],
+            "deck": s.get("abstract", "")[:140],
+            "image": s.get("thumb", IMG_DEFAULT),
+            "url": s.get("url", "")
         })
 
-    # Featured: score 4+ 중에 cover 다음 3개
-    featured_items = [s for s in validated if s["score"] >= 4][:3]
+    # Featured: 학술 5개
+    featured_items = validated_academic[:5]
     featured = []
     for s in featured_items:
         featured.append({
-            "label": s["tags"][0] if s.get("tags") else "Highlight",
-            "title": s["title"][:80],
-            "deck": s["abstract"][:140],
-            "byline": f"{s['sourceLabel'].upper()} · {s['authors'][:30]}",
-            "image": s["thumb"],
-            "url": s["url"]
+            "label": (s.get("tags") or ["Highlight"])[0],
+            "title": s.get("title", "")[:80],
+            "deck": s.get("abstract", "")[:140],
+            "byline": f"{s.get('sourceLabel', 'Vela').upper()} · {s.get('authors', '')[:30]}",
+            "image": s.get("thumb", IMG_DEFAULT),
+            "url": s.get("url", "")
+        })
+
+    # Industry: 산업 뉴스 8개
+    industry_items = validated_industry[:8]
+    industry_section = []
+    for s in industry_items:
+        d = s.get("published", meta["monday"])
+        try:
+            date_label = datetime.strptime(d, "%Y-%m-%d").strftime("%b %d").upper()
+        except Exception:
+            date_label = "THIS WEEK"
+        industry_section.append({
+            "date": date_label,
+            "source": s.get("sourceLabel", "Industry"),
+            "title": s.get("title", "")[:100],
+            "deck": s.get("abstract", "")[:160],
+            "url": s.get("url", "")
         })
 
     issue = {
-        "version": "v0.15.0",
+        "version": "v0.19.0",
         "meta": meta,
         "cover": cover,
         "thisMonth": this_month,
         "featured": featured,
-        "videos": valid_videos[:3],
-        "signals": validated[:8]
+        "videos": valid_videos[:4],
+        "industry": industry_section,
+        "signals": validated_academic[:20]
     }
 
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
@@ -438,8 +717,9 @@ def main():
     print(f"  Cover: {cover['headline'][:60]}")
     print(f"  This Month: {len(this_month)} items")
     print(f"  Featured: {len(featured)} items")
-    print(f"  Videos: {len(valid_videos[:3])} items")
-    print(f"  Signals: {len(validated[:8])} items")
+    print(f"  Videos: {len(valid_videos[:4])} items")
+    print(f"  Industry: {len(industry_section)} items")
+    print(f"  Signals: {len(validated_academic[:20])} items")
 
     # 6. 과거 이슈 아카이브 — 이번 주 스냅샷 별도 파일로 저장
     print("\n[6/6] Archiving snapshot + generating RSS...")
@@ -645,8 +925,8 @@ JSON만 출력:"""
         except Exception as e:
             print(f"  ✗ Translate failed [{i+1}/{len(items)}]: {e}", file=sys.stderr)
 
-        # Rate limit 보호 (Groq 무료 30 RPM = 2초당 1회 안전)
-        time.sleep(2.1)
+        # Rate limit 보호 (Groq 무료 30 RPM 안전 마진 — 30+ 항목 대비 보수적)
+        time.sleep(2.5)
 
     print(f"  ✓ Translated {success}/{len(items)} items")
     return items
