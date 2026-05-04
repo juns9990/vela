@@ -916,11 +916,14 @@ def write_rss(issue):
 # Groq AI 한국어 번역 (무료 API)
 # ============================================================
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-# 번역 모델 폴백 체인 — 첫 모델 실패 시 다음 모델 자동 시도
+# 번역 모델 폴백 체인 — 일일 한도(RPD) 큰 순서로 우선
+# Llama 3.1 8B: 14,400 RPD (14배 여유) ← 1순위
+# Llama 3.3 70B: 1,000 RPD ← 2순위 (8B 실패 시)
+# GPT-OSS 120B: 1,000 RPD ← 3순위
 GROQ_MODELS = [
-    "llama-3.3-70b-versatile",   # 1순위: 한국어 품질 최고
-    "llama-3.1-8b-instant",       # 2순위: 빠르고 안정적
-    "openai/gpt-oss-120b",        # 3순위: 최신 대형 모델
+    "llama-3.1-8b-instant",       # 1순위: 일일 14,400회, 빠름, 한국어 충분
+    "llama-3.3-70b-versatile",    # 2순위: 품질 더 좋지만 일일 1,000회만
+    "openai/gpt-oss-120b",        # 3순위: 최후 폴백
 ]
 GROQ_MODEL = GROQ_MODELS[0]  # 기본값 (호환성)
 
@@ -1090,8 +1093,8 @@ JSON만 출력:"""
             if fail_count <= 3:
                 print(f"  ✗ Translate failed [{i+1}/{len(items)}]: {reason} — {str(e)[:150]}", file=sys.stderr)
 
-        # Rate limit 보호 (Groq 무료 30 RPM 안전 마진 — 28회 × 3.0초 = 84초, 분당 20회 페이스로 안전)
-        time.sleep(3.0)
+        # Rate limit 보호 (Llama 3.1 8B는 RPD 14,400, RPM 30 — 2.2초 페이스로 안전)
+        time.sleep(2.2)
 
     total = len(items)
     print(f"  ✓ Translated {success}/{total} items (skipped {skipped_korean} already-Korean, failed {fail_count})")
