@@ -1108,74 +1108,116 @@ JSON만 출력:"""
 
 
 def generate_editors_note(items, api_key, working_model):
-    """이번 주 콘텐츠를 보고 Editor's Note (한 줄 흐름 분석) 생성."""
-    if not api_key or not working_model or not items:
+    """이번 주 콘텐츠를 보고 Editor's Note 생성. 70B 모델 우선 사용 (품질 보장)."""
+    if not api_key or not items:
         return None
-    # 상위 10개 제목+abstract만 LLM에 전달 (토큰 절약)
-    top = items[:10]
+
+    # Editor's Note는 매주 1회뿐이라 70B 모델 직접 사용 (품질 우선)
+    # 70B 실패 시 working_model로 폴백
+    editor_model = "llama-3.3-70b-versatile"
+
+    # 상위 8개 제목만 (간결하게)
+    top = items[:8]
     bullets = "\n".join([
-        f"- {it.get('title', '')[:60]}"
+        f"- {it.get('title', '')[:50]}"
         for it in top
     ])
     prompt = f"""당신은 AI 매거진 'Vela'의 편집장입니다.
-아래 항목들을 보고, 매거진 첫 머리에 들어갈 짧은 'Editor's Note'를 한국어로 작성하세요.
+아래 항목들을 보고 매거진 첫 머리에 들어갈 매우 짧은 'Editor's Note'를 한국어로 작성하세요.
 
-엄격한 요구사항:
-- 정확히 2문장만 작성. 총 120자 이내. 절대 그 이상 쓰지 마세요.
-- 이번 주 AI 흐름의 핵심 한 가지를 짚으세요
-- 단순 나열 금지. 편집자 시각으로 의미 부여.
-- 한자 절대 사용 금지. 순한글 + 외래어/기술용어만.
-- 따옴표 없이 본문만 출력
-- 반드시 마침표로 마무리할 것 (문장 중간에 끊지 마세요)
+엄격한 제약 (반드시 지키세요):
+1. 정확히 1~2문장만. 총 80자 이내. 절대 그 이상 쓰지 마세요.
+2. 이번 주 AI 흐름의 핵심 한 가지만 짚으세요. 여러 흐름 나열 금지.
+3. 한자 절대 금지. 외래어/기술용어는 영어 그대로 (예: Gemma, Transformer)
+4. 반드시 마침표(.)로 끝내세요. 절대 중간에 끊지 마세요.
+5. 따옴표 없이 본문만.
+
+좋은 예시:
+"이번 주 AI 모델들은 한 방향으로 모이고 있다. 더 자연스럽고, 더 빠르게."
+"에이전트 평가 기준이 정적에서 동적으로 이동하는 흐름이 뚜렷하다."
 
 이번 주 항목:
 {bullets}
 
-위 흐름을 짚는 Editor's Note (2문장, 120자 이내, 마침표로 종료):"""
+Editor's Note (1~2문장, 80자 이내, 마침표로 종료):"""
 
-    try:
-        req = urllib.request.Request(
-            GROQ_API_URL,
-            data=json.dumps({
-                "model": working_model,
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.6,
-                "max_tokens": 800  # 한국어는 글자당 토큰 많이 먹어서 여유 크게
-            }).encode("utf-8"),
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-                "User-Agent": USER_AGENT
-            },
-            method="POST"
-        )
-        with urllib.request.urlopen(req, timeout=25) as r:
-            data = json.loads(r.read().decode("utf-8"))
-            note = data["choices"][0]["message"]["content"].strip()
-            note = strip_hanja(note)
-            # 마크다운 따옴표/별표 제거
-            note = re.sub(r'^["\'\*\s]+|["\'\*\s]+$', '', note)
-            note = re.sub(r'\s+', ' ', note).strip()
+    # 70B 먼저 시도 → 실패 시 working_model 폴백
+    for model_to_try in [editor_model, working_model]:
+        if not model_to_try:
+            continue
+        try:
+            req = urllib.request.Request(
+                GROQ_API_URL,
+                data=json.dumps({
+                    "model": model_to_try,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "temperature": 0.5,  # 0.7 → 0.5 더 일관되게
+                    "max_tokens": 600  # 한국어 80자 = 약 200~300토큰, 여유 둠
+                }).encode("utf-8"),
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                    "User-Agent": USER_AGENT
+                },
+                method="POST"
+            )
+            with urllib.request.urlopen(req, timeout=25) as r:
+                data = json.loads(r.read().decode("utf-8"))
+                note = data["choices"][0]["message"]["content"].strip()
 
-            # 마침표로 끝나지 않으면 마지막 완전한 문장까지만 자르기
-            if not note.endswith(('.', '?', '!', '다', '까', '요', '죠')):
-                # 마지막 마침표/물음표/느낌표 위치 찾기
-                last_period = max(
-                    note.rfind('.'), note.rfind('?'), note.rfind('!'),
-                    note.rfind('다.'), note.rfind('다 ')
-                )
-                if last_period > 30:  # 최소 30자는 있어야 의미 있음
-                    note = note[:last_period + 1].strip()
-                    if not note.endswith(('.', '?', '!')):
+                # 후처리 1: 한자 제거
+                note = strip_hanja(note)
+
+                # 후처리 2: 마크다운/따옴표/별표 제거
+                note = re.sub(r'^["\'\*\s\-]+|["\'\*\s]+$', '', note)
+                note = re.sub(r'\s+', ' ', note).strip()
+
+                # 후처리 3: 100자 넘으면 마지막 완전한 문장까지만
+                if len(note) > 100:
+                    # 첫 두 문장만 가져오기
+                    sentences = re.split(r'(?<=[.!?])\s+', note)
+                    if len(sentences) >= 2:
+                        note = ' '.join(sentences[:2]).strip()
+                    else:
+                        # 마지막 마침표 위치
+                        last_period = max(
+                            note.rfind('.', 0, 100),
+                            note.rfind('!', 0, 100),
+                            note.rfind('?', 0, 100)
+                        )
+                        if last_period > 30:
+                            note = note[:last_period + 1].strip()
+
+                # 후처리 4: 마침표로 끝나지 않으면 강제
+                if note and not note.endswith(('.', '?', '!')):
+                    # "다", "요" 같은 한국어 종결어미로 끝나면 마침표 추가
+                    if note.endswith(('다', '요', '음', '함', '됨', '었다', '있다')):
                         note += '.'
-                else:
-                    # 너무 짧게 잘리면 그대로 두고 말줄임표 대신 마침표로
-                    note = note.rstrip('…').rstrip('.') + '.'
+                    else:
+                        # 마지막 완전한 문장 찾기
+                        last = max(note.rfind('.'), note.rfind('!'), note.rfind('?'))
+                        if last > 20:
+                            note = note[:last + 1]
+                        # 그래도 마침표 없으면 그냥 마침표 추가
+                        elif note:
+                            note = note.rstrip() + '.'
 
-            return note[:300] if note else None
-    except Exception as e:
-        print(f"  ✗ Editor's Note generation failed: {e}", file=sys.stderr)
-        return None
+                # 후처리 5: 너무 짧거나 비어있으면 None
+                if not note or len(note) < 20:
+                    print(f"  ✗ Editor's Note too short, skipping", file=sys.stderr)
+                    return None
+
+                print(f"  ✓ Editor's Note ({model_to_try}): {note[:60]}...")
+                return note[:200]  # 200자 하드 캡
+
+        except urllib.error.HTTPError as e:
+            print(f"  ✗ Editor's Note ({model_to_try}) failed: HTTP {e.code}", file=sys.stderr)
+            continue  # 다음 모델로
+        except Exception as e:
+            print(f"  ✗ Editor's Note ({model_to_try}) failed: {e}", file=sys.stderr)
+            continue
+
+    return None
 
 
 def cluster_by_topic(items, api_key, working_model, max_clusters=3):
