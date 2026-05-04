@@ -1,1024 +1,2163 @@
-#!/usr/bin/env python3
-"""
-Vela Weekly Issue Collector · Phase 2
-=====================================
-매주 월요일 06:00 KST 자동 실행 (GitHub Actions cron).
-외부 API 키 불필요 (모두 공개 RSS/API 사용).
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>VELA — AI Intelligence Magazine</title>
 
-수집 소스:
-  - ArXiv API: cs.AI / cs.LG / cs.CL 카테고리 신규 논문
-  - Anthropic 블로그 RSS
-  - OpenAI 블로그 RSS
-  - Google Research 블로그 RSS
-  - HuggingFace blog RSS
-  - GitHub Trending (Python AI repos)
-  - 큐레이션 YouTube 영상 (Karpathy, 3Blue1Brown 등)
+<!-- PWA META -->
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vela">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Vela">
 
-검증:
-  - 모든 URL HTTP 200 확인
-  - YouTube videoId 11자 + oEmbed로 활성 상태 확인
-  - 검증 실패 시 해당 항목만 제외 (전체 빌드는 계속)
+<!-- App Icon · Vela CI Monogram (외부 SVG 파일) -->
+<link rel="icon" type="image/svg+xml" href="./vela-icon.svg">
+<link rel="apple-touch-icon" href="./vela-icon.svg">
+<link rel="mask-icon" href="./vela-icon.svg" color="#5eead4">
 
-출력:
-  - vela-issue.json (이번 주 매거진 데이터)
-"""
+<!-- PWA Manifest (외부 파일 - 데스크톱 PWA 설치 필수) -->
+<link rel="manifest" href="./vela-manifest.json">
 
-import json
-import os
-import re
-import sys
-import time
-import hashlib
-import urllib.request
-import urllib.error
-from datetime import datetime, timezone, timedelta
-from xml.etree import ElementTree as ET
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,600;1,9..144,800;1,9..144,900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
 
-# ============================================================
-# 설정
-# ============================================================
-KST = timezone(timedelta(hours=9))
-USER_AGENT = "Mozilla/5.0 (compatible; VelaBot/1.0; +https://juns9990.github.io/vela/)"
-TIMEOUT = 15
-OUTPUT_PATH = "vela-issue.json"
-ARCHIVE_INDEX_PATH = "vela-archive.json"
-RSS_PATH = "vela-rss.xml"
+<style>
+  :root {
+    --bg: #0a0a0a; --bg-elev: #141414; --bg-card: #181818; --bg-warm: #1a1715;
+    --text: #f0ebe2; --text-soft: #c5beb1; --text-mute: #8b8478; --text-dim: #4a4540;
+    --ink: #0a0a0a;
+    --accent: #5eead4; --accent-warm: #f5d77a; --hot: #ff5252;
+    --border: rgba(240, 235, 226, 0.08); --border-strong: rgba(240, 235, 226, 0.16);
+    --serif: 'Fraunces', 'Pretendard', Georgia, serif;
+    --sans: 'Pretendard', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  /* ===== 라이트 모드 ===== */
+  [data-theme="light"] {
+    --bg: #f5f0e6; --bg-elev: #ebe4d4; --bg-card: #ffffff; --bg-warm: #faf6ec;
+    --text: #1a1a1a; --text-soft: #3d3a35; --text-mute: #6b6660; --text-dim: #a8a59f;
+    --ink: #1a1a1a;
+    --accent: #0e7a6a; --accent-warm: #b8860b; --hot: #d63333;
+    --border: rgba(26, 26, 26, 0.08); --border-strong: rgba(26, 26, 26, 0.16);
+  }
+  /* 라이트 모드에서 마스트헤드 배경 */
+  [data-theme="light"] .masthead { background: rgba(245, 240, 230, 0.85); }
 
-# 카테고리 키워드 매핑 (제목/abstract 매칭)
-CATEGORY_RULES = [
-    ("Vision",  ["diffusion", "image", "video gen", "vision-language", "vlm", "vit", "stable diffusion", "sora", "midjourney"]),
-    ("Audio",   ["audio", "speech", "tts", "asr", "whisper", "voice"]),
-    ("Robotics",["robot", "embodied", "manipulation", "vla "]),
-    ("Agent",   ["agent", "tool use", "multi-agent", "autonomous"]),
-    ("Safety",  ["alignment", "safety", "constitutional", "rlhf", "rlaif", "jailbreak"]),
-    ("Infra",   ["inference", "vllm", "kv-cache", "serving", "training infra", "moe", "quantization"]),
-    ("Tool",    ["framework", "library", "sdk", "toolkit", "ide"]),
-    ("LLM",     ["llm", "language model", "transformer", "attention", "gpt", "llama", "mistral", "claude", "gemini", "deepseek"]),
-]
+  /* ===== 읽기 진행률 바 (페이지 최상단) ===== */
+  .read-progress {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 2px; z-index: 200;
+    pointer-events: none;
+  }
+  .read-progress-fill {
+    height: 100%; width: 0;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    transition: width 0.05s linear;
+  }
 
-# YouTube 큐레이션 (정적 — 강의/원리 영상은 자주 안 바뀌므로 손으로 관리)
-CURATED_VIDEOS = [
-    {"title": "Let's build GPT — 처음부터 만드는 GPT", "byline": "Andrej Karpathy", "duration": "1:56:20", "videoId": "kCc8FmEb1nY"},
-    {"title": "[1시간] LLM 입문 강의", "byline": "Andrej Karpathy", "duration": "59:48", "videoId": "zjkBMFhNj_g"},
-    {"title": "But what is a GPT? — 트랜스포머 시각 입문", "byline": "3Blue1Brown", "duration": "27:14", "videoId": "wjZofJX0v4M"},
-    {"title": "신경망의 본질 — Deep Learning Chapter 1", "byline": "3Blue1Brown", "duration": "18:40", "videoId": "aircAruvnKk"},
-    {"title": "Attention in transformers, visually explained", "byline": "3Blue1Brown", "duration": "26:10", "videoId": "eMlx5fFNoYc"},
-    {"title": "How DeepSeek Rewrote the AI Playbook", "byline": "Computerphile", "duration": "16:33", "videoId": "gY4Z-9QlZ64"},
-]
+  /* ===== 과거 이슈 알림 바 ===== */
+  .past-issue-bar {
+    position: sticky; top: 0; z-index: 150;
+    background: var(--accent);
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  .past-issue-bar-inner {
+    max-width: 1280px; margin: 0 auto;
+    padding: 10px 24px;
+    display: flex; align-items: center; gap: 18px;
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.05em;
+  }
+  .past-issue-label { font-weight: 600; }
+  .past-issue-week {
+    font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1.5px solid var(--ink);
+  }
+  .past-issue-back {
+    margin-left: auto;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 4px 12px;
+    border: 1.5px solid var(--ink);
+    transition: background 0.15s ease;
+    font-weight: 600;
+  }
+  .past-issue-back:hover { background: var(--ink); color: var(--accent); }
+  @media (max-width: 640px) {
+    .past-issue-bar-inner { padding: 8px 16px; gap: 10px; flex-wrap: wrap; font-size: 11px; }
+    .past-issue-back { margin-left: 0; padding: 3px 8px; font-size: 10px; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg); color: var(--text);
+    font-family: var(--sans); font-weight: 400; line-height: 1.5;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
 
-# 이미지 풀 (썸네일용 - 토픽별 매핑)
-IMG_POOL = {
-    "LLM":      "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-    "Vision":   "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=70",
-    "Agent":    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
-    "Robotics": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=400&q=70",
-    "Safety":   "https://images.unsplash.com/photo-1620207418302-439b387441b0?w=400&q=70",
-    "Audio":    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=70",
-    "Tool":     "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=70",
-    "Infra":    "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=400&q=70",
-}
-IMG_DEFAULT = IMG_POOL["LLM"]
+  /* ============================================================
+     VELA WORDMARK / CI · 글자 전용 (배경 무관)
+     ============================================================ */
+  .vela-mark {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+    display: inline-block;
+    user-select: none; -webkit-user-select: none;
+  }
+  .vela-mark .accent { color: var(--accent); }
+
+  /* PRIMARY · 흰글자 + 검정 그림자 (메인 CI · Vela 공식 마크) */
+  .vela-mark.primary {
+    color: white;
+    text-shadow:
+      1px 1px 0 var(--ink),
+      2px 2px 0 var(--ink),
+      3px 3px 0 var(--ink),
+      4px 4px 0 var(--ink);
+    -webkit-text-stroke: 1.2px var(--ink);
+  }
+
+  /* ============================================================
+     MASTHEAD
+     ============================================================ */
+  .masthead {
+    border-bottom: 1px solid var(--border); padding: 18px 32px;
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(12px); background: rgba(10, 10, 10, 0.85);
+  }
+  .masthead-inner {
+    max-width: 1400px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center; gap: 24px;
+  }
+  .brand { display: flex; align-items: center; gap: 16px; }
+  .brand-logo {
+    font-size: 38px;
+    color: white;
+    text-shadow: 1px 1px 0 var(--ink), 2px 2px 0 var(--ink), 3px 3px 0 var(--ink);
+    -webkit-text-stroke: 0.8px var(--ink);
+  }
+  .brand-tag {
+    font-family: var(--mono); font-size: 10px; font-weight: 400;
+    letter-spacing: 0.15em; color: var(--text-mute); text-transform: uppercase;
+    border-left: 1px solid var(--border-strong); padding-left: 14px;
+  }
+  .head-actions { display: flex; align-items: center; gap: 14px; }
+  .install-btn {
+    background: var(--accent); color: var(--ink);
+    border: none; padding: 10px 18px;
+    font-family: var(--mono); font-size: 11px;
+    font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.2s ease;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .install-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(94,234,212,0.3); }
+  .install-btn .icon { font-size: 14px; line-height: 1; }
+
+  /* 헤더 아이콘 버튼 (검색·테마) */
+  .icon-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-mute);
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s ease;
+    font-family: var(--mono); font-size: 17px;
+  }
+  .icon-btn:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-1px); }
+
+  /* ===== 검색 모달 ===== */
+  .search-modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+    z-index: 1500;
+    display: none;
+    align-items: flex-start; justify-content: center;
+    padding: 80px 24px 24px;
+    animation: fadeIn 0.2s ease;
+  }
+  [data-theme="light"] .search-modal { background: rgba(245, 240, 230, 0.85); }
+  .search-modal.active { display: flex; }
+  .search-box {
+    width: 100%; max-width: 720px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border-strong);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+    animation: slideUp 0.25s ease;
+  }
+  .search-input-wrap {
+    display: flex; align-items: center; gap: 12px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+  }
+  .search-input-wrap .icon { color: var(--accent); font-size: 18px; }
+  .search-input {
+    flex: 1; background: transparent; border: none; outline: none;
+    color: var(--text);
+    font-family: var(--serif); font-size: 22px; font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .search-input::placeholder { color: var(--text-dim); }
+  .search-hint {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text-dim); letter-spacing: 0.1em;
+    border: 1px solid var(--border); padding: 3px 7px;
+  }
+  .search-results { max-height: 60vh; overflow-y: auto; }
+  .search-result {
+    padding: 14px 22px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.15s ease;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center;
+  }
+  .search-result:hover { background: var(--bg-warm); }
+  .search-result-section {
+    font-family: var(--mono); font-size: 9px;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent);
+    padding: 3px 8px; border: 1px solid var(--border);
+  }
+  .search-result-title {
+    font-family: var(--serif); font-weight: 500; font-size: 15px;
+    color: var(--text); line-height: 1.3;
+  }
+  .search-result-meta {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text-mute); letter-spacing: 0.05em;
+  }
+  .search-empty {
+    padding: 40px 22px; text-align: center;
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text-dim); letter-spacing: 0.1em;
+  }
+
+  /* ===== 카드별 읽음 표시 ===== */
+  .signal-row.read .signal-title { color: var(--text-mute); }
+  .signal-row.read .signal-thumb { opacity: 0.55; }
+  .signal-row.read::before {
+    content: '✓';
+    position: absolute; left: 32px; top: 28px;
+    font-family: var(--mono); font-size: 10px;
+    color: var(--accent); opacity: 0.7;
+  }
+  .signal-row { position: relative; }
+  .feature-card.read .feature-image-bg { opacity: 0.6; }
+  .feature-card.read .feature-title { color: var(--text-mute); }
+  .month-card.read .month-image-bg { opacity: 0.6; }
+  .month-card.read .month-title { color: var(--text-mute); }
+  .hero-signal.read .hero-signal-title { color: var(--text-mute); }
+  .hero-signal.read::after {
+    content: '✓ READ';
+    position: absolute; top: 24px; right: 24px;
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.15em; color: var(--accent); opacity: 0.6;
+  }
+  .issue-meta {
+    font-family: var(--mono); font-size: 10px; color: var(--text-mute);
+    text-align: right; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.6;
+  }
+  .issue-meta > div:first-child {
+    font-size: 11px; margin-bottom: 4px;
+  }
+  .issue-meta strong {
+    color: var(--accent); font-weight: 600;
+    font-size: 13px; letter-spacing: 0.15em;
+  }
+
+  /* NAV */
+  .nav { border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-inner { max-width: 1400px; margin: 0 auto; display: flex; gap: 4px; padding: 0 32px; }
+  .nav-item {
+    font-family: var(--mono); font-size: 13px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-soft);
+    padding: 18px 20px; background: transparent; border: none;
+    border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+  .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.02); }
+  .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* COVER */
+  .cover { max-width: 1400px; margin: 0 auto; padding: 48px 32px 80px; }
+  .cover-card { display: grid; grid-template-columns: 1fr; gap: 32px; cursor: pointer; }
+  .cover-image {
+    width: 100%; aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, #1a3a3a 0%, #0a1a2a 50%, #2a1a1a 100%);
+    background-size: cover; background-position: center;
+    position: relative; overflow: hidden;
+    cursor: pointer;
+  }
+  .cover-image::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.7) 100%);
+  }
+  .cover-image-overlay {
+    position: absolute; bottom: 24px; left: 24px; right: 24px; z-index: 2;
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 16px;
+  }
+  .play-button {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: rgba(240, 235, 226, 0.95); color: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; transition: transform 0.3s ease;
+  }
+  .cover-card:hover .play-button { transform: scale(1.1); }
+  .image-credit {
+    font-family: var(--mono); font-size: 9px;
+    color: rgba(240, 235, 226, 0.6); letter-spacing: 0.15em; text-transform: uppercase;
+  }
+  .cover-content { max-width: 900px; }
+  .cover-label {
+    display: inline-block; font-family: var(--mono); font-size: 11px;
+    font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); border-top: 1px solid var(--accent);
+    padding-top: 12px; margin-bottom: 24px;
+  }
+  .cover-headline {
+    font-family: var(--serif); font-weight: 800;
+    font-size: clamp(36px, 6vw, 72px); line-height: 1.05;
+    letter-spacing: -0.025em; color: var(--text); margin-bottom: 24px;
+  }
+  .cover-headline em { font-style: italic; color: var(--accent); }
+  .cover-deck {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(18px, 2.2vw, 24px); line-height: 1.5;
+    color: var(--text-soft); margin-bottom: 28px; max-width: 760px;
+  }
+  .cover-byline {
+    display: flex; align-items: center; gap: 16px;
+    font-family: var(--mono); font-size: 11px; color: var(--text-mute);
+    letter-spacing: 0.1em; text-transform: uppercase; flex-wrap: wrap;
+  }
+  .cover-byline span { color: var(--text-soft); }
+
+  /* SECTION */
+  .section { max-width: 1400px; margin: 0 auto; padding: 60px 32px; }
+  .section-divider { border-top: 1px solid var(--border); }
+  .section-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 40px; gap: 24px; flex-wrap: wrap;
+  }
+  .section-title {
+    font-family: var(--serif); font-weight: 800;
+    font-size: clamp(28px, 4vw, 44px); line-height: 1;
+    letter-spacing: -0.02em; color: var(--text);
+  }
+  .section-title em { font-style: italic; color: var(--accent); }
+  .section-meta {
+    font-family: var(--mono); font-size: 11px; color: var(--text-mute);
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+
+  /* ============================================================
+     BRAND MISSION · 비전·미션 카피 (CI 갤러리 도입부)
+     ============================================================ */
+  .brand-mission {
+    margin-bottom: 56px;
+    max-width: 820px;
+    border-left: 2px solid var(--accent);
+    padding: 8px 0 8px 28px;
+  }
+  .brand-mission-mark {
+    font-family: var(--mono);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  .brand-mission-quote {
+    font-family: var(--serif); font-weight: 800;
+    font-size: clamp(30px, 4.4vw, 52px);
+    line-height: 1.05; letter-spacing: -0.025em;
+    color: var(--text); margin-bottom: 22px;
+  }
+  .brand-mission-quote em {
+    font-style: italic; color: var(--accent);
+  }
+  .brand-mission-text {
+    font-family: var(--serif); font-weight: 400;
+    font-size: 17px; line-height: 1.65;
+    color: var(--text-soft); max-width: 660px;
+  }
+
+  /* ============================================================
+     BRAND PROMO · 홍보 페이지 (Primary 단독 + 노트 + 원칙 + 이름 + 연결)
+     ============================================================ */
+  .ci-hero {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    aspect-ratio: 21 / 9;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    margin-top: 8px;
+  }
+  .ci-hero .vela-mark { font-size: clamp(72px, 12vw, 180px); }
+  .ci-hero::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.025) 1px, transparent 0);
+    background-size: 4px 4px;
+    pointer-events: none;
+  }
+  .ci-hero-caption {
+    display: flex; justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-top: none;
+    margin-bottom: 60px;
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .ci-hero-caption .name { color: var(--text); font-weight: 500; }
+  .ci-hero-caption .usage { color: var(--text-mute); }
+
+  .brand-note {
+    max-width: 720px; margin: 60px auto;
+    padding: 44px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .brand-note-mark {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 18px;
+  }
+  .brand-note-title {
+    font-family: var(--serif); font-weight: 700; font-style: italic;
+    font-size: clamp(24px, 3.5vw, 36px); line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--text); margin-bottom: 24px;
+  }
+  .brand-note-body {
+    font-family: var(--serif); font-size: 16.5px;
+    line-height: 1.75; color: var(--text-soft);
+  }
+  .brand-note-body p { margin-bottom: 16px; }
+  .brand-note-body p:last-child { margin-bottom: 0; }
+  .brand-note-signature {
+    font-family: var(--serif); font-style: italic;
+    color: var(--accent); margin-top: 28px;
+    font-size: 15px;
+  }
+
+  .brand-principles {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+    margin: 60px 0;
+  }
+  .principle-card {
+    border-top: 2px solid var(--accent);
+    padding-top: 22px;
+  }
+  .principle-num {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.25em; color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .principle-title {
+    font-family: var(--serif); font-weight: 700;
+    font-size: 26px; line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text); margin-bottom: 14px;
+  }
+  .principle-title em {
+    font-style: italic; color: var(--accent);
+  }
+  .principle-text {
+    font-family: var(--sans); font-size: 14px;
+    line-height: 1.65; color: var(--text-mute);
+  }
+
+  .brand-name-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 44px;
+    margin: 60px 0;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 44px; align-items: center;
+  }
+  .brand-name-mark {
+    font-family: var(--serif); font-style: italic;
+    font-weight: 800;
+    font-size: clamp(72px, 9vw, 112px);
+    line-height: 1; color: white;
+    text-align: center;
+    text-shadow:
+      1px 1px 0 var(--ink), 2px 2px 0 var(--ink),
+      3px 3px 0 var(--ink), 4px 4px 0 var(--ink);
+    -webkit-text-stroke: 1.2px var(--ink);
+  }
+  .brand-name-text {
+    font-family: var(--sans); font-size: 14.5px;
+    line-height: 1.7; color: var(--text-soft);
+  }
+  .brand-name-text p { margin-bottom: 12px; }
+  .brand-name-text p:last-child { margin-bottom: 0; }
+  .brand-name-text strong {
+    color: var(--accent); font-weight: 500;
+  }
+
+  .brand-connect {
+    margin-top: 60px; padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .brand-connect-title {
+    font-family: var(--serif); font-weight: 700;
+    font-size: 28px; line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--text); margin-bottom: 28px;
+  }
+  .brand-connect-title em { font-style: italic; color: var(--accent); }
+  .brand-connect-list {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+  }
+  .connect-item {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 20px 22px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+  }
+  .connect-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    background: var(--bg-warm);
+  }
+  .connect-label {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .connect-value {
+    font-family: var(--sans); font-size: 14px; font-weight: 500;
+    color: var(--text); word-break: break-all;
+  }
+
+  /* FEATURED */
+  .featured-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .feature-card { cursor: pointer; transition: transform 0.3s ease; }
+  .feature-card:hover { transform: translateY(-4px); }
+  .feature-image {
+    width: 100%; aspect-ratio: 4 / 5; background: var(--bg-card);
+    margin-bottom: 18px; overflow: hidden; position: relative;
+  }
+  .feature-image-bg {
+    position: absolute; inset: 0; background-size: cover; background-position: center;
+    transition: transform 0.6s ease;
+  }
+  .feature-card:hover .feature-image-bg { transform: scale(1.04); }
+  .feature-label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+  }
+  .feature-title {
+    font-family: var(--serif); font-weight: 600; font-size: 24px;
+    line-height: 1.2; letter-spacing: -0.015em; color: var(--text); margin-bottom: 12px;
+  }
+  .feature-deck {
+    font-family: var(--sans); font-size: 14px; line-height: 1.5;
+    color: var(--text-mute); margin-bottom: 14px;
+  }
+  .feature-byline {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-dim);
+  }
+
+  /* ============================================================
+     AI INDUSTRY · 산업·기업 뉴스 (신문 칼럼 스타일)
+     ============================================================ */
+  .industry-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--border);
+  }
+  .industry-item {
+    padding: 22px 24px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s ease, padding 0.2s ease;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .industry-item:nth-child(2n) { border-right: none; }
+  .industry-item:hover {
+    background: var(--bg-warm);
+    padding-left: 32px;
+  }
+  .industry-meta {
+    display: flex; gap: 10px; align-items: center;
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-mute);
+  }
+  .industry-meta .source {
+    color: var(--accent); font-weight: 500;
+  }
+  .industry-meta .divider { color: var(--text-dim); }
+  .industry-title {
+    font-family: var(--serif); font-weight: 600;
+    font-size: 17px; line-height: 1.3;
+    letter-spacing: -0.015em;
+    color: var(--text);
+  }
+  .industry-deck {
+    font-family: var(--sans); font-size: 13.5px;
+    line-height: 1.55; color: var(--text-soft);
+  }
+  @media (max-width: 768px) {
+    .industry-list { grid-template-columns: 1fr; }
+    .industry-item { border-right: none; padding: 18px 16px; }
+    .industry-item:hover { padding-left: 22px; }
+    .industry-title { font-size: 15px; }
+    .industry-deck { font-size: 12.5px; }
+  }
+
+  /* ============================================================
+     THIS MONTH IN AI · 이달의 AI 하이라이트
+     ============================================================ */
+  .month-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .month-card {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .month-card:hover { transform: translateY(-4px); }
+  .month-card:hover .month-image-bg { transform: scale(1.05); }
+  .month-image {
+    aspect-ratio: 1 / 1;
+    background: var(--bg-card);
+    margin-bottom: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .month-image-bg {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    transition: transform 0.6s ease;
+  }
+  .month-image::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.6));
+  }
+  .month-date {
+    position: absolute;
+    top: 12px; left: 12px;
+    background: rgba(10,10,10,0.85);
+    color: var(--accent-warm);
+    font-family: var(--mono); font-size: 11px;
+    font-weight: 500; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    z-index: 2;
+    backdrop-filter: blur(4px);
+  }
+  .month-category {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px;
+  }
+  .month-title {
+    font-family: var(--serif); font-weight: 600;
+    font-size: 19px; line-height: 1.25;
+    letter-spacing: -0.015em;
+    color: var(--text); margin-bottom: 8px;
+  }
+  .month-deck {
+    font-family: var(--sans); font-size: 13px;
+    line-height: 1.5; color: var(--text-mute);
+  }
+
+  /* 카테고리 chip toolbar (한 줄 추가) */
+  .toolbar-cats {
+    border-bottom: none;
+    padding-bottom: 8px;
+  }
+  .toolbar-cats .filter-group {
+    flex-wrap: wrap;
+  }
+
+  /* WATCH */
+  .watch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .watch-card {
+    cursor: pointer; background: var(--bg-card); border: 1px solid var(--border);
+    transition: border-color 0.2s ease;
+  }
+  .watch-card:hover { border-color: var(--accent); }
+  .watch-thumb {
+    aspect-ratio: 16 / 9; background: var(--bg-elev);
+    background-size: cover; background-position: center; position: relative;
+  }
+  .watch-thumb::after {
+    content: '▶'; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); width: 56px; height: 56px;
+    background: rgba(0,0,0,0.7); color: var(--text); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; backdrop-filter: blur(4px);
+  }
+  .watch-duration {
+    position: absolute; bottom: 10px; right: 10px;
+    background: rgba(0,0,0,0.85); color: var(--text);
+    font-family: var(--mono); font-size: 11px; padding: 3px 6px; z-index: 2;
+  }
+  .watch-meta { padding: 16px 18px; }
+  .watch-source {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--accent-warm); margin-bottom: 8px;
+  }
+  .watch-title {
+    font-family: var(--serif); font-weight: 600; font-size: 17px;
+    line-height: 1.3; color: var(--text); margin-bottom: 8px;
+  }
+  .watch-byline { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; }
+
+  /* TOOLBAR */
+  .toolbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    font-family: var(--mono); font-size: 11px; color: var(--text-mute);
+    letter-spacing: 0.05em; flex-wrap: wrap; gap: 12px;
+  }
+  .filter-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .filter-chip {
+    background: transparent; border: 1px solid var(--border); color: var(--text-mute);
+    font-family: var(--mono); font-size: 10px; font-weight: 400;
+    padding: 6px 12px; cursor: pointer; letter-spacing: 0.1em;
+    text-transform: uppercase; transition: all 0.15s ease;
+  }
+  .filter-chip:hover { color: var(--text); border-color: var(--border-strong); }
+  .filter-chip.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+  /* HERO SIGNAL · TODAY'S TOP STORY 강조 */
+  .hero-signal-container { margin-bottom: 28px; }
+  .hero-signal {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-warm) 100%);
+    border: 1px solid var(--accent);
+    padding: 32px 36px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .hero-signal:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 36px rgba(94,234,212,0.18), 0 0 0 1px var(--accent);
+  }
+  .hero-signal::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: hero-shimmer 3.5s ease-in-out infinite;
+  }
+  @keyframes hero-shimmer {
+    0%, 100% { opacity: 0.5; transform: translateX(-30%); }
+    50% { opacity: 1; transform: translateX(30%); }
+  }
+  .hero-signal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--ink);
+    background: var(--accent);
+    padding: 6px 12px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .hero-signal-meta {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-mute);
+    margin-bottom: 14px;
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  }
+  .hero-signal-meta .source-tag { color: var(--accent); font-weight: 500; }
+  .hero-signal-meta .divider { color: var(--text-dim); }
+  .hero-signal-title {
+    font-family: var(--serif); font-weight: 700;
+    font-size: clamp(22px, 3.2vw, 32px);
+    line-height: 1.2; letter-spacing: -0.02em;
+    color: var(--text); margin-bottom: 14px;
+  }
+  .hero-signal-deck {
+    font-family: var(--serif); font-size: 16px;
+    line-height: 1.6; color: var(--text-soft);
+    margin-bottom: 18px; max-width: 760px;
+  }
+  .hero-signal-tags { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+  .hero-signal-tags .tag {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text-mute);
+    border: 1px solid var(--border-strong);
+    padding: 3px 8px; letter-spacing: 0.05em;
+  }
+  .hero-signal-action {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 12px; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent);
+    padding-top: 4px;
+    border-top: 1px dashed var(--border-strong);
+  }
+  .hero-signal-action .arrow { transition: transform 0.2s ease; }
+  .hero-signal:hover .hero-signal-action .arrow { transform: translateX(4px); }
+  @media (max-width: 640px) {
+    .hero-signal { padding: 24px 22px; }
+    .hero-signal-deck { font-size: 14.5px; }
+  }
+
+  /* SIGNAL LIST */
+  .signal-list { display: flex; flex-direction: column; }
+  .signal-row {
+    display: grid; grid-template-columns: 80px 140px 1fr 100px;
+    gap: 24px; padding: 24px 0; border-bottom: 1px solid var(--border);
+    align-items: start; cursor: pointer; transition: background 0.15s ease;
+  }
+  .signal-row:hover { background: var(--bg-warm); padding-left: 8px; padding-right: 8px; }
+  .signal-num { font-family: var(--mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.1em; }
+  .signal-thumb {
+    width: 100%; aspect-ratio: 4 / 3; background: var(--bg-card);
+    background-size: cover; background-position: center;
+  }
+  .signal-content { min-width: 0; }
+  .signal-meta {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-mute);
+    margin-bottom: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  }
+  .signal-meta .source-tag { color: var(--accent); font-weight: 500; }
+  .signal-meta .divider { color: var(--text-dim); }
+  .signal-title {
+    font-family: var(--serif); font-weight: 600; font-size: 19px;
+    line-height: 1.3; color: var(--text); margin-bottom: 8px; letter-spacing: -0.01em;
+  }
+  .signal-deck {
+    font-family: var(--sans); font-size: 13px; line-height: 1.55; color: var(--text-mute);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .signal-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+  .star-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--text-mute);
+    font-family: var(--mono); font-size: 11px; padding: 6px 10px;
+    cursor: pointer; letter-spacing: 0.05em; transition: all 0.15s ease;
+  }
+  .star-btn:hover { color: var(--text); border-color: var(--border-strong); }
+  .star-btn.starred { color: var(--accent-warm); border-color: var(--accent-warm); }
+
+  /* ===== Archive List ===== */
+  .archive-list { display: flex; flex-direction: column; }
+  .archive-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px; align-items: baseline;
+    padding: 22px 0; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: padding 0.2s ease, background 0.15s ease;
+  }
+  .archive-item:hover { background: var(--bg-warm); padding-left: 12px; padding-right: 12px; }
+  .archive-week {
+    font-family: var(--mono); font-weight: 500; font-size: 11px;
+    color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase;
+    min-width: 90px;
+  }
+  .archive-headline {
+    font-family: var(--serif); font-weight: 600; font-size: 18px;
+    color: var(--text); line-height: 1.3; letter-spacing: -0.01em;
+  }
+  .archive-meta-text {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text-mute); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  @media (max-width: 640px) {
+    .archive-item { grid-template-columns: 1fr; gap: 6px; padding: 16px 0; }
+    .archive-headline { font-size: 16px; }
+  }
+
+  /* INSTALL MODAL */
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px); z-index: 1000;
+    display: none; align-items: center; justify-content: center;
+    padding: 24px; animation: fadeIn 0.2s ease;
+  }
+  .modal-bg.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: var(--bg-elev); border: 1px solid var(--border-strong);
+    max-width: 520px; width: 100%; padding: 32px;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 24px; gap: 16px;
+  }
+  .modal-title {
+    font-family: var(--serif); font-weight: 800; font-style: italic;
+    font-size: 32px; line-height: 1; color: var(--text);
+  }
+  .modal-close {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-mute); width: 32px; height: 32px;
+    font-family: var(--mono); cursor: pointer; flex-shrink: 0;
+  }
+  .modal-close:hover { color: var(--text); border-color: var(--border-strong); }
+  .install-tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .install-tab {
+    background: transparent; border: none; color: var(--text-mute);
+    font-family: var(--mono); font-size: 11px; padding: 10px 14px;
+    cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase;
+    border-bottom: 2px solid transparent; transition: all 0.2s;
+  }
+  .install-tab:hover { color: var(--text); }
+  .install-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .install-content { display: none; }
+  .install-content.active { display: block; }
+  .install-step {
+    display: flex; gap: 14px; padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--sans); font-size: 14px; color: var(--text-soft);
+    line-height: 1.5;
+  }
+  .install-step:last-child { border-bottom: none; }
+  .install-step-num {
+    font-family: var(--mono); color: var(--accent);
+    font-weight: 500; flex-shrink: 0; width: 24px;
+  }
+
+  /* ============================================================
+     VIDEO MODAL · 비디오 lightbox
+     ============================================================ */
+  .video-modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 2000;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 24px;
+    animation: fadeIn 0.2s ease;
+  }
+  .video-modal.active { display: flex; }
+  .video-modal-content {
+    width: 100%; max-width: 1200px;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px var(--border-strong);
+  }
+  .video-modal-content iframe {
+    width: 100%; height: 100%; border: none; display: block;
+  }
+  .video-modal-close {
+    position: absolute;
+    top: -48px; right: 0;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    width: 40px; height: 40px;
+    font-family: var(--mono);
+    font-size: 16px; cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+  .video-modal-close:hover {
+    background: var(--accent); color: var(--ink); border-color: var(--accent);
+    transform: rotate(90deg);
+  }
+
+  /* ============================================================
+     SCROLL TO TOP · 우측 하단 floating 버튼
+     ============================================================ */
+  .scroll-top {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    width: 48px; height: 48px;
+    background: var(--accent); color: var(--ink);
+    border: none; border-radius: 50%;
+    cursor: pointer; z-index: 99;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 22px; font-weight: 600;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5), 0 0 0 1px rgba(94,234,212,0.3);
+    opacity: 0; pointer-events: none;
+    transform: translateY(8px) scale(0.95);
+    transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .scroll-top.visible {
+    opacity: 1; pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+  .scroll-top:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 28px rgba(94,234,212,0.4);
+  }
+  @supports (padding: max(0px)) {
+    .scroll-top {
+      bottom: max(24px, env(safe-area-inset-bottom, 24px));
+      right: max(24px, env(safe-area-inset-right, 24px));
+    }
+  }
+  @media (max-width: 640px) {
+    .scroll-top { width: 44px; height: 44px; bottom: 18px; right: 18px; font-size: 20px; }
+    .video-modal { padding: 16px; }
+    .video-modal-close { top: -44px; }
+  }
+
+  /* COLOPHON */
+  .colophon { border-top: 1px solid var(--border); margin-top: 80px; padding: 48px 32px 32px; }
+  .colophon-inner {
+    max-width: 1400px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end;
+  }
+  .colophon-brand { font-size: 56px; margin-bottom: 12px; }
+  .colophon-text {
+    font-family: var(--sans); font-size: 13px; color: var(--text-mute);
+    max-width: 480px; line-height: 1.6;
+  }
+  .colophon-meta {
+    font-family: var(--mono); font-size: 10px; color: var(--text-dim);
+    letter-spacing: 0.1em; text-transform: uppercase; text-align: right; line-height: 1.8;
+  }
+
+  /* ============================================================
+     RESPONSIVE · 모바일 최적화 강화
+     ============================================================ */
+
+  /* iOS notch / safe area */
+  @supports (padding: max(0px)) {
+    .masthead { padding-left: max(32px, env(safe-area-inset-left)); padding-right: max(32px, env(safe-area-inset-right)); }
+    .nav-inner { padding-left: max(32px, env(safe-area-inset-left)); padding-right: max(32px, env(safe-area-inset-right)); }
+    .cover, .section, .colophon { padding-left: max(32px, env(safe-area-inset-left)); padding-right: max(32px, env(safe-area-inset-right)); }
+    body { padding-bottom: env(safe-area-inset-bottom); }
+  }
+
+  /* 태블릿 · 작은 데스크톱 */
+  @media (max-width: 900px) {
+    .masthead { padding: 14px 16px; }
+    .masthead-inner { gap: 12px; }
+    .brand-tag { display: none; }
+    .brand-logo { font-size: 32px; }
+    .nav-inner { padding: 0 16px; }
+    .cover { padding: 32px 16px 56px; }
+    .section { padding: 48px 16px; }
+    .featured-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .watch-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .ci-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+    .month-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .signal-row { grid-template-columns: 100px 1fr; gap: 14px; padding: 18px 0; }
+    .signal-num, .signal-actions { display: none; }
+    .signal-title { font-size: 16px; }
+    .colophon { padding: 32px 16px 24px; }
+    .colophon-inner { grid-template-columns: 1fr; gap: 16px; }
+    .colophon-meta { text-align: left; }
+    .colophon-brand { font-size: 44px; }
+    .brand-mission { padding-left: 20px; margin-bottom: 40px; }
+    .brand-principles { grid-template-columns: 1fr 1fr; gap: 24px; }
+    .brand-name-box { padding: 32px; }
+    .brand-connect-list { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* 모바일 표준 (iPhone 12 ~) */
+  @media (max-width: 640px) {
+    .masthead-inner {
+      flex-wrap: nowrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .brand { gap: 0; flex-shrink: 1; min-width: 0; }
+    .brand-logo { font-size: 28px; }
+    .head-actions { gap: 8px; flex-shrink: 0; }
+    .install-btn { padding: 9px 12px; font-size: 10px; gap: 6px; min-height: 36px; }
+    .install-btn .label-full { display: none; }
+    .install-btn .label-short { display: inline; }
+    .icon-btn { width: 40px; height: 40px; font-size: 16px; }
+    .issue-meta { display: none; }
+    .nav-item { padding: 16px 16px; font-size: 12px; }
+    .cover { padding: 24px 16px 40px; }
+    .section { padding: 40px 16px; }
+    .section-header { margin-bottom: 28px; }
+    .cover-headline { font-size: clamp(28px, 8vw, 40px); margin-bottom: 18px; }
+    .cover-deck { font-size: 16px; margin-bottom: 22px; }
+    .cover-byline { font-size: 10px; gap: 10px; }
+    .featured-grid { grid-template-columns: 1fr; gap: 28px; }
+    .feature-image { aspect-ratio: 16 / 10; }
+    .feature-title { font-size: 22px; }
+    .watch-grid { grid-template-columns: 1fr; gap: 14px; }
+    .ci-grid { grid-template-columns: 1fr; gap: 12px; }
+    .month-grid { grid-template-columns: 1fr; gap: 28px; }
+    .month-image { aspect-ratio: 16 / 10; }
+    .ci-stage { aspect-ratio: 16 / 9; }
+    .ci-stage .vela-mark { font-size: 64px; }
+    .ci-stage.monogram .vela-mark { font-size: 110px; }
+    .ci-quote { font-size: 12px; padding: 12px 16px; }
+    .signal-row { grid-template-columns: 90px 1fr; gap: 12px; padding: 16px 0; }
+    .toolbar { padding: 12px 0; }
+    .filter-chip { font-size: 9px; padding: 5px 10px; }
+    .brand-mission-quote { font-size: clamp(26px, 7vw, 34px); }
+    .brand-mission-text { font-size: 15px; }
+    .brand-principles { grid-template-columns: 1fr; gap: 28px; }
+    .brand-name-box { grid-template-columns: 1fr; gap: 24px; padding: 28px; margin: 40px 0; }
+    .brand-name-mark { font-size: 80px; }
+    .brand-connect-list { grid-template-columns: 1fr; }
+    .ci-hero { aspect-ratio: 16 / 9; }
+    .ci-hero-caption { margin-bottom: 40px; flex-direction: column; gap: 4px; }
+    .brand-note { padding: 32px 0; margin: 40px auto; }
+    .brand-note-title { font-size: 22px; }
+    .brand-note-body { font-size: 15px; }
+    .colophon-brand { font-size: 36px; }
+    .play-button { width: 56px; height: 56px; font-size: 18px; }
+    .modal { padding: 24px 20px; }
+    .modal-title { font-size: 26px; }
+  }
+
+  /* 작은 모바일 (iPhone SE 등 ~ 375px) */
+  @media (max-width: 380px) {
+    .brand-logo { font-size: 24px; }
+    .install-btn { padding: 8px 10px; }
+    .install-btn .label-short { display: none; }
+    .install-btn .icon { font-size: 16px; }
+    .nav-item { padding: 14px 12px; font-size: 11px; }
+    .cover-headline { font-size: 26px; }
+    .ci-stage .vela-mark { font-size: 54px; }
+  }
+
+  /* PWA 설치 후 (standalone 모드) — 헤더 살짝 다르게 */
+  @media (display-mode: standalone) {
+    .install-btn { display: none !important; }
+    .masthead { padding-top: max(18px, env(safe-area-inset-top)); }
+  }
+</style>
+</head>
+<body>
+
+  <!-- 읽기 진행률 바 -->
+  <div class="read-progress"><div class="read-progress-fill" id="read-progress-fill"></div></div>
+
+  <!-- 과거 이슈 알림 바 (URL에 ?issue=YYYY-WXX 있을 때만 표시) -->
+  <div class="past-issue-bar" id="past-issue-bar" style="display:none;">
+    <div class="past-issue-bar-inner">
+      <span class="past-issue-label">📚 과거 이슈를 보고 있습니다</span>
+      <span class="past-issue-week" id="past-issue-week">—</span>
+      <a href="./vela-prototype.html" class="past-issue-back">← 현재 이슈로 돌아가기</a>
+    </div>
+  </div>
+
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="brand">
+        <span class="vela-mark brand-logo">Ve<span class="accent">l</span>a</span>
+        <div class="brand-tag">AI Intelligence Magazine</div>
+      </div>
+      <div class="head-actions">
+        <button class="icon-btn" id="search-btn" title="검색 (Ctrl+K)" aria-label="검색">🔍</button>
+        <button class="icon-btn" id="theme-btn" title="테마 전환" aria-label="다크/라이트 모드">◐</button>
+        <button class="install-btn" id="install-btn" title="앱 설치">
+          <span class="icon">↓</span>
+          <span class="label-full">INSTALL APP</span>
+          <span class="label-short" style="display:none;">INSTALL</span>
+        </button>
+        <div class="issue-meta">
+          <div>Issue <strong id="issue-num">—</strong></div>
+          <div id="issue-date">— · —</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <button class="nav-item active" data-section="home">Home</button>
+      <button class="nav-item" data-section="month">This Month</button>
+      <button class="nav-item" data-section="featured">Featured</button>
+      <button class="nav-item" data-section="watch">Watch</button>
+      <button class="nav-item" data-section="industry">Industry</button>
+      <button class="nav-item" data-section="signals">Signals</button>
+      <button class="nav-item" data-section="brand">Brand</button>
+      <button class="nav-item" data-section="archive">Archive</button>
+    </div>
+  </nav>
+
+  <section class="cover">
+    <article class="cover-card">
+      <div class="cover-image" id="cover-image">
+        <div class="cover-image-overlay">
+          <div class="play-button">▶</div>
+          <div class="image-credit" id="cover-credit"></div>
+        </div>
+      </div>
+      <div class="cover-content">
+        <div class="cover-label" id="cover-label">Cover Story</div>
+        <h1 class="cover-headline" id="cover-headline"></h1>
+        <p class="cover-deck" id="cover-deck"></p>
+        <div class="cover-byline" id="cover-byline"></div>
+      </div>
+    </article>
+  </section>
+
+  <!-- THIS MONTH IN AI · 이달의 AI 하이라이트 (Brand 자리에 신규) -->
+  <section class="section section-divider" id="month-section">
+    <div class="section-header">
+      <h2 class="section-title">This Month in <em>AI</em></h2>
+      <div class="section-meta" id="month-meta">— · Highlights</div>
+    </div>
+    <div class="month-grid" id="month-grid"></div>
+  </section>
+
+  <section class="section section-divider" id="featured-section">
+    <div class="section-header">
+      <h2 class="section-title">This <em>Week</em></h2>
+      <div class="section-meta">3 Featured · Curated</div>
+    </div>
+    <div class="featured-grid" id="featured-grid"></div>
+  </section>
+
+  <section class="section section-divider" id="watch-section">
+    <div class="section-header">
+      <h2 class="section-title"><em>Watch</em></h2>
+      <div class="section-meta">Demos & Talks</div>
+    </div>
+    <div class="watch-grid" id="watch-grid"></div>
+  </section>
+
+  <!-- AI INDUSTRY · 산업·기업 뉴스 -->
+  <section class="section section-divider" id="industry-section">
+    <div class="section-header">
+      <h2 class="section-title">AI <em>Industry</em></h2>
+      <div class="section-meta" id="industry-meta">— stories</div>
+    </div>
+    <div class="industry-list" id="industry-list"></div>
+  </section>
+
+  <section class="section section-divider" id="signals-section">
+    <div class="section-header">
+      <h2 class="section-title">Latest <em>Signals</em></h2>
+      <div class="section-meta" id="signal-count">— results</div>
+    </div>
+    <div class="toolbar toolbar-cats">
+      <div class="filter-group">
+        <span style="margin-right: 8px;">CATEGORY</span>
+        <button class="filter-chip active" data-cat="all">All</button>
+        <button class="filter-chip" data-cat="LLM">Language</button>
+        <button class="filter-chip" data-cat="Vision">Vision</button>
+        <button class="filter-chip" data-cat="Audio">Audio</button>
+        <button class="filter-chip" data-cat="Agent">Agents</button>
+        <button class="filter-chip" data-cat="Robotics">Robotics</button>
+        <button class="filter-chip" data-cat="Tool">Tools</button>
+        <button class="filter-chip" data-cat="Infra">Infrastructure</button>
+        <button class="filter-chip" data-cat="Safety">Safety</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="filter-group">
+        <span style="margin-right: 8px;">SORT</span>
+        <button class="filter-chip active" data-sort="score">Score</button>
+        <button class="filter-chip" data-sort="date">Date</button>
+        <button class="filter-chip" data-sort="source">Source</button>
+      </div>
+      <div class="filter-group">
+        <span style="margin-right: 8px;">VIEW</span>
+        <button class="filter-chip" data-view="starred">★ Starred</button>
+      </div>
+    </div>
+    <div class="hero-signal-container" id="hero-signal-container"></div>
+    <div class="signal-list" id="signal-list"></div>
+  </section>
+
+  <!-- BRAND · Vela 브랜드 홍보 페이지 (Primary 로고만, 홍보 콘텐츠) -->
+  <section class="section section-divider" id="brand-section">
+    <div class="section-header">
+      <h2 class="section-title">Brand <em>Identity</em></h2>
+      <div class="section-meta">A magazine for the AI age</div>
+    </div>
+
+    <!-- Vision · Mission -->
+    <div class="brand-mission">
+      <div class="brand-mission-mark">— Vision · Mission</div>
+      <blockquote class="brand-mission-quote">
+        파편을 <em>매거진</em>으로,<br>
+        신호를 <em>항해</em>로.
+      </blockquote>
+      <p class="brand-mission-text">
+        Vela는 AI 시대의 돛이 되어, 매일 쏟아지는 신호 속에서 항로를 밝힌다.
+        파편화된 기술의 흐름을 매거진의 호흡으로 엮어,
+        한 곳에서 읽고 · 보고 · 보관할 수 있게 한다.
+      </p>
+    </div>
+
+    <!-- Primary 로고 단독 (메인 마크) -->
+    <div class="ci-hero">
+      <span class="vela-mark primary">Ve<span class="accent">l</span>a</span>
+    </div>
+    <div class="ci-hero-caption">
+      <span class="name">Primary · Main Mark</span>
+      <span class="usage">The only mark we use</span>
+    </div>
+
+    <!-- Maker's Note -->
+    <article class="brand-note">
+      <div class="brand-note-mark">— A Note from the Maker</div>
+      <h3 class="brand-note-title">매거진의 호흡으로, 다시 천천히 읽는다</h3>
+      <div class="brand-note-body">
+        <p>
+          매일 쏟아지는 AI 기술 정보의 양은 한 사람이 따라잡을 수 있는 한계를 한참 넘어섰다.
+          ArXiv에는 매일 수백 편의 논문이 올라오고, GitHub에는 새 프로젝트가 끊임없이 등장하며,
+          타임라인은 노이즈와 신호가 뒤섞여 흐른다.
+        </p>
+        <p>
+          Vela는 이 흐름 속에서 잠시 멈춰 정리할 수 있는 공간이다.
+          파편화된 정보를 자동으로 모으고, 매거진의 형태로 다시 조립해
+          매일 아침 30분 동안 천천히 읽을 수 있는 한 권의 잡지로 만든다.
+        </p>
+        <p>
+          광고도, 추천 알고리즘도, 트래픽 압박도 없다.
+          오직 한 명의 독자를 위한 한 권의 매거진.
+        </p>
+        <div class="brand-note-signature">— Juns</div>
+      </div>
+    </article>
+
+    <!-- Three Principles -->
+    <div class="brand-principles">
+      <div class="principle-card">
+        <div class="principle-num">01</div>
+        <h4 class="principle-title"><em>Signal</em><br>over Noise</h4>
+        <p class="principle-text">
+          많이 보여주지 않는다. 오늘 정말 알아야 하는 것만 골라낸다.
+          score 기반 우선순위, 명확한 카테고리, 군더더기 없는 메타.
+        </p>
+      </div>
+      <div class="principle-card">
+        <div class="principle-num">02</div>
+        <h4 class="principle-title"><em>Depth</em><br>over Width</h4>
+        <p class="principle-text">
+          피상적인 헤드라인보다 구조적인 이해를. 매거진의 호흡으로 읽어야
+          남는 것이 있다는 믿음에서 출발한다.
+        </p>
+      </div>
+      <div class="principle-card">
+        <div class="principle-num">03</div>
+        <h4 class="principle-title"><em>Calm</em><br>over Urgent</h4>
+        <p class="principle-text">
+          실시간 알림도, 빨간 점도 없다. 매일 아침 한 번,
+          조용한 톤으로 정리된 흐름만이 도착한다.
+        </p>
+      </div>
+    </div>
+
+    <!-- The Name -->
+    <div class="brand-name-box">
+      <div class="brand-name-mark">Ve<span style="color:var(--accent);">l</span>a</div>
+      <div class="brand-name-text">
+        <p><strong>Vela</strong>는 라틴어로 <strong>돛(sails)</strong>.</p>
+        <p>남반구 별자리 용골자리(Vela)에서 따왔다. 바람을 받아 항해를 가능하게 만드는, 가장 단순하고 본질적인 도구.</p>
+        <p>정보의 바다 위에서, Vela는 당신의 항로를 밝히는 돛이 된다.</p>
+      </div>
+    </div>
+
+    <!-- Connect -->
+    <div class="brand-connect">
+      <h3 class="brand-connect-title">Where to <em>find</em></h3>
+      <div class="brand-connect-list">
+        <a class="connect-item" href="https://juns9990.github.io/vela/vela-prototype.html" target="_blank" rel="noopener">
+          <span class="connect-label">— Web</span>
+          <span class="connect-value">juns9990.github.io/vela</span>
+        </a>
+        <button class="connect-item" id="connect-install" type="button" style="font: inherit; text-align: left;">
+          <span class="connect-label">— Install</span>
+          <span class="connect-value">Add to Home Screen</span>
+        </button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ARCHIVE · 과거 이슈 아카이브 -->
+  <section class="section section-divider" id="archive-section">
+    <div class="section-header">
+      <h2 class="section-title">Past <em>Issues</em></h2>
+      <div class="section-meta" id="archive-meta">— issues archived</div>
+    </div>
+    <div class="archive-list" id="archive-list">
+      <div style="padding:40px 0;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:11px;letter-spacing:0.1em;">
+        // LOADING ARCHIVE...
+      </div>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <div class="colophon-inner">
+      <div>
+        <span class="vela-mark colophon-brand" style="color:white;text-shadow:1px 1px 0 var(--ink),2px 2px 0 var(--ink),3px 3px 0 var(--ink);-webkit-text-stroke:1px var(--ink);">Ve<span class="accent">l</span>a</span>
+        <p class="colophon-text">파편화된 AI 기술을 매거진의 흐름으로 다시 엮습니다. 매일 자동 수집되는 논문·모델·도구·영상을 한 페이지에서 읽고, 보고, 보관하세요.</p>
+      </div>
+      <div class="colophon-meta">
+        <div>Personal Edition</div>
+        <div>Built by Juns · 2026</div>
+        <div><strong style="color:var(--accent);">v0.19.2</strong> · Wider Net · 25+ sources</div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal-bg" id="install-modal">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title">Install <em style="color:var(--accent);">Vela</em></div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-mute);letter-spacing:0.1em;text-transform:uppercase;margin-top:8px;">홈 화면에 앱으로 추가</div>
+        </div>
+        <button class="modal-close" id="modal-close-btn">✕</button>
+      </div>
+      <div class="install-tabs">
+        <button class="install-tab active" data-os="ios">iOS Safari</button>
+        <button class="install-tab" data-os="android">Android Chrome</button>
+        <button class="install-tab" data-os="desktop">Desktop</button>
+      </div>
+      <div class="install-content active" data-content="ios">
+        <div class="install-step"><span class="install-step-num">1</span><span>Safari 하단의 <strong>공유 버튼 ⬆️</strong> 누르기</span></div>
+        <div class="install-step"><span class="install-step-num">2</span><span>스크롤해서 <strong>"홈 화면에 추가"</strong> 선택</span></div>
+        <div class="install-step"><span class="install-step-num">3</span><span>이름 확인 후 <strong>추가</strong> 누르기</span></div>
+        <div class="install-step"><span class="install-step-num">4</span><span>홈 화면에서 <strong>Vela</strong> 아이콘 실행</span></div>
+      </div>
+      <div class="install-content" data-content="android">
+        <div class="install-step"><span class="install-step-num">1</span><span>Chrome 우상단 <strong>⋮ 메뉴</strong> 누르기</span></div>
+        <div class="install-step"><span class="install-step-num">2</span><span><strong>"앱 설치"</strong> 또는 <strong>"홈 화면에 추가"</strong> 선택</span></div>
+        <div class="install-step"><span class="install-step-num">3</span><span><strong>설치</strong> 버튼 누르기</span></div>
+        <div class="install-step"><span class="install-step-num">4</span><span>홈 화면 또는 앱 서랍에서 실행</span></div>
+      </div>
+      <div class="install-content" data-content="desktop">
+        <div class="install-step"><span class="install-step-num">1</span><span>Chrome/Edge 주소창 우측의 <strong>⊕ 설치 아이콘</strong> 클릭</span></div>
+        <div class="install-step"><span class="install-step-num">2</span><span>또는 <strong>⋮ 메뉴 → "Vela 설치"</strong> 선택</span></div>
+        <div class="install-step"><span class="install-step-num">3</span><span><strong>설치</strong> 클릭하면 독립 창으로 실행됨</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH MODAL -->
+  <div class="search-modal" id="search-modal">
+    <div class="search-box" onclick="event.stopPropagation()">
+      <div class="search-input-wrap">
+        <span class="icon">🔍</span>
+        <input type="text" class="search-input" id="search-input" placeholder="검색 — 제목, abstract, 태그, 출처…" autocomplete="off">
+        <span class="search-hint">ESC</span>
+      </div>
+      <div class="search-results" id="search-results">
+        <div class="search-empty">// 검색어를 입력하세요</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIDEO MODAL -->
+  <div class="video-modal" id="video-modal">
+    <div class="video-modal-content" id="video-modal-content" onclick="event.stopPropagation()">
+      <button class="video-modal-close" id="video-modal-close" title="닫기 (ESC)">✕</button>
+      <iframe id="video-iframe" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- SCROLL TO TOP -->
+  <button class="scroll-top" id="scroll-top" title="맨 위로" aria-label="맨 위로 이동">↑</button>
+
+<script>
+  // ============================================================
+  // PHASE 2 · 외부 vela-issue.json에서 매주 자동 발행된 데이터 로드
+  // 매주 월요일 06:00 KST에 GitHub Actions가 vela-issue.json을 갱신함
+  // ============================================================
+  let COVER = null;
+  let THIS_MONTH = [];
+  let FEATURED = [];
+  let VIDEOS = [];
+  let SIGNALS = [];
+  let INDUSTRY = [];
+  let ISSUE_META = null;
+
+  async function loadIssue() {
+    try {
+      // URL 파라미터로 과거 이슈 지정 가능: ?issue=2026-W17
+      const urlParams = new URLSearchParams(window.location.search);
+      const issueParam = urlParams.get('issue');
+      const issueFile = issueParam
+        ? `./vela-issue-${issueParam}.json`
+        : './vela-issue.json';
+
+      // 캐시 무효화: 매번 fresh 로드 (브라우저가 옛날 발행본 보여주지 않게)
+      const res = await fetch(issueFile + '?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      COVER = data.cover;
+      THIS_MONTH = data.thisMonth || [];
+      FEATURED = data.featured || [];
+      VIDEOS = data.videos || [];
+      SIGNALS = data.signals || [];
+      INDUSTRY = data.industry || [];
+      ISSUE_META = data.meta || null;
+      // 과거 이슈인지 표시
+      ISSUE_META = ISSUE_META || {};
+      ISSUE_META._isPast = !!issueParam;
+      ISSUE_META._issueParam = issueParam;
+      return true;
+    } catch (e) {
+      console.error('[Vela] Failed to load issue:', e);
+      return false;
+    }
+  }
 
 
-# ============================================================
-# HTTP / 유틸
-# ============================================================
-def fetch(url, timeout=TIMEOUT):
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read().decode("utf-8", errors="ignore")
+  let state = {
+    filter: 'all', sort: 'score', showStarred: false,
+    starred: new Set(JSON.parse(localStorage.getItem('vela.starred') || '[]')),
+    read: new Set(JSON.parse(localStorage.getItem('vela.read') || '[]'))
+  };
 
+  // 읽음 표시 토글 (URL을 키로 사용 — id 없는 항목도 처리)
+  function markAsRead(key) {
+    if (!key) return;
+    state.read.add(key);
+    localStorage.setItem('vela.read', JSON.stringify([...state.read]));
+  }
+  function isRead(key) { return state.read.has(key); }
 
-def categorize(text):
-    t = (text or "").lower()
-    for cat, kws in CATEGORY_RULES:
-        if any(k in t for k in kws):
-            return cat
-    return "LLM"
+  function renderCover() {
+    document.getElementById('cover-label').textContent = COVER.label;
+    document.getElementById('cover-headline').innerHTML = COVER.headline;
+    document.getElementById('cover-deck').textContent = COVER.deck;
+    document.getElementById('cover-byline').innerHTML =
+      COVER.byline.map(b => `<span>${b}</span>`).join('<span style="opacity:0.4">·</span>');
+    document.getElementById('cover-credit').textContent = COVER.credit;
+    const img = new Image();
+    img.onload = () => { document.getElementById('cover-image').style.backgroundImage = `url(${COVER.image})`; };
+    img.src = COVER.image;
+  }
 
+  function renderFeatured() {
+    const grid = document.getElementById('featured-grid');
+    if (!FEATURED || FEATURED.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:60px 0;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:11px;letter-spacing:0.1em;">// 이번 주 큐레이션이 준비 중입니다</div>';
+      return;
+    }
+    grid.innerHTML = FEATURED.map(f => {
+      const readCls = f.url && isRead(f.url) ? 'read' : '';
+      return `
+      <article class="feature-card ${readCls}" data-url="${f.url || ''}">
+        <div class="feature-image"><div class="feature-image-bg" style="background-image:url('${f.image}')"></div></div>
+        <div class="feature-label">${f.label}</div>
+        <h3 class="feature-title">${f.title}</h3>
+        <p class="feature-deck">${f.deck}</p>
+        <div class="feature-byline">${f.byline}</div>
+      </article>`;
+    }).join('');
+    document.querySelectorAll('.feature-card').forEach(card => {
+      card.addEventListener('click', () => {
+        if (card.dataset.url) {
+          markAsRead(card.dataset.url);
+          window.open(card.dataset.url, '_blank', 'noopener');
+          card.classList.add('read');
+        }
+      });
+    });
+  }
 
-def estimate_score(item):
-    """간이 점수 (1-5). 발행 신선도 + 출처 권위 + 키워드 신호로 추정."""
-    score = 3
-    src = item.get("source", "")
-    title = (item.get("title", "") + " " + item.get("abstract", "")).lower()
-    if src == "blog" and any(d in item.get("url", "") for d in ["anthropic.com", "openai.com", "deepmind.google", "ai.googleblog", "blog.google"]):
-        score = 5
-    elif src == "github":
-        score = 4
-    elif src == "arxiv":
-        score = 4 if any(k in title for k in ["sota", "state-of-the-art", "outperform", "frontier", "novel", "release"]) else 3
-    if any(k in title for k in ["gpt-5", "claude 5", "gemini 2", "llama 4", "agi", "breakthrough"]):
-        score = 5
-    return min(5, max(1, score))
+  function renderThisMonth() {
+    const now = new Date();
+    const monthName = now.toLocaleString('en-US', { month: 'long' });
+    document.getElementById('month-meta').textContent = `${monthName} ${now.getFullYear()} · Highlights`;
+    if (!THIS_MONTH || THIS_MONTH.length === 0) {
+      document.getElementById('month-grid').innerHTML =
+        '<div style="grid-column:1/-1;padding:40px 0;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:11px;">// No highlights this month</div>';
+      return;
+    }
+    document.getElementById('month-grid').innerHTML = THIS_MONTH.map(m => {
+      const readCls = m.url && isRead(m.url) ? 'read' : '';
+      return `
+      <article class="month-card ${readCls}" data-url="${m.url}">
+        <div class="month-image">
+          <div class="month-image-bg" style="background-image:url('${m.image}')"></div>
+          <span class="month-date">${m.date}</span>
+        </div>
+        <div class="month-category">${m.category}</div>
+        <h3 class="month-title">${m.title}</h3>
+        <p class="month-deck">${m.deck}</p>
+      </article>`;
+    }).join('');
+    document.querySelectorAll('.month-card').forEach(card => {
+      card.addEventListener('click', () => {
+        if (card.dataset.url) {
+          markAsRead(card.dataset.url);
+          window.open(card.dataset.url, '_blank', 'noopener');
+          card.classList.add('read');
+        }
+      });
+    });
+  }
 
+  function renderWatch() {
+    document.getElementById('watch-grid').innerHTML = VIDEOS.map((v, i) => `
+      <article class="watch-card" data-vid-idx="${i}">
+        <div class="watch-thumb" style="background-image:url('${v.thumb}')">
+          <span class="watch-duration">${v.duration}</span>
+        </div>
+        <div class="watch-meta">
+          <div class="watch-source">${v.source}</div>
+          <h4 class="watch-title">${v.title}</h4>
+          <div class="watch-byline">${v.byline}</div>
+        </div>
+      </article>`).join('');
+    document.querySelectorAll('.watch-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const v = VIDEOS[parseInt(card.dataset.vidIdx)];
+        if (v && v.videoId) openVideoModal(v.videoId);
+      });
+    });
+  }
 
-def make_id(prefix, raw):
-    h = hashlib.md5(raw.encode()).hexdigest()[:8]
-    return f"{prefix}-{h}"
+  function renderIndustry() {
+    const list = document.getElementById('industry-list');
+    const meta = document.getElementById('industry-meta');
+    if (!INDUSTRY || INDUSTRY.length === 0) {
+      meta.textContent = '— stories';
+      list.innerHTML = '<div style="grid-column:1/-1;padding:40px 0;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:11px;letter-spacing:0.1em;">// 이번 주 산업 뉴스 수집 대기 중</div>';
+      return;
+    }
+    meta.textContent = `${INDUSTRY.length} stories`;
+    list.innerHTML = INDUSTRY.map(s => {
+      const readCls = s.url && isRead(s.url) ? 'read' : '';
+      return `
+        <article class="industry-item ${readCls}" data-url="${s.url || ''}">
+          <div class="industry-meta">
+            <span class="source">${escapeHtml(s.source || 'Industry')}</span>
+            <span class="divider">·</span>
+            <span>${escapeHtml(s.date || '')}</span>
+          </div>
+          <h4 class="industry-title">${escapeHtml(s.title || '')}</h4>
+          <p class="industry-deck">${escapeHtml(s.deck || '')}</p>
+        </article>
+      `;
+    }).join('');
+    list.querySelectorAll('.industry-item').forEach(el => {
+      el.addEventListener('click', () => {
+        if (el.dataset.url) {
+          markAsRead(el.dataset.url);
+          window.open(el.dataset.url, '_blank', 'noopener');
+          el.classList.add('read');
+        }
+      });
+    });
+  }
 
+  function getFilteredSignals() {
+    let items = SIGNALS;
+    if (state.filter !== 'all') items = items.filter(s => s.tags.includes(state.filter));
+    if (state.showStarred) items = items.filter(s => state.starred.has(s.id));
+    if (state.sort === 'score') items = [...items].sort((a, b) => b.score - a.score || b.published.localeCompare(a.published));
+    else if (state.sort === 'date') items = [...items].sort((a, b) => b.published.localeCompare(a.published));
+    else if (state.sort === 'source') items = [...items].sort((a, b) => a.source.localeCompare(b.source));
+    return items;
+  }
 
-def safe_get_url(url, max_redirects=3):
-    """URL 검증 - HTTP 200 확인 (HEAD 우선, 실패 시 GET)."""
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT}, method="HEAD")
-        with urllib.request.urlopen(req, timeout=10) as r:
-            return 200 <= r.status < 400
-    except (urllib.error.HTTPError, urllib.error.URLError, Exception):
-        # HEAD 실패 시 GET로 재시도 (일부 서버는 HEAD 거부)
-        try:
-            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-            with urllib.request.urlopen(req, timeout=10) as r:
-                return 200 <= r.status < 400
-        except Exception:
-            return False
+  function formatDate(iso) {
+    const d = new Date(iso);
+    const today = new Date();
+    const diff = Math.floor((today - d) / 86400000);
+    if (diff === 0) return 'TODAY';
+    if (diff === 1) return 'YESTERDAY';
+    if (diff < 7) return diff + 'D AGO';
+    return iso.replace(/-/g, '·').slice(2);
+  }
 
+  function renderSignals() {
+    const list = document.getElementById('signal-list');
+    const heroBox = document.getElementById('hero-signal-container');
+    let items = getFilteredSignals();
+    document.getElementById('signal-count').textContent = `${items.length} ${items.length === 1 ? 'result' : 'results'}`;
 
-def validate_youtube(video_id):
-    """YouTube oEmbed로 영상 활성 상태 확인."""
-    if not re.fullmatch(r"[\w-]{11}", video_id or ""):
-        return False
-    try:
-        fetch(f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={video_id}&format=json", timeout=8)
-        return True
-    except Exception:
-        return False
-
-
-# ============================================================
-# 수집기
-# ============================================================
-def collect_arxiv(category="cs.AI", max_results=15):
-    """ArXiv API: 최근 논문 수집."""
-    items = []
-    try:
-        url = f"http://export.arxiv.org/api/query?search_query=cat:{category}&start=0&max_results={max_results}&sortBy=submittedDate&sortOrder=descending"
-        xml = fetch(url, timeout=20)
-        ns = {"a": "http://www.w3.org/2005/Atom"}
-        root = ET.fromstring(xml)
-        for entry in root.findall("a:entry", ns):
-            title = (entry.findtext("a:title", "", ns) or "").strip().replace("\n", " ")
-            summary = (entry.findtext("a:summary", "", ns) or "").strip().replace("\n", " ")[:280]
-            link = ""
-            for l in entry.findall("a:link", ns):
-                if l.get("type") == "text/html" or l.get("rel") == "alternate":
-                    link = l.get("href"); break
-            if not link:
-                link = (entry.findtext("a:id", "", ns) or "").strip()
-            pub = (entry.findtext("a:published", "", ns) or "")[:10]
-            authors = [a.findtext("a:name", "", ns) for a in entry.findall("a:author", ns)]
-            author_str = (authors[0] + " et al.") if len(authors) > 1 else (authors[0] if authors else "")
-            cat = categorize(title + " " + summary)
-            arxiv_id = re.search(r"abs/([\d.]+)", link)
-            arxiv_id = arxiv_id.group(1) if arxiv_id else link[-12:]
-            items.append({
-                "id": f"arxiv-{arxiv_id}",
-                "source": "arxiv",
-                "sourceLabel": "ArXiv",
-                "title": title,
-                "abstract": summary,
-                "url": link,
-                "published": pub or datetime.now(KST).strftime("%Y-%m-%d"),
-                "tags": [cat] + (["Architecture"] if "transformer" in (title+summary).lower() else []),
-                "authors": author_str or "ArXiv",
-                "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
-            })
-    except Exception as e:
-        print(f"[arxiv {category}] error: {e}", file=sys.stderr)
-    return items
-
-
-def collect_rss(url, source_label, source_key):
-    """RSS / Atom 피드 수집. 다양한 변종 대응."""
-    items = []
-    try:
-        xml = fetch(url, timeout=15)
-        # 네임스페이스 prefix 제거 (atom:, dc:, content: 등)
-        xml = re.sub(r'<(/?)\w+:', r'<\1', xml)
-        # RSS 2.0
-        if "<rss" in xml[:500] or "<channel" in xml[:1500]:
-            try:
-                root = ET.fromstring(xml)
-            except ET.ParseError:
-                # XML 파싱 실패 시 정규식 폴백
-                return _rss_regex_fallback(xml, source_label, source_key)
-            for it in root.findall(".//item")[:8]:
-                title = (it.findtext("title") or "").strip()
-                link = (it.findtext("link") or "").strip()
-                desc_raw = (it.findtext("description") or it.findtext("encoded") or "")
-                desc = re.sub(r"<[^>]+>", " ", desc_raw)
-                desc = re.sub(r"&\w+;", " ", desc)  # &nbsp; 등
-                desc = re.sub(r"\s+", " ", desc).strip()[:240]
-                pub_raw = (it.findtext("pubDate") or "")
-                try:
-                    pub = datetime.strptime(pub_raw[:25], "%a, %d %b %Y %H:%M:%S").strftime("%Y-%m-%d")
-                except Exception:
-                    pub = datetime.now(KST).strftime("%Y-%m-%d")
-                if not (title and link) or len(desc) < 20:
-                    continue
-                cat = categorize(title + " " + desc)
-                items.append({
-                    "id": make_id(source_key, link),
-                    "source": "blog", "sourceLabel": source_label,
-                    "title": title[:200], "abstract": desc,
-                    "url": link, "published": pub,
-                    "tags": [cat], "authors": source_label,
-                    "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
-                })
-        # Atom
-        else:
-            try:
-                root = ET.fromstring(xml)
-            except ET.ParseError:
-                return _rss_regex_fallback(xml, source_label, source_key)
-            # 네임스페이스 제거 후라 직접 entry 찾기
-            for entry in root.findall(".//entry")[:8]:
-                title = (entry.findtext("title") or "").strip()
-                link = ""
-                for l in entry.findall("link"):
-                    if l.get("rel") == "alternate" or not l.get("rel"):
-                        link = l.get("href", ""); break
-                if not link:
-                    link = (entry.findtext("id") or "").strip()
-                summary = (entry.findtext("summary") or entry.findtext("content") or "").strip()
-                summary = re.sub(r"<[^>]+>", " ", summary)
-                summary = re.sub(r"&\w+;", " ", summary)
-                summary = re.sub(r"\s+", " ", summary).strip()[:240]
-                pub = (entry.findtext("updated") or entry.findtext("published") or "")[:10]
-                if not (title and link) or len(summary) < 20:
-                    continue
-                cat = categorize(title + " " + summary)
-                items.append({
-                    "id": make_id(source_key, link),
-                    "source": "blog", "sourceLabel": source_label,
-                    "title": title[:200], "abstract": summary,
-                    "url": link, "published": pub or datetime.now(KST).strftime("%Y-%m-%d"),
-                    "tags": [cat], "authors": source_label,
-                    "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
-                })
-    except Exception as e:
-        print(f"[rss {source_label}] error: {e}", file=sys.stderr)
-    return items
-
-
-def _rss_regex_fallback(xml, source_label, source_key):
-    """XML 파싱 실패 시 정규식으로 최소한 추출 시도."""
-    items = []
-    try:
-        # <item>...</item> 또는 <entry>...</entry>
-        blocks = re.findall(r"<(?:item|entry)[^>]*>(.*?)</(?:item|entry)>", xml, re.DOTALL)
-        for block in blocks[:6]:
-            title_m = re.search(r"<title[^>]*>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", block, re.DOTALL)
-            link_m = re.search(r"<link[^>]*>(?:<!\[CDATA\[)?(https?://[^<\]]+)", block)
-            desc_m = re.search(r"<description[^>]*>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</description>", block, re.DOTALL)
-            if not title_m or not link_m:
-                continue
-            title = re.sub(r"<[^>]+>", "", title_m.group(1)).strip()[:200]
-            link = link_m.group(1).strip()
-            desc = re.sub(r"<[^>]+>", " ", desc_m.group(1) if desc_m else "")
-            desc = re.sub(r"\s+", " ", desc).strip()[:240]
-            if len(desc) < 20:
-                continue
-            cat = categorize(title + " " + desc)
-            items.append({
-                "id": make_id(source_key, link),
-                "source": "blog", "sourceLabel": source_label,
-                "title": title, "abstract": desc,
-                "url": link, "published": datetime.now(KST).strftime("%Y-%m-%d"),
-                "tags": [cat], "authors": source_label,
-                "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
-            })
-    except Exception as e:
-        print(f"[rss fallback {source_label}] error: {e}", file=sys.stderr)
-    return items
-
-
-def collect_github_trending():
-    """GitHub Trending — HTML 스크래핑 (공식 API에 trending이 없음)."""
-    items = []
-    try:
-        html = fetch("https://github.com/trending/python?since=weekly", timeout=15)
-        # article 블록 추출
-        articles = re.findall(r'<article class="Box-row">(.*?)</article>', html, re.DOTALL)
-        for art in articles[:10]:
-            m = re.search(r'<h2[^>]*>\s*<a href="(/[^"]+)"', art)
-            if not m: continue
-            repo_path = m.group(1).strip()
-            repo_name = repo_path.lstrip("/").replace("/", " / ")
-            # 설명
-            desc_m = re.search(r'<p class="col-9 color-fg-muted my-1 pr-4">(.*?)</p>', art, re.DOTALL)
-            desc = re.sub(r"<[^>]+>", " ", desc_m.group(1)).strip() if desc_m else ""
-            desc = re.sub(r"\s+", " ", desc)[:220]
-            # 별 개수
-            stars_m = re.search(r'<svg[^>]+octicon-star[^>]+>.*?</svg>\s*([\d,]+)', art, re.DOTALL)
-            stars = stars_m.group(1).strip() if stars_m else ""
-            # AI/ML 관련성 필터
-            if not any(k in (repo_name + " " + desc).lower() for k in
-                       ["ai", "ml", "llm", "agent", "model", "neural", "deep", "gpt", "transformer", "diffusion", "rag", "vector"]):
-                continue
-            cat = categorize(repo_name + " " + desc)
-            items.append({
-                "id": make_id("gh", repo_path),
-                "source": "github", "sourceLabel": "GitHub",
-                "title": repo_name + (" — " + desc.split(".")[0] if desc else ""),
-                "abstract": desc or "Trending Python repository this week.",
-                "url": "https://github.com" + repo_path,
-                "published": datetime.now(KST).strftime("%Y-%m-%d"),
-                "tags": [cat, "Tool"],
-                "authors": f"{stars} ★" if stars else "GitHub Trending",
-                "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
-            })
-    except Exception as e:
-        print(f"[github trending] error: {e}", file=sys.stderr)
-    return items
-
-
-def collect_hackernews_ai():
-    """Hacker News에서 AI 키워드 포함된 인기 글 수집."""
-    items = []
-    try:
-        # HN Algolia API: front_page 글 중 AI 관련
-        url = "https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=30"
-        data = json.loads(fetch(url, timeout=15))
-        ai_keywords = ["ai", "llm", "gpt", "claude", "gemini", "openai", "anthropic",
-                       "machine learning", "neural", "diffusion", "transformer",
-                       "deepseek", "model", "agent", "rag", "embedding"]
-        for hit in data.get("hits", []):
-            title = (hit.get("title") or "").strip()
-            url_link = (hit.get("url") or hit.get("story_url") or "").strip()
-            if not (title and url_link):
-                continue
-            if not any(k in title.lower() for k in ai_keywords):
-                continue
-            # 최소 score (HN points)
-            points = hit.get("points", 0) or 0
-            if points < 30:  # 30점 미만은 노이즈
-                continue
-            cat = categorize(title)
-            items.append({
-                "id": make_id("hn", url_link),
-                "source": "news",
-                "sourceLabel": "Hacker News",
-                "title": title,
-                "abstract": f"Hacker News 인기글. {points}점 · {hit.get('num_comments', 0) or 0}개 댓글.",
-                "url": url_link,
-                "published": (hit.get("created_at") or "")[:10] or datetime.now(KST).strftime("%Y-%m-%d"),
-                "tags": [cat, "Industry"],
-                "authors": f"{points} pts",
-                "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
-            })
-            if len(items) >= 8:
-                break
-    except Exception as e:
-        print(f"[hackernews] error: {e}", file=sys.stderr)
-    return items
-
-
-def collect_hf_daily_papers():
-    """HuggingFace Daily Papers — 매일 큐레이션되는 핫한 논문."""
-    items = []
-    try:
-        html = fetch("https://huggingface.co/papers", timeout=15)
-        # 페이퍼 카드 추출 (a href="/papers/2401.xxxxx")
-        paper_links = list(set(re.findall(r'href="(/papers/\d{4}\.\d{4,5})"', html)))[:8]
-        for link in paper_links:
-            paper_url = "https://huggingface.co" + link
-            arxiv_id = link.split("/")[-1]
-            arxiv_url = f"https://arxiv.org/abs/{arxiv_id}"
-            try:
-                # 페이퍼 페이지에서 제목 추출
-                paper_html = fetch(paper_url, timeout=10)
-                title_m = re.search(r'<title>([^<|]+)', paper_html)
-                title = title_m.group(1).strip() if title_m else f"Paper {arxiv_id}"
-                title = re.sub(r"\s+", " ", title)[:200]
-                # 간단한 description (HF는 abstract를 JS로 그려서 정규식 추출 어려움)
-                desc = "HuggingFace Daily Papers에 큐레이션된 주목받는 논문."
-            except Exception:
-                title = f"HuggingFace Daily Paper · {arxiv_id}"
-                desc = "이번 주 주목받은 논문 중 하나."
-            cat = categorize(title)
-            items.append({
-                "id": f"arxiv-{arxiv_id}",
-                "source": "arxiv",
-                "sourceLabel": "HF Daily",
-                "title": title,
-                "abstract": desc,
-                "url": arxiv_url,
-                "published": datetime.now(KST).strftime("%Y-%m-%d"),
-                "tags": [cat],
-                "authors": "Daily Papers",
-                "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
-            })
-    except Exception as e:
-        print(f"[hf-daily] error: {e}", file=sys.stderr)
-    return items
-
-
-# ============================================================
-# 메인
-# ============================================================
-def get_issue_meta():
-    now = datetime.now(KST)
-    if now.hour < 6:
-        now -= timedelta(days=1)
-    monday = now - timedelta(days=now.weekday())
-    iso_year, iso_week, _ = monday.isocalendar()
-    return {
-        "issue_year": iso_year,
-        "issue_week": iso_week,
-        "monday": monday.strftime("%Y-%m-%d"),
-        "next_monday": (monday + timedelta(days=7)).strftime("%Y-%m-%d"),
-        "generated_at": datetime.now(KST).isoformat()
+    // TODAY'S TOP STORY 분리: 필터/정렬이 기본 상태일 때만 score 5 첫 항목을 hero로
+    let hero = null;
+    if (state.filter === 'all' && !state.showStarred && state.sort === 'score') {
+      hero = items.find(s => s.score === 5) || null;
+      if (hero) items = items.filter(s => s.id !== hero.id);
     }
 
-
-def main():
-    print("=" * 60)
-    print("Vela Weekly Collector · Starting")
-    print("=" * 60)
-
-    meta = get_issue_meta()
-    print(f"Issue: {meta['issue_year']}-W{meta['issue_week']} (Monday {meta['monday']})")
-
-    # ============================================================
-    # 1. 수집 — 25+ 소스 (학술 / 기업 / 산업뉴스 / 커뮤니티)
-    # ============================================================
-    pool = []
-    print("\n[1/6] Collecting from 25+ sources...")
-
-    # --- 학술 (ArXiv) ---
-    print("  ▸ Academic")
-    pool += collect_arxiv("cs.AI", 15)
-    pool += collect_arxiv("cs.LG", 10)
-    pool += collect_arxiv("cs.CL", 10)
-    pool += collect_arxiv("cs.CV", 8)   # Vision 추가
-    pool += collect_arxiv("cs.RO", 5)   # Robotics 추가
-    print(f"    ArXiv (5 cats): {len(pool)} items")
-
-    # --- AI 기업·연구소 블로그 (15개) ---
-    print("  ▸ Company/Lab Blogs")
-    BLOG_SOURCES = [
-        ("https://www.anthropic.com/rss.xml",       "Anthropic",       "anth"),
-        ("https://openai.com/news/rss.xml",          "OpenAI",          "oai"),
-        ("https://research.google/blog/rss/",        "Google Research", "goog"),
-        ("https://blog.google/technology/ai/rss/",   "Google AI",       "googai"),
-        ("https://huggingface.co/blog/feed.xml",     "HuggingFace",     "hf"),
-        ("https://ai.meta.com/blog/rss/",            "Meta AI",         "meta"),
-        ("https://machinelearning.apple.com/rss.xml","Apple ML",        "apple"),
-        ("https://blogs.nvidia.com/feed/",           "NVIDIA",          "nvid"),
-        ("https://www.microsoft.com/en-us/research/feed/",  "Microsoft Research", "msr"),
-        ("https://mistral.ai/news/rss.xml",          "Mistral AI",      "mistral"),
-        ("https://deepmind.google/blog/rss.xml",     "DeepMind",        "dm"),
-        ("https://stability.ai/news?format=rss",     "Stability AI",    "stab"),
-        ("https://www.together.ai/blog?format=rss",  "Together AI",     "tog"),
-        ("https://cohere.com/blog/rss.xml",          "Cohere",          "coh"),
-        ("https://lmsys.org/rss.xml",                "LMSYS",           "lmsys"),
-    ]
-    blog_count = 0
-    for url, label, key in BLOG_SOURCES:
-        before = len(pool)
-        pool += collect_rss(url, label, key)
-        added = len(pool) - before
-        if added > 0:
-            blog_count += added
-    print(f"    Blogs: {blog_count} items")
-
-    # --- 산업·뉴스 미디어 ---
-    print("  ▸ Tech News")
-    NEWS_SOURCES = [
-        ("https://techcrunch.com/category/artificial-intelligence/feed/", "TechCrunch",   "tc"),
-        ("https://www.theverge.com/ai-artificial-intelligence/rss/index.xml", "The Verge", "verge"),
-        ("https://venturebeat.com/category/ai/feed/", "VentureBeat",       "vb"),
-        ("https://feeds.arstechnica.com/arstechnica/technology-lab",  "Ars Technica", "ars"),
-        ("https://www.wired.com/feed/tag/ai/latest/rss",  "Wired AI",      "wired"),
-    ]
-    news_count = 0
-    for url, label, key in NEWS_SOURCES:
-        before = len(pool)
-        items = collect_rss(url, label, key)
-        # 뉴스 미디어는 AI 관련만 필터 (제목+description에 AI 키워드)
-        items = [
-            it for it in items
-            if any(k in (it.get("title", "") + " " + it.get("abstract", "")).lower()
-                   for k in ["ai", "artificial intelligence", "llm", "machine learning",
-                             "neural", "gpt", "claude", "gemini", "openai", "anthropic",
-                             "deepseek", "model", "agent"])
-        ]
-        for it in items:
-            it["sourceLabel"] = label
-            it["source"] = "news"
-            it["tags"] = it.get("tags", []) + ["Industry"]
-        pool += items
-        news_count += len(items)
-    print(f"    News (AI-filtered): {news_count} items")
-
-    # --- 커뮤니티 / 큐레이션 ---
-    print("  ▸ Community")
-    pool += collect_hackernews_ai();         print(f"    HN AI: total {len(pool)}")
-    pool += collect_hf_daily_papers();       print(f"    HF Daily Papers: total {len(pool)}")
-    pool += collect_github_trending();       print(f"    GH Trending: total {len(pool)}")
-
-    print(f"\n  Total raw: {len(pool)}")
-
-    # ============================================================
-    # 2. 정리 — URL dedup + 제목 유사도 dedup + 점수
-    # ============================================================
-    print("\n[2/6] Scoring & dedup (URL + title similarity)...")
-    seen_urls = set()
-    seen_title_tokens = []  # (set of normalized tokens)
-    scored = []
-
-    def title_tokens(title):
-        """제목에서 불용어 제거 후 토큰 셋 반환 (유사도 비교용)."""
-        title = re.sub(r"[^a-zA-Z0-9가-힣\s]", " ", title.lower())
-        stop = {"the", "a", "an", "of", "for", "in", "on", "to", "with", "and", "or",
-                "is", "are", "was", "were", "be", "by", "as", "at", "from", "this",
-                "that", "we", "our", "new", "ai", "model", "models"}
-        return {w for w in title.split() if len(w) > 2 and w not in stop}
-
-    def jaccard(a, b):
-        if not a or not b: return 0.0
-        return len(a & b) / len(a | b)
-
-    for item in pool:
-        url = (item.get("url") or "").strip()
-        title = (item.get("title") or "").strip()
-        abstract = (item.get("abstract") or "").strip()
-
-        # 빈 항목 / 너무 짧은 abstract 완화 (20자 → 15자)
-        if not url or not title:
-            continue
-        if len(abstract) < 15:
-            continue
-
-        # URL 중복
-        url_norm = url.split("?")[0].rstrip("/")
-        if url_norm in seen_urls:
-            continue
-
-        # 제목 유사도 0.75 이상이면 중복 처리 (이전 0.6 → 0.75 완화)
-        # 0.6은 너무 엄격해서 비슷한 주제 논문이 잘림
-        toks = title_tokens(title)
-        is_dup = False
-        for prev in seen_title_tokens:
-            if jaccard(toks, prev) >= 0.75:
-                is_dup = True; break
-        if is_dup:
-            continue
-
-        seen_urls.add(url_norm)
-        if len(toks) >= 2:
-            seen_title_tokens.append(toks)
-
-        item["score"] = estimate_score(item)
-        scored.append(item)
-
-    scored.sort(key=lambda x: (-x.get("score", 0), x.get("published", "")), reverse=False)
-    scored.sort(key=lambda x: -x.get("score", 0))
-    print(f"  After dedup: {len(scored)} unique items")
-
-    # ============================================================
-    # 3. 학술 vs 산업 분리
-    # ============================================================
-    academic = [s for s in scored if s.get("source") in ("arxiv", "blog", "github", "huggingface")]
-    industry = [s for s in scored if s.get("source") == "news"]
-    print(f"  Academic pool: {len(academic)}, Industry pool: {len(industry)}")
-
-    # 4. 검증 — URL 살아있는지 (학술 30개 + 산업 15개까지 시도, 검증 실패해도 보존)
-    print("\n[3/6] Validating URLs...")
-    validated_academic = []
-    failed_count = 0
-    for item in academic[:60]:  # 더 많이 시도
-        if safe_get_url(item["url"]):
-            validated_academic.append(item)
-        else:
-            failed_count += 1
-            # ArXiv 항목은 검증 실패해도 보존 (가끔 ArXiv 일시 차단됨)
-            if item.get("source") == "arxiv":
-                validated_academic.append(item)
-        if len(validated_academic) >= 30:
-            break
-    print(f"  Academic validated: {len(validated_academic)} (skipped {failed_count} dead URLs)")
-
-    validated_industry = []
-    for item in industry[:30]:
-        if safe_get_url(item["url"]):
-            validated_industry.append(item)
-        if len(validated_industry) >= 15:
-            break
-    print(f"  Industry validated: {len(validated_industry)}")
-
-    # 영상 검증
-    print("  Validating YouTube videos...")
-    valid_videos = []
-    for v in CURATED_VIDEOS:
-        if validate_youtube(v["videoId"]):
-            valid_videos.append({
-                **v, "source": "YouTube",
-                "thumb": f"https://i.ytimg.com/vi/{v['videoId']}/hqdefault.jpg"
-            })
-        else:
-            print(f"  ✗ Dead video skipped: {v['videoId']} ({v['title']})", file=sys.stderr)
-    print(f"  Videos validated: {len(valid_videos)}")
-
-    # 최소 콘텐츠 체크 (전체 기준 완화: academic OR industry 한쪽이라도 충분하면 OK)
-    if len(validated_academic) < 5 or len(valid_videos) < 3:
-        print("\n⚠️  Insufficient validated content. Aborting build.", file=sys.stderr)
-        sys.exit(1)
-
-    # ============================================================
-    # 5. 한국어 번역 (Groq) — 학술 + 산업 모두
-    # ============================================================
-    print("\n[4/6] Translating to Korean (Groq AI)...")
-    groq_key = os.environ.get("GROQ_API_KEY", "").strip()
-    if groq_key:
-        # 합쳐서 번역 후 다시 분리 (호출 효율)
-        merged = validated_academic + validated_industry
-        merged = groq_translate(merged, groq_key)
-        # 분리 복구
-        ac_n = len(validated_academic)
-        validated_academic = merged[:ac_n]
-        validated_industry = merged[ac_n:]
-    else:
-        print("  ⚠️ GROQ_API_KEY env var not set — content remains in English")
-
-    # 6. 빌드
-    print("\n[5/6] Building issue JSON...")
-    # Cover: 영상 우선
-    cover_video = valid_videos[0]
-    cover = {
-        "label": f"Cover Story · Week {meta['issue_week']}",
-        "headline": cover_video["title"].replace("—", "·"),
-        "deck": f"이번 주 Vela가 추천하는 깊이 있는 강의. {cover_video['byline']}의 시그니처.",
-        "byline": [f"By {cover_video['byline'].upper()}", cover_video["duration"], "Curated"],
-        "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1600&q=80",
-        "videoId": cover_video["videoId"],
-        "credit": "Click image to play"
+    if (hero) {
+      const heroRead = isRead(hero.url) ? 'read' : '';
+      heroBox.innerHTML = `
+        <article class="hero-signal ${heroRead}" data-url="${hero.url}">
+          <div class="hero-signal-badge">★ TODAY'S TOP STORY</div>
+          <div class="hero-signal-meta">
+            <span class="source-tag">${hero.sourceLabel}</span>
+            <span class="divider">·</span>
+            <span>${formatDate(hero.published)}</span>
+            <span class="divider">·</span>
+            <span>${hero.authors}</span>
+            <span class="divider">·</span>
+            <span style="color:var(--accent-warm);">SCORE ${hero.score}</span>
+          </div>
+          <h3 class="hero-signal-title">${hero.title}</h3>
+          <p class="hero-signal-deck">${hero.abstract}</p>
+          <div class="hero-signal-tags">
+            ${hero.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+          </div>
+          <div class="hero-signal-action">
+            <span>Read on ${hero.sourceLabel}</span>
+            <span class="arrow">→</span>
+          </div>
+        </article>`;
+      heroBox.style.display = 'block';
+      heroBox.querySelector('.hero-signal').addEventListener('click', () => {
+        markAsRead(hero.url);
+        window.open(hero.url, '_blank', 'noopener');
+        renderSignals();
+      });
+    } else {
+      heroBox.innerHTML = '';
+      heroBox.style.display = 'none';
     }
 
-    # This Month: score 3+ 6개 (4+에서 완화 — 카드가 1~2개만 나오는 문제 해결)
-    top_items = [s for s in validated_academic if s.get("score", 0) >= 3][:6]
-    # 그래도 부족하면 점수 무관하게 상위 6개 채우기
-    if len(top_items) < 6:
-        seen_urls = {x.get("url") for x in top_items}
-        for s in validated_academic:
-            if s.get("url") not in seen_urls:
-                top_items.append(s)
-            if len(top_items) >= 6:
-                break
-    this_month = []
-    for s in top_items:
-        d = s.get("published", meta["monday"])
-        try:
-            date_label = datetime.strptime(d, "%Y-%m-%d").strftime("%b %d").upper()
-        except Exception:
-            date_label = "THIS WEEK"
-        this_month.append({
-            "date": date_label,
-            "category": (s.get("tags") or ["Update"])[0],
-            "title": s.get("title", "")[:80],
-            "deck": s.get("abstract", "")[:140],
-            "image": s.get("thumb", IMG_DEFAULT),
-            "url": s.get("url", "")
-        })
+    if (items.length === 0) {
+      list.innerHTML = `<div style="padding:60px 0;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:12px;">// NO SIGNALS</div>`;
+      return;
+    }
+    list.innerHTML = items.map((s, i) => {
+      const starred = state.starred.has(s.id);
+      const readCls = isRead(s.url) ? 'read' : '';
+      return `
+        <article class="signal-row ${readCls}" data-id="${s.id}">
+          <div class="signal-num">${String(i + 1).padStart(2, '0')}</div>
+          <div class="signal-thumb" style="background-image:url('${s.thumb}')"></div>
+          <div class="signal-content">
+            <div class="signal-meta">
+              <span class="source-tag">${s.sourceLabel}</span>
+              <span class="divider">·</span>
+              <span>${formatDate(s.published)}</span>
+              <span class="divider">·</span>
+              <span>${s.authors}</span>
+              <span class="divider">·</span>
+              <span>SCORE ${s.score}</span>
+            </div>
+            <h3 class="signal-title">${s.title}</h3>
+            <p class="signal-deck">${s.abstract}</p>
+          </div>
+          <div class="signal-actions">
+            <button class="star-btn ${starred ? 'starred' : ''}" data-star="${s.id}">${starred ? '★' : '☆'} STAR</button>
+          </div>
+        </article>`;
+    }).join('');
+    list.querySelectorAll('[data-star]').forEach(btn => {
+      btn.addEventListener('click', e => { e.stopPropagation(); toggleStar(btn.dataset.star); });
+    });
+    list.querySelectorAll('.signal-row').forEach(row => {
+      const item = SIGNALS.find(s => s.id === row.dataset.id);
+      row.addEventListener('click', () => {
+        if (item) {
+          markAsRead(item.url);
+          window.open(item.url, '_blank', 'noopener');
+          row.classList.add('read');
+        }
+      });
+    });
+  }
 
-    # Featured: 학술 5개 (This Month와 다른 항목 우선)
-    used_urls = {x.get("url") for x in this_month}
-    featured_items = [s for s in validated_academic if s.get("url") not in used_urls][:5]
-    # 부족하면 중복 허용해서라도 5개 채움
-    if len(featured_items) < 5:
-        for s in validated_academic:
-            if s not in featured_items:
-                featured_items.append(s)
-            if len(featured_items) >= 5:
-                break
-    featured = []
-    for s in featured_items:
-        featured.append({
-            "label": (s.get("tags") or ["Highlight"])[0],
-            "title": s.get("title", "")[:80],
-            "deck": s.get("abstract", "")[:140],
-            "byline": f"{s.get('sourceLabel', 'Vela').upper()} · {s.get('authors', '')[:30]}",
-            "image": s.get("thumb", IMG_DEFAULT),
-            "url": s.get("url", "")
-        })
+  function toggleStar(id) {
+    if (state.starred.has(id)) state.starred.delete(id); else state.starred.add(id);
+    localStorage.setItem('vela.starred', JSON.stringify([...state.starred]));
+    renderSignals();
+  }
 
-    # Industry: 산업 뉴스 8개
-    industry_items = validated_industry[:8]
-    industry_section = []
-    for s in industry_items:
-        d = s.get("published", meta["monday"])
-        try:
-            date_label = datetime.strptime(d, "%Y-%m-%d").strftime("%b %d").upper()
-        except Exception:
-            date_label = "THIS WEEK"
-        industry_section.append({
-            "date": date_label,
-            "source": s.get("sourceLabel", "Industry"),
-            "title": s.get("title", "")[:100],
-            "deck": s.get("abstract", "")[:160],
-            "url": s.get("url", "")
-        })
+  // NAV · 메뉴 클릭 시 해당 페이지 섹션으로 스크롤
+  const SECTION_MAP = {
+    home: null,
+    month: 'month-section',
+    featured: 'featured-section',
+    watch: 'watch-section',
+    industry: 'industry-section',
+    signals: 'signals-section',
+    brand: 'brand-section',
+    archive: 'archive-section'
+  };
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const sectionId = SECTION_MAP[btn.dataset.section];
+      if (!sectionId) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const target = document.getElementById(sectionId);
+        if (target) {
+          const top = target.getBoundingClientRect().top + window.scrollY - 100;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      }
+    });
+  });
 
-    issue = {
-        "version": "v0.19.0",
-        "meta": meta,
-        "cover": cover,
-        "thisMonth": this_month,
-        "featured": featured,
-        "videos": valid_videos[:4],
-        "industry": industry_section,
-        "signals": validated_academic[:20]
+  // CATEGORY · Signals 섹션 안 카테고리 chip
+  document.querySelectorAll('[data-cat]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-cat]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.filter = btn.dataset.cat;
+      renderSignals();
+    });
+  });
+  document.querySelectorAll('[data-sort]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-sort]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.sort = btn.dataset.sort;
+      renderSignals();
+    });
+  });
+  document.querySelectorAll('[data-view]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('active');
+      state.showStarred = btn.classList.contains('active');
+      renderSignals();
+    });
+  });
+
+  // PWA INSTALL · Service Worker 등록 (데스크톱 PWA 설치 필수)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./vela-sw.js').catch(err => {
+        console.log('[Vela] SW 등록 실패 (vela-sw.js 파일 미업로드 시 무시 가능):', err);
+      });
+    });
+  }
+
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+  const installBtn = document.getElementById('install-btn');
+  const installModal = document.getElementById('install-modal');
+  const modalCloseBtn = document.getElementById('modal-close-btn');
+  installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      if (outcome === 'accepted') return;
+    }
+    const ua = navigator.userAgent;
+    let defaultTab = 'desktop';
+    if (/iPhone|iPad|iPod/.test(ua)) defaultTab = 'ios';
+    else if (/Android/.test(ua)) defaultTab = 'android';
+    document.querySelectorAll('.install-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.os === defaultTab);
+    });
+    document.querySelectorAll('.install-content').forEach(c => {
+      c.classList.toggle('active', c.dataset.content === defaultTab);
+    });
+    installModal.classList.add('active');
+  });
+  modalCloseBtn.addEventListener('click', () => installModal.classList.remove('active'));
+  installModal.addEventListener('click', () => installModal.classList.remove('active'));
+  document.querySelectorAll('.install-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.install-content').forEach(c => c.classList.remove('active'));
+      document.querySelector(`.install-content[data-content="${tab.dataset.os}"]`).classList.add('active');
+    });
+  });
+  window.addEventListener('appinstalled', () => { installBtn.style.display = 'none'; });
+
+  // Connect 섹션의 "Install" 버튼 → install 플로우 트리거
+  const connectInstall = document.getElementById('connect-install');
+  if (connectInstall) {
+    connectInstall.addEventListener('click', () => installBtn.click());
+  }
+
+  // ============================================================
+  // VIDEO MODAL · 커버 + Watch 카드 클릭 시 lightbox 영상 재생
+  // ============================================================
+  const videoModal = document.getElementById('video-modal');
+  const videoIframe = document.getElementById('video-iframe');
+  const videoModalClose = document.getElementById('video-modal-close');
+
+  function openVideoModal(videoId) {
+    videoIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+    videoModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeVideoModal() {
+    videoIframe.src = ''; // 재생 정지
+    videoModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  videoModal.addEventListener('click', closeVideoModal);
+  videoModalClose.addEventListener('click', closeVideoModal);
+
+  // 커버 이미지 클릭 → 비디오 재생
+  document.getElementById('cover-image').addEventListener('click', () => {
+    if (COVER.videoId) openVideoModal(COVER.videoId);
+  });
+
+  // ============================================================
+  // SCROLL TO TOP · 우측 하단 floating 버튼
+  // ============================================================
+  const scrollTopBtn = document.getElementById('scroll-top');
+  let scrollTicking = false;
+  window.addEventListener('scroll', () => {
+    if (!scrollTicking) {
+      requestAnimationFrame(() => {
+        scrollTopBtn.classList.toggle('visible', window.scrollY > 600);
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
+  });
+  scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ESC 키로 video / install 모달 닫기 (search 모달은 자체 핸들러)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (videoModal.classList.contains('active')) closeVideoModal();
+      if (installModal.classList.contains('active')) installModal.classList.remove('active');
+    }
+  });
+
+  // ============================================================
+  // 추가 기능 (v0.17.0)
+  // ============================================================
+
+  // [기능 2] 다크/라이트 테마 토글
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('vela.theme', theme);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', theme === 'light' ? '#f5f0e6' : '#0a0a0a');
+  }
+  const savedTheme = localStorage.getItem('vela.theme') || 'dark';
+  applyTheme(savedTheme);
+  document.getElementById('theme-btn').addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  });
+
+  // [기능 3] 읽기 진행률 바
+  const progressFill = document.getElementById('read-progress-fill');
+  let scrollProgressTicking = false;
+  window.addEventListener('scroll', () => {
+    if (!scrollProgressTicking) {
+      requestAnimationFrame(() => {
+        const h = document.documentElement;
+        const max = h.scrollHeight - h.clientHeight;
+        const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+        progressFill.style.width = pct + '%';
+        scrollProgressTicking = false;
+      });
+      scrollProgressTicking = true;
+    }
+  }, { passive: true });
+
+  // [기능 1] 검색 기능
+  const searchModal = document.getElementById('search-modal');
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  const searchBtn = document.getElementById('search-btn');
+
+  function openSearch() {
+    searchModal.classList.add('active');
+    setTimeout(() => searchInput.focus(), 50);
+    if (!searchInput.value) doSearch('');
+  }
+  function closeSearch() {
+    searchModal.classList.remove('active');
+    searchInput.value = '';
+  }
+  searchBtn.addEventListener('click', openSearch);
+  searchModal.addEventListener('click', closeSearch);
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function doSearch(query) {
+    const q = (query || '').toLowerCase().trim();
+    if (!q) {
+      searchResults.innerHTML = '<div class="search-empty">// 검색어를 입력하세요</div>';
+      return;
+    }
+    const all = [];
+    if (COVER) all.push({ section: 'COVER', title: COVER.headline.replace(/<[^>]+>/g, ''), meta: COVER.deck, videoId: COVER.videoId });
+    THIS_MONTH.forEach(m => all.push({ section: 'MONTH', title: m.title, meta: m.deck + ' · ' + m.category, url: m.url }));
+    FEATURED.forEach(f => all.push({ section: 'FEATURED', title: f.title, meta: f.deck + ' · ' + f.label, url: f.url }));
+    VIDEOS.forEach(v => all.push({ section: 'WATCH', title: v.title, meta: v.byline + ' · ' + v.duration, videoId: v.videoId }));
+    INDUSTRY.forEach(i => all.push({ section: 'INDUSTRY', title: i.title, meta: i.deck + ' · ' + i.source, url: i.url }));
+    SIGNALS.forEach(s => all.push({ section: 'SIGNAL', title: s.title, meta: s.abstract + ' · ' + (s.tags || []).join(' '), url: s.url }));
+
+    const matches = all.filter(item => (item.title + ' ' + item.meta).toLowerCase().includes(q));
+    if (matches.length === 0) {
+      searchResults.innerHTML = '<div class="search-empty">// 결과 없음 — 다른 키워드로 시도해 보세요</div>';
+      return;
+    }
+    searchResults.innerHTML = matches.slice(0, 30).map((m, i) => `
+      <div class="search-result" data-idx="${i}">
+        <span class="search-result-section">${m.section}</span>
+        <div>
+          <div class="search-result-title">${escapeHtml(m.title)}</div>
+          <div class="search-result-meta">${escapeHtml(m.meta).slice(0, 110)}${m.meta.length > 110 ? '…' : ''}</div>
+        </div>
+        <span class="search-result-meta">↗</span>
+      </div>
+    `).join('');
+    searchResults.querySelectorAll('.search-result').forEach((el, i) => {
+      el.addEventListener('click', () => {
+        const m = matches[i];
+        if (m.videoId) { closeSearch(); openVideoModal(m.videoId); }
+        else if (m.url) { markAsRead(m.url); window.open(m.url, '_blank', 'noopener'); }
+      });
+    });
+  }
+
+  let searchDebounce;
+  searchInput.addEventListener('input', e => {
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(() => doSearch(e.target.value), 120);
+  });
+
+  // 키보드: Ctrl+K / Cmd+K = 검색 열기 (ESC는 위 핸들러에서 처리)
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      openSearch();
+    } else if (e.key === 'Escape' && searchModal.classList.contains('active')) {
+      closeSearch();
+    }
+  });
+
+  // [기능 5] 과거 이슈 아카이브 — vela-archive.json 로드
+  async function loadArchive() {
+    const list = document.getElementById('archive-list');
+    try {
+      const res = await fetch('./vela-archive.json?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const issues = (data.issues || []).filter(i => i.file !== 'vela-issue.json');
+      document.getElementById('archive-meta').textContent = `${issues.length} ${issues.length === 1 ? 'issue' : 'issues'} archived`;
+      if (issues.length === 0) {
+        list.innerHTML = '<div style="padding:40px 0;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:11px;letter-spacing:0.1em;">// 아직 보관된 과거 이슈가 없습니다 — 매주 월요일 자동으로 추가됩니다</div>';
+        return;
+      }
+      list.innerHTML = issues.map(it => `
+        <article class="archive-item" data-week="${it.year}-W${String(it.week).padStart(2,'0')}">
+          <div class="archive-week">${it.year}-W${String(it.week).padStart(2,'0')}</div>
+          <div>
+            <div class="archive-headline">${escapeHtml(it.headline || '(No headline)')}</div>
+            <div class="archive-meta-text">Week of ${it.monday || '—'}${it.signal_count ? ' · ' + it.signal_count + ' signals' : ''}</div>
+          </div>
+          <div class="archive-meta-text">↗ View</div>
+        </article>
+      `).join('');
+      list.querySelectorAll('.archive-item').forEach(el => {
+        el.addEventListener('click', () => {
+          // 같은 페이지에서 ?issue=YYYY-WXX 파라미터로 과거 이슈 매거진 보기
+          window.location.href = `./vela-prototype.html?issue=${el.dataset.week}`;
+        });
+      });
+    } catch (e) {
+      console.log('[Vela] Archive not yet available:', e.message);
+      document.getElementById('archive-meta').textContent = '0 issues archived';
+      list.innerHTML = '<div style="padding:40px 0;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:11px;letter-spacing:0.1em;">// 아카이브 시스템 활성 대기 중 — 다음 월요일부터 누적됩니다</div>';
+    }
+  }
+
+  async function init() {
+    // 1) JSON 발행본 로드 (실패 시 에러 표시)
+    const ok = await loadIssue();
+    if (!ok || !COVER) {
+      document.getElementById('signal-list').innerHTML =
+        '<div style="padding:60px 0;text-align:center;color:var(--hot);font-family:var(--mono);font-size:12px;">// ISSUE LOAD FAILED — vela-issue.json 파일을 확인하세요</div>';
+      return;
     }
 
-    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
-        json.dump(issue, f, ensure_ascii=False, indent=2)
-
-    print(f"\n✓ Issue built: {OUTPUT_PATH}")
-    print(f"  Cover: {cover['headline'][:60]}")
-    print(f"  This Month: {len(this_month)} items")
-    print(f"  Featured: {len(featured)} items")
-    print(f"  Videos: {len(valid_videos[:4])} items")
-    print(f"  Industry: {len(industry_section)} items")
-    print(f"  Signals: {len(validated_academic[:20])} items")
-
-    # 6. 과거 이슈 아카이브 — 이번 주 스냅샷 별도 파일로 저장
-    print("\n[6/6] Archiving snapshot + generating RSS...")
-    archive_filename = f"vela-issue-{meta['issue_year']}-W{meta['issue_week']:02d}.json"
-    with open(archive_filename, "w", encoding="utf-8") as f:
-        json.dump(issue, f, ensure_ascii=False, indent=2)
-    print(f"  ✓ Snapshot: {archive_filename}")
-    update_archive_index(issue, archive_filename)
-
-    # 7. RSS 피드 생성
-    write_rss(issue)
-    print(f"  ✓ RSS: {RSS_PATH}")
-
-    print("=" * 60)
-
-
-def update_archive_index(issue, snapshot_filename):
-    """vela-archive.json 인덱스 파일 갱신 — 모든 과거 이슈의 메타데이터 누적."""
-    import os
-    meta = issue["meta"]
-    cover = issue["cover"]
-    headline_plain = re.sub(r"<[^>]+>", "", cover.get("headline", "")).strip()
-
-    new_entry = {
-        "file": snapshot_filename,
-        "year": meta["issue_year"],
-        "week": meta["issue_week"],
-        "monday": meta["monday"],
-        "headline": headline_plain[:120],
-        "signal_count": len(issue.get("signals", []))
+    // 2) 마스트헤드: ISSUE_META 우선, 없으면 클라이언트 계산
+    let mondayLabel, nextLabel, mondayYear;
+    if (ISSUE_META && ISSUE_META.monday && ISSUE_META.next_monday) {
+      const m = new Date(ISSUE_META.monday + 'T00:00:00Z');
+      const n = new Date(ISSUE_META.next_monday + 'T00:00:00Z');
+      const fmt = d => `${d.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }).toUpperCase()} ${String(d.getUTCDate()).padStart(2,'0')}`;
+      mondayLabel = fmt(m);
+      nextLabel = fmt(n);
+      mondayYear = m.getUTCFullYear();
+    } else {
+      const now = new Date();
+      const kst = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (9 * 3600000));
+      const eff = new Date(kst);
+      if (eff.getUTCHours() < 6) eff.setUTCDate(eff.getUTCDate() - 1);
+      const dow = eff.getUTCDay();
+      const offset = (dow === 0 ? 6 : dow - 1);
+      const monday = new Date(eff);
+      monday.setUTCDate(eff.getUTCDate() - offset);
+      const nextMonday = new Date(monday);
+      nextMonday.setUTCDate(monday.getUTCDate() + 7);
+      const fmt = d => `${d.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }).toUpperCase()} ${String(d.getUTCDate()).padStart(2,'0')}`;
+      mondayLabel = fmt(monday);
+      nextLabel = fmt(nextMonday);
+      mondayYear = monday.getUTCFullYear();
     }
 
-    # 기존 인덱스 읽기
-    archive = {"version": "1.0", "issues": []}
-    if os.path.exists(ARCHIVE_INDEX_PATH):
-        try:
-            with open(ARCHIVE_INDEX_PATH, encoding="utf-8") as f:
-                archive = json.load(f)
-        except Exception as e:
-            print(f"  ⚠️ archive read failed, starting fresh: {e}", file=sys.stderr)
-            archive = {"version": "1.0", "issues": []}
+    document.getElementById('issue-date').innerHTML =
+      `WEEK OF ${mondayLabel} · ${mondayYear}<br>` +
+      `<span style="color:var(--accent);font-weight:500;">↻ Issued · ${mondayLabel}</span><br>` +
+      `<span style="color:var(--accent-warm);font-size:9px;">⌛ Next · ${nextLabel} 06:00 KST</span>`;
 
-    # 같은 주 항목 있으면 교체, 없으면 추가
-    issues = [i for i in archive.get("issues", []) if not (i.get("year") == new_entry["year"] and i.get("week") == new_entry["week"])]
-    issues.append(new_entry)
-    # 최신순 정렬 (year/week DESC)
-    issues.sort(key=lambda x: (x.get("year", 0), x.get("week", 0)), reverse=True)
-    archive["issues"] = issues
-    archive["updated_at"] = datetime.now(KST).isoformat()
+    // 발간 번호 동적 설정 (예: 2026·W19)
+    if (ISSUE_META && ISSUE_META.issue_year && ISSUE_META.issue_week) {
+      const num = `${ISSUE_META.issue_year}·W${String(ISSUE_META.issue_week).padStart(2, '0')}`;
+      document.getElementById('issue-num').textContent = num;
+    }
 
-    with open(ARCHIVE_INDEX_PATH, "w", encoding="utf-8") as f:
-        json.dump(archive, f, ensure_ascii=False, indent=2)
-    print(f"  ✓ Archive index: {len(issues)} issues total")
+    // 과거 이슈 모드라면 알림 바 표시
+    if (ISSUE_META._isPast) {
+      const bar = document.getElementById('past-issue-bar');
+      const weekLabel = ISSUE_META._issueParam || `${ISSUE_META.issue_year}-W${String(ISSUE_META.issue_week).padStart(2,'0')}`;
+      document.getElementById('past-issue-week').textContent = weekLabel;
+      bar.style.display = 'block';
+      // 마스트헤드의 "Next" 줄을 "Past Issue"로 교체 (다음 발행은 의미 없음)
+      document.getElementById('issue-date').innerHTML =
+        `WEEK OF ${mondayLabel} · ${mondayYear}<br>` +
+        `<span style="color:var(--accent);font-weight:500;">📚 Past Issue</span><br>` +
+        `<span style="color:var(--text-mute);font-size:9px;">아카이브에서 보기</span>`;
+    }
 
-
-def xml_escape(s):
-    """RSS XML escape."""
-    return (str(s or "")
-            .replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-            .replace("\"", "&quot;")
-            .replace("'", "&apos;"))
-
-
-def write_rss(issue):
-    """vela-rss.xml 생성 — 이번 주 핵심 항목들로 RSS 2.0 피드."""
-    meta = issue["meta"]
-    site_url = "https://juns9990.github.io/vela/vela-prototype.html"
-    pub_date = datetime.now(KST).strftime("%a, %d %b %Y %H:%M:%S +0900")
-
-    items_xml = []
-
-    # Cover (영상이라 site URL로)
-    cover = issue.get("cover", {})
-    if cover:
-        headline = re.sub(r"<[^>]+>", "", cover.get("headline", ""))
-        items_xml.append(f"""    <item>
-      <title>[Cover] {xml_escape(headline)}</title>
-      <link>{xml_escape(site_url)}</link>
-      <guid isPermaLink="false">vela-cover-{meta['issue_year']}-W{meta['issue_week']:02d}</guid>
-      <description>{xml_escape(cover.get('deck', ''))}</description>
-      <pubDate>{pub_date}</pubDate>
-      <category>Cover Story</category>
-    </item>""")
-
-    # Signals (각 항목)
-    for s in issue.get("signals", []):
-        cat = (s.get("tags") or ["AI"])[0]
-        items_xml.append(f"""    <item>
-      <title>[{xml_escape(cat)}] {xml_escape(s.get('title', ''))}</title>
-      <link>{xml_escape(s.get('url', ''))}</link>
-      <guid isPermaLink="true">{xml_escape(s.get('url', ''))}</guid>
-      <description>{xml_escape(s.get('abstract', ''))}</description>
-      <pubDate>{pub_date}</pubDate>
-      <category>{xml_escape(cat)}</category>
-      <source url="{xml_escape(site_url)}">{xml_escape(s.get('sourceLabel', 'Vela'))}</source>
-    </item>""")
-
-    # Featured
-    for f in issue.get("featured", []):
-        if not f.get("url"):
-            continue
-        items_xml.append(f"""    <item>
-      <title>[Featured] {xml_escape(f.get('title', ''))}</title>
-      <link>{xml_escape(f.get('url', ''))}</link>
-      <guid isPermaLink="true">{xml_escape(f.get('url', ''))}</guid>
-      <description>{xml_escape(f.get('deck', ''))}</description>
-      <pubDate>{pub_date}</pubDate>
-      <category>Featured</category>
-    </item>""")
-
-    rss_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Vela — AI Intelligence Magazine</title>
-    <link>{xml_escape(site_url)}</link>
-    <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
-    <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
-    <language>ko</language>
-    <pubDate>{pub_date}</pubDate>
-    <lastBuildDate>{pub_date}</lastBuildDate>
-    <generator>Vela Weekly Collector</generator>
-    <ttl>10080</ttl>
-{chr(10).join(items_xml)}
-  </channel>
-</rss>
-"""
-    with open(RSS_PATH, "w", encoding="utf-8") as f:
-        f.write(rss_xml)
-
-
-# ============================================================
-# Groq AI 한국어 번역 (무료 API)
-# ============================================================
-GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-# 번역 모델 폴백 체인 — 첫 모델 실패 시 다음 모델 자동 시도
-GROQ_MODELS = [
-    "llama-3.3-70b-versatile",   # 1순위: 한국어 품질 최고
-    "llama-3.1-8b-instant",       # 2순위: 빠르고 안정적
-    "openai/gpt-oss-120b",        # 3순위: 최신 대형 모델
-]
-GROQ_MODEL = GROQ_MODELS[0]  # 기본값 (호환성)
-
-def groq_translate(items, api_key):
-    """
-    영문 abstract → 매거진 톤의 한국어 번역.
-    items: dicts with 'title' and 'abstract' keys
-    실패한 항목은 원문 그대로 반환 (전체 빌드는 계속).
-    """
-    if not api_key:
-        print("  ⚠️ GROQ_API_KEY not set — skipping translation", file=sys.stderr)
-        return items
-
-    # ─── 모델 자동 선택: 폴백 체인에서 첫 번째 작동하는 모델 찾기 ───
-    working_model = None
-    print(f"  Testing Groq models...")
-    for model in GROQ_MODELS:
-        try:
-            test_req = urllib.request.Request(
-                GROQ_API_URL,
-                data=json.dumps({
-                    "model": model,
-                    "messages": [{"role": "user", "content": "Reply with: OK"}],
-                    "max_tokens": 10
-                }).encode("utf-8"),
-                headers={
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json",
-                    "User-Agent": USER_AGENT
-                },
-                method="POST"
-            )
-            with urllib.request.urlopen(test_req, timeout=15) as r:
-                data = json.loads(r.read().decode("utf-8"))
-                if data.get("choices"):
-                    working_model = model
-                    print(f"  ✓ Using model: {model}")
-                    break
-        except urllib.error.HTTPError as e:
-            err_body = ""
-            try: err_body = e.read().decode("utf-8")[:200]
-            except: pass
-            print(f"  ✗ Model {model}: HTTP {e.code} — {err_body[:120]}", file=sys.stderr)
-        except Exception as e:
-            print(f"  ✗ Model {model}: {type(e).__name__} — {str(e)[:120]}", file=sys.stderr)
-
-    if not working_model:
-        print(f"  ⚠️ ALL MODELS FAILED — Groq API 접근 불가. 콘텐츠가 영문으로 남습니다.", file=sys.stderr)
-        print(f"  점검 사항: (1) GROQ_API_KEY Secret 등록 (2) https://console.groq.com 에서 키 활성 (3) 한도 초과 여부", file=sys.stderr)
-        return items
-
-    print(f"  Translating {len(items)} items via Groq ({working_model})...")
-    success = 0
-    fail_count = 0
-    fail_reasons = {}
-    skipped_korean = 0
-
-    for i, item in enumerate(items):
-        # 한글이 이미 들어있으면 스킵 (시드 데이터 보존)
-        if any('\uAC00' <= c <= '\uD7A3' for c in item.get("title", "")):
-            skipped_korean += 1
-            continue
-
-        prompt = f"""당신은 AI 매거진 'Vela'의 한국어 번역 에디터입니다.
-아래 영문 논문/기사의 제목과 abstract를 매거진 톤(간결, 직관적, 호기심 자극)의 한국어로 번역해주세요.
-
-규칙:
-- 제목: 30자 이내, 매거진 헤드라인 톤 (의역 가능, 핵심 강조)
-- abstract: 2~3문장, 140자 이내, 본문 첫 문장처럼 자연스럽게
-- 기술 용어는 영어 원어 유지 가능 (예: Transformer, attention, MoE)
-- 출력은 반드시 JSON 형식: {{"title": "...", "abstract": "..."}}
-
-원본:
-Title: {item.get('title', '')[:200]}
-Abstract: {item.get('abstract', '')[:600]}
-
-JSON만 출력:"""
-
-        try:
-            req = urllib.request.Request(
-                GROQ_API_URL,
-                data=json.dumps({
-                    "model": working_model,
-                    "messages": [{"role": "user", "content": prompt}],
-                    "temperature": 0.4,
-                    "max_tokens": 400,
-                    "response_format": {"type": "json_object"}
-                }).encode("utf-8"),
-                headers={
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json",
-                    "User-Agent": USER_AGENT
-                },
-                method="POST"
-            )
-            with urllib.request.urlopen(req, timeout=20) as r:
-                data = json.loads(r.read().decode("utf-8"))
-                content = data["choices"][0]["message"]["content"].strip()
-                # JSON 파싱
-                translated = json.loads(content)
-                if translated.get("title"):
-                    item["title"] = translated["title"][:120]
-                if translated.get("abstract"):
-                    item["abstract"] = translated["abstract"][:280]
-                success += 1
-        except urllib.error.HTTPError as e:
-            fail_count += 1
-            err_body = ""
-            try: err_body = e.read().decode("utf-8")[:300]
-            except: pass
-            reason = f"HTTP {e.code}"
-            fail_reasons[reason] = fail_reasons.get(reason, 0) + 1
-            if fail_count <= 3:
-                print(f"  ✗ Translate failed [{i+1}/{len(items)}]: HTTP {e.code} — {err_body[:200]}", file=sys.stderr)
-        except json.JSONDecodeError as e:
-            fail_count += 1
-            fail_reasons["JSON parse"] = fail_reasons.get("JSON parse", 0) + 1
-            if fail_count <= 3:
-                print(f"  ✗ Translate failed [{i+1}/{len(items)}]: JSON parse error", file=sys.stderr)
-        except Exception as e:
-            fail_count += 1
-            reason = type(e).__name__
-            fail_reasons[reason] = fail_reasons.get(reason, 0) + 1
-            if fail_count <= 3:
-                print(f"  ✗ Translate failed [{i+1}/{len(items)}]: {reason} — {str(e)[:150]}", file=sys.stderr)
-
-        # Rate limit 보호 (Groq 무료 30 RPM 안전 마진 — 30+ 항목 대비 보수적)
-        time.sleep(2.5)
-
-    total = len(items)
-    print(f"  ✓ Translated {success}/{total} items (skipped {skipped_korean} already-Korean, failed {fail_count})")
-    if fail_reasons:
-        print(f"    Failure breakdown: {dict(fail_reasons)}", file=sys.stderr)
-    if success == 0 and total > skipped_korean:
-        print(f"  ⚠️ ALL TRANSLATIONS FAILED — 콘텐츠가 영문으로 남습니다. GROQ_API_KEY 또는 모델 상태를 확인하세요.", file=sys.stderr)
-    return items
-
-
-if __name__ == "__main__":
-    main()
+    // 3) 모든 섹션 렌더
+    renderCover();
+    renderThisMonth();
+    renderFeatured();
+    renderWatch();
+    renderIndustry();
+    renderSignals();
+    loadArchive();
+  }
+  init();
+</script>
+</body>
+</html>
