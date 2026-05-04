@@ -631,16 +631,42 @@ def main():
     # ============================================================
     print("\n[4/6] Translating to Korean (Groq AI)...")
     groq_key = os.environ.get("GROQ_API_KEY", "").strip()
+    working_model = None
     if groq_key:
         # 합쳐서 번역 후 다시 분리 (호출 효율)
         merged = validated_academic + validated_industry
-        merged = groq_translate(merged, groq_key)
+        merged, working_model = groq_translate(merged, groq_key)
         # 분리 복구
         ac_n = len(validated_academic)
         validated_academic = merged[:ac_n]
         validated_industry = merged[ac_n:]
     else:
         print("  ⚠️ GROQ_API_KEY env var not set — content remains in English")
+
+    # ============================================================
+    # 5.5. Magazine Edition — Editor's Note + Trend Spotting
+    # ============================================================
+    editors_note = None
+    trend_clusters = None
+    if working_model:
+        print("\n[Magazine] Generating Editor's Note...")
+        editors_note = generate_editors_note(validated_academic, groq_key, working_model)
+        if editors_note:
+            print(f"  ✓ Editor's Note: {editors_note[:80]}...")
+        time.sleep(2.5)  # rate limit
+
+        print("[Magazine] Clustering trends...")
+        trend_clusters = cluster_by_topic(validated_academic[:8], groq_key, working_model, max_clusters=3)
+        if trend_clusters:
+            print(f"  ✓ Trends: {[c['theme'] for c in trend_clusters]}")
+        time.sleep(2.5)
+
+    # Numbers This Week (LLM 호출 없음, 자동 계산)
+    numbers = compute_numbers(
+        validated_academic, validated_industry,
+        blogs_count=blog_count, news_count=news_count,
+        total_raw=len(pool)
+    )
 
     # 6. 빌드
     print("\n[5/6] Building issue JSON...")
@@ -678,6 +704,7 @@ def main():
             "category": (s.get("tags") or ["Update"])[0],
             "title": s.get("title", "")[:80],
             "deck": s.get("abstract", "")[:140],
+            "why": s.get("why", "")[:120],
             "image": s.get("thumb", IMG_DEFAULT),
             "url": s.get("url", "")
         })
@@ -698,6 +725,7 @@ def main():
             "label": (s.get("tags") or ["Highlight"])[0],
             "title": s.get("title", "")[:80],
             "deck": s.get("abstract", "")[:140],
+            "why": s.get("why", "")[:120],
             "byline": f"{s.get('sourceLabel', 'Vela').upper()} · {s.get('authors', '')[:30]}",
             "image": s.get("thumb", IMG_DEFAULT),
             "url": s.get("url", "")
@@ -721,8 +749,11 @@ def main():
         })
 
     issue = {
-        "version": "v0.19.0",
+        "version": "v0.20.0",
         "meta": meta,
+        "editorsNote": editors_note,
+        "trends": trend_clusters,
+        "numbers": numbers,
         "cover": cover,
         "thisMonth": this_month,
         "featured": featured,
@@ -885,6 +916,35 @@ GROQ_MODELS = [
 ]
 GROQ_MODEL = GROQ_MODELS[0]  # 기본값 (호환성)
 
+# 자주 등장하는 한자 → 한글 변환 (LLM이 가끔 한자로 떨어뜨릴 때 안전망)
+HANJA_MAP = {
+    "最新": "최신", "人工知能": "인공지능", "技術": "기술", "性能": "성능",
+    "開發": "개발", "硏究": "연구", "改善": "개선", "向上": "향상",
+    "提供": "제공", "適用": "적용", "活用": "활용", "效率": "효율",
+    "效果": "효과", "結果": "결과", "可能": "가능", "重要": "중요",
+    "問題": "문제", "解決": "해결", "方法": "방법", "新": "신",
+    "舊": "구", "大": "대", "小": "소", "高": "고", "低": "저",
+    "速度": "속도", "規模": "규모", "本": "본", "次": "차",
+    "先": "선", "後": "후", "前": "전", "全": "전", "新規": "신규",
+    "公開": "공개", "發表": "발표", "登場": "등장", "出市": "출시",
+    "限界": "한계", "增加": "증가", "減少": "감소", "競爭": "경쟁",
+    "協力": "협력", "開": "개", "發": "발", "化": "화", "性": "성",
+}
+
+def strip_hanja(text):
+    """한자를 한글로 변환하거나 제거. LLM이 가끔 한자를 떨어뜨릴 때 안전망."""
+    if not text:
+        return text
+    # 1) 사전에 있는 한자 단어 변환
+    for hanja, hangul in HANJA_MAP.items():
+        text = text.replace(hanja, hangul)
+    # 2) 남아있는 단일 한자 제거 (한자 유니코드 범위)
+    text = re.sub(r'[\u4E00-\u9FFF\u3400-\u4DBF]', '', text)
+    # 3) 한자 제거로 인한 공백 정리
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
+
 def groq_translate(items, api_key):
     """
     영문 abstract → 매거진 톤의 한국어 번역.
@@ -893,7 +953,7 @@ def groq_translate(items, api_key):
     """
     if not api_key:
         print("  ⚠️ GROQ_API_KEY not set — skipping translation", file=sys.stderr)
-        return items
+        return items, None
 
     # ─── 모델 자동 선택: 폴백 체인에서 첫 번째 작동하는 모델 찾기 ───
     working_model = None
@@ -931,7 +991,7 @@ def groq_translate(items, api_key):
     if not working_model:
         print(f"  ⚠️ ALL MODELS FAILED — Groq API 접근 불가. 콘텐츠가 영문으로 남습니다.", file=sys.stderr)
         print(f"  점검 사항: (1) GROQ_API_KEY Secret 등록 (2) https://console.groq.com 에서 키 활성 (3) 한도 초과 여부", file=sys.stderr)
-        return items
+        return items, None
 
     print(f"  Translating {len(items)} items via Groq ({working_model})...")
     success = 0
@@ -946,13 +1006,21 @@ def groq_translate(items, api_key):
             continue
 
         prompt = f"""당신은 AI 매거진 'Vela'의 한국어 번역 에디터입니다.
-아래 영문 논문/기사의 제목과 abstract를 매거진 톤(간결, 직관적, 호기심 자극)의 한국어로 번역해주세요.
+아래 영문 논문/기사를 매거진 톤(간결, 직관적, 호기심 자극)의 한국어로 번역해주세요.
 
-규칙:
+번역 규칙:
+- **한자 절대 금지**: 모든 단어를 한글로만 작성. '最新' → '최신', '人工知能' → '인공지능'. 한자는 한 글자도 출력하지 마세요.
+- 외래어/기술 용어는 영어 원어 유지 가능 (예: Transformer, attention, MoE, LLM)
 - 제목: 30자 이내, 매거진 헤드라인 톤 (의역 가능, 핵심 강조)
 - abstract: 2~3문장, 140자 이내, 본문 첫 문장처럼 자연스럽게
-- 기술 용어는 영어 원어 유지 가능 (예: Transformer, attention, MoE)
-- 출력은 반드시 JSON 형식: {{"title": "...", "abstract": "..."}}
+- why: 30~50자 한 줄. "왜 이게 중요한가"를 매거진 에디터 시각으로. AI 산업 맥락에서의 의미.
+
+why 예시:
+- "ChatGPT 메모리 기능과 정면 경쟁할 신기술"
+- "오픈소스 진영의 GPT-5 대응책으로 주목"
+- "에이전트 평가 기준이 정적에서 동적으로 이동"
+
+출력은 반드시 JSON: {{"title": "...", "abstract": "...", "why": "..."}}
 
 원본:
 Title: {item.get('title', '')[:200]}
@@ -983,9 +1051,11 @@ JSON만 출력:"""
                 # JSON 파싱
                 translated = json.loads(content)
                 if translated.get("title"):
-                    item["title"] = translated["title"][:120]
+                    item["title"] = strip_hanja(translated["title"][:120])
                 if translated.get("abstract"):
-                    item["abstract"] = translated["abstract"][:280]
+                    item["abstract"] = strip_hanja(translated["abstract"][:280])
+                if translated.get("why"):
+                    item["why"] = strip_hanja(translated["why"][:120])
                 success += 1
         except urllib.error.HTTPError as e:
             fail_count += 1
@@ -1017,7 +1087,163 @@ JSON만 출력:"""
         print(f"    Failure breakdown: {dict(fail_reasons)}", file=sys.stderr)
     if success == 0 and total > skipped_korean:
         print(f"  ⚠️ ALL TRANSLATIONS FAILED — 콘텐츠가 영문으로 남습니다. GROQ_API_KEY 또는 모델 상태를 확인하세요.", file=sys.stderr)
+
+    return items, working_model
     return items
+
+
+def generate_editors_note(items, api_key, working_model):
+    """이번 주 콘텐츠를 보고 Editor's Note (한 줄 흐름 분석) 생성."""
+    if not api_key or not working_model or not items:
+        return None
+    # 상위 12개 제목+abstract만 LLM에 전달 (토큰 절약)
+    top = items[:12]
+    bullets = "\n".join([
+        f"- {it.get('title', '')[:80]} | {(it.get('tags') or ['?'])[0]}"
+        for it in top
+    ])
+    prompt = f"""당신은 AI 매거진 'Vela'의 편집장입니다.
+이번 주 발견된 12개의 AI 항목을 보고, 매거진 첫 머리에 들어갈 한 단락의 'Editor's Note'를 한국어로 작성해주세요.
+
+요구사항:
+- 정확히 2~3문장, 총 150~200자
+- 이번 주 AI 흐름의 '공통 주제' 또는 '대비되는 두 흐름'을 짚어내세요
+- 단순 나열이 아닌, 매거진 편집자의 시각으로 의미 부여
+- 한자 사용 금지, 순한글 + 외래어/기술용어만
+- 마지막 문장은 독자에게 던지는 짧은 질문이나 전망으로 마무리
+
+이번 주 항목 (제목 | 카테고리):
+{bullets}
+
+위 흐름을 짚는 Editor's Note (200자 이내, 따옴표 없이 본문만):"""
+
+    try:
+        req = urllib.request.Request(
+            GROQ_API_URL,
+            data=json.dumps({
+                "model": working_model,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.7,
+                "max_tokens": 400
+            }).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+                "User-Agent": USER_AGENT
+            },
+            method="POST"
+        )
+        with urllib.request.urlopen(req, timeout=25) as r:
+            data = json.loads(r.read().decode("utf-8"))
+            note = data["choices"][0]["message"]["content"].strip()
+            note = strip_hanja(note)
+            # 마크다운 따옴표/별표 제거
+            note = re.sub(r'^["\'\*\s]+|["\'\*\s]+$', '', note)
+            return note[:400] if note else None
+    except Exception as e:
+        print(f"  ✗ Editor's Note generation failed: {e}", file=sys.stderr)
+        return None
+
+
+def cluster_by_topic(items, api_key, working_model, max_clusters=3):
+    """이번 달 항목을 주제별 묶음으로 변환 (Trend Spotting)."""
+    if not api_key or not working_model or len(items) < 4:
+        return None
+    bullets = "\n".join([
+        f"{i+1}. {it.get('title', '')[:80]}"
+        for i, it in enumerate(items[:8])
+    ])
+    prompt = f"""당신은 AI 매거진 'Vela'의 편집자입니다.
+아래 8개 항목을 주제별로 2~3개의 클러스터로 묶어주세요.
+
+요구사항:
+- 각 클러스터는 명확한 한국어 주제명 (15자 이내)
+- 각 항목은 1번부터 8번까지의 번호로 참조
+- 주제명은 매거진 헤드라인 톤 (예: '에이전트의 진화', '추론 효율 경쟁')
+- 한자 금지
+
+출력 형식 (정확히 이 JSON 구조):
+{{"clusters": [
+  {{"theme": "주제명1", "items": [1, 3, 5]}},
+  {{"theme": "주제명2", "items": [2, 4]}},
+  {{"theme": "주제명3", "items": [6, 7, 8]}}
+]}}
+
+항목:
+{bullets}
+
+JSON만 출력:"""
+
+    try:
+        req = urllib.request.Request(
+            GROQ_API_URL,
+            data=json.dumps({
+                "model": working_model,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.5,
+                "max_tokens": 400,
+                "response_format": {"type": "json_object"}
+            }).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+                "User-Agent": USER_AGENT
+            },
+            method="POST"
+        )
+        with urllib.request.urlopen(req, timeout=25) as r:
+            data = json.loads(r.read().decode("utf-8"))
+            content = data["choices"][0]["message"]["content"].strip()
+            parsed = json.loads(content)
+            clusters = parsed.get("clusters", [])[:max_clusters]
+            # 인덱스 검증 + 한자 제거
+            valid = []
+            for c in clusters:
+                theme = strip_hanja(c.get("theme", ""))[:30]
+                idxs = [i for i in c.get("items", []) if isinstance(i, int) and 1 <= i <= len(items)]
+                if theme and idxs:
+                    valid.append({"theme": theme, "indices": idxs})
+            return valid if valid else None
+    except Exception as e:
+        print(f"  ✗ Trend clustering failed: {e}", file=sys.stderr)
+        return None
+
+
+def compute_numbers(academic, industry, blogs_count, news_count, total_raw):
+    """Numbers This Week — 자동 계산되는 통계 박스 데이터."""
+    # 이번 주 발표된 항목 (지난 7일 이내)
+    today = datetime.now(KST).date()
+    week_ago = today - timedelta(days=7)
+    fresh_count = 0
+    for item in (academic + industry):
+        try:
+            pub = datetime.strptime(item.get("published", ""), "%Y-%m-%d").date()
+            if pub >= week_ago:
+                fresh_count += 1
+        except Exception:
+            pass
+
+    # 최고 점수 항목
+    top_item = max(academic, key=lambda x: x.get("score", 0)) if academic else None
+    top_label = (top_item.get("title", "")[:30] + "…") if top_item else "—"
+
+    # 카테고리 빈도
+    cat_count = {}
+    for item in academic:
+        cat = (item.get("tags") or ["기타"])[0]
+        cat_count[cat] = cat_count.get(cat, 0) + 1
+    top_category = max(cat_count.items(), key=lambda x: x[1])[0] if cat_count else "—"
+
+    return {
+        "raw_collected": total_raw,
+        "academic_count": len(academic),
+        "industry_count": len(industry),
+        "fresh_this_week": fresh_count,
+        "top_category": top_category,
+        "top_score_title": top_label,
+        "blog_sources": blogs_count,
+        "news_sources": news_count,
+    }
 
 
 if __name__ == "__main__":
