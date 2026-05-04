@@ -267,7 +267,13 @@
     font-family: var(--mono); font-size: 10px; color: var(--text-mute);
     text-align: right; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.6;
   }
-  .issue-meta strong { color: var(--accent); font-weight: 500; }
+  .issue-meta > div:first-child {
+    font-size: 11px; margin-bottom: 4px;
+  }
+  .issue-meta strong {
+    color: var(--accent); font-weight: 600;
+    font-size: 13px; letter-spacing: 0.15em;
+  }
 
   /* NAV */
   .nav { border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
@@ -1175,7 +1181,7 @@
           <span class="label-short" style="display:none;">INSTALL</span>
         </button>
         <div class="issue-meta">
-          <div>Issue <strong id="issue-num">001</strong></div>
+          <div>Issue <strong id="issue-num">—</strong></div>
           <div id="issue-date">— · —</div>
         </div>
       </div>
@@ -1411,7 +1417,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.19.0</strong> · Wider Net · 25+ sources</div>
+        <div><strong style="color:var(--accent);">v0.19.1</strong> · Wider Net · 25+ sources</div>
       </div>
     </div>
   </footer>
@@ -1547,7 +1553,12 @@
   }
 
   function renderFeatured() {
-    document.getElementById('featured-grid').innerHTML = FEATURED.map(f => {
+    const grid = document.getElementById('featured-grid');
+    if (!FEATURED || FEATURED.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:60px 0;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:11px;letter-spacing:0.1em;">// 이번 주 큐레이션이 준비 중입니다</div>';
+      return;
+    }
+    grid.innerHTML = FEATURED.map(f => {
       const readCls = f.url && isRead(f.url) ? 'read' : '';
       return `
       <article class="feature-card ${readCls}" data-url="${f.url || ''}">
@@ -2117,6 +2128,12 @@
       `WEEK OF ${mondayLabel} · ${mondayYear}<br>` +
       `<span style="color:var(--accent);font-weight:500;">↻ Issued · ${mondayLabel}</span><br>` +
       `<span style="color:var(--accent-warm);font-size:9px;">⌛ Next · ${nextLabel} 06:00 KST</span>`;
+
+    // 발간 번호 동적 설정 (예: 2026·W19)
+    if (ISSUE_META && ISSUE_META.issue_year && ISSUE_META.issue_week) {
+      const num = `${ISSUE_META.issue_year}·W${String(ISSUE_META.issue_week).padStart(2, '0')}`;
+      document.getElementById('issue-num').textContent = num;
+    }
 
     // 과거 이슈 모드라면 알림 바 표시
     if (ISSUE_META._isPast) {
