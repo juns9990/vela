@@ -1,7 +1,7 @@
-// Vela Service Worker · v0.19.0
-// Wider Net: 25+ 소스 + Industry 섹션 추가
+// Vela Service Worker · v0.19.1
+// Wider Net + 콘텐츠 부실 문제 해결
 
-const CACHE_NAME = 'vela-cache-v0.19.0';
+const CACHE_NAME = 'vela-cache-v0.19.1';
 const CORE_ASSETS = [
   './vela-prototype.html',
   './vela-manifest.json',
