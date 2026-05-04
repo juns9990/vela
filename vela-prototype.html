@@ -1569,7 +1569,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.20.2</strong> · Magazine Edition</div>
+        <div><strong style="color:var(--accent);">v0.20.5</strong> · Magazine Edition</div>
       </div>
     </div>
   </footer>
@@ -2046,11 +2046,32 @@
     });
   });
 
-  // PWA INSTALL · Service Worker 등록 (데스크톱 PWA 설치 필수)
+  // PWA INSTALL · Service Worker 등록 + 자동 업데이트 감지
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./vela-sw.js').catch(err => {
+      navigator.serviceWorker.register('./vela-sw.js').then(reg => {
+        // 매 페이지 로드마다 SW 업데이트 체크 (PWA 캐시 함정 방지)
+        reg.update();
+        // 새 SW가 활성화되면 자동 알림 받기
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'activated') {
+                console.log('[Vela] 새 버전 활성화됨');
+              }
+            });
+          }
+        });
+      }).catch(err => {
         console.log('[Vela] SW 등록 실패 (vela-sw.js 파일 미업로드 시 무시 가능):', err);
+      });
+
+      // SW로부터 업데이트 메시지 수신 → 콘솔 로그 (선택적 알림)
+      navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data && event.data.type === 'SW_UPDATED') {
+          console.log('[Vela] Service Worker 업데이트:', event.data.version);
+        }
       });
     });
   }
