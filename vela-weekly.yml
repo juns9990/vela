@@ -1,0 +1,84 @@
+name: Vela Weekly Issue
+
+# 매주 월요일 06:00 KST = 일요일 21:00 UTC 자동 실행
+# 수동 실행도 가능 (Actions 탭 → "Run workflow")
+on:
+  schedule:
+    - cron: '0 21 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-issue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      # actions/checkout@v5 (Node.js 24 사용, 2026년 6월 deprecation 영향 없음)
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # actions/setup-python@v6 (Node.js 24 사용)
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Run Vela weekly collector
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python vela-collect.py
+        # 표준 라이브러리만 사용 - pip install 불필요
+
+      - name: Show issue summary
+        run: |
+          echo "=== Issue summary ==="
+          python -c "
+          import json
+          with open('vela-issue.json') as f:
+              d = json.load(f)
+          m = d['meta']
+          print(f\"Issue {m['issue_year']}-W{m['issue_week']} · Monday {m['monday']}\")
+          print(f\"Cover: {d['cover']['headline'][:60]}\")
+          print(f\"Signals: {len(d['signals'])}\")
+          print(f\"Videos: {len(d['videos'])}\")
+          print(f\"Featured: {len(d['featured'])}\")
+          "
+
+      - name: Commit & push if changed
+        run: |
+          git config --local user.email "vela-bot@users.noreply.github.com"
+          git config --local user.name "Vela Bot"
+          # rebase 시 충돌 자동 해결 (봇 변경 우선 — JSON 자동 생성물이라 안전)
+          git config --local pull.rebase true
+          git config --local rebase.autoStash true
+
+          # 메인 이슈 + 아카이브 인덱스 + 주차별 스냅샷 + RSS 모두 add
+          git add vela-issue.json vela-archive.json vela-rss.xml 'vela-issue-*.json' 2>/dev/null || true
+
+          # 변경사항이 있을 때만 commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          ISSUE=$(python -c "import json; d=json.load(open('vela-issue.json')); print(f\"{d['meta']['issue_year']}-W{d['meta']['issue_week']}\")")
+          git commit -m "📡 Weekly issue ${ISSUE} (auto)"
+
+          # Push with auto-retry on conflict (사용자가 동시에 push해도 자동 복구)
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "✓ Pushed weekly issue ${ISSUE} (attempt ${attempt})"
+              exit 0
+            fi
+            echo "⚠️ Push rejected (attempt ${attempt}) — pulling and retrying..."
+            git pull --rebase --strategy-option=ours origin main || {
+              echo "✗ Rebase failed — manual intervention needed"
+              exit 1
+            }
+            sleep 2
+          done
+          echo "✗ Push failed after 3 attempts"
+          exit 1
