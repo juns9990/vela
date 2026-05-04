@@ -627,19 +627,27 @@ def main():
         sys.exit(1)
 
     # ============================================================
-    # 5. 한국어 번역 (Groq) — 학술 + 산업 모두
+    # 5. 한국어 번역 (Groq) — 표시될 항목만, 산업 우선
     # ============================================================
     print("\n[4/6] Translating to Korean (Groq AI)...")
     groq_key = os.environ.get("GROQ_API_KEY", "").strip()
     working_model = None
     if groq_key:
-        # 합쳐서 번역 후 다시 분리 (호출 효율)
-        merged = validated_academic + validated_industry
+        # 매거진에 실제 표시되는 만큼만 번역 (학술 20 + 산업 8 = 28개)
+        # 산업 먼저 번역 → 한도 도달 전에 Industry 섹션 보장
+        academic_to_translate = validated_academic[:20]
+        industry_to_translate = validated_industry[:8]
+        # 산업 먼저 (UI에서 위쪽에 보이는 영역도 보장)
+        merged = industry_to_translate + academic_to_translate
+        print(f"  Translating {len(industry_to_translate)} industry + {len(academic_to_translate)} academic = {len(merged)} total")
         merged, working_model = groq_translate(merged, groq_key)
-        # 분리 복구
-        ac_n = len(validated_academic)
-        validated_academic = merged[:ac_n]
-        validated_industry = merged[ac_n:]
+        # 분리 복구 (순서 바뀐 것 다시 원래대로)
+        ind_n = len(industry_to_translate)
+        translated_industry = merged[:ind_n]
+        translated_academic = merged[ind_n:]
+        # 원본 리스트에 번역 결과 머지 (번역 안 된 나머지는 그대로 유지)
+        validated_industry = translated_industry + validated_industry[8:]
+        validated_academic = translated_academic + validated_academic[20:]
     else:
         print("  ⚠️ GROQ_API_KEY env var not set — content remains in English")
 
@@ -1066,6 +1074,10 @@ JSON만 출력:"""
             fail_reasons[reason] = fail_reasons.get(reason, 0) + 1
             if fail_count <= 3:
                 print(f"  ✗ Translate failed [{i+1}/{len(items)}]: HTTP {e.code} — {err_body[:200]}", file=sys.stderr)
+            # 429 (rate limit) 만나면 60초 대기 후 자동 재개
+            if e.code == 429:
+                print(f"  ⏸ Rate limit hit — waiting 60s before continuing...", file=sys.stderr)
+                time.sleep(60)
         except json.JSONDecodeError as e:
             fail_count += 1
             fail_reasons["JSON parse"] = fail_reasons.get("JSON parse", 0) + 1
@@ -1078,8 +1090,8 @@ JSON만 출력:"""
             if fail_count <= 3:
                 print(f"  ✗ Translate failed [{i+1}/{len(items)}]: {reason} — {str(e)[:150]}", file=sys.stderr)
 
-        # Rate limit 보호 (Groq 무료 30 RPM 안전 마진 — 30+ 항목 대비 보수적)
-        time.sleep(2.5)
+        # Rate limit 보호 (Groq 무료 30 RPM 안전 마진 — 28회 × 3.0초 = 84초, 분당 20회 페이스로 안전)
+        time.sleep(3.0)
 
     total = len(items)
     print(f"  ✓ Translated {success}/{total} items (skipped {skipped_korean} already-Korean, failed {fail_count})")
