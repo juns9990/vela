@@ -1,11 +1,23 @@
 {
-  "version": "v0.19.0",
+  "version": "v0.20.0",
   "meta": {
     "issue_year": 2026,
     "issue_week": 19,
     "monday": "2026-05-04",
     "next_monday": "2026-05-11",
-    "generated_at": "2026-05-04T14:16:34.665634+09:00"
+    "generated_at": "2026-05-04T14:42:06.023517+09:00"
+  },
+  "editorsNote": null,
+  "trends": null,
+  "numbers": {
+    "raw_collected": 135,
+    "academic_count": 30,
+    "industry_count": 15,
+    "fresh_this_week": 24,
+    "top_category": "LLM",
+    "top_score_title": "시각 기반 계획 벤치마크…",
+    "blog_sources": 49,
+    "news_sources": 26
   },
   "cover": {
     "label": "Cover Story · Week 19",
@@ -24,48 +36,54 @@
     {
       "date": "MAR 26",
       "category": "Robotics",
-      "title": "로봇의 시각적 계획 벤치마크",
-      "deck": "로봇이 주변 환경을 관찰하고, 계획을 세우고, 상황에 맞게 조정하는 능력을 테스트하는 AsgardBench 벤치마크. 로봇이 주방을 청소하는 과제를 수행할 때, 예상치 못한 상황에 대처하는 능력을 평가",
+      "title": "시각 기반 계획 벤치마크",
+      "deck": "로봇이 주방을 청소하는 상황을 상상해 보세요. 로봇은 환경을 관찰하고 결정해야 하며 예상과 다를 때 적응해야 합니다.",
+      "why": "로봇의 실시간 계획 능력 평가를 위한 새로운 기준",
       "image": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=400&q=70",
       "url": "https://www.microsoft.com/en-us/research/blog/asgardbench-a-benchmark-for-visually-grounded-interactive-planning/"
     },
     {
       "date": "MAR 26",
       "category": "Audio",
-      "title": "자연스러운 음성 AI",
-      "deck": "최신 음성 모델은 더 높은 정밀도와 낮은 지연 시간을 제공하여 보다 자연스럽고 정확한 음성 상호작용을 가능하게 합니다.",
+      "title": "제미니 3.1",
+      "deck": "최신 음성 모델은 더 자연스럽고 정확한 음성 상호작용을 위해 정밀도와 반응 속도를 개선했다.",
+      "why": "음성 인공지능의 자연스러움을 높이는 핵심 기술",
       "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=70",
       "url": "https://deepmind.google/blog/gemini-3-1-flash-live-making-audio-ai-more-natural-and-reliable/"
     },
     {
       "date": "APR 02",
       "category": "Agent",
-      "title": "지능의 극한, Gemma 4",
-      "deck": "Gemma 4는 현재까지 가장 지능적인 오픈 모델로, 고급 추론과 에이전트 워크플로우를 위해 특별히 설계되었습니다.",
+      "title": "지마 4: 오픈 모델의 새로운 표준",
+      "deck": "지마 4는 현재까지 개발된 가장 지능적인 오픈 모델로 고급 추론과 에이전트 워크플로를 위해 특별히 설계되었습니다.",
+      "why": "오픈소스 진영의 차세대 에이전트 기술",
       "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
       "url": "https://deepmind.google/blog/gemma-4-byte-for-byte-the-most-capable-open-models/"
     },
     {
       "date": "APR 13",
       "category": "Robotics",
-      "title": "로봇의 현실 세계 이해력 강화",
-      "deck": "자율 로봇을 위한 공간 이해력과 다각도 인식 강화, Gemini Robotics ER 1.6는 로봇이 실제 작업을 수행하는 데 필요한 기술을 제공합니다.",
+      "title": "로봇 공학의 새로운 차원",
+      "deck": "자율 로봇을 위한 공간 인식과 다중 관점 이해 능력을 강화",
+      "why": "로봇이 현실 세계 과제를 수행하는 핵심 기술",
       "image": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=400&q=70",
       "url": "https://deepmind.google/blog/gemini-robotics-er-1-6/"
     },
     {
       "date": "APR 15",
       "category": "Audio",
-      "title": "지미니 3.1: 감정 표현이 더リア한 AI 음성",
-      "deck": "最新 오디오 모델은 세밀한 오디오 태그를 도입하여 표현력이 풍부한 AI 음성 생성을 위한 정밀한 제어를 제공합니다.",
+      "title": "지미니 3.1 플래시 음성 합성",
+      "deck": "최신 오디오 모델은 세밀한 오디오 태그를 도입하여 표현력 있는 오디오 생성을 위한 인공지능 음성 제어를 제공합니다.",
+      "why": "표현력 있는 AI 음성 생성 기술의 차세대 표준",
       "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=70",
       "url": "https://deepmind.google/blog/gemini-3-1-flash-tts-the-next-generation-of-expressive-ai-speech/"
     },
     {
       "date": "APR 17",
       "category": "LLM",
-      "title": "여름 여행 스마트하게",
-      "deck": "구글이 도와주는 여름 여행, 더 스마트하게 즐기자. 구글의 도움으로 여행을 더 편리하게",
+      "title": "여름 여행을 더 스마트하게",
+      "deck": "구글의 도움으로 더 편리한 여행을 즐겨보세요. 해변 마을의 농산물 시장에서 픽셀폰을 사용하는 사람을 그린 일러스트",
+      "why": "여행 계획을 더 효율적으로 관리할 수 있는 기술",
       "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
       "url": "https://blog.google/products-and-platforms/products/search/summer-travel-tips-google-search-ai/"
     }
@@ -73,8 +91,9 @@
   "featured": [
     {
       "label": "LLM",
-      "title": "구글 광고, 더 빠르고 안전하게",
-      "deck": "구글 광고를 더 빠르고 안전하게 만드는 새로운 3가지 방법이登場했습니다. 구글 마케팅 라이브에서 자세히 알아보세요.",
+      "title": "구글 광고, 안전하고 빠르게",
+      "deck": "구글 광고를 더 안전하고 빠르게 만드는 세 가지 새로운 방법이등장했다. 구글 마케팅 라이브에서 자세히 알아보자.",
+      "why": "광고 플랫폼의 안정성과 속도 향상을 위한 핵심 기술",
       "byline": "GOOGLE AI · Google AI",
       "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
       "url": "https://blog.google/products/ads-commerce/ads-advisor-google-ads/"
@@ -82,31 +101,35 @@
     {
       "label": "LLM",
       "title": "AI 혁신 가속",
-      "deck": "구글 딥마인드가 글로벌 컨설팅 회사와 협력해 전 세계 조직에 최첨단 AI를 제공합니다. 이 파트너십은 산업 리더들과 함께 AI 변화를 가속화합니다.",
+      "deck": "구글 딥마인드와 세계적인 컨설팅 기업이 협력해 최신 인공지능 기술을 전 세계 기업에 제공",
+      "why": "기업의 디지털 전환을 가속화할 핵심 기술",
       "byline": "DEEPMIND · DeepMind",
       "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
       "url": "https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/"
     },
     {
       "label": "Agent",
-      "title": "TPU 8세대 출시",
-      "deck": "구글의 8세대 TPU에는 AI의 미래를 주도할 두 가지 전문 칩이 포함되어 있습니다. 이 칩들은 새로운 시대를 열어갑니다.",
+      "title": "에이전트 시대용 TPU 2종 출시",
+      "deck": "구글의 8세대 TPU에는 미래의 인공지능을 구동할 두 가지 전문 칩이 포함되어 있습니다. 이 칩들은 새로운 에이전트 시대를 열어줍니다.",
+      "why": "에이전트 기반 인공지능의 핵심 기술",
       "byline": "GOOGLE AI · Google AI",
       "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
       "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/"
     },
     {
       "label": "Tool",
-      "title": "구글 TPU, 더 강력한 AI 구동",
-      "deck": "구글의 TPU는 점점 더 많은 AI 작업량을 처리합니다. 새로운 비디오에서 이를 확인하세요.",
+      "title": "구글의 TPU, 인공지능 성능 극대화",
+      "deck": "구글의 TPU는 인공지능 성능을 극대화합니다. 새로운 비디오를 통해 확인하세요.",
+      "why": "인공지능 성능 향상을 위한 핵심 기술",
       "byline": "GOOGLE AI · Google AI",
       "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=70",
       "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/what-is-a-tpu/"
     },
     {
       "label": "Vision",
-      "title": "알프스에 데이터 센터 열다",
-      "deck": "구글, 오스트리아 첫 데이터 센터 투자. 알프스 지역 데이터 센터의 모습은?",
+      "title": "구글, 알프스 첫 데이터 센터 투자",
+      "deck": "구글이 알프스 지역에 첫 데이터 센터를 투자했다. 데이터 센터의 항공 사진이 공개됐다.",
+      "why": "구글의 유럽 시장 공략 전략",
       "byline": "GOOGLE AI · Google AI",
       "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=70",
       "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-center-austria/"
@@ -150,57 +173,57 @@
     {
       "date": "MAY 01",
       "source": "Wired AI",
-      "title": "중국 AI, 위협인가?",
-      "deck": "미국 인공지능을 지원하는 비영리단체가 중국 AI를 위협으로 프레임하는 인플루언서 캠페인을 지원하고 있다. 이 단체는 OpenAI와 Andreessen Horowitz의 고위幹部와 연결된 超PAC에 의해 자금을 지원받고 있다.",
+      "title": "A Dark-Money Campaign Is Paying Influencers to Frame Chinese AI as a Threat",
+      "deck": "Build American AI, a nonprofit linked to a super PAC bankrolled by executives at OpenAI and Andreessen Horowitz, is funding a campaign to spread pro-AI messagin",
       "url": "https://www.wired.com/story/super-pac-backed-by-openai-and-palantir-is-paying-tiktok-influencers-to-fear-monger-about-china/"
     },
     {
       "date": "APR 22",
       "source": "Ars Technica",
-      "title": "마이크로소프트, ASP.NET 위협에 긴급 패치",
-      "deck": "인증 실패 시 큰 문제가 발생할 수 있다. 마이크로소프트는 macOS와 리눅스용 긴급 패치를 발표했다.",
+      "title": "Microsoft issues emergency update for macOS and Linux ASP.NET threat",
+      "deck": "When authentication fails, things can go very, very wrong.",
       "url": "https://arstechnica.com/security/2026/04/microsoft-issues-emergency-update-for-macos-and-linux-asp-net-threat/"
     },
     {
       "date": "APR 24",
       "source": "Ars Technica",
-      "title": "대학기관, 포르노 사이트 노출 사고",
-      "deck": "수십개의 대학 웹사이트가 사기꾼에게 탈취당했다. 주된 이유는 관리 소홀로 인한 보안 취약점이다.",
+      "title": "Why are top university websites serving porn? It comes down to shoddy housekeeping.",
+      "deck": "Hundreds of subdomains from dozens of universities have been hijacked by scammers.",
       "url": "https://arstechnica.com/security/2026/04/why-are-top-university-websites-serving-porn-it-comes-down-to-shoddy-housekeeping/"
     },
     {
       "date": "APR 29",
       "source": "Ars Technica",
-      "title": "보안 회사만을 노린 사이버 공격",
-      "deck": "최근 사이버 공격이 보안 회사인 Checkmarx와 Bitwarden을 노린 이유는? 보안 회사들은 특히 취약한 것일까?",
+      "title": "Why a recent supply-chain attack singled out security firms Checkmarx and Bitwarden",
+      "deck": "Security firms find themselves especially exposed.",
       "url": "https://arstechnica.com/information-technology/2026/04/why-a-recent-supply-chain-attack-singled-out-security-firms-checkmarx-and-bitwarden/"
     },
     {
       "date": "APR 30",
       "source": "Ars Technica",
-      "title": "리눅스 최대의 위협",
-      "deck": "CopyFail은 멀티 테넌트 서버, CI/CD 워크플ロー, Kubernetes 컨테이너 등에 위협을 가합니다. 리눅스 사용자들에게 큰 영향을 미칠 수 있습니다.",
+      "title": "The most severe Linux threat to surface in years catches the world flat-footed",
+      "deck": "CopyFail threatens multi-tenant servers, CI/CD work flows, Kubernetes containers, and more.",
       "url": "https://arstechnica.com/security/2026/04/as-the-most-severe-linux-threat-in-years-surfaces-the-world-scrambles/"
     },
     {
       "date": "APR 30",
       "source": "Wired AI",
-      "title": "맥 미니, 몇 개월은 기다려야",
-      "deck": "애플의 CEO 팀 쿡은 예상보다 빠른 AI 도입으로 맥 미니 수급이 부족할 것으로 전망했다. 몇 개월은 기다려야 할 것으로 보인다.",
+      "title": "Good Luck Getting a Mac Mini for the Next ‘Several Months’",
+      "deck": "Apple CEO Tim Cook told analysts that AI adoption has happened faster than expected.",
       "url": "https://www.wired.com/story/apple-sold-out-mac-mini-openclaw/"
     },
     {
       "date": "APR 30",
       "source": "Wired AI",
-      "title": "머스크 vs 알트만, AI 산업의 미래는?",
-      "deck": "엘론 머스크와 샘 알트만의 대결은 개인적인 라이벌리를 넘어 오픈AI와 전체 AI 산업에 큰 영향을 미칠 수 있다. 이 소송은 어떻게 진행될까?",
+      "title": "Musk v. Altman Kicks Off, DOJ Guts Voting Rights Unit, and Is the AI Job Apocalypse Overhyped?",
+      "deck": "In this episode of Uncanny Valley, we get into how the Elon Musk-Sam Altman trial goes way beyond their rivalry and could have major implications both for OpenA",
       "url": "https://www.wired.com/story/uncanny-valley-podcast-musk-v-altman-doj-guts-voting-rights-unit-is-ai-job-apocalypse-overhyped/"
     },
     {
       "date": "APR 30",
       "source": "Wired AI",
-      "title": "엘론 머스크, xAI가 오픈AI 모델 사용 인정?",
-      "deck": "엘론 머스크는 법정에서 오픈AI의 모델을 사용한 훈련이 표준 관행이라고 주장했다. xAI의 모델 훈련에 오픈AI의 기술이 사용됐을 수 있다.",
+      "title": "Elon Musk Seemingly Admits xAI Has Used OpenAI’s Models to Train Its Own",
+      "deck": "While answering questions under oath, Musk argued it’s standard practice for AI labs to use their competitors’ models.",
       "url": "https://www.wired.com/story/elon-musk-distill-openai-models-partly-xai/"
     }
   ],
@@ -209,8 +232,8 @@
       "id": "msr-b6097aee",
       "source": "blog",
       "sourceLabel": "Microsoft Research",
-      "title": "로봇의 시각적 계획 벤치마크",
-      "abstract": "로봇이 주변 환경을 관찰하고, 계획을 세우고, 상황에 맞게 조정하는 능력을 테스트하는 AsgardBench 벤치마크. 로봇이 주방을 청소하는 과제를 수행할 때, 예상치 못한 상황에 대처하는 능력을 평가",
+      "title": "시각 기반 계획 벤치마크",
+      "abstract": "로봇이 주방을 청소하는 상황을 상상해 보세요. 로봇은 환경을 관찰하고 결정해야 하며 예상과 다를 때 적응해야 합니다.",
       "url": "https://www.microsoft.com/en-us/research/blog/asgardbench-a-benchmark-for-visually-grounded-interactive-planning/",
       "published": "2026-03-26",
       "tags": [
@@ -218,14 +241,15 @@
       ],
       "authors": "Microsoft Research",
       "thumb": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "로봇의 실시간 계획 능력 평가를 위한 새로운 기준"
     },
     {
       "id": "dm-161f77b8",
       "source": "blog",
       "sourceLabel": "DeepMind",
-      "title": "자연스러운 음성 AI",
-      "abstract": "최신 음성 모델은 더 높은 정밀도와 낮은 지연 시간을 제공하여 보다 자연스럽고 정확한 음성 상호작용을 가능하게 합니다.",
+      "title": "제미니 3.1",
+      "abstract": "최신 음성 모델은 더 자연스럽고 정확한 음성 상호작용을 위해 정밀도와 반응 속도를 개선했다.",
       "url": "https://deepmind.google/blog/gemini-3-1-flash-live-making-audio-ai-more-natural-and-reliable/",
       "published": "2026-03-26",
       "tags": [
@@ -233,14 +257,15 @@
       ],
       "authors": "DeepMind",
       "thumb": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "음성 인공지능의 자연스러움을 높이는 핵심 기술"
     },
     {
       "id": "dm-c64eb2c5",
       "source": "blog",
       "sourceLabel": "DeepMind",
-      "title": "지능의 극한, Gemma 4",
-      "abstract": "Gemma 4는 현재까지 가장 지능적인 오픈 모델로, 고급 추론과 에이전트 워크플로우를 위해 특별히 설계되었습니다.",
+      "title": "지마 4: 오픈 모델의 새로운 표준",
+      "abstract": "지마 4는 현재까지 개발된 가장 지능적인 오픈 모델로 고급 추론과 에이전트 워크플로를 위해 특별히 설계되었습니다.",
       "url": "https://deepmind.google/blog/gemma-4-byte-for-byte-the-most-capable-open-models/",
       "published": "2026-04-02",
       "tags": [
@@ -248,14 +273,15 @@
       ],
       "authors": "DeepMind",
       "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "오픈소스 진영의 차세대 에이전트 기술"
     },
     {
       "id": "dm-f846584e",
       "source": "blog",
       "sourceLabel": "DeepMind",
-      "title": "로봇의 현실 세계 이해력 강화",
-      "abstract": "자율 로봇을 위한 공간 이해력과 다각도 인식 강화, Gemini Robotics ER 1.6는 로봇이 실제 작업을 수행하는 데 필요한 기술을 제공합니다.",
+      "title": "로봇 공학의 새로운 차원",
+      "abstract": "자율 로봇을 위한 공간 인식과 다중 관점 이해 능력을 강화",
       "url": "https://deepmind.google/blog/gemini-robotics-er-1-6/",
       "published": "2026-04-13",
       "tags": [
@@ -263,14 +289,15 @@
       ],
       "authors": "DeepMind",
       "thumb": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "로봇이 현실 세계 과제를 수행하는 핵심 기술"
     },
     {
       "id": "dm-1bce4c3e",
       "source": "blog",
       "sourceLabel": "DeepMind",
-      "title": "지미니 3.1: 감정 표현이 더リア한 AI 음성",
-      "abstract": "最新 오디오 모델은 세밀한 오디오 태그를 도입하여 표현력이 풍부한 AI 음성 생성을 위한 정밀한 제어를 제공합니다.",
+      "title": "지미니 3.1 플래시 음성 합성",
+      "abstract": "최신 오디오 모델은 세밀한 오디오 태그를 도입하여 표현력 있는 오디오 생성을 위한 인공지능 음성 제어를 제공합니다.",
       "url": "https://deepmind.google/blog/gemini-3-1-flash-tts-the-next-generation-of-expressive-ai-speech/",
       "published": "2026-04-15",
       "tags": [
@@ -278,14 +305,15 @@
       ],
       "authors": "DeepMind",
       "thumb": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "표현력 있는 AI 음성 생성 기술의 차세대 표준"
     },
     {
       "id": "googai-6ce36f8a",
       "source": "blog",
       "sourceLabel": "Google AI",
-      "title": "여름 여행 스마트하게",
-      "abstract": "구글이 도와주는 여름 여행, 더 스마트하게 즐기자. 구글의 도움으로 여행을 더 편리하게",
+      "title": "여름 여행을 더 스마트하게",
+      "abstract": "구글의 도움으로 더 편리한 여행을 즐겨보세요. 해변 마을의 농산물 시장에서 픽셀폰을 사용하는 사람을 그린 일러스트",
       "url": "https://blog.google/products-and-platforms/products/search/summer-travel-tips-google-search-ai/",
       "published": "2026-04-17",
       "tags": [
@@ -293,14 +321,15 @@
       ],
       "authors": "Google AI",
       "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "여행 계획을 더 효율적으로 관리할 수 있는 기술"
     },
     {
       "id": "googai-6741483c",
       "source": "blog",
       "sourceLabel": "Google AI",
-      "title": "구글 광고, 더 빠르고 안전하게",
-      "abstract": "구글 광고를 더 빠르고 안전하게 만드는 새로운 3가지 방법이登場했습니다. 구글 마케팅 라이브에서 자세히 알아보세요.",
+      "title": "구글 광고, 안전하고 빠르게",
+      "abstract": "구글 광고를 더 안전하고 빠르게 만드는 세 가지 새로운 방법이등장했다. 구글 마케팅 라이브에서 자세히 알아보자.",
       "url": "https://blog.google/products/ads-commerce/ads-advisor-google-ads/",
       "published": "2026-04-21",
       "tags": [
@@ -308,14 +337,15 @@
       ],
       "authors": "Google AI",
       "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "광고 플랫폼의 안정성과 속도 향상을 위한 핵심 기술"
     },
     {
       "id": "dm-4de0d2dd",
       "source": "blog",
       "sourceLabel": "DeepMind",
       "title": "AI 혁신 가속",
-      "abstract": "구글 딥마인드가 글로벌 컨설팅 회사와 협력해 전 세계 조직에 최첨단 AI를 제공합니다. 이 파트너십은 산업 리더들과 함께 AI 변화를 가속화합니다.",
+      "abstract": "구글 딥마인드와 세계적인 컨설팅 기업이 협력해 최신 인공지능 기술을 전 세계 기업에 제공",
       "url": "https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/",
       "published": "2026-04-21",
       "tags": [
@@ -323,14 +353,15 @@
       ],
       "authors": "DeepMind",
       "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "기업의 디지털 전환을 가속화할 핵심 기술"
     },
     {
       "id": "googai-6a159b97",
       "source": "blog",
       "sourceLabel": "Google AI",
-      "title": "TPU 8세대 출시",
-      "abstract": "구글의 8세대 TPU에는 AI의 미래를 주도할 두 가지 전문 칩이 포함되어 있습니다. 이 칩들은 새로운 시대를 열어갑니다.",
+      "title": "에이전트 시대용 TPU 2종 출시",
+      "abstract": "구글의 8세대 TPU에는 미래의 인공지능을 구동할 두 가지 전문 칩이 포함되어 있습니다. 이 칩들은 새로운 에이전트 시대를 열어줍니다.",
       "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/",
       "published": "2026-04-22",
       "tags": [
@@ -338,14 +369,15 @@
       ],
       "authors": "Google AI",
       "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "에이전트 기반 인공지능의 핵심 기술"
     },
     {
       "id": "googai-d281c973",
       "source": "blog",
       "sourceLabel": "Google AI",
-      "title": "구글 TPU, 더 강력한 AI 구동",
-      "abstract": "구글의 TPU는 점점 더 많은 AI 작업량을 처리합니다. 새로운 비디오에서 이를 확인하세요.",
+      "title": "구글의 TPU, 인공지능 성능 극대화",
+      "abstract": "구글의 TPU는 인공지능 성능을 극대화합니다. 새로운 비디오를 통해 확인하세요.",
       "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/what-is-a-tpu/",
       "published": "2026-04-23",
       "tags": [
@@ -353,14 +385,15 @@
       ],
       "authors": "Google AI",
       "thumb": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "인공지능 성능 향상을 위한 핵심 기술"
     },
     {
       "id": "googai-85f0e7dc",
       "source": "blog",
       "sourceLabel": "Google AI",
-      "title": "알프스에 데이터 센터 열다",
-      "abstract": "구글, 오스트리아 첫 데이터 센터 투자. 알프스 지역 데이터 센터의 모습은?",
+      "title": "구글, 알프스 첫 데이터 센터 투자",
+      "abstract": "구글이 알프스 지역에 첫 데이터 센터를 투자했다. 데이터 센터의 항공 사진이 공개됐다.",
       "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-center-austria/",
       "published": "2026-04-23",
       "tags": [
@@ -368,14 +401,15 @@
       ],
       "authors": "Google AI",
       "thumb": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "구글의 유럽 시장 공략 전략"
     },
     {
       "id": "nvid-be9fdc84",
       "source": "blog",
       "sourceLabel": "NVIDIA",
-      "title": "OpenAI의 GPT-5.5, NVIDIA 인프라에 탑재",
-      "abstract": "AI 에이전트가 개발자 워크플로우를 혁신하고, 지식 작업을 다음 목표로 삼고 있습니다. OpenAI의 Codex는 인공지능 코딩 애플리케이션입니다.",
+      "title": "오픈아이의 최신 GPT-5.5",
+      "abstract": "인공지능 에이전트가 개발자 작업을 혁신하고 이제 지식 작업을 처리하며 복잡한 문제를 해결하고 새로운 아이디어를 만들어내고 있습니다. 오픈아이의 코덱스 애플리케이션이 이러한 작업을 수행합니다.",
       "url": "https://blogs.nvidia.com/blog/openai-codex-gpt-5-5-ai-agents/",
       "published": "2026-04-23",
       "tags": [
@@ -383,14 +417,15 @@
       ],
       "authors": "NVIDIA",
       "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "에이전트 평가 기준이 정적에서 동적으로 이동"
     },
     {
       "id": "googai-0edf8674",
       "source": "blog",
       "sourceLabel": "Google AI",
-      "title": "공간 정리 Tip 8",
-      "abstract": "생활을 정리하는 방법, Gemini의 도움으로 간단해집니다. 일상 속에서 생산성을 높이는 방법을 khám phá하세요.",
+      "title": "젬니를 활용한 공간 및 일상 정리 팁 8",
+      "abstract": "젬니를 사용하면 일상과 공간을 더 효율적으로 정리할 수 있습니다. 문서와 이메일을 쉽게 관리하고, 체크리스트를 통해 목표를 설정할 수 있습니다.",
       "url": "https://blog.google/products-and-platforms/products/gemini/gemini-spring-cleaning-tips/",
       "published": "2026-04-24",
       "tags": [
@@ -398,29 +433,15 @@
       ],
       "authors": "Google AI",
       "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-      "score": 5
-    },
-    {
-      "id": "oai-6240d320",
-      "source": "blog",
-      "sourceLabel": "OpenAI",
-      "title": "OpenAI, 美 연방기관에 보안 인증",
-      "abstract": "OpenAI의 ChatGPT Enterprise와 OpenAI API가 FedRAMP Moderate 인증을 받았다. 이는 미국 연방기관에서 안전한 AI 도입을 가능하게 한다.",
-      "url": "https://openai.com/index/openai-available-at-fedramp-moderate",
-      "published": "2026-04-27",
-      "tags": [
-        "LLM"
-      ],
-      "authors": "OpenAI",
-      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "디지털을 단순화하는 새로운 방법"
     },
     {
       "id": "oai-cb70df53",
       "source": "blog",
       "sourceLabel": "OpenAI",
       "title": "마이크로소프트-오픈AI 제휴의 다음 단계",
-      "abstract": "오픈AI와 마이크로소프트는 제휴를 단순화하고 장기적인 명확성을 제공하며 대규모 AI 혁신을 지원하는 수정된 협약을 발표했습니다.",
+      "abstract": "오픈AI와 마이크로소프트가 제휴를 단순화하고 장기적인 명확성을 추가하여 대규모 인공지능 혁신을 지원하는 수정된 협정을 발표했습니다.",
       "url": "https://openai.com/index/next-phase-of-microsoft-partnership",
       "published": "2026-04-27",
       "tags": [
@@ -428,14 +449,15 @@
       ],
       "authors": "OpenAI",
       "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "AI 산업의 대형 제휴로 미래 기술 경쟁에 영향"
     },
     {
       "id": "googai-29488e13",
       "source": "blog",
       "sourceLabel": "Google AI",
-      "title": "구글의 AI 에이전트 코딩 과정",
-      "abstract": "구글과 카글이 함께 만든 새로운 AI 에이전트 코딩 과정을 만나보세요. AI 기술을 직접 경험할 수 있습니다.",
+      "title": "구글과 카글의 새로운 에이전트 코딩 과정",
+      "abstract": "새로운 인공지능 에이전트 코딩 과정을 소개합니다. 구글과 카글이 함께 만든 이 과정은 에이전트 개발을 위한 최신 기술을 다룹니다.",
       "url": "https://blog.google/innovation-and-ai/technology/developers-tools/kaggle-genai-intensive-course-vibe-coding-june-2026/",
       "published": "2026-04-27",
       "tags": [
@@ -443,14 +465,15 @@
       ],
       "authors": "Google AI",
       "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "에이전트 평가 기준이 정적에서 동적으로 이동"
     },
     {
       "id": "dm-86d14870",
       "source": "blog",
       "sourceLabel": "DeepMind",
       "title": "한국과 손잡은 구글 디프마인드",
-      "abstract": "구글 디프마인드와 한국이 앞선 AI 모델을 활용한 과학적 발전을 가속화하기 위해 협력한다. 이 협력은 새로운 과학적 성과를 이룰 수 있을 것이다.",
+      "abstract": "구글 디프마인드와 한국이 앞서가는 인공지능 모델을 사용해 과학적 돌파구를 가속화하기로 협약했습니다.",
       "url": "https://deepmind.google/blog/announcing-our-partnership-with-the-republic-of-korea/",
       "published": "2026-04-27",
       "tags": [
@@ -458,14 +481,15 @@
       ],
       "authors": "DeepMind",
       "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-      "score": 5
+      "score": 5,
+      "why": "인공지능 산업에서 한국의 경쟁력 강화에 기여할 수 있는 협력"
     },
     {
       "id": "oai-1dc472c1",
       "source": "blog",
       "sourceLabel": "OpenAI",
-      "title": "안전한 채팅을 위한 노력",
-      "abstract": "OpenAI는 모델 안전장치, 오남용 탐지, 정책 시행, 안전 전문가와의 협력을 통해 ChatGPT에서 커뮤니티 안전을 보호합니다.",
+      "title": "Our commitment to community safety",
+      "abstract": "Learn how OpenAI protects community safety in ChatGPT through model safeguards, misuse detection, policy enforcement, and collaboration with safety experts.",
       "url": "https://openai.com/index/our-commitment-to-community-safety",
       "published": "2026-04-28",
       "tags": [
@@ -476,32 +500,47 @@
       "score": 5
     },
     {
-      "id": "oai-d0682fe0",
-      "source": "blog",
-      "sourceLabel": "OpenAI",
-      "title": "AWS, 오픈AI 모델 입장",
-      "abstract": "오픈AI의 GPT 모델, Codex, Managed Agents가 AWS에登場했다. 기업은 이제 AWS 환경에서 안전한 AI를 구축할 수 있다.",
-      "url": "https://openai.com/index/openai-on-aws",
-      "published": "2026-04-28",
-      "tags": [
-        "Agent"
-      ],
-      "authors": "OpenAI",
-      "thumb": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
-      "score": 5
-    },
-    {
       "id": "googai-6d3470cf",
       "source": "blog",
       "sourceLabel": "Google AI",
-      "title": "구글 번역 20주년",
-      "abstract": "구글 번역은 20년이 지났습니다. 새로운 기능과 팁을 살펴보세요.",
+      "title": "Celebrating 20 years of Google Translate: Fun facts, tips and new features to try",
+      "abstract": "The Google Translate logo sits in the middle of colorful illustrated scenes, including people translating live conversations and a birthday cake topped by candles with the numeral 20",
       "url": "https://blog.google/products-and-platforms/products/translate/fun-facts-google-translate-20-years/",
       "published": "2026-04-28",
       "tags": [
         "LLM"
       ],
       "authors": "Google AI",
+      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "oai-8740c494",
+      "source": "blog",
+      "sourceLabel": "OpenAI",
+      "title": "Building the compute infrastructure for the Intelligence Age",
+      "abstract": "OpenAI scales Stargate to build the compute infrastructure powering AGI, adding new data center capacity to meet growing AI demand.",
+      "url": "https://openai.com/index/building-the-compute-infrastructure-for-the-intelligence-age",
+      "published": "2026-04-29",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "OpenAI",
+      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
+      "score": 5
+    },
+    {
+      "id": "oai-ad57812b",
+      "source": "blog",
+      "sourceLabel": "OpenAI",
+      "title": "Cybersecurity in the Intelligence Age",
+      "abstract": "OpenAI outlines a five-part action plan for strengthening cybersecurity in the Intelligence Age, focused on democratizing AI-powered cyber defense and protecting critical systems.",
+      "url": "https://openai.com/index/cybersecurity-in-the-intelligence-age",
+      "published": "2026-04-29",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "OpenAI",
       "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
       "score": 5
     }
