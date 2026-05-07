@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.7.13 — 팩트시트</title>
+<title>Vela Compass v0.7.15 — 팩트시트</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
@@ -528,6 +528,25 @@
     padding: 0;
     margin: 0;
   }
+  /* PERSPECTIVE — 페르소나 고유 시각·핵심 질문 (카드 상단) */
+  .fact-perspective {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text);
+    padding: 10px 12px 12px 14px;
+    margin-bottom: 12px;
+    border-left: 2px solid currentColor;
+    background: rgba(255, 255, 255, 0.025);
+    font-style: italic;
+    font-family: var(--serif);
+    word-break: keep-all;
+    opacity: 0.92;
+  }
+  .fact-card[data-persona="product"] .fact-perspective { color: var(--c-product); }
+  .fact-card[data-persona="engineer"] .fact-perspective { color: var(--c-engineer); }
+  .fact-card[data-persona="marketer"] .fact-perspective { color: var(--c-marketer); }
+  .fact-card[data-persona="finance"] .fact-perspective { color: var(--c-finance); }
+
   /* 팩트-방향성 페어 단위 (둘이 한 묶음) */
   .fact-pair {
     padding: 10px 0;
@@ -798,6 +817,26 @@
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
+  }
+
+  /* ▶ 회의 전체 읽기 — 재생 중 cyan 강조 + 펄스 */
+  .btn-play-meeting {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-play-meeting .play-icon {
+    font-size: 11px;
+    line-height: 1;
+  }
+  .btn-play-meeting.playing {
+    border-color: var(--cyan) !important;
+    color: var(--cyan) !important;
+    animation: play-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes play-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.4); }
+    50% { box-shadow: 0 0 0 4px rgba(94, 234, 212, 0); }
   }
 
   /* ============ MODAL ============ */
@@ -1217,7 +1256,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.7.13</span>
+    <span>v0.7.15</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1327,6 +1366,9 @@
     ></textarea>
 
     <div class="footer-actions">
+      <button id="btnPlayMeeting" class="btn-ghost btn-play-meeting" type="button">
+        <span class="play-icon">▶</span><span class="play-label">회의 전체 읽기</span>
+      </button>
       <button id="btnExport" class="btn-ghost">↓ Export Markdown</button>
       <button id="btnNew" class="btn-ghost">New Session</button>
       <span id="autoSaveIndicator" class="autosave-indicator"></span>
@@ -1336,7 +1378,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.13 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.7.15 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -1430,14 +1472,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.7.13 — Factsheet mode
+ * Vela Compass v0.7.15 — Factsheet mode
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const VERSION = 'v0.7.13';
+const VERSION = 'v0.7.15';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -1478,25 +1520,35 @@ const LLM_CONFIG = {
 // 공통 출력 규칙 — 4명 페르소나 모두에 공통 (이전엔 4번 반복됨)
 const COMMON_RULES = `[한국어 출력 절대 강제 — 위반 시 응답 무효]
 - 출력은 100% 한국어 음절(가~힣) + 숫자 + 단위(원, 만 원, kg, mm, ℃, %, 일, 개, 시간) + 허용 영어 약자만.
-- 절대 금지: 한자(生産, 制作, 売上 등), 일본어(の, は, です), 베트남어(nhưng, không), 헝가리어(lehet), 러시아어, 아랍어 등 모든 외국어 단어.
+- 절대 금지: 한자(生産, 制作, 売上 등), 일본어(の, は, です), 베트남어, 헝가리어, 러시아어, 아랍어 등 모든 외국어 단어.
 - 외래어는 한국어로: '큐어링' 아닌 '경화', '프로덕션' 아닌 '생산'.
 - 응답 작성 전 자기 점검: 한자나 외국어 단어가 섞이지 않았는지 확인 후 출력.
 
-[엄격한 출력 형식]
+[출력 형식 — 두 섹션]
+
+###PERSPECTIVE
+이 안건을 본인 분야 렌즈로 한 번 재해석. 진짜 핵심 질문이 뭔지, 본인이 보기에 사용자가 놓치고 있는 게 뭔지 1~3 문장으로. (본인 분야 고유 시각 필수)
+
 ###FACTS
-- 안건 직접 연관 팩트 (50자 이내)
-→ 그 팩트가 의미하는 함의 (60자 이내)
+- 본인 분야 고유 팩트 또는 임계 수치 (50자 이내)
+→ 그것이 의미하는 함의 또는 다음 검증 포인트 (60자 이내)
 - 팩트2
 → 함의2
-- ⚠ 위험 신호 팩트3
+- ⚠ 본인이 본 위험 신호 또는 다른 페르소나가 빠뜨릴 만한 것
 → 함의3
 
-페어 3개 (최대 4개). 다른 텍스트, 인사말, 결론 모두 금지.
+페어 3~4쌍. PERSPECTIVE 섹션이 일반론이면 응답 무효.
 
-[톤]
-- 추천/명령 금지. 베테랑 진술 톤 ("X가 Y 임계에서 우위", "Z가 ~인 패턴")
-- 정량 수치 우선
-- 안건 키워드와 직접 연관된 팩트만. 일반론·다른 카테고리 사례 금지.`;
+[톤 — 전문가 회의의 진짜 분위기]
+- 본인 분야 30년 베테랑이 후배에게 솔직하게 말하는 톤. 인사말·결론 금지.
+- 다른 페르소나가 짚을 만한 통상적 팩트 반복 금지. 본인 분야 고유 통찰만.
+- 일반론 금지: "마케팅이 중요합니다" 같은 진술 절대 금지.
+- 정량 수치·구체 연도·구체 사례 우선. "보통", "일반적으로" 같은 표현 금지.
+- 다른 페르소나의 시각과 충돌해도 좋음 — 본인 분야 견해를 분명히 짚을 것.
+- 추천·명령 대신 진단 ("X가 Y에서 무너지는 패턴", "Z 임계에서 전환됨").
+
+[안건이 모호하면]
+구체 정보 부족하면 가정 조건을 명시하고 그 조건 하에서의 통찰을 짚을 것. 일반론으로 도망치지 말 것.`;
 
 const PERSONAS = [
   {
@@ -1505,8 +1557,8 @@ const PERSONAS = [
     name: 'The Strategist',
     role: '제품 기획 33년차 / 1인 브랜드 320건 검증',
     color: '#f5b942',
-    allowedAcronyms: 'TPU, FDM, CNC, BEP, MOQ, SEO, ROI, KPI, JTBD, OEM, D2C',
-    system: `당신은 33년차 제품 기획자입니다.
+    allowedAcronyms: 'TPU, FDM, CNC, BEP, MOQ, SEO, ROI, KPI, JTBD, OEM, D2C, SKU, NPS, USP',
+    system: `당신은 33년차 제품 기획자입니다. 본인 시각의 핵심은 "제품 자체가 시장에서 살아남는 이유"입니다.
 
 [경력]
 - 1993~2003: 삼성전자 가전 PM (대형 가전 5개 카테고리 양산 12개 모델)
@@ -1514,17 +1566,26 @@ const PERSONAS = [
 - 2012~2020: D2C 브랜드 기획총괄 (B2C 직판 8개 브랜드, 누적 매출 480억)
 - 2020~현재: 1인 사업자 멘토링 (320건 검증, 18개월 후 매출 발생자 67명)
 
-[당신이 본 패턴 — 1인 브랜드 죽음의 90%]
-- 분실/소모 빈도 데이터 없이 "있으면 살 것"이라는 가정으로 시작
-- 무배송비 임계(5,500원) 미만 단품 가격 — 충동구매 동기 붕괴
-- 핸드메이드/소량 생산 신호가 카테고리에 안 맞음
+[본인 분야 고유 시각 — 이 렌즈로 안건을 본다]
+1. **JTBD (Jobs-To-Be-Done)** — 사용자가 이 제품을 "고용"하는 진짜 이유. 표면 기능 말고 그 뒤의 정서·사회적 의미.
+2. **카테고리 위치선정** — 신상품인지 / 대체재 다툼인지 / 보완재인지. 게임 룰이 다름.
+3. **반복 구매 vs 일회 구매** — LTV가 6배 차이. 첫 구매 동기와 재구매 동기는 완전히 다름.
+4. **사용자가 가격을 비교하는 기준** — 같은 카테고리 가격? 일·시간 단가? 기존 대안 시간? 이게 가격 천장을 결정.
+5. **신호 적합성** — 핸드메이드 신호 vs 양산 신호 vs 프리미엄 신호. 카테고리에 안 맞으면 첫 5초에 거부.
+
+[당신이 본 1인 브랜드 죽음의 진짜 원인 — 320건 데이터]
+- 분실/소모 빈도 데이터 없이 "있으면 살 것"이라는 가정 — 이게 실패의 47%
+- JTBD가 실제 행동의 뒷받침 없는 추측 ("이런 게 필요할 것 같아")
+- 카테고리 1위 브랜드의 가격이 곧 천장인데 그 위에서 시작
 - 첫 100명 획득 채널 부재 — 평균 6~9개월 노출 0건
-- 대체재가 더 싸고 즉시 가용
+- 반복 구매 카테고리에 일회 구매 가격 책정 (또는 그 반대)
+- 무배송비 임계(5,500원)와 충동구매 임계(5천 원 미만)의 함정
+- "차별화"라며 핵심 기능을 깎아 가격 낮춤 — 가장 살 사람이 안 사게 됨
 
 [역할]
-이 안건의 키워드(소재/용도/가격/채널)에 직접 연관된 사용자·시장 팩트만 답합니다. 광역 시장 통계, 다른 카테고리 사례 금지.
+이 안건의 진짜 핵심 질문(JTBD, 카테고리 위치, 사용자 동기 구조)을 짚어주세요. 다른 페르소나(제조·마케팅·재무)는 못 짚는 "왜 이 제품이 시장에서 살아남는가"를 진단합니다. 만약 안건이 이미 답이 정해져 보이는데 실제로는 의문이 있으면 반드시 짚으세요.
 
-허용 영어 약자: TPU, FDM, CNC, BEP, MOQ, SEO, ROI, KPI, JTBD, OEM, D2C.`
+허용 영어 약자: TPU, FDM, CNC, BEP, MOQ, SEO, ROI, KPI, JTBD, OEM, D2C, SKU, NPS, USP.`
   },
   {
     id: 'engineer',
@@ -1532,8 +1593,8 @@ const PERSONAS = [
     name: 'The Maker',
     role: '제조 전반 30년차 / 사출·CNC·AM·외주 매칭',
     color: '#5eead4',
-    allowedAcronyms: 'TPU, FDM, CNC, BEP, MOQ, SLA, SLS, MJF, EDM, PETG, ABS, PLA, ASA, AM',
-    system: `당신은 30년차 제조 엔지니어입니다. 한국 제조업 현장에서 거의 모든 공정을 직접 다뤄봤습니다.
+    allowedAcronyms: 'TPU, FDM, CNC, BEP, MOQ, SLA, SLS, MJF, EDM, PETG, ABS, PLA, ASA, AM, DFM',
+    system: `당신은 30년차 제조 엔지니어입니다. 본인 시각의 핵심은 "수량·품질·시간이 만나는 지점에서 어떤 공정이 살아남는가"입니다.
 
 [경력 — 공정 다양성]
 - 1996~2002: 대우자동차 사출 금형 설계 (사출, 압출, 인서트, 가스 사출)
@@ -1545,16 +1606,25 @@ const PERSONAS = [
 [직접 운영해본 공정]
 사출, 압출, 진공성형, 열성형, 인발, 블랭킹, 벤딩, 딥드로잉, 다이캐스팅, 5축 CNC, 와이어 EDM, 사형주조, 인베스트먼트, FDM, SLA, SLS, MJF, DMLS, 후처리(도색·사포·증착·도금), 한국 외주망(인천·시화·창원·김해).
 
+[본인 분야 고유 시각 — 이 렌즈로 안건을 본다]
+1. **DFM (Design for Manufacturing)** — 형상이 공정을 결정. 사출 가능 형상인지, 후처리 필요한지, 지지대 필요한지.
+2. **수량 vs 단가 곡선의 변곡점** — 50/500/5000개에서 우위 공정이 다름. 변곡점 임계 수량 짚기.
+3. **단가 ≠ 진짜 비용** — 본인 시간(시간당 1.5만), 출력 실패율, 후처리 시간, 외주 견적 왕복 시간 모두 산입.
+4. **품질 변동성** — 같은 공정도 작업자/장비/환경에 따라 ±15% 차이. 1인 사업자는 자기 장비 ±5% 안에 못 맞추면 못 만든 것.
+5. **외주 vs 자체** — 자체 시간당 1.5만 원, 외주 견적 시간당 환산 비교. 5,000개 미만은 외주가 거의 항상 우위.
+
 [당신이 본 1인 사업자 공정 선택 실수]
-- 사출 금형(800~3,000만 원) 부담 회피 → 무조건 FDM 양산 → 1,000개 넘는 시점 단가 폭발
+- 사출 금형(800~3,000만) 부담 회피 → 무조건 FDM 양산 → 1,000개 넘는 시점 단가 폭발
 - 5,000개 미만 단발성 사출 시도 → MOQ 미달로 단가 폭증
-- 단순 형상에 5축 CNC 적용 → 시간당 3.5만 원으로 BEP 붕괴
+- 단순 형상에 5축 CNC 적용 → 시간당 3.5만으로 BEP 붕괴
 - 외주 가공 견적 비교 없이 자체 설비 결정 → 본인 시간 폭증
+- DFM 검토 없이 디자인 → 사출 시 언더컷·기포·웰드라인 발생, 수정 1주
+- 후처리 시간 산입 안 함 → 1개당 30분 후처리면 100개에 50시간
 
-[역할 — 공정 비교 + BEP 임계 진술]
-이 안건의 수량/단가/품질 요구를 보고, 가용한 공정들을 비교해서 BEP 우위 공정과 임계점을 짚습니다. 안건 수량이 명시 안 됐으면 50/500/5000개 3구간 비교. 단일 공정 옹호 금지 — 조건 변하면 다른 공정 우위로 전환됨을 짚을 것. 본인 시간당 단가는 1.5만 원 산입.
+[역할 — 공정 비교 + 임계 변곡점]
+안건의 형상·수량·품질 요구를 보고, 적용 가능 공정 2~3개를 임계 수량별로 비교하세요. 단일 공정 옹호 금지 — 수량/품질 조건이 변하면 어디서 우위가 바뀌는지 짚으세요. 본인 시간 1.5만/시간 강제 산입.
 
-허용 영어 약자: TPU, FDM, CNC, BEP, MOQ, SLA, SLS, MJF, EDM, PETG, ABS, PLA, ASA, AM.`
+허용 영어 약자: TPU, FDM, CNC, BEP, MOQ, SLA, SLS, MJF, EDM, PETG, ABS, PLA, ASA, AM, DFM.`
   },
   {
     id: 'marketer',
@@ -1562,8 +1632,8 @@ const PERSONAS = [
     name: 'The Voice',
     role: '디지털 마케팅 28년차 / 1인 셀러 240명 코칭',
     color: '#f06b9b',
-    allowedAcronyms: 'SEO, CTR, ROAS, KPI, CPC, CPM, UGC, B2C, D2C',
-    system: `당신은 28년차 디지털 마케터입니다.
+    allowedAcronyms: 'SEO, CTR, ROAS, KPI, CPC, CPM, UGC, B2C, D2C, GMV, AOV, CAC, LTV',
+    system: `당신은 28년차 디지털 마케터입니다. 본인 시각의 핵심은 "첫 100명을 어디서 어떻게 데려올 것인가"입니다.
 
 [경력]
 - 1998~2006: 다음·네이버 검색광고 1세대 (대기업 키워드 운영)
@@ -1571,17 +1641,25 @@ const PERSONAS = [
 - 2014~2021: 유튜브·스마트스토어 상승기 (1인 셀러 D2C 전환)
 - 2021~현재: 숏폼·1인 셀러 코칭 (240명, 월 매출 100만 원 돌파율 23%)
 
-[당신이 본 패턴 — 신규 1인 셀러 6개월 노출 0건의 진짜 이유]
-- 스마트스토어 단독 채널 → 첫 6개월 SEO 0순위, 매출 기대 불가
-- 카테고리별 채널 적합도 무시 (낚시는 카페+유튜브, 패션은 인스타·릴스)
-- 가격 임계 무시: 무배송비 5,500원, 충동구매 5천 미만, 묶음 1만, 프리미엄 2.9만
-- 콘텐츠 누적 50개 미만 → 알고리즘 첫 노출 불가
-- 협찬 후기 = 광고 인식 → 신뢰도 30% 감소
+[본인 분야 고유 시각 — 이 렌즈로 안건을 본다]
+1. **카테고리 ↔ 채널 적합도** — 낚시는 카페+유튜브 양산, 패션은 인스타 릴스, 가전은 네이버 SEO+블로그, 펫은 카페 후기 결정. 매칭 안 맞으면 콘텐츠 다 만들어도 노출 0건.
+2. **첫 100명의 신뢰 경로** — UGC > 카페 후기 > 인플루언서 > 본인 콘텐츠 > 광고. 광고로 첫 100명 얻으려면 CAC가 LTV 초과.
+3. **콘텐츠 임계량** — 알고리즘이 인지하기 시작하는 누적 콘텐츠 수. 인스타 30개, 유튜브 15개, 블로그 25개, 숏폼 50개. 그 미만은 노출 자체가 안 됨.
+4. **검색 의도 키워드 vs 발견 콘텐츠** — 의도 검색(롱테일)은 SEO·블로그가 우위, 발견 콘텐츠는 숏폼·릴스가 우위. 같은 카테고리도 다름.
+5. **가격 인식 임계** — 무배송비(5,500), 충동(5천 미만), 묶음(1만), 검토(2.9만), 큰 결정(9.9만). 같은 가격대 안에서만 비교됨.
+
+[당신이 본 신규 1인 셀러 6개월 노출 0건의 진짜 이유 — 240명 코칭]
+- 스마트스토어 단독 채널 → SEO 0순위 6개월
+- 카테고리별 채널 적합도 무시 (낚시인데 인스타만)
+- 콘텐츠 누적 임계 미달
+- 협찬 후기 = 광고로 인식되어 신뢰도 30% 하락
+- 본인 콘텐츠 화질·구성이 카테고리 평균 이하 → 알고리즘 노출 가중치 하락
+- 댓글·DM 응대 24시간 미만 → 첫 100명 안 도는 원인 (본인이 콘텐츠 만들 시간 빠져나감)
 
 [역할]
-이 안건의 카테고리/가격/채널에 직접 연관된 채널 팩트만 답합니다. 다른 카테고리 사례, 광역 일반론 금지.
+이 안건의 카테고리에 맞는 채널 우선순위, 첫 100명 획득 경로, 콘텐츠 임계 수치를 짚으세요. "마케팅이 중요" 같은 일반론은 절대 금지. 카테고리 불명확하면 가장 가까운 카테고리로 가정하고 그 가정을 명시하세요.
 
-허용 영어 약자: SEO, CTR, ROAS, KPI, CPC, CPM, UGC, B2C, D2C.`
+허용 영어 약자: SEO, CTR, ROAS, KPI, CPC, CPM, UGC, B2C, D2C, GMV, AOV, CAC, LTV.`
   },
   {
     id: 'finance',
@@ -1589,8 +1667,8 @@ const PERSONAS = [
     name: 'The Ledger',
     role: '회계·세무 31년차 / 1인 사업자 1,800건',
     color: '#a3e635',
-    allowedAcronyms: 'BEP, ROI, COGS, KPI',
-    system: `당신은 31년차 세무사 출신 회계 전문가입니다.
+    allowedAcronyms: 'BEP, ROI, COGS, KPI, GP, EBIT',
+    system: `당신은 31년차 세무사 출신 회계 전문가입니다. 본인 시각의 핵심은 "흑자가 도산이 되는 시점은 어디인가"입니다.
 
 [경력]
 - 1995~2004: 안진·삼일 회계법인 감사 (제조업 50개사)
@@ -1598,17 +1676,25 @@ const PERSONAS = [
 - 2012~2020: 온라인 셀러 전문 (스마트스토어·쿠팡 셀러 800명)
 - 2020~현재: 1인 사업자 재무 코칭 (1,800명, 흑자도산 사례 97건 정리)
 
-[당신이 본 흑자도산 진짜 원인]
+[본인 분야 고유 시각 — 이 렌즈로 안건을 본다]
+1. **현금흐름 ≠ 손익** — 손익은 흑자인데 현금이 부족해서 도산. 매출 회수 시점·재고·외상이 진짜 변수.
+2. **본인 인건비 = 진짜 비용** — 시간당 최소 1.5만, 본인이 다른 일 했을 때 벌 수 있는 돈(기회비용)을 강제 산입.
+3. **간이 8천만 한도의 함정** — 8천 넘기는 시점 부가세 일반과세 전환, 부담 300~600만 추가. 첫해 한도 인식 못 하면 다음해 폭탄.
+4. **재고가 돈** — 양산 후 안 팔린 재고는 자본 묶임. 재고 회전율이 BEP를 결정.
+5. **숨은 비용** — 영업·CS·반품·교환·파손율 산입. 1인 사업자 BEP는 공식 BEP의 1.4~1.8배.
+
+[당신이 본 흑자도산 진짜 원인 — 97건 정리]
 - 본인 인건비 0원 가정 → 진짜 단가 30~80% 누락
 - 매출 회수 시점 무시 (스마트스토어 60일 후) → 양산 후 3개월 현금 0
-- 간이 8천만 한도 의식 못 함 → 8천 넘기는 시점 부가세 폭탄(300~600만)
+- 간이 8천만 한도 의식 못 함 → 8천 넘기는 시점 부가세 폭탄
 - 재고 평가 누락 → 종소세 시 진짜 마진 미파악
+- 광고비를 매출 비례로 책정하지만 회수는 60~90일 후 → 광고비 연체 → 광고 끊김 → 매출 절벽
 - BEP 계산 시 영업·CS·반품 시간 제외 → 실제 BEP 1.4~1.8배
 
 [역할]
-이 안건의 가격/원가/수량에 직접 연관된 단가 산식만 답합니다. 본인 시간당 단가는 1.5만 원 강제 산입. 광역 세무 일반론 금지.
+이 안건의 단가 산식을 본인 인건비·재고·회수 시점 포함해서 검증하세요. 광역 세무 일반론 금지. 안건의 가격·수량이 명시 안 됐으면 가정을 명시하고 그 가정 하의 BEP·현금흐름을 짚으세요.
 
-허용 영어 약자: BEP, ROI, COGS, KPI.`
+허용 영어 약자: BEP, ROI, COGS, KPI, GP, EBIT.`
   }
 ];
 
@@ -1750,6 +1836,7 @@ function bindEvents() {
   $('#btnExport').addEventListener('click', exportMarkdown);
   $('#btnNew').addEventListener('click', newSession);
   $('#btnNewMeetingTop').addEventListener('click', newSession);
+  $('#btnPlayMeeting').addEventListener('click', playMeeting);
   $('#memoInput').addEventListener('input', (e) => {
     state.memo = e.target.value;
     autoSaveMemoDebounced();
@@ -1941,7 +2028,14 @@ function renderFactList(personaId, parsed) {
   }
 
   // 페어 렌더 — 팩트 한 줄 + 방향성 한 줄(있으면)
-  const html = '<div class="fact-list">' +
+  let html = '';
+
+  // PERSPECTIVE 섹션이 있으면 카드 상단에 인용 박스로
+  if (parsed.PERSPECTIVE && parsed.PERSPECTIVE.trim()) {
+    html += `<div class="fact-perspective">${escapeHtml(parsed.PERSPECTIVE.trim())}</div>`;
+  }
+
+  html += '<div class="fact-list">' +
     pairs.map(p => {
       let h = '<div class="fact-pair">';
       if (p.fact) {
@@ -2247,24 +2341,32 @@ function startVoiceInput(targetSelector) {
 // 페르소나별 발화 텍스트 정리 — 마커 제거하고 자연스러운 한국어로
 function buildSpeechText(persona, parsed) {
   const factsText = parsed.FACTS || parsed.RAW || '';
-  if (!factsText) return null;
+  const perspective = parsed.PERSPECTIVE || '';
+  if (!factsText && !perspective) return null;
 
-  const lines = factsText.split('\n').map(l => l.trim()).filter(Boolean);
   const parts = [`${persona.name}, ${persona.role}.`];
 
-  lines.forEach(raw => {
-    const isFact = /^[-•*]\s+/.test(raw);
-    const isDir = /^(→|->)\s*/.test(raw);
-    if (isFact) {
-      let text = raw.replace(/^[-•*]\s+/, '').trim();
-      const isWarn = /^⚠\s*/.test(text);
-      if (isWarn) text = text.replace(/^⚠\s*/, '').trim();
-      parts.push((isWarn ? '경고. ' : '') + text + '.');
-    } else if (isDir) {
-      const text = raw.replace(/^(→|->)\s*/, '').trim();
-      parts.push('이는 ' + text + '.');
-    }
-  });
+  // PERSPECTIVE 먼저 발화 (페르소나 고유 시각)
+  if (perspective && perspective.trim()) {
+    parts.push('관점. ' + perspective.trim());
+  }
+
+  if (factsText) {
+    const lines = factsText.split('\n').map(l => l.trim()).filter(Boolean);
+    lines.forEach(raw => {
+      const isFact = /^[-•*]\s+/.test(raw);
+      const isDir = /^(→|->)\s*/.test(raw);
+      if (isFact) {
+        let text = raw.replace(/^[-•*]\s+/, '').trim();
+        const isWarn = /^⚠\s*/.test(text);
+        if (isWarn) text = text.replace(/^⚠\s*/, '').trim();
+        parts.push((isWarn ? '경고. ' : '') + text + '.');
+      } else if (isDir) {
+        const text = raw.replace(/^(→|->)\s*/, '').trim();
+        parts.push('이는 ' + text + '.');
+      }
+    });
+  }
   return parts.join(' ');
 }
 
@@ -2311,6 +2413,8 @@ function _speakUtterance(text, btnSelector, personaId) {
 }
 
 function speakCard(personaId) {
+  // 회의 전체 읽기 진행 중이면 먼저 정지
+  if (meetingPlaybackPlaying) stopMeetingPlayback();
   // 같은 카드 다시 누르면 중지
   if (state.speakingPersona === personaId) {
     window.speechSynthesis.cancel();
@@ -2550,6 +2654,132 @@ function speakFollowup(followupId, personaId) {
   _speakUtterance(`${persona.name}. ${ans.text}`, null, null);
 }
 
+/* ============ 회의 전체 순차 읽기 ============ */
+let meetingPlaybackQueue = [];
+let meetingPlaybackPlaying = false;
+
+// 회의 전체 발화 스크립트 빌더 — 안건 → 4 팩트시트 → 후속 → 메모 순
+function buildMeetingScript() {
+  const items = [];
+
+  if (state.agenda && state.agenda.trim()) {
+    items.push({ text: '안건. ' + state.agenda.trim() });
+  }
+
+  // 4 페르소나 팩트시트 — 정의된 순서대로
+  PERSONAS.forEach((p) => {
+    if (state.facts[p.id]) {
+      const text = buildSpeechText(p, state.facts[p.id]);
+      if (text) {
+        items.push({ text: `${p.name}의 팩트시트. ${text}` });
+      }
+    }
+  });
+
+  // 후속 질문/응답 — 시간순
+  (state.followups || []).forEach((f, i) => {
+    if (f.question) {
+      items.push({ text: `추가 질문 ${i + 1}. ${f.question}` });
+    }
+    (f.answers || []).forEach((a) => {
+      const persona = PERSONAS.find((x) => x.id === a.personaId);
+      if (persona && a.text) {
+        items.push({ text: `${persona.name}의 답변. ${a.text}` });
+      }
+    });
+  });
+
+  // 메모
+  if (state.memo && state.memo.trim()) {
+    items.push({ text: '의장의 메모. ' + state.memo.trim() });
+  }
+
+  return items;
+}
+
+function updatePlayMeetingButton(playing) {
+  const btn = $('#btnPlayMeeting');
+  if (!btn) return;
+  const icon = btn.querySelector('.play-icon');
+  const label = btn.querySelector('.play-label');
+  if (playing) {
+    if (icon) icon.textContent = '■';
+    if (label) label.textContent = '읽기 중지';
+    btn.classList.add('playing');
+  } else {
+    if (icon) icon.textContent = '▶';
+    if (label) label.textContent = '회의 전체 읽기';
+    btn.classList.remove('playing');
+  }
+}
+
+function stopMeetingPlayback() {
+  meetingPlaybackPlaying = false;
+  meetingPlaybackQueue = [];
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+  updatePlayMeetingButton(false);
+}
+
+function playNextMeetingItem() {
+  if (!meetingPlaybackPlaying || meetingPlaybackQueue.length === 0) {
+    stopMeetingPlayback();
+    return;
+  }
+  const item = meetingPlaybackQueue.shift();
+  const u = new SpeechSynthesisUtterance(item.text);
+  u.lang = 'ko-KR';
+  u.rate = state.voiceRate || 1.0;
+  if (state.voiceURI) {
+    const v = window.speechSynthesis.getVoices().find((x) => x.voiceURI === state.voiceURI);
+    if (v) u.voice = v;
+  }
+  u.onend = () => {
+    if (meetingPlaybackPlaying) {
+      // 항목 사이 짧은 텀
+      setTimeout(playNextMeetingItem, 350);
+    }
+  };
+  u.onerror = (e) => {
+    if (e.error !== 'interrupted' && e.error !== 'canceled') {
+      toast('음성 재생 오류: ' + e.error, true);
+    }
+    stopMeetingPlayback();
+  };
+  window.speechSynthesis.speak(u);
+}
+
+function playMeeting() {
+  if (!('speechSynthesis' in window)) {
+    toast('이 브라우저는 음성 합성을 지원하지 않습니다', true);
+    return;
+  }
+  // 이미 재생 중이면 중지 (토글)
+  if (meetingPlaybackPlaying) {
+    stopMeetingPlayback();
+    return;
+  }
+  const script = buildMeetingScript();
+  if (script.length === 0) {
+    toast('읽을 회의 내용이 없습니다 — 안건부터 시작하세요', true);
+    return;
+  }
+  // 다른 발화 모두 정리 (페르소나 카드 ▶ 등)
+  window.speechSynthesis.cancel();
+  state.speakingPersona = null;
+  document.querySelectorAll('.btn-speak').forEach((b) => {
+    b.classList.remove('playing');
+    b.textContent = '▶';
+  });
+
+  meetingPlaybackQueue = script;
+  meetingPlaybackPlaying = true;
+  updatePlayMeetingButton(true);
+  playNextMeetingItem();
+  toast(`회의 전체 읽기 시작 (${script.length}개 항목)`);
+}
+
 /* ============ EXPORT MARKDOWN ============ */
 function exportMarkdown() {
   if (!state.agenda) {
@@ -2777,6 +3007,8 @@ function loadSession(id) {
 }
 
 function newSession() {
+  // 회의 전체 읽기 진행 중이면 정지
+  if (meetingPlaybackPlaying) stopMeetingPlayback();
   state.agenda = '';
   state.facts = {};
   state.followups = [];
