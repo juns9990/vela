@@ -6,236 +6,236 @@
     <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
     <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
     <language>ko</language>
-    <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
-    <lastBuildDate>Mon, 04 May 2026 16:23:31 +0900</lastBuildDate>
+    <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
+    <lastBuildDate>Mon, 11 May 2026 06:41:52 +0900</lastBuildDate>
     <generator>Vela Weekly Collector</generator>
     <ttl>10080</ttl>
     <item>
       <title>[Cover] Let&apos;s build GPT · 처음부터 만드는 GPT</title>
       <link>https://juns9990.github.io/vela/vela-prototype.html</link>
-      <guid isPermaLink="false">vela-cover-2026-W19</guid>
+      <guid isPermaLink="false">vela-cover-2026-W20</guid>
       <description>이번 주 Vela가 추천하는 깊이 있는 강의. Andrej Karpathy의 시그니처.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>Cover Story</category>
     </item>
     <item>
-      <title>[Robotics] AsgardBench: 시각적으로 기반한 상호 작용 계획 벤치마크</title>
-      <link>https://www.microsoft.com/en-us/research/blog/asgardbench-a-benchmark-for-visually-grounded-interactive-planning/</link>
-      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/asgardbench-a-benchmark-for-visually-grounded-interactive-planning/</guid>
-      <description>로봇이 주방을 청소하라는 임무를 받았을 때, 환경을 관찰하고 무엇을 해야하는지 결정하며 예상과 달리 일이 잘 안 풀리는 경우에도 조정해야 하는 상황을 상상해 보세요. 예를 들어, 물병을 세척하라는 임무를 받았는데 이미 깨끗하거나 싱크가 이미 꽉 차있는 경우</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
-      <category>Robotics</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
-    </item>
-    <item>
-      <title>[Audio] Gemini 3.1 플래시 라이브: 음성 AI가 더 자연스럽고 신뢰할 수 있게 만드는 기술</title>
-      <link>https://deepmind.google/blog/gemini-3-1-flash-live-making-audio-ai-more-natural-and-reliable/</link>
-      <guid isPermaLink="true">https://deepmind.google/blog/gemini-3-1-flash-live-making-audio-ai-more-natural-and-reliable/</guid>
-      <description>우리의 최신 음성 모델은 음성 상호 작용을 더 유연하고 자연스럽게 만드는 정확도와 낮은 지연 시간을 향상시켰다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
-      <category>Audio</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
-    </item>
-    <item>
-      <title>[Agent] 겔마 4: 가장 강력한 오픈 모델</title>
+      <title>[Agent] Gem마 4: 오픈 모델의 최강자, 합리적 사고와 에이전트 워크플로우를 위한</title>
       <link>https://deepmind.google/blog/gemma-4-byte-for-byte-the-most-capable-open-models/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/gemma-4-byte-for-byte-the-most-capable-open-models/</guid>
-      <description>겔마 4는 현재까지 가장 똑똑한 오픈 모델로, 고급 추론 및 에이전트 워크플로우를 위한 목적을 갖춘 모델입니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <description>Gem마 4는 현재까지 가장 뛰어난 오픈 모델입니다. 이 모델은 고급 합리적 사고와 에이전트 워크플로우를 위해 특별히 설계되었습니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[Robotics] 로봇이 현실 세계를 더 잘 이해하게 하는 Gemini ER 1.6</title>
+      <title>[Robotics] 제미니 로봇 ER 1.6: 현실적인 로봇 태스크를 위한 향상된 체현적 사고</title>
       <link>https://deepmind.google/blog/gemini-robotics-er-1-6/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/gemini-robotics-er-1-6/</guid>
-      <description>Gemini ER 1.6은 로봇이 공간적 사고와 다중 시각 이해를 강화하는 새로운 버전입니다. 이 기술은 자율 로봇이 현실 세계를 더 잘 이해하고 작동할 수 있도록 합니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <description>제미니 로봇 ER 1.6은 공간적 사고와 다중 시각 이해를 향상시켜 자율 로봇을 위한 새로운 기술을 제공합니다. 이 업데이트로 로봇이 현실 세계에서 더 효과적으로 작동할 수 있습니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>Robotics</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[Audio] Gemini 3.1 Flash TTS: the next generation of expressive AI speech</title>
+      <title>[Audio] Gemini 3.1: 감동적인 인공지능 음성의 새로운 세대</title>
       <link>https://deepmind.google/blog/gemini-3-1-flash-tts-the-next-generation-of-expressive-ai-speech/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/gemini-3-1-flash-tts-the-next-generation-of-expressive-ai-speech/</guid>
-      <description>Our newest audio model introduces granular audio tags that give you precise control to direct AI speech for expressive audio generation.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <description>우리의 최신 오디오 모델은 granular audio tags를 도입하여 AI 음성을 감정적으로 생성하는 데 정확한 제어를 제공합니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>Audio</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
-    </item>
-    <item>
-      <title>[LLM] 구글이 도와주는 여름 여행 7가지 방법</title>
-      <link>https://blog.google/products-and-platforms/products/search/summer-travel-tips-google-search-ai/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/summer-travel-tips-google-search-ai/</guid>
-      <description>여름 여행을 위해 구글이 제공하는 새로운 방법들을 소개합니다. 구글은 여행자들을 위한 다양한 도구와 서비스를 제공하고 있습니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[LLM] 구글 광고가 더 안전하고 빠르게! Ads Advisor의 3가지 새로운 방법</title>
-      <link>https://blog.google/products/ads-commerce/ads-advisor-google-ads/</link>
-      <guid isPermaLink="true">https://blog.google/products/ads-commerce/ads-advisor-google-ads/</guid>
-      <description>구글 마케팅 라이브(Google Marketing Live)에서 발표된 Ads Advisor의 새로운 기능은 구글 광고의 안전성과 속도를 향상시키기 위해 설계되었습니다. Ads Advisor는 구글 광고의 자동화와 최적화를 위한 도구로, 새로운 기능을 통해 광고주들은 더 효율적인 광고 캠페인을 운영할 수 있습니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
       <title>[LLM] 산업 리더와 함께하는 인공지능 혁신 가속</title>
       <link>https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/</guid>
-      <description>구글 딥마인드는 세계적인 컨설팅 회사와 함께 전위 인공지능의 힘을 전 세계 조직에 전파하고 있습니다. 이 파트너십은 조직이 인공지능을 적절하게 활용하고 혁신을 가속화하는 데 도움을 줄 것입니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <description>구글 딥마인드는 전 세계의 기업들에게 최첨단 인공지능의 힘을 전달하기 위해 글로벌 컨설팅 회사와 파트너십을 맺고 있습니다. 이를 통해 기업들은 인공지능을 활용한 혁신을 가속화할 수 있습니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[Agent] TPU 8세대, 에이전트 시대 파워!</title>
-      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/</guid>
-      <description>구글의 8세대 TPU는 에이전트 시대를 이끌어갈 두 개의 특화된 칩을 포함합니다. 이 칩들은 인공지능의 미래를 열어줄 것입니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <title>[LLM] 제미니 8가지 팁으로 공간과 삶을 조화롭게 조직하세요</title>
+      <link>https://blog.google/products-and-platforms/products/gemini/gemini-spring-cleaning-tips/</link>
+      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/gemini/gemini-spring-cleaning-tips/</guid>
+      <description>제미니는 사용자들의 공간과 삶을 조화롭게 조직해주는 도구입니다. 제미니 라이브를 통해 사용자들은 자신의 일정과 업무를 효율적으로 관리할 수 있습니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Agent] 구글과 카글이 함께하는 새로운 인공지능 에이전트 코딩 코스</title>
+      <link>https://blog.google/innovation-and-ai/technology/developers-tools/kaggle-genai-intensive-course-vibe-coding-june-2026/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/developers-tools/kaggle-genai-intensive-course-vibe-coding-june-2026/</guid>
+      <description>구글과 카글이 함께하는 새로운 인공지능 에이전트 코딩 코스. 이 코스는 AI 에이전트를 개발하는 데 필요한 기술과 지식을 제공합니다. 다양한 에이전트를 개발하고 테스트하는 방법을 배울 수 있습니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Tool] TPU가 인공지능 작업 부하를 어떻게 지원하는가?</title>
-      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/what-is-a-tpu/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/what-is-a-tpu/</guid>
-      <description>구글의 TPU는 점점 더 많은 요구 사항이 있는 인공지능 작업을 어떻게 처리하는지 새로운 비디오를 통해 알아보세요.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <title>[LLM] 대한민국과 함께하는 인공지능 혁신</title>
+      <link>https://deepmind.google/blog/announcing-our-partnership-with-the-republic-of-korea/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/announcing-our-partnership-with-the-republic-of-korea/</guid>
+      <description>구글 딥마인드와 한국 정부는 최첨단 인공지능 모델을 이용한 과학적 혁신을 가속화하기 위해 파트너십을 맺었습니다. 이 협력은 인공지능의 잠재력을 극대화하고, 미래의 과학적 발견을 촉진하는 데 중요한 역할을 할 것입니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
+    </item>
+    <item>
+      <title>[LLM] 구글 번역 20주년 기념: 재미있는 사실, 팁, 새로운 기능</title>
+      <link>https://blog.google/products-and-platforms/products/translate/fun-facts-google-translate-20-years/</link>
+      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/translate/fun-facts-google-translate-20-years/</guid>
+      <description>구글 번역의 로고는 화려한 삽화 장면 가운데에 위치하고 있다. 그 중에는 사람들 사이의 실시간 대화 번역과 숫자 20을 달고 불을 지펴 놓은 생일 케이크가 있다. 구글 번역은 20년이 지난 지금도 여전히 빠르게 발전하고 있는 중이다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[LLM] Enabling a new model for healthcare with AI co-clinician</title>
+      <link>https://deepmind.google/blog/ai-co-clinician/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/ai-co-clinician/</guid>
+      <description>Researching the path to AI-augmented care and development of an AI co-clinician.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
+    </item>
+    <item>
+      <title>[Tool] 2026년 4월 발표된 인공지능 최신 뉴스</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-april-2026/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-april-2026/</guid>
+      <description>4월에 발표된 인공지능 최신 뉴스를 소개합니다. 이 뉴스는 바다 밑에서 촬영한 비디오와 모바일 AI 비디오의 시연을 포함합니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>Tool</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Vision] 구글, 알프스 첫 데이터 센터 투자... 오스트리아 경제 발전</title>
-      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-center-austria/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-center-austria/</guid>
-      <description>구글이 알프스 지역에 첫 데이터 센터를 투자한다. 오스트리아 경제 발전을 위한 중요한 일자리 창출과 기술 혁신을 위한 중요한 조치이다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <title>[LLM] 구글, 3.5억 달러 영화 경쟁에 참여한다</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/future-vision-film-competition-xprize/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/future-vision-film-competition-xprize/</guid>
+      <description>구글은 XPRIZE와 Range Media Partners와 함께 3.5억 달러 규모의 Future Vision 영화 경쟁에 참여한다. 이 경쟁은 미래의 비전을 담은 영화를 제작하는 데 집중하며, 인공지능과 같은 혁신적인 기술을 활용한다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Vision] 검색에서 직접 나만의 정원 만들기</title>
+      <link>https://blog.google/products-and-platforms/products/search/gardening-tips/</link>
+      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/gardening-tips/</guid>
+      <description>검색에서 직접 정원을 만들고 싶은가요? 검색 기능을 사용하여 간단한 정원 만들기 팁을 알아보세요. 검색에서 직접 정원을 만들고 싶은가요? 검색 기능을 사용하여 간단한 정원 만들기 팁을 알아보세요.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Agent] 오픈AI의 새로운 GPT-5.5, NVIDIA 인프라에서 코덱스 작동</title>
-      <link>https://blogs.nvidia.com/blog/openai-codex-gpt-5-5-ai-agents/</link>
-      <guid isPermaLink="true">https://blogs.nvidia.com/blog/openai-codex-gpt-5-5-ai-agents/</guid>
-      <description>인공지능 에이전트는 개발자 워크플로우를 혁명화했고, 다음은 지식 작업의 전선입니다. 정보 처리, 복잡한 문제 해결, 새로운 아이디어 도출 및 혁신 추진. 오픈AI의 코딩 애플리케이션인 코덱스는</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <title>[Agent] Gemini 파워드 코딩 에이전트, 분야를 넘나드는 영향력</title>
+      <link>https://deepmind.google/blog/alphaevolve-impact/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/alphaevolve-impact/</guid>
+      <description>AlphaEvolve의 Gemini 파워드 알고리즘은 비즈니스, 인프라, 과학 분야에서 큰 영향을 미치고 있습니다. Gemini 파워드 알고리즘은 인공지능의 새로운 시대를 열었습니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
-    </item>
-    <item>
-      <title>[LLM] Gemini로 공간과 삶을 조직하는 8가지 팁</title>
-      <link>https://blog.google/products-and-platforms/products/gemini/gemini-spring-cleaning-tips/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/gemini/gemini-spring-cleaning-tips/</guid>
-      <description>Gemini는 사용자가 문서와 이메일을 효율적으로 관리하는 데 도움을 주는 인공지능 도구입니다. Gemini Live를 사용하면 사용자가 자신의 공간과 삶을 조직하고 관리할 수 있습니다. Gemini는 사용자가 자신의 시간과 에너지를 효율적으로 사용할 수 있도록 도와줍니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[LLM] 오픈아이, 미국 연방기관용 안전한 AI 도입 허용</title>
-      <link>https://openai.com/index/openai-available-at-fedramp-moderate</link>
-      <guid isPermaLink="true">https://openai.com/index/openai-available-at-fedramp-moderate</guid>
-      <description>오픈아이의 ChatGPT Enterprise와 OpenAI API는 미국 연방기관의 안전한 인공지능 도입을 허용하는 FedRAMP Moderate 인증을 획득했습니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">OpenAI</source>
-    </item>
-    <item>
-      <title>[LLM] 마이크로소프트와 오픈아이의 새로운 파트너십</title>
-      <link>https://openai.com/index/next-phase-of-microsoft-partnership</link>
-      <guid isPermaLink="true">https://openai.com/index/next-phase-of-microsoft-partnership</guid>
-      <description>마이크로소프트와 오픈아이가 파트너십을 개선하고 장기적인 안정성을 제공하며 대규모 인공지능 혁신을 지원하는 새로운 계약을 발표했습니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">OpenAI</source>
-    </item>
-    <item>
-      <title>[Agent] 구글과 카글이 새로운 AI 에이전트 코딩 강의를 공개했습니다</title>
-      <link>https://blog.google/innovation-and-ai/technology/developers-tools/kaggle-genai-intensive-course-vibe-coding-june-2026/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/developers-tools/kaggle-genai-intensive-course-vibe-coding-june-2026/</guid>
-      <description>구글과 카글은 새로운 AI 에이전트 코딩 강의를 공개했습니다. 이 강의는 AI 에이전트를 개발하기 위한 기초 지식을 제공하며, Transformer, attention, MoE, LLM과 같은 최신 기술을 소개합니다. 강의는 무료로 제공되며, 누구나 AI 에이전트를 개발하는 기초 지식과 기술을 배우실 수 있습니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
-      <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[LLM] 대한민국과 파트너십을 발표합니다</title>
-      <link>https://deepmind.google/blog/announcing-our-partnership-with-the-republic-of-korea/</link>
-      <guid isPermaLink="true">https://deepmind.google/blog/announcing-our-partnership-with-the-republic-of-korea/</guid>
-      <description>구글 딥마인드와 한국이 정교한 인공지능 모델을 사용한 과학적 혁신을 가속화하기 위해 파트너십을 맺습니다. 이 파트너십은 AI 연구와 개발을 촉진하고, 혁신적인 기술을 발전시키기 위해 한국과 함께 일할 것입니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
-      <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[Safety] 사용자 안전을 위한 나의 약속</title>
-      <link>https://openai.com/index/our-commitment-to-community-safety</link>
-      <guid isPermaLink="true">https://openai.com/index/our-commitment-to-community-safety</guid>
-      <description>OpenAI은 ChatGPT에서 사용자 안전을 보호하기 위해 모델 안전장치, 부정 사용 탐지, 정책 집행 및 안전 전문가와의 협력을 통해 어떻게 노력하는지 알아보세요.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
-      <category>Safety</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">OpenAI</source>
+      <title>[LLM] L2 한국어 UD 어휘 분석에서의 파서 동의와 불일치</title>
+      <link>https://arxiv.org/abs/2605.06625v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2605.06625v1</guid>
+      <description>우리는 두 번째 언어(L2) 한국어 형태소 구문 분석을 위한 단순화된 인간-인간 반복워크플로우를 제안한다. 이 워크플로우는 도메인 적응된 두 개의 파서 간의 동의를 활용한다. 파서 동의가 어휘 분석 정확성에 대한 프록시로 작용할 수 있는지 평가하고, 동의와 불일치가 인간이 참여하는 어휘 분석에 미치는 영향을 분석한다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Agent] 오픈AI 모델, 코데, 관리 에이전트가 AWS로</title>
-      <link>https://openai.com/index/openai-on-aws</link>
-      <guid isPermaLink="true">https://openai.com/index/openai-on-aws</guid>
-      <description>오픈AI GPT 모델, 코데, 관리 에이전트가 이제 AWS에서 사용할 수 있게 됐다. 이로써 기업들은 AWS 환경에서 안전한 AI를 개발할 수 있게 되었다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
-      <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">OpenAI</source>
-    </item>
-    <item>
-      <title>[LLM] 구글 번역 20년 기념: 재미있는 사실, 팁, 새로운 기능</title>
-      <link>https://blog.google/products-and-platforms/products/translate/fun-facts-google-translate-20-years/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/translate/fun-facts-google-translate-20-years/</guid>
-      <description>구글 번역은 20년의 역사를 거쳐 발전해 왔습니다. 재미있는 사실과 팁, 새로운 기능을 소개합니다. 구글 번역은 언어 번역을 위한 혁신적인 도구로 변모했습니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <title>[LLM] 크리에이티브 레전드가 소규모 사업체 광고에 AI를 사용했을 때 벌어지는 일</title>
+      <link>https://blog.google/company-news/inside-google/company-announcements/the-small-brief/</link>
+      <guid isPermaLink="true">https://blog.google/company-news/inside-google/company-announcements/the-small-brief/</guid>
+      <description>크리에이티브 레전드인 수잔 크레들, 제이온타 젠킨스, 티파니 롤프가 소규모 사업체 광고를 위해 AI를 사용했을 때 어떤 일이 벌어지는지 살펴보았습니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Featured] 구글 광고가 더 안전하고 빠르게! Ads Advisor의 3가지 새로운 방법</title>
-      <link>https://blog.google/products/ads-commerce/ads-advisor-google-ads/</link>
-      <guid isPermaLink="true">https://blog.google/products/ads-commerce/ads-advisor-google-ads/</guid>
-      <description>구글 마케팅 라이브(Google Marketing Live)에서 발표된 Ads Advisor의 새로운 기능은 구글 광고의 안전성과 속도를 향상시키기 위해 설계되었습니다. Ads Advisor는 구글 광고의 자동화와 최적화를 위한 도구로, 새로운 기능을</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <title>[LLM] 신기하고도 위험한 상상력: 세계 행동 모델의 적응형 행동 수행</title>
+      <link>https://arxiv.org/abs/2605.06222</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2605.06222</guid>
+      <description>인공지능이 상황을 이해하고 적절한 행동을 취하는 것은 쉽지 않은 일입니다. 행동을 수행하기 전에 상상력을 사용하는 것은 이러한 과제를 해결하는 한 가지 방법입니다. 하지만, 상상력이 얼마나 신뢰할만한지 알기 어렵습니다. 연구자들은 적응형 행동 수행을 위한 새로운 접근법을 제안했습니다. 이 접근법은 행동을 수행하기 전에 상상력을 사용하고, 상상력의 신뢰도에 따라 행동을 조정합니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">HF Daily</source>
+    </item>
+    <item>
+      <title>[Agent] LLM의 과학적 문제 해결을 위한 난해한 문제 생성</title>
+      <link>https://arxiv.org/abs/2605.06660v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2605.06660v1</guid>
+      <description>대형 언어 모델(LLM)은 과학적 및 수학적 문제를 해결하는 강력한 능력을 보여주지만, 유효한, 도전적이고 새로운 문제를 생성하는 데 어려움을 겪고 있습니다. 이는 LLM 훈련을 진전시키고 자율적인 과학적 연구를 가능케하는 중요한 구성 요소입니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Agent] 정보 검색의 새로운 전선: 초인공지능 검색 에이전트</title>
+      <link>https://arxiv.org/abs/2605.06647v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2605.06647v1</guid>
+      <description>정보 검색을 위한 인공지능 에이전트가 조직의 큰 지식 데이터베이스에 접근하는 인터페이스로 자리 잡고 있지만, 대부분의 에이전트는 검색을 단순히 블랙박스로 다루고 있다. 그들은 탐색적 질의를, 반환된 조각을 검사하고, 유용한 증거가 나타날 때까지 반복적으로 재구성한다. 이러한 접근 방식은 검색에 대한 에이전트의 지식과 능력을 제대로 활용하지 못한다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Vision] 영상 재조명 기술, 환경과 동시 학습</title>
+      <link>https://arxiv.org/abs/2605.06658v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2605.06658v1</guid>
+      <description>최근 연구 결과를 통해 대규모 비디오 확산 모델을 재현 렌더러로 변환할 수 있는 방법을 제안했습니다. 이 방법은 비디오를 내재적 장면 표현으로 분해하고 그다음에 새로운 조명 하에서 전방 렌더링을 수행하는 것입니다. 그러나 이 패러다임은 환경과 동시 학습을 하는 새로운 방법을 제안합니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
+      <category>Vision</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Tool] ADeLe: AI 성능 예측과 설명</title>
+      <link>https://www.microsoft.com/en-us/research/blog/adele-predicting-and-explaining-ai-performance-across-tasks/</link>
+      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/adele-predicting-and-explaining-ai-performance-across-tasks/</guid>
+      <description>인공지능 성능 지표는 특정 작업에서 대형 언어 모델(LLM)의 성능을 보고하지만, 그들의 성능을 이끄는 내재된 능력에 대한 거의 아무런 정보도 제공하지 않는다. 실패를 설명하거나 새로운 작업의 결과를 신뢰할 수 있는 예측을 제공하지 않는다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
+      <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
+    </item>
+    <item>
+      <title>[Featured] 대한민국과 함께하는 인공지능 혁신</title>
+      <link>https://deepmind.google/blog/announcing-our-partnership-with-the-republic-of-korea/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/announcing-our-partnership-with-the-republic-of-korea/</guid>
+      <description>구글 딥마인드와 한국 정부는 최첨단 인공지능 모델을 이용한 과학적 혁신을 가속화하기 위해 파트너십을 맺었습니다. 이 협력은 인공지능의 잠재력을 극대화하고, 미래의 과학적 발견을 촉진하는 데 중요한 역할을 할 것입니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] 산업 리더와 함께하는 인공지능 혁신 가속</title>
-      <link>https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/</link>
-      <guid isPermaLink="true">https://deepmind.google/blog/partnering-with-industry-leaders-to-accelerate-ai-transformation/</guid>
-      <description>구글 딥마인드는 세계적인 컨설팅 회사와 함께 전위 인공지능의 힘을 전 세계 조직에 전파하고 있습니다. 이 파트너십은 조직이 인공지능을 적절하게 활용하고 혁신을 가속화하는 데 도움을 줄 것입니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <title>[Featured] 구글 번역 20주년 기념: 재미있는 사실, 팁, 새로운 기능</title>
+      <link>https://blog.google/products-and-platforms/products/translate/fun-facts-google-translate-20-years/</link>
+      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/translate/fun-facts-google-translate-20-years/</guid>
+      <description>구글 번역의 로고는 화려한 삽화 장면 가운데에 위치하고 있다. 그 중에는 사람들 사이의 실시간 대화 번역과 숫자 20을 달고 불을 지펴 놓은 생일 케이크가 있다. 구글 번역은 20년이 지난 지금도 여전히 빠르게 발전하고 있는 중이다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] TPU 8세대, 에이전트 시대 파워!</title>
-      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/</guid>
-      <description>구글의 8세대 TPU는 에이전트 시대를 이끌어갈 두 개의 특화된 칩을 포함합니다. 이 칩들은 인공지능의 미래를 열어줄 것입니다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <title>[Featured] Enabling a new model for healthcare with AI co-clinician</title>
+      <link>https://deepmind.google/blog/ai-co-clinician/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/ai-co-clinician/</guid>
+      <description>Researching the path to AI-augmented care and development of an AI co-clinician.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] TPU가 인공지능 작업 부하를 어떻게 지원하는가?</title>
-      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/what-is-a-tpu/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/what-is-a-tpu/</guid>
-      <description>구글의 TPU는 점점 더 많은 요구 사항이 있는 인공지능 작업을 어떻게 처리하는지 새로운 비디오를 통해 알아보세요.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <title>[Featured] 2026년 4월 발표된 인공지능 최신 뉴스</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-april-2026/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-april-2026/</guid>
+      <description>4월에 발표된 인공지능 최신 뉴스를 소개합니다. 이 뉴스는 바다 밑에서 촬영한 비디오와 모바일 AI 비디오의 시연을 포함합니다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] 구글, 알프스 첫 데이터 센터 투자... 오스트리아 경제 발전</title>
-      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-center-austria/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-center-austria/</guid>
-      <description>구글이 알프스 지역에 첫 데이터 센터를 투자한다. 오스트리아 경제 발전을 위한 중요한 일자리 창출과 기술 혁신을 위한 중요한 조치이다.</description>
-      <pubDate>Mon, 04 May 2026 16:23:31 +0900</pubDate>
+      <title>[Featured] 구글, 3.5억 달러 영화 경쟁에 참여한다</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/future-vision-film-competition-xprize/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/future-vision-film-competition-xprize/</guid>
+      <description>구글은 XPRIZE와 Range Media Partners와 함께 3.5억 달러 규모의 Future Vision 영화 경쟁에 참여한다. 이 경쟁은 미래의 비전을 담은 영화를 제작하는 데 집중하며, 인공지능과 같은 혁신적인 기술을 활용한다.</description>
+      <pubDate>Mon, 11 May 2026 06:41:52 +0900</pubDate>
       <category>Featured</category>
     </item>
   </channel>
