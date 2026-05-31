@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.9.5 — 아이디어 회의실</title>
+<title>Vela Compass v0.9.6 — 아이디어 회의실</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
@@ -1002,15 +1002,6 @@
     font-style: italic;
   }
 
-  /* Groq 웹검색 미지원 안내 */
-  .websearch-note {
-    font-size: 11px;
-    color: var(--text-faint);
-    padding: 4px 0 0;
-    font-style: italic;
-    letter-spacing: 0.01em;
-  }
-
   /* INSIGHT — 페르소나 고유 시각·핵심 질문 (카드 상단) */
   .fact-perspective {
     font-size: 13.5px;
@@ -1825,7 +1816,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.9.5</span>
+    <span>v0.9.6</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1895,9 +1886,6 @@
       <button class="routing-chip" data-target="maker" title="이준호 · 메이커"><span class="dot" style="background:var(--c-engineer)"></span>이준호</button>
     </div>
 
-    <!-- Groq일 때 웹검색 미지원 안내 -->
-    <div class="websearch-note" id="websearchNote" hidden>웹 검색·이미지·링크는 Anthropic 키에서만 작동합니다. (현재 Groq)</div>
-
     <!-- 하단 입력창 (카톡 스타일) -->
     <div class="chat-input-bar">
       <button id="btnFollowupMic" class="btn-mic chat-mic" type="button" title="음성으로 질문" aria-label="음성으로 질문">
@@ -1957,7 +1945,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.9.5 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.9.6 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -2051,14 +2039,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.9.5 — Factsheet mode
+ * Vela Compass v0.9.6 — Factsheet mode
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const VERSION = 'v0.9.5';
+const VERSION = 'v0.9.6';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -2101,22 +2089,23 @@ const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효]
 - 100% 한국어. 한자·일본어·베트남어 등 외국어 단어 절대 금지. 외래어는 한국어로 ('큐어링'→'경화').
 - 영어 약자(TPU, SLA, IP 등)와 고유명사(브랜드·작가·작품명)는 허용.
 
-[대화 방식 — 진짜 회의실]
-- 이건 카톡 같은 실시간 회의실이다. 짧고 자연스럽게 말한다. 보고서·목록 나열 금지.
-- 한 번에 2~5문장. 길게 늘어놓지 말 것. 핵심만 친근하게.
-- 동료(다른 베테랑)가 방금 한 말이 있으면 거기에 반응하고 받아친다. "맞아, 근데", "그거 좋은데 나는", "오히려 나는" 식으로 진짜 토론하듯.
-- 사용자가 던진 말에 바로 반응. 질문이면 답하고, 막연하면 되묻거나 방향 제시.
-- 구체적으로. "트렌드 반영하세요" 같은 공허한 말 금지. 실제 브랜드·작가·제품·수치를 든다.
-- 확신 없으면 웹 검색해서 진짜 최신 정보·사례를 가져온다. 막연한 추측 금지.
+[대화 방식 — 진짜 회의실, 가장 중요]
+- 이건 카톡 같은 실시간 회의실이다. 짧고 자연스럽게. 보고서·목록 나열 절대 금지.
+- 한 번에 2~4문장. 길게 늘어놓지 말 것. 핵심만 친근하게.
+- **동료(다른 베테랑)의 직전 발언이 대화에 있으면, 반드시 그 말을 직접 언급하며 시작한다.** 동료 이름을 부르고("이준호 말처럼", "서다현이 말한 OO은") 동의하거나 반박하거나 발전시킨다. 동료 말을 무시하고 혼자 새 얘기만 하면 안 된다.
+- 진짜 토론처럼: "맞아 근데", "오 그거 좋은데 나는", "그건 좀 어려워, 오히려", "동의해. 거기에 더하면" 식으로 받아친다.
+- 사용자(Juns)가 말하면 바로 반응. 질문이면 답하고, 막연하면 되묻거나 방향 제시.
+- 구체적으로. "트렌드 반영하세요" 같은 공허한 말 금지. 실제 브랜드·작가·제품·기법 이름을 든다.
+- 절대 응답 맨 앞에 자기 이름(예: "서다현:")을 쓰지 마라. 화면에 이미 이름이 표시된다. 바로 말 내용으로 시작.
 
-[웹 검색 활용 — 가능하면 적극적으로]
-- 트렌드, 실제 사례, 가격, 최신 인기 작품·브랜드를 물으면 웹 검색해서 진짜 정보를 가져온다.
-- 검색해서 찾은 건 출처(브랜드명/작가명/사이트)를 자연스럽게 언급. 사용자가 직접 찾아볼 수 있게.
-- 이미지가 도움이 되면 "이런 느낌이야" 하며 검색해서 참고할 수 있는 키워드나 출처를 알려준다.
+[웹 검색 — 가능하면 적극적으로]
+- 트렌드·실제 사례·가격·최신 인기작을 다룰 때 웹 검색해서 진짜 정보를 가져온다 (가능한 경우).
+- 검색 못 하는 환경이면 네가 아는 실제 사례·브랜드·작가 이름을 최대한 구체적으로 든다. 막연하게 얼버무리지 마라.
+- 이미지·링크가 도움 되면 마크다운으로 넣어도 좋다 (![](url) 또는 [텍스트](url)).
 
 [톤]
-- 업계 최고 수준 전문가가 친한 후배에게 솔직하게 조언하듯. 격식 없이, 하지만 날카롭게.
-- 영감을 주되 현실적. "이거 진짜 되겠다" 싶은 수준의 아이디어만.`;
+- 업계 최고 수준 전문가가 친한 후배에게 솔직하게 조언하듯. 격식 없이, 날카롭게.
+- 영감을 주되 현실적. "이거 진짜 되겠다" 싶은 수준만.`;
 
 const PERSONAS = [
   {
@@ -2351,9 +2340,6 @@ function refreshApiStatus() {
     el.textContent = 'NO API KEY';
     el.style.color = 'var(--c-warn)';
   }
-  // Groq일 때 웹검색 미지원 안내 노트 토글
-  const note = $('#websearchNote');
-  if (note) note.hidden = (state.provider !== 'groq');
 }
 function refreshModelTag() {
   for (const cfg of Object.values(LLM_CONFIG)) {
@@ -2897,7 +2883,9 @@ async function runPersonaTurn(persona, instruction) {
 
   try {
     const result = await callLLM(persona.system, messages, { webSearch: useWebSearch, maxTokens: 1200 });
-    const text = sanitizeKorean(result.text || '');
+    let text = sanitizeKorean(result.text || '');
+    // 모델이 응답 맨 앞에 자기 이름표를 붙이면 제거 ("서다현:", "[이준호]", "서다현 -" 등)
+    text = text.replace(/^\s*\[?(서다현|이준호)\]?\s*[:：\-—]\s*/, '').trim();
     removeTypingMessage(persona.id);
     const msg = {
       id: 'msg_' + persona.id + '_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
@@ -2970,17 +2958,24 @@ async function startMeeting() {
   const maker = PERSONAS.find(p => p.id === 'maker');
 
   try {
-    // 1. 디렉터(서다현)가 먼저 — 컨셉·트렌드로 운을 뗌. 필요하면 웹 검색.
+    // 1. 서다현이 운을 뗌 — 컨셉·트렌드
     await runPersonaTurn(director,
-      '방금 Juns가 던진 주제에 반응해줘. 지금 이게 왜 흥미로운지, 어떤 컨셉·트렌드로 가면 좋을지 네 시각을 짧게 던져. 필요하면 실제 뜨는 사례를 웹에서 찾아서 구체적으로. 회의 첫 발언이니까 너무 길지 않게, 대화 물꼬를 트듯이.');
+      'Juns가 방금 주제를 던졌어. 동료 이준호(메이커)와 함께하는 회의야. 네가 먼저 컨셉·트렌드 관점에서 운을 떼. 지금 이게 왜 흥미로운지, 어떤 방향이 뜨는지 구체적인 사례(실제 브랜드·작가·작품 이름)와 함께. 그리고 마지막에 이준호한테 "이거 만들 수 있어?" 같이 공을 넘겨. 2~4문장으로 짧게, 대화하듯.');
 
-    if (state.provider === 'groq') await sleep(1200);
+    if (state.provider === 'groq') await sleep(1000);
 
-    // 2. 메이커(이준호)가 디렉터 말 받아서 — 실현·공정 관점으로 받아침
+    // 2. 이준호가 서다현 말을 직접 받아침
     await runPersonaTurn(maker,
-      '서다현(디렉터)이 방금 컨셉 얘기를 했어. 그걸 받아서 "그거 만들려면 이렇게" 하고 공정·재료·실현 관점으로 대화하듯 받아쳐. 동의하거나 다른 방향을 제안하거나. 짧고 자연스럽게.');
+      '바로 위에서 서다현이 한 말을 읽고, 그 말에 직접 반응해. "서다현 말처럼 OO은 좋은데", "근데 그거 만들려면..." 식으로 동료 말을 인용하면서 공정·재료 관점으로 받아쳐. 동의할 건 동의하고 현실적인 제약이나 더 나은 방법이 있으면 제안해. 마지막에 다시 서다현이나 Juns에게 질문이나 공을 넘겨도 좋아. 2~4문장, 대화하듯.');
+
+    if (state.provider === 'groq') await sleep(1000);
+
+    // 3. 서다현이 메이커 말 듣고 다시 — 짧게 마무리·발전
+    await runPersonaTurn(director,
+      '이준호가 방금 공정 얘기를 했어. 그걸 듣고 네 생각을 짧게 더해. "오 그러면 이렇게 하면 되겠다" 식으로 둘의 의견을 합쳐서 한 단계 발전시키거나, 새 디테일을 더해. 1~3문장으로 아주 짧게. 회의 첫 라운드를 자연스럽게 매듭짓듯.');
 
     autoSave();
+    toast('회의 시작 — 이어서 대화창에 자유롭게 말 걸어보세요');
   } finally {
     state.inProgress = false;
     $('#btnStart').disabled = false;
@@ -3244,9 +3239,9 @@ async function sendFollowup() {
       const persona = targetPersonas[i];
       let instruction;
       if (i === 0) {
-        instruction = 'Juns가 방금 한 말에 너답게 반응해. 질문이면 답하고, 새 방향이면 같이 발전시켜. 필요하면 웹에서 실제 사례·이미지·정보를 찾아와서 구체적으로. 짧고 자연스럽게 대화하듯.';
+        instruction = 'Juns가 방금 한 말에 너답게 바로 반응해. 질문이면 답하고, 새 방향이면 같이 발전시켜. 실제 브랜드·작가·기법·사례 이름을 구체적으로 들고(가능하면 웹 검색). 동료에게 넘길 부분이 있으면 "이준호/서다현 생각은?" 식으로 공을 넘겨. 2~4문장 대화하듯.';
       } else {
-        instruction = '동료가 방금 한 말과 Juns의 말을 보고, 네 관점에서 받아쳐. 동의하거나 보완하거나 다른 방향을 제안하거나. 굳이 더 보탤 게 없으면 짧게 동의만 해도 돼. 자연스럽게.';
+        instruction = '바로 위에서 동료가 한 말을 직접 인용하며 받아쳐. "OO 말처럼", "근데 그건" 식으로 동료 발언에 반응하는 게 핵심이야. 동의·보완·반박 다 좋아. 같은 얘기 반복 말고 네 전문 관점에서 새로 더해. 더 보탤 게 정말 없으면 짧게 동의만. 2~4문장.';
       }
       await runPersonaTurn(persona, instruction);
       if (state.provider === 'groq' && i < targetPersonas.length - 1) await sleep(1200);
