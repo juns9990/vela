@@ -1,6 +1,6 @@
 /* =============================================================
  * Vela Boardroom — Service Worker
- * v0.9.8
+ * v0.9.9
  *
  * 전략:
  * - HTML + manifest.json은 network-first (즉시 업데이트 반영)
