@@ -2230,7 +2230,26 @@ window.addEventListener('DOMContentLoaded', () => {
   bindEvents();
   bindInstallButton();
   handleUrlAction();
+  restoreLastMeeting();
 });
+
+// 새로고침·재시작 시 마지막 진행 중 회의 자동 복원
+function restoreLastMeeting() {
+  try {
+    if (location.hash && location.hash.length > 1) return;
+    const sessions = loadSessions();
+    if (!sessions || sessions.length === 0) return;
+    const last = sessions[0];
+    const hasContent = (last.messages && last.messages.length > 0)
+                    || (last.facts && Object.keys(last.facts).length > 0);
+    if (!hasContent) return;
+    const updated = new Date(last.lastUpdated || last.date).getTime();
+    if (Date.now() - updated > 24 * 60 * 60 * 1000) return;
+    loadSession(last.id, { silent: true });
+  } catch (e) {
+    console.warn('[boardroom] restore failed:', e);
+  }
+}
 
 function bindEvents() {
   $('#btnStart').addEventListener('click', startMeeting);
