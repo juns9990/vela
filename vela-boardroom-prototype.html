@@ -3641,7 +3641,7 @@ function renderSessionsList() {
   });
 }
 
-function loadSession(id) {
+function loadSession(id, opts = {}) {
   const sessions = loadSessions();
   const s = sessions.find(x => x.id === id);
   if (!s) return;
