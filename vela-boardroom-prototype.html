@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.9.8 — 아이디어 회의실</title>
+<title>Vela Compass v0.9.9 — 아이디어 회의실</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
@@ -1816,7 +1816,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.9.8</span>
+    <span>v0.9.9</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1945,7 +1945,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.9.8 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.9.9 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -2039,7 +2039,7 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.9.8 — Factsheet mode
+ * Vela Compass v0.9.9 — 아이디어 회의실 (2인 토론)
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
@@ -2224,7 +2224,6 @@ function closeModal(id) { $('#'+id).classList.remove('open'); }
 
 /* ============ INIT ============ */
 window.addEventListener('DOMContentLoaded', () => {
-  renderFactCards();
   refreshApiStatus();
   refreshModelTag();
   bindEvents();
@@ -2670,23 +2669,6 @@ function speakMessage(msgId) {
   if (btn) btn.classList.add('playing');
 }
 
-// 옛 호환 함수 — Sessions 모달에서 옛 세션 카드 표시할 때 사용 (실제 카드 렌더 X)
-function renderFactCards() { /* no-op — 채팅 모드 */ }
-function setCardThinking(personaId, thinking) { /* no-op */ }
-function renderFactList(personaId, parsed) {
-  // 옛 세션 불러올 때 사용 — 메시지 형태로 변환해서 채팅에 추가
-  const msg = {
-    id: 'legacy_' + personaId + '_' + Date.now(),
-    type: 'persona',
-    personaId: personaId,
-    content: '',
-    parsed: parsed,
-    ts: Date.now()
-  };
-  state.messages.push(msg);
-  appendMessage(msg);
-}
-
 /* ============ PARSER ============ */
 
 // 한자 → 한국어 매핑 (가장 흔한 케이스만 — 응답 의미 보존)
@@ -2766,20 +2748,6 @@ function sanitizeKorean(text) {
   s = s.replace(/\n{3,}/g, '\n\n').trim();
 
   return s;
-}
-
-function parseSections(text) {
-  const cleaned = sanitizeKorean(text);
-  const result = { RAW: cleaned };
-  const re = /###([A-Z]+)\s*\n?([\s\S]*?)(?=###[A-Z]+|$)/g;
-  let m;
-  while ((m = re.exec(cleaned)) !== null) {
-    result[m[1]] = m[2].trim();
-  }
-  if (!result.FACTS && cleaned && cleaned.trim()) {
-    result.FACTS = cleaned.trim();
-  }
-  return result;
 }
 
 /* ============ API CALL ============ */
@@ -3166,7 +3134,7 @@ function buildSpeechText(persona, parsed) {
   return parts.join(' ');
 }
 
-// 공통 발화 헬퍼 — speakCard / speakFollowup이 공유
+// 공통 발화 헬퍼 — speakMessage / 회의 전체 읽기가 공유
 function _speakUtterance(text, btnSelector, personaId) {
   if (!('speechSynthesis' in window)) {
     toast('이 브라우저는 음성 합성을 지원하지 않습니다', true);
@@ -3206,27 +3174,6 @@ function _speakUtterance(text, btnSelector, personaId) {
     }
   };
   window.speechSynthesis.speak(u);
-}
-
-function speakCard(personaId) {
-  // 회의 전체 읽기 진행 중이면 먼저 정지
-  if (meetingPlaybackPlaying) stopMeetingPlayback();
-  // 같은 카드 다시 누르면 중지
-  if (state.speakingPersona === personaId) {
-    window.speechSynthesis.cancel();
-    state.speakingPersona = null;
-    document.querySelectorAll('.btn-speak').forEach(b => {
-      b.classList.remove('playing');
-      b.textContent = '▶';
-    });
-    return;
-  }
-  const persona = PERSONAS.find(p => p.id === personaId);
-  const facts = state.facts[personaId];
-  if (!persona || !facts) { toast('읽을 팩트가 없습니다', true); return; }
-  const text = buildSpeechText(persona, facts);
-  if (!text) { toast('읽을 팩트가 없습니다', true); return; }
-  _speakUtterance(text, `.btn-speak[data-speak="${personaId}"]`, personaId);
 }
 
 /* ============ FOLLOW-UP MODE ============ */
@@ -3315,21 +3262,6 @@ async function sendFollowup() {
     $('#btnFollowupSend').textContent = '→';
     $('#followupInput').focus();
   }
-}
-
-// 옛 호환 함수 — 사용 안 함 (채팅 모델로 교체됨)
-function renderFollowupQ(followup, targetPersonas) { /* no-op — 채팅 모드 */ }
-function renderFollowupAnswer(followup, persona, text, isError) { /* no-op — 채팅 모드 */ }
-
-function speakFollowup(followupId, personaId) {
-  // 옛 세션 호환 (followup 구조에서 발화)
-  const followup = state.followups.find(f => f.id === followupId);
-  if (!followup) return;
-  const ans = followup.answers.find(a => a.personaId === personaId);
-  if (!ans) return;
-  const persona = PERSONAS.find(p => p.id === personaId);
-  if (!persona) return;
-  _speakUtterance(`${persona.name}. ${ans.text}`, null, null);
 }
 
 /* ============ 회의 전체 순차 읽기 ============ */
