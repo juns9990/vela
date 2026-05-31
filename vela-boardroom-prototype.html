@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.9.6 — 아이디어 회의실</title>
+<title>Vela Compass v0.9.7 — 아이디어 회의실</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
@@ -1816,7 +1816,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.9.6</span>
+    <span>v0.9.7</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1902,7 +1902,7 @@
         placeholder="추가 질문이나 새 방향을 던져보세요. 예) 어글리 큐트 컨셉 더 보여줘"
         rows="1"
       ></textarea>
-      <button id="btnFollowupSend" class="btn-send" type="button" title="전송 (⌘/Ctrl + Enter)">→</button>
+      <button id="btnFollowupSend" class="btn-send" type="button" title="전송 (Enter) · 줄바꿈 (Shift+Enter)">→</button>
     </div>
   </section>
 
@@ -1945,7 +1945,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.9.6 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.9.7 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -2039,14 +2039,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.9.6 — Factsheet mode
+ * Vela Compass v0.9.7 — Factsheet mode
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const VERSION = 'v0.9.6';
+const VERSION = 'v0.9.7';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -2086,7 +2086,8 @@ const LLM_CONFIG = {
 
 // 공통 출력 규칙 — 4명 페르소나 모두에 공통 (이전엔 4번 반복됨)
 const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효]
-- 100% 한국어. 한자·일본어·베트남어 등 외국어 단어 절대 금지. 외래어는 한국어로 ('큐어링'→'경화').
+- 100% 자연스러운 완성형 한국어로만 쓴다. 한자·일본어·베트남어 등 외국어 단어 절대 금지. 외래어는 한국어로 ('큐어링'→'경화').
+- 한글은 반드시 완성된 음절로 쓴다. 자모를 분리하거나(예: ㅇㅏㄴ) 깨진 글자를 만들지 마라. 매끄럽고 또렷한 문장만.
 - 영어 약자(TPU, SLA, IP 등)와 고유명사(브랜드·작가·작품명)는 허용.
 
 [대화 방식 — 진짜 회의실, 가장 중요]
@@ -2232,11 +2233,11 @@ function bindEvents() {
   // 채팅 후속 질문
   $('#btnFollowupSend').addEventListener('click', sendFollowup);
   $('#followupInput').addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+    // Enter = 전송 (카톡 방식). Shift+Enter 또는 ⌘/Ctrl+Enter = 줄바꿈
+    if (e.key === 'Enter' && !e.shiftKey && !e.metaKey && !e.ctrlKey) {
       e.preventDefault();
       sendFollowup();
     }
-    // 일반 Enter — 줄바꿈 (Shift+Enter도 같음)
   });
   // textarea 자동 높이
   $('#followupInput').addEventListener('input', (e) => {
@@ -2683,6 +2684,9 @@ function sanitizeKorean(text) {
   if (!text) return text;
   let s = text;
 
+  // 0. 깨진 문자(replacement character) 제거 — Groq 토큰 깨짐의 주범
+  s = s.replace(/\uFFFD/g, '');
+
   // 1. 한자 단어 매핑 (의미 보존)
   Object.entries(HANJA_MAP).forEach(([cn, ko]) => {
     s = s.split(cn).join(ko);
@@ -2702,12 +2706,20 @@ function sanitizeKorean(text) {
   // 결합 문자(combining marks) — 베트남어 톤 등
   s = s.replace(/[\u0300-\u036F]/g, '');
 
-  // 5. 일본어 히라가나/가타카나 제거 (한국어 텍스트에 의미 없음)
+  // 5. 일본어 히라가나/가타카나 제거
   s = s.replace(/[\u3040-\u309F\u30A0-\u30FF]/g, '');
 
-  // 6. 연속 공백 정리
+  // 6. 음절 사이에 낀 외톨이 한글 자모(조합 실패 흔적) 제거
+  //    'ㅋㅋ','ㅎㅎ','ㅠㅠ','ㅜㅜ' 웃음/감탄은 보존하기 위해, 완성 음절 사이에 낀 경우만 제거
+  s = s.replace(/([가-힣])[\u1100-\u115F\u1160-\u11FF]+([가-힣])/g, '$1$2');
+  // 한글 호환 자모(ㄱ-ㅎ, ㅏ-ㅣ)가 완성 음절에 바로 붙은 깨짐: '안ㄴ녕' → '안녕'
+  s = s.replace(/([가-힣])[\u3131-\u3163]+([가-힣])/g, '$1$2');
+
+  // 7. 제어문자 제거
+  s = s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '');
+
+  // 8. 연속 공백 정리
   s = s.replace(/[ \t]+/g, ' ').replace(/ +\n/g, '\n').replace(/\n +/g, '\n');
-  // 빈 줄 누적 정리
   s = s.replace(/\n{3,}/g, '\n\n').trim();
 
   return s;
