@@ -66,18 +66,97 @@ CURATED_VIDEOS = [
     {"title": "How DeepSeek Rewrote the AI Playbook", "byline": "Computerphile", "duration": "16:33", "videoId": "gY4Z-9QlZ64"},
 ]
 
-# 이미지 풀 (썸네일용 - 토픽별 매핑)
-IMG_POOL = {
-    "LLM":      "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&q=70",
-    "Vision":   "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=70",
-    "Agent":    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70",
-    "Robotics": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=400&q=70",
-    "Safety":   "https://images.unsplash.com/photo-1620207418302-439b387441b0?w=400&q=70",
-    "Audio":    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=70",
-    "Tool":     "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=70",
-    "Infra":    "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=400&q=70",
+# 이미지 풀 (썸네일용 - 토픽별 여러 장, 매주/항목별 회전)
+IMG_POOL_MULTI = {
+    "LLM": [
+        "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=70",
+        "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70",
+        "https://images.unsplash.com/photo-1655720828018-edd2daec9349?w=600&q=70",
+        "https://images.unsplash.com/photo-1676277791608-ac54783d753b?w=600&q=70",
+        "https://images.unsplash.com/photo-1684163761883-1d0b8e8e3a18?w=600&q=70",
+        "https://images.unsplash.com/photo-1696258686454-60082b2c33e2?w=600&q=70",
+    ],
+    "Vision": [
+        "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=70",
+        "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=70",
+        "https://images.unsplash.com/photo-1581090700227-1e37b190418e?w=600&q=70",
+        "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600&q=70",
+        "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&q=70",
+    ],
+    "Agent": [
+        "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=70",
+        "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=600&q=70",
+        "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=600&q=70",
+        "https://images.unsplash.com/photo-1675557009875-436f7a7a5e9f?w=600&q=70",
+        "https://images.unsplash.com/photo-1488229297570-58520851e868?w=600&q=70",
+    ],
+    "Robotics": [
+        "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=600&q=70",
+        "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=70",
+        "https://images.unsplash.com/photo-1561557944-6e7860d1a7eb?w=600&q=70",
+        "https://images.unsplash.com/photo-1563207153-f403bf289096?w=600&q=70",
+        "https://images.unsplash.com/photo-1589254065878-42c9da997008?w=600&q=70",
+    ],
+    "Safety": [
+        "https://images.unsplash.com/photo-1620207418302-439b387441b0?w=600&q=70",
+        "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=70",
+        "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=600&q=70",
+        "https://images.unsplash.com/photo-1510511459019-5dda7724fd87?w=600&q=70",
+        "https://images.unsplash.com/photo-1633265486064-086b219458ec?w=600&q=70",
+    ],
+    "Audio": [
+        "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=70",
+        "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&q=70",
+        "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=70",
+        "https://images.unsplash.com/photo-1453738773917-9c3eff1db985?w=600&q=70",
+        "https://images.unsplash.com/photo-1607734834519-d8576ae60ea6?w=600&q=70",
+    ],
+    "Tool": [
+        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=70",
+        "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=600&q=70",
+        "https://images.unsplash.com/photo-1607706189992-eae578626c86?w=600&q=70",
+        "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=70",
+        "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=600&q=70",
+    ],
+    "Infra": [
+        "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=70",
+        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=70",
+        "https://images.unsplash.com/photo-1597733336794-12d05021d510?w=600&q=70",
+        "https://images.unsplash.com/photo-1551703599-6b3e8379aa8b?w=600&q=70",
+        "https://images.unsplash.com/photo-1606765962248-7ff407b51667?w=600&q=70",
+    ],
 }
-IMG_DEFAULT = IMG_POOL["LLM"]
+IMG_DEFAULT = IMG_POOL_MULTI["LLM"][0]
+
+# 호환성: 단일 매핑 (첫 이미지)
+IMG_POOL = {k: v[0] for k, v in IMG_POOL_MULTI.items()}
+
+# 항목별 이미지 선택 — URL 해시로 결정 (같은 항목은 항상 같은 이미지, 다른 항목은 다른 이미지)
+def pick_image(category, seed_str):
+    """카테고리 내에서 seed(보통 URL)에 따라 이미지 회전 선택."""
+    pool = IMG_POOL_MULTI.get(category, IMG_POOL_MULTI["LLM"])
+    if not seed_str:
+        return pool[0]
+    # seed 문자열을 해시해서 풀 인덱스 결정 (결정적이지만 항목마다 다름)
+    idx = int(hashlib.md5(seed_str.encode("utf-8")).hexdigest(), 16) % len(pool)
+    return pool[idx]
+
+# 커버(메인) 이미지 풀 — 매주 회전
+COVER_IMAGES = [
+    "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1600&q=80",
+    "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1600&q=80",
+    "https://images.unsplash.com/photo-1655720033654-a4239dd42d10?w=1600&q=80",
+    "https://images.unsplash.com/photo-1675557009285-4a3f0bba8a0a?w=1600&q=80",
+    "https://images.unsplash.com/photo-1684163761883-1d0b8e8e3a18?w=1600&q=80",
+    "https://images.unsplash.com/photo-1696258686454-60082b2c33e2?w=1600&q=80",
+    "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=1600&q=80",
+    "https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=1600&q=80",
+]
+
+def pick_cover_image(week_seed):
+    """발행 주차에 따라 매주 다른 커버 이미지 선택."""
+    idx = int(hashlib.md5(str(week_seed).encode("utf-8")).hexdigest(), 16) % len(COVER_IMAGES)
+    return COVER_IMAGES[idx]
 
 
 # ============================================================
@@ -181,7 +260,7 @@ def collect_arxiv(category="cs.AI", max_results=15):
                 "published": pub or datetime.now(KST).strftime("%Y-%m-%d"),
                 "tags": [cat] + (["Architecture"] if "transformer" in (title+summary).lower() else []),
                 "authors": author_str or "ArXiv",
-                "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
+                "thumb": pick_image(cat, link)
             })
     except Exception as e:
         print(f"[arxiv {category}] error: {e}", file=sys.stderr)
@@ -223,7 +302,7 @@ def collect_rss(url, source_label, source_key):
                     "title": title[:200], "abstract": desc,
                     "url": link, "published": pub,
                     "tags": [cat], "authors": source_label,
-                    "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
+                    "thumb": pick_image(cat, link)
                 })
         # Atom
         else:
@@ -254,7 +333,7 @@ def collect_rss(url, source_label, source_key):
                     "title": title[:200], "abstract": summary,
                     "url": link, "published": pub or datetime.now(KST).strftime("%Y-%m-%d"),
                     "tags": [cat], "authors": source_label,
-                    "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
+                    "thumb": pick_image(cat, link)
                 })
     except Exception as e:
         print(f"[rss {source_label}] error: {e}", file=sys.stderr)
@@ -286,7 +365,7 @@ def _rss_regex_fallback(xml, source_label, source_key):
                 "title": title, "abstract": desc,
                 "url": link, "published": datetime.now(KST).strftime("%Y-%m-%d"),
                 "tags": [cat], "authors": source_label,
-                "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
+                "thumb": pick_image(cat, link)
             })
     except Exception as e:
         print(f"[rss fallback {source_label}] error: {e}", file=sys.stderr)
@@ -326,7 +405,7 @@ def collect_github_trending():
                 "published": datetime.now(KST).strftime("%Y-%m-%d"),
                 "tags": [cat, "Tool"],
                 "authors": f"{stars} ★" if stars else "GitHub Trending",
-                "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
+                "thumb": pick_image(cat, "https://github.com" + repo_path)
             })
     except Exception as e:
         print(f"[github trending] error: {e}", file=sys.stderr)
@@ -365,7 +444,7 @@ def collect_hackernews_ai():
                 "published": (hit.get("created_at") or "")[:10] or datetime.now(KST).strftime("%Y-%m-%d"),
                 "tags": [cat, "Industry"],
                 "authors": f"{points} pts",
-                "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
+                "thumb": pick_image(cat, url_link)
             })
             if len(items) >= 8:
                 break
@@ -407,7 +486,7 @@ def collect_hf_daily_papers():
                 "published": datetime.now(KST).strftime("%Y-%m-%d"),
                 "tags": [cat],
                 "authors": "Daily Papers",
-                "thumb": IMG_POOL.get(cat, IMG_DEFAULT)
+                "thumb": pick_image(cat, arxiv_url)
             })
     except Exception as e:
         print(f"[hf-daily] error: {e}", file=sys.stderr)
@@ -685,7 +764,7 @@ def main():
         "headline": cover_video["title"].replace("—", "·"),
         "deck": f"이번 주 Vela가 추천하는 깊이 있는 강의. {cover_video['byline']}의 시그니처.",
         "byline": [f"By {cover_video['byline'].upper()}", cover_video["duration"], "Curated"],
-        "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1600&q=80",
+        "image": pick_cover_image(f"{meta['issue_year']}-{meta['issue_week']}"),
         "videoId": cover_video["videoId"],
         "credit": "Click image to play"
     }
