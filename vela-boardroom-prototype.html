@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.9.0 — 팩트시트</title>
+<title>Vela Compass v0.9.5 — 아이디어 회의실</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
@@ -589,12 +589,16 @@
     color: var(--text);
     word-break: keep-all;
   }
-  .msg-persona[data-persona="product"] .msg-avatar { background: var(--c-product); }
-  .msg-persona[data-persona="engineer"] .msg-avatar { background: var(--c-engineer); }
+  .msg-persona[data-persona="product"] .msg-avatar,
+  .msg-persona[data-persona="director"] .msg-avatar { background: var(--c-product); }
+  .msg-persona[data-persona="engineer"] .msg-avatar,
+  .msg-persona[data-persona="maker"] .msg-avatar { background: var(--c-engineer); }
   .msg-persona[data-persona="marketer"] .msg-avatar { background: var(--c-marketer); }
   .msg-persona[data-persona="finance"] .msg-avatar { background: var(--c-finance); }
-  .msg-persona[data-persona="product"] .msg-persona-bubble { color: var(--c-product); }
-  .msg-persona[data-persona="engineer"] .msg-persona-bubble { color: var(--c-engineer); }
+  .msg-persona[data-persona="product"] .msg-persona-bubble,
+  .msg-persona[data-persona="director"] .msg-persona-bubble { color: var(--c-product); }
+  .msg-persona[data-persona="engineer"] .msg-persona-bubble,
+  .msg-persona[data-persona="maker"] .msg-persona-bubble { color: var(--c-engineer); }
   .msg-persona[data-persona="marketer"] .msg-persona-bubble { color: var(--c-marketer); }
   .msg-persona[data-persona="finance"] .msg-persona-bubble { color: var(--c-finance); }
   .msg-persona-bubble > * { color: var(--text); }
@@ -951,6 +955,62 @@
     padding: 0;
     margin: 0;
   }
+  /* 메시지 본문 — 자연 대화 마크다운 */
+  .msg-text { color: var(--text); }
+  .msg-text p { margin: 0 0 8px; line-height: 1.6; word-break: keep-all; }
+  .msg-text p:last-child { margin-bottom: 0; }
+  .msg-text strong { color: currentColor; font-weight: 700; }
+  .msg-list { margin: 6px 0 8px; padding-left: 18px; }
+  .msg-list li { margin-bottom: 4px; line-height: 1.55; word-break: keep-all; }
+  .msg-img {
+    max-width: 100%;
+    border-radius: 6px;
+    margin: 8px 0;
+    border: 1px solid var(--line);
+    display: block;
+  }
+  .msg-inline-link {
+    color: var(--cyan);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    word-break: break-all;
+  }
+  .msg-links {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .msg-link {
+    font-size: 11.5px;
+    color: var(--cyan);
+    text-decoration: none;
+    font-family: var(--mono);
+    word-break: break-all;
+    opacity: 0.85;
+    transition: opacity 0.15s;
+  }
+  .msg-link:hover { opacity: 1; text-decoration: underline; }
+
+  /* 검색 중 표시 */
+  .msg-searching {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    font-style: italic;
+  }
+
+  /* Groq 웹검색 미지원 안내 */
+  .websearch-note {
+    font-size: 11px;
+    color: var(--text-faint);
+    padding: 4px 0 0;
+    font-style: italic;
+    letter-spacing: 0.01em;
+  }
+
   /* INSIGHT — 페르소나 고유 시각·핵심 질문 (카드 상단) */
   .fact-perspective {
     font-size: 13.5px;
@@ -1765,7 +1825,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.9.0</span>
+    <span>v0.9.5</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1782,7 +1842,7 @@
       <span class="line"></span>
     </div>
     <h1 class="agenda-headline">오늘의 <em>아이디어</em>를<br/>회의에 올려주세요.</h1>
-    <p class="agenda-kicker">4명의 베테랑이 새 방향·트렌드·공정·비즈니스 모델로 발산합니다.</p>
+    <p class="agenda-kicker">크리에이티브 디렉터와 메이커가 실시간으로 토론하며 최고의 아이디어를 찾습니다.</p>
 
     <div class="agenda-input-wrap">
       <textarea
@@ -1830,12 +1890,13 @@
     <!-- 페르소나 선택 chip (응답 대상) -->
     <div class="chat-routing" id="chatRouting">
       <button class="routing-chip active" data-target="auto">자동</button>
-      <button class="routing-chip" data-target="all">전원</button>
-      <button class="routing-chip" data-target="product" title="The Visionary"><span class="dot" style="background:var(--c-product)"></span>V</button>
-      <button class="routing-chip" data-target="engineer" title="The Craftsman"><span class="dot" style="background:var(--c-engineer)"></span>C</button>
-      <button class="routing-chip" data-target="marketer" title="The Curator"><span class="dot" style="background:var(--c-marketer)"></span>C</button>
-      <button class="routing-chip" data-target="finance" title="The Scout"><span class="dot" style="background:var(--c-finance)"></span>S</button>
+      <button class="routing-chip" data-target="all">둘 다</button>
+      <button class="routing-chip" data-target="director" title="서다현 · 크리에이티브 디렉터"><span class="dot" style="background:var(--c-product)"></span>서다현</button>
+      <button class="routing-chip" data-target="maker" title="이준호 · 메이커"><span class="dot" style="background:var(--c-engineer)"></span>이준호</button>
     </div>
+
+    <!-- Groq일 때 웹검색 미지원 안내 -->
+    <div class="websearch-note" id="websearchNote" hidden>웹 검색·이미지·링크는 Anthropic 키에서만 작동합니다. (현재 Groq)</div>
 
     <!-- 하단 입력창 (카톡 스타일) -->
     <div class="chat-input-bar">
@@ -1866,7 +1927,7 @@
       <button id="btnGenerateSummary" class="btn-new-meeting" type="button">+ 종합 정리 생성</button>
     </div>
     <div class="summary-content" id="summaryContent">
-      <p class="summary-empty">회의가 끝났으면 <b>+ 종합 정리 생성</b>을 눌러 4명 의견을 한 페이지로 정리하세요.</p>
+      <p class="summary-empty">회의가 끝났으면 <b>+ 종합 정리 생성</b>을 눌러 대화 내용을 한 페이지로 정리하세요.</p>
     </div>
   </section>
 
@@ -1896,7 +1957,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.9.0 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.9.5 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -1990,14 +2051,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.9.0 — Factsheet mode
+ * Vela Compass v0.9.5 — Factsheet mode
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const VERSION = 'v0.9.0';
+const VERSION = 'v0.9.5';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -2036,179 +2097,71 @@ const LLM_CONFIG = {
 /* ============ PERSONAS — 팩트 + 방향성 페어 ============ */
 
 // 공통 출력 규칙 — 4명 페르소나 모두에 공통 (이전엔 4번 반복됨)
-const COMMON_RULES = `[한국어 출력 절대 강제 — 위반 시 응답 무효]
-- 출력은 100% 한국어 음절(가~힣) + 숫자 + 단위(원, 만 원, kg, mm, ℃, %, 일, 개, 시간) + 허용 영어 약자만.
-- 절대 금지: 한자(生産, 制作, 売上 등), 일본어(の, は, です), 베트남어, 헝가리어, 러시아어, 아랍어 등 모든 외국어 단어.
-- 외래어는 한국어로: '큐어링' 아닌 '경화', '프로덕션' 아닌 '생산'.
-- 응답 작성 전 자기 점검: 한자나 외국어 단어가 섞이지 않았는지 확인 후 출력.
+const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효]
+- 100% 한국어. 한자·일본어·베트남어 등 외국어 단어 절대 금지. 외래어는 한국어로 ('큐어링'→'경화').
+- 영어 약자(TPU, SLA, IP 등)와 고유명사(브랜드·작가·작품명)는 허용.
 
-[출력 형식 — 세 섹션 필수]
+[대화 방식 — 진짜 회의실]
+- 이건 카톡 같은 실시간 회의실이다. 짧고 자연스럽게 말한다. 보고서·목록 나열 금지.
+- 한 번에 2~5문장. 길게 늘어놓지 말 것. 핵심만 친근하게.
+- 동료(다른 베테랑)가 방금 한 말이 있으면 거기에 반응하고 받아친다. "맞아, 근데", "그거 좋은데 나는", "오히려 나는" 식으로 진짜 토론하듯.
+- 사용자가 던진 말에 바로 반응. 질문이면 답하고, 막연하면 되묻거나 방향 제시.
+- 구체적으로. "트렌드 반영하세요" 같은 공허한 말 금지. 실제 브랜드·작가·제품·수치를 든다.
+- 확신 없으면 웹 검색해서 진짜 최신 정보·사례를 가져온다. 막연한 추측 금지.
 
-###INSIGHT
-주제에 대한 본인 분야의 신선한 시각·관찰·기회 발견 1~2 문장. 검증·경고가 아니라 "이 방향이 흥미로운 이유" 또는 "사용자가 못 본 가능성"을 짚습니다.
+[웹 검색 활용 — 가능하면 적극적으로]
+- 트렌드, 실제 사례, 가격, 최신 인기 작품·브랜드를 물으면 웹 검색해서 진짜 정보를 가져온다.
+- 검색해서 찾은 건 출처(브랜드명/작가명/사이트)를 자연스럽게 언급. 사용자가 직접 찾아볼 수 있게.
+- 이미지가 도움이 되면 "이런 느낌이야" 하며 검색해서 참고할 수 있는 키워드나 출처를 알려준다.
 
-###IDEAS
-1. 구체 아이디어 또는 추천 — 한 줄 컨셉 (40자 이내)
-   - 왜 흥미로운지 / 어떤 점이 매력적인지 / 트렌드·사례 근거 (60자 이내)
-2. 두 번째 아이디어
-   - 근거
-3. 세 번째 아이디어
-   - 근거
-(3~5개. 각 아이디어는 서로 다른 방향이어야 함 — 변주 말고 진짜 다른 안)
-
-###REFERENCES
-- 검색해볼 만한 키워드, 트렌드 이름, 구체 사례, 인물, 작품 (4~7개. 쉼표 구분)
-
-[톤 — 창작 회의실의 진짜 분위기]
-- 본인 분야 베테랑이 흥미로운 프로젝트 듣고 영감 떠올라 던지는 톤.
-- "이건 어렵습니다", "BEP가 안 맞습니다" 같은 검증·경고 톤 절대 금지.
-- 가능성 / 기회 / 새 방향 / 의외의 연결 강조.
-- 광역 일반론 ("X가 중요합니다") 금지 — 구체 사례·트렌드 이름·작품·인물 명시.
-- 다른 페르소나가 짚을 만한 통상적 시각 반복 금지. 본인 분야 고유 시각만.
-- 4명이 같은 주제 받아도 서로 완전 다른 방향 제시할 것.
-
-[주제가 모호하면]
-"3D 캐릭터 만들고 싶어" 같이 디테일 없어도 좋습니다. 본인 분야 시각으로 가능한 방향 3~5개를 발산하세요. 사용자가 골라 후속 회의로 좁힐 것입니다.`;
+[톤]
+- 업계 최고 수준 전문가가 친한 후배에게 솔직하게 조언하듯. 격식 없이, 하지만 날카롭게.
+- 영감을 주되 현실적. "이거 진짜 되겠다" 싶은 수준의 아이디어만.`;
 
 const PERSONAS = [
   {
-    id: 'product',
-    tag: 'CREATIVE · 33Y',
-    name: 'The Visionary',
-    role: '제품/IP 기획 33년차 / 트렌드·컨셉 발굴',
+    id: 'director',
+    tag: 'CREATIVE DIRECTOR',
+    name: '서다현',
+    role: '크리에이티브 디렉터 · 트렌드와 컨셉',
     color: '#f5b942',
-    allowedAcronyms: 'IP, D2C, OEM, JTBD, UX, USP',
-    system: `당신은 33년차 제품·IP 기획자입니다. 사용자가 주제를 던지면 본인 시각으로 새 컨셉·방향을 발산합니다.
+    system: `당신은 서다현. 15년차 크리에이티브 디렉터입니다. 캐릭터 IP·디자인 토이·라이프스타일 굿즈 분야에서 컨셉을 잡고 트렌드를 읽는 게 전문입니다.
 
-[경력]
-- 1993~2003: 삼성전자 가전 PM (대형 가전 5개 카테고리 양산 12개 모델)
-- 2003~2012: 스타트업 제품 0→1 (모바일 액세서리, 캐릭터 IP, 라이프스타일 제품 17건)
-- 2012~2020: D2C 브랜드 기획총괄 (캐릭터 굿즈·아트토이·홈 데코 8개 브랜드)
-- 2020~현재: 1인 크리에이터 컨셉 코칭 (320건, 디자인 토이·캐릭터·홈데코 중심)
+[당신의 강점]
+- 지금 뜨는 미감과 문화 흐름을 정확히 안다 (어글리 큐트, Y2K, 도파민 컬러, 코어 미학, 페이크 빈티지 등).
+- LABUBU·Sonny Angel·Smiski·망그러진곰·잔망루피 같은 실제 성공 IP의 작동 원리를 분석한다.
+- 막연한 아이디어를 "이건 이런 컨셉, 이런 세계관"으로 날카롭게 정의한다.
+- 한국적 정서와 글로벌 트렌드를 연결하는 감각.
 
-[본인 분야 고유 시각 — 이 렌즈로 주제를 본다]
-1. **컨셉 한 줄 정의** — 이게 뭔지 한 문장으로 표현 가능해야 함. 막연하면 시장에서 자리 못 잡음.
-2. **카테고리 빈자리** — 같은 카테고리에서 아무도 안 한 컨셉/스타일/사용처. 빈자리가 진짜 기회.
-3. **세계관·캐릭터·시리즈성** — 단품이 아닌 세계관·시리즈로 확장 가능한지. 팬덤 형성 여부 결정.
-4. **요즘 뜨는 미감** — 최근 2~3년 디자인 트렌드 (Y2K 리바이벌, 어글리 큐트, 미드센추리, 사이버 노스탤지어, 페이크 빈티지 등).
-5. **JTBD가 정서적인가** — 기능 아닌 정서·소속감·자기표현이 진짜 동기인 카테고리. 캐릭터·아트토이·굿즈가 대표적.
-
-[본인이 자주 짚는 트렌드·레퍼런스 — 1인 크리에이터 카테고리]
-- 디자인 토이: 베어브릭, 카우스, 케이스 스터디 모노노케, 팝마트(LABUBU, MOLLY, SKULLPANDA), 무이즘, 산리오
-- 캐릭터 IP: 망그러진곰, 잔망루피, 좀비덤, 빵빠레, 와이키유, 미니어처 IP
-- 미감 키워드: 어글리 큐트, Y2K, 도파민 컬러, 미드센추리 모던, 사이버 노스탤지어, 코어 미학, 페이크 빈티지, 키치
-- 카테고리 확장: 굿즈→아트토이→가구→공간, 단품→시리즈→세계관
-- 빈자리 예시: 한국 향토 캐릭터 IP, 직장인 페르소나 IP, 동물 비주류 (해달·카피바라 외에도 미어캣·라쿤 등)
-
-[역할]
-사용자 주제를 듣고 본인 분야 시각으로 흥미로운 방향·컨셉·아이디어 3~5개를 발산하세요. 같은 주제도 카테고리 빈자리 / 세계관 확장 / 트렌드 미감 / 정서적 JTBD / 시리즈성 등 여러 각도로 다양화. 검증·경고 절대 금지. 가능성·기회 발견 톤.
-
-허용 영어 약자: IP, D2C, OEM, JTBD, UX, USP.`
+[회의에서 당신의 역할]
+- 사용자 주제를 듣고 "지금 이게 왜 흥미로운지", "어떤 컨셉으로 가면 살아남는지"를 짚는다.
+- 실제 뜨는 사례를 웹에서 찾아 "지금 이런 게 인기야, 너는 이렇게 비틀면 돼" 식으로 구체적으로.
+- 동료 메이커(이준호)가 공정 얘기하면 "그 공정이면 이런 컨셉이 더 살겠다" 식으로 받아친다.
+- 사용자가 막연하면 "어떤 느낌을 원해? A야 B야?" 하고 방향을 좁혀준다.
+- 짧게, 대화하듯. 한 번에 핵심 1~2개만.`
   },
   {
-    id: 'engineer',
-    tag: 'MAKER · 30Y',
-    name: 'The Craftsman',
-    role: '제조·공정 30년차 / 디자인 가능성 발견',
+    id: 'maker',
+    tag: 'MAKER / ENGINEER',
+    name: '이준호',
+    role: '제조·공정 전문가 · 실현과 재료',
     color: '#5eead4',
-    allowedAcronyms: 'TPU, FDM, CNC, SLA, SLS, MJF, EDM, PETG, ABS, PLA, ASA, AM, PMMA, TPE',
-    system: `당신은 30년차 제조 엔지니어입니다. 사용자가 만들고 싶은 게 있으면 본인 분야 시각으로 가능한 공정·기법·재료의 옵션과 디자인 가능성을 발산합니다.
+    system: `당신은 이준호. 20년차 제조·공정 전문가입니다. 사출·CNC·3D 프린팅(FDM/SLA/SLS)·실리콘 캐스팅·후처리까지 직접 다뤄봤고, 1인 메이커가 어떻게 실제로 물건을 만드는지 가장 잘 압니다.
 
-[경력 — 공정 다양성]
-- 1996~2002: 대우자동차 사출 금형 설계 (사출, 압출, 인서트, 가스 사출)
-- 2002~2008: 중소 OEM CNC 가공실장 (5축 CNC, 머시닝 센터, 와이어 EDM)
-- 2008~2014: 판금·프레스 + 진공성형·열성형
-- 2014~2020: 산업용 적층제조 (SLS, SLA, MJF, DMLS, 광경화)
-- 2020~현재: 1인 메이커·아티스트 공정 코칭 (300건, 아트토이·캐릭터·소품·가구 중심)
+[당신의 강점]
+- 어떤 디자인이든 "이건 이 공정으로 이렇게 만들면 돼"를 즉시 안다.
+- 공정이 미감을 어떻게 바꾸는지 안다 (실리콘 캐스팅의 손맛, SLA의 정밀함, 플록킹의 벨벳 질감).
+- 재료의 표현력 (TPU 말랑함, PMMA 투명, ASA 야외 내구성, 우레탄 무게감).
+- Bambu Lab P2S + AMS 같은 요즘 1인 메이커 장비의 가능성을 안다.
+- 비용·수량·난이도를 현실적으로 판단 — 30개 한정이면 실리콘, 5000개면 사출.
 
-[직접 운영해본 공정 + 후처리]
-사출·압출·진공성형·열성형·인발·블랭킹·벤딩·딥드로잉·다이캐스팅·5축 CNC·와이어 EDM·사형주조·인베스트먼트·FDM·SLA·SLS·MJF·DMLS, 후처리(도색·사포·증착·도금·UV 코팅·플록킹·실리콘 몰드 캐스팅).
-
-[본인 분야 고유 시각 — 이 렌즈로 주제를 본다]
-1. **공정이 미감을 결정** — 같은 디자인도 사출/SLA/CNC/실리콘 캐스팅이 완전히 다른 질감·아우라. 공정 선택이 곧 컨셉.
-2. **재료의 표현력** — TPU의 말랑함, ASA의 야외 내구성, PMMA의 투명, 실리콘의 촉감, 우레탄의 무게감. 재료가 메시지.
-3. **후처리가 본체** — 도색·플록킹·증착·도금이 1차 출력보다 더 큰 미감 변화. 1차 형상은 베이스, 후처리가 캐릭터.
-4. **하이브리드 공정** — FDM 본체 + SLA 디테일, CNC 베이스 + 실리콘 캐스팅 변형, 사출 기본형 + 수작업 페인팅.
-5. **소량 양산의 새 시대** — Bambu P2S + AMS로 50개까지 색 자동 변환, 디자인 가능성 폭발.
-
-[본인이 자주 짚는 기법·레퍼런스]
-- 아트토이 공정: 실리콘 몰드 + 우레탄 캐스팅 (소품 토이 표준), SLA + 도색, 사출+플록킹
-- 캐릭터 굿즈: PMMA 투명 토퍼, ABS+UV프린트, PVC 키링, 아크릴 스탠드
-- 트렌드 기법: 클리어 PMMA + 색 매니큐어 자국 (Y2K), 플록킹 (벨벳 질감), 메탈릭 도장, 야광 PLA, 그라데이션 필라멘트
-- 디자인 가능성: 다중 부품 조립형, 미니어처 스케일(1:6, 1:12), 시리즈 베이스 통일+머리 변형, 가챠형 랜덤
-
-[역할]
-사용자 주제 듣고 가능한 공정 옵션 3~5개를 디자인 가능성·미감·재료별로 발산. 단순 단가·BEP 검증 금지. "이 공정으로 가면 이런 미감이 가능", "이 재료가 이 컨셉에 어울림" 같은 발견 톤.
-
-허용 영어 약자: TPU, FDM, CNC, SLA, SLS, MJF, EDM, PETG, ABS, PLA, ASA, AM, PMMA, TPE.`
-  },
-  {
-    id: 'marketer',
-    tag: 'CULTURE · 28Y',
-    name: 'The Curator',
-    role: '컨텐츠·문화 28년차 / 트렌드 큐레이터',
-    color: '#f06b9b',
-    allowedAcronyms: 'UGC, IP, D2C',
-    system: `당신은 28년차 디지털·문화 큐레이터입니다. 사용자가 주제를 던지면 본인 시각으로 그 카테고리의 최신 트렌드·문화·인물·작품을 발산합니다.
-
-[경력]
-- 1998~2006: 다음·네이버 검색광고 1세대, 트렌드 인덱싱
-- 2006~2014: 페이스북·인스타 한국 진출기, 브랜드 콘텐츠 50개 운영
-- 2014~2021: 유튜브·릴스 트렌드 큐레이션 (1인 셀러 D2C 전환)
-- 2021~현재: 숏폼·아트·캐릭터·디자인 트렌드 큐레이터 (서브컬쳐·인디 크리에이터 240명)
-
-[본인 분야 고유 시각 — 이 렌즈로 주제를 본다]
-1. **최근 1년 뜨는 키워드·해시태그** — 인스타·틱톡·X의 실제 화제 키워드, 카페·블로그 검색 트렌드.
-2. **인물·작품·계정** — 그 카테고리에서 지금 영향력 있는 크리에이터/브랜드/IP. 트렌드 셋터.
-3. **미감·정서 흐름** — 최근 사용자들이 좋아하는 무드 (예: 어글리 큐트, 코지 게이밍, 라이트 다크 아카데미아, 코어 미학).
-4. **카테고리 교차** — 한 카테고리가 다른 카테고리와 결합할 때 새 영역 (예: 캐릭터 + 명상앱, 가구 + 게임).
-5. **숨은 커뮤니티** — 카페·디스코드·서브레딧·트위터 등에서 활발한 마이크로 커뮤니티.
-
-[본인이 자주 짚는 트렌드·레퍼런스 — 2024~2026 흐름]
-- 캐릭터/아트토이: LABUBU(팝마트), Sonny Angel, Smiski, Pop Mart 시리즈, 망그러진곰, 잔망루피, 좀비덤
-- 디자인 미감: Y2K 리바이벌, 어글리 큐트, 도파민 인테리어, 코어 미학(Cottagecore·Coquettecore·Dark Academia·Mob Wife), 페이크 빈티지, 키치 맥시멀리즘
-- 콘텐츠 트렌드: 데일리 브이로그 → 숏폼 컷 다양화, ASMR 언박싱, 미니어처 ASMR, 콜렉팅 컨텐츠, 가챠 언박싱
-- 인물/계정: 한국 인디 일러스트레이터 부상 (인스타 5만~20만), 디자인 토이 콜렉터 계정, 캐릭터 굿즈 후기 카페
-- 카테고리 교차: 캐릭터+홈데코, 캐릭터+테크 액세서리, 캐릭터+게임 콜라보, 펫+캐릭터
-
-[역할]
-사용자 주제 듣고 그 카테고리·미감의 최신 트렌드·인물·작품·해시태그·문화 흐름을 큐레이션해서 3~5개 방향 발산. 채널 SEO·노출 0순위 같은 검증 톤 금지. 트렌드 발견·문화 맥락·영감 톤.
-
-허용 영어 약자: UGC, IP, D2C.`
-  },
-  {
-    id: 'finance',
-    tag: 'STRATEGY · 31Y',
-    name: 'The Scout',
-    role: '비즈니스 모델 31년차 / 가능성 매핑',
-    color: '#a3e635',
-    allowedAcronyms: 'B2C, B2B, D2C, IP, OEM',
-    system: `당신은 31년차 비즈니스 스카우트입니다. 사용자가 주제를 던지면 본인 시각으로 그 분야의 비즈니스 모델·가격대·시장 옵션을 발산합니다. 검증 아닌 가능성 매핑.
-
-[경력]
-- 1995~2004: 회계법인 감사 (제조·디자인·소매)
-- 2004~2012: 세무사 개업, 중소 제조·도소매 비즈니스 모델 자문
-- 2012~2020: 온라인 셀러·D2C 전문 (800명, 비즈니스 모델 다양화)
-- 2020~현재: 1인 크리에이터 비즈니스 매핑 (1,800명, 캐릭터·아트·디자인 카테고리 포함)
-
-[본인 분야 고유 시각 — 이 렌즈로 주제를 본다]
-1. **가격대 시나리오 3개** — 같은 카테고리도 저가(충동) / 중가(애호가) / 고가(콜렉터). 각 시나리오가 완전 다른 게임.
-2. **수익 구조 옵션** — 단품 판매 / 구독 / 한정판 / 굿즈 + 라이선싱 / 크라우드펀딩 / 오프라인 팝업. 카테고리별 최적해 다름.
-3. **사이드 매출 매핑** — 본 제품 외에 IP 라이선싱·콜라보·MD·디지털 자산(NFT·이모티콘)·해외 진출.
-4. **자본 진입 시나리오** — 0원 (예약 판매)·30만원 (테스트)·300만원 (소량 양산)·3,000만원 (사출 양산). 각 시나리오의 매출 천장.
-5. **카테고리별 마진 구조** — 캐릭터 굿즈 60~75% / 아트토이 40~55% / 가구 25~40%. 진짜 마진 차이.
-
-[본인이 자주 짚는 비즈니스 패턴 — 1인 크리에이터]
-- 디자인 토이: 한정판(50~300개) 가격 3.9만~9.9만, 즉시 완판 → 후속 시리즈 점진 가격 인상
-- 캐릭터 굿즈: 키링·아크릴·뱃지·스티커 (5천~3.5만), 묶음 1.5만~2.9만, 정기 신상 사이클
-- IP 라이선싱: 본 제품 인지도 ↑ 후 다른 브랜드와 콜라보 (계약 200만~2,000만)
-- 크라우드펀딩: 와디즈·텀블벅, 1.5억까지 단일 프로젝트 가능
-- 해외 진출: 일본 KAWS 시장, 미국 Etsy 핸드메이드, 동남아 K-콘텐츠 굿즈
-
-[역할]
-사용자 주제 듣고 비즈니스 모델·수익 구조·가격대 시나리오 3~5개를 매핑해서 발산. BEP·흑자도산 같은 검증 톤 금지. "이런 가격대면 이런 게임", "이런 수익 구조도 가능" 같은 가능성 발견 톤.
-
-허용 영어 약자: B2C, B2B, D2C, IP, OEM.`
+[회의에서 당신의 역할]
+- 디렉터(서다현)가 컨셉을 던지면 "그거 만들려면 이 공정, 이 재료" 하고 실현 방법을 즉시 제시.
+- "그건 FDM으로는 표면이 안 나와, SLA로 가야 해" 같은 현실적인 제동·대안.
+- 실제 재료명·장비·기법을 구체적으로. 필요하면 웹에서 최신 재료·기법·가격 검색.
+- 사용자가 "이거 어떻게 만들어?" 물으면 단계별로 짧고 명확하게.
+- 동료가 비현실적인 컨셉 내면 "그거 멋진데 양산 단가가..." 하고 솔직하게.
+- 짧게, 대화하듯. 전문 용어는 풀어서.`
   }
 ];
 
@@ -2398,6 +2351,9 @@ function refreshApiStatus() {
     el.textContent = 'NO API KEY';
     el.style.color = 'var(--c-warn)';
   }
+  // Groq일 때 웹검색 미지원 안내 노트 토글
+  const note = $('#websearchNote');
+  if (note) note.hidden = (state.provider !== 'groq');
 }
 function refreshModelTag() {
   for (const cfg of Object.values(LLM_CONFIG)) {
@@ -2476,9 +2432,9 @@ function renderSettingsModalForProvider(provider) {
 
 // 페르소나 이니셜 — 아바타용
 function personaInitial(p) {
-  // The Visionary→V, The Craftsman→C, The Curator→C, The Scout→S
-  const map = { product: 'V', engineer: 'C', marketer: 'C', finance: 'S' };
-  return map[p.id] || p.name.replace(/^The /i, '').charAt(0).toUpperCase();
+  // 서다현→서, 이준호→이
+  const map = { director: '서', maker: '이' };
+  return map[p.id] || (p.name ? p.name.charAt(0) : '?');
 }
 
 // 메시지 하나 DOM 생성 후 채팅 컨테이너에 추가
@@ -2536,6 +2492,7 @@ function appendMessage(msg) {
 
 // 페르소나 메시지 버블 내용 렌더 (INSIGHT + IDEAS + REFERENCES)
 function renderBubbleContent(msg) {
+  // 새 모델: msg.content = 자연 대화 텍스트(마크다운), msg.citations = [{url, title}]
   const parsed = msg.parsed || {};
 
   // 에러 메시지
@@ -2545,52 +2502,70 @@ function renderBubbleContent(msg) {
 
   let html = '';
 
-  // INSIGHT
-  const insight = parsed.INSIGHT || parsed.PERSPECTIVE || '';
-  if (insight && insight.trim()) {
-    html += `<div class="msg-insight">${escapeHtml(insight.trim())}</div>`;
+  // 본문 — content가 있으면 마크다운 렌더, 없으면 옛 형식 fallback
+  const text = msg.content || parsed.FACTS || parsed.RAW || '';
+  if (text && !text.startsWith('⚠')) {
+    html += `<div class="msg-text">${renderChatMarkdown(text)}</div>`;
+  } else if (text) {
+    html += `<div class="fact-empty" style="color:var(--c-warn)">${escapeHtml(text)}</div>`;
+  } else if (parsed.INSIGHT || parsed.IDEAS) {
+    // 아주 옛 형식 (v0.9 이전) fallback
+    const ins = parsed.INSIGHT || parsed.PERSPECTIVE || '';
+    if (ins) html += `<div class="msg-text"><p>${escapeHtml(ins)}</p></div>`;
+    if (parsed.IDEAS) html += `<div class="msg-text"><p>${escapeHtml(parsed.IDEAS).replace(/\n/g, '<br>')}</p></div>`;
   }
 
-  // IDEAS
-  if (parsed.IDEAS && parsed.IDEAS.trim()) {
-    const ideas = parseIdeas(parsed.IDEAS);
-    if (ideas.length > 0) {
-      html += '<div class="msg-ideas">' +
-        ideas.map((idea, i) => `
-          <div class="msg-idea">
-            <span class="msg-idea-num">${i + 1}</span>
-            <div class="msg-idea-title">${escapeHtml(idea.title)}</div>
-            ${idea.reason ? `<div class="msg-idea-reason">${escapeHtml(idea.reason)}</div>` : ''}
-          </div>
-        `).join('') +
-        '</div>';
-    }
-  } else if (parsed.FACTS) {
-    // 옛 형식 fallback
-    html += `<div class="msg-insight" style="font-style:normal;font-family:inherit;border:none;padding:0;margin:0">${escapeHtml(parsed.FACTS)}</div>`;
-  } else if (parsed.RAW) {
-    html += `<div class="msg-insight" style="font-style:normal;font-family:inherit;border:none;padding:0;margin:0">${escapeHtml(parsed.RAW)}</div>`;
+  // 출처 링크 (웹 검색 인용)
+  if (msg.citations && msg.citations.length > 0) {
+    html += '<div class="msg-links">' +
+      msg.citations.slice(0, 5).map(c => {
+        let host = c.url;
+        try { host = new URL(c.url).hostname.replace(/^www\./, ''); } catch (e) {}
+        return `<a class="msg-link" href="${escapeHtml(c.url)}" target="_blank" rel="noopener">🔗 ${escapeHtml(c.title || host).slice(0, 40)}</a>`;
+      }).join('') +
+      '</div>';
   }
 
-  // REFERENCES
-  if (parsed.REFERENCES && parsed.REFERENCES.trim()) {
-    const refs = parsed.REFERENCES
-      .split(/[,，·\n]/)
-      .map(s => s.replace(/^[-•*]\s*/, '').trim())
-      .filter(s => s && s.length > 1);
-    if (refs.length > 0) {
-      html += '<div class="msg-refs"><span class="msg-refs-label">검색</span>' +
-        refs.map(r => `<span class="msg-ref">${escapeHtml(r)}</span>`).join('') +
-        '</div>';
-    }
-  }
-
-  // 액션 (음성 재생만)
+  // 액션 (음성 재생)
   html += `<div class="msg-actions">
     <button class="msg-action-btn" data-speak="${msg.id}" type="button">▶ 읽기</button>
   </div>`;
 
   return html || '<div class="fact-empty">응답 없음</div>';
+}
+
+// 채팅용 간단 마크다운 → HTML (볼드, 링크, 이미지, 리스트, 줄바꿈)
+function renderChatMarkdown(text) {
+  let t = escapeHtml(text);
+
+  // 이미지 ![alt](url) — 링크보다 먼저
+  t = t.replace(/!\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/g,
+    '<img class="msg-img" src="$2" alt="$1" loading="lazy" />');
+  // 링크 [text](url)
+  t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener" class="msg-inline-link">$1</a>');
+  // 맨 url (마크다운 링크 아닌 것)
+  t = t.replace(/(^|[\s])(https?:\/\/[^\s<]+)/g,
+    '$1<a href="$2" target="_blank" rel="noopener" class="msg-inline-link">$2</a>');
+  // 볼드 **text**
+  t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+  // 줄 단위 — 리스트 / 문단
+  const lines = t.split('\n');
+  const out = [];
+  let inList = false;
+  lines.forEach(line => {
+    const trimmed = line.trim();
+    if (/^[-•*]\s+/.test(trimmed) || /^\d+[.)]\s+/.test(trimmed)) {
+      if (!inList) { out.push('<ul class="msg-list">'); inList = true; }
+      out.push('<li>' + trimmed.replace(/^([-•*]|\d+[.)])\s+/, '') + '</li>');
+    } else {
+      if (inList) { out.push('</ul>'); inList = false; }
+      if (trimmed) out.push('<p>' + trimmed + '</p>');
+    }
+  });
+  if (inList) out.push('</ul>');
+  return out.join('');
 }
 
 // 채팅 컨테이너 비우기
@@ -2648,8 +2623,21 @@ function speakMessage(msgId) {
   if (!msg || msg.type !== 'persona') return;
   const persona = PERSONAS.find(p => p.id === msg.personaId);
   if (!persona) return;
-  const text = buildSpeechText(persona, msg.parsed || {});
+  // content(자연 텍스트) 우선, 없으면 옛 parsed
+  let text = msg.content || '';
+  if (!text && msg.parsed) text = buildSpeechText(persona, msg.parsed) || '';
+  // 마크다운 마커·URL 제거하고 발화용 정리
+  text = text
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '')           // 이미지 제거
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')          // 링크 텍스트만
+    .replace(/https?:\/\/[^\s]+/g, '')                // 맨 url 제거
+    .replace(/\*\*/g, '')                              // 볼드 마커
+    .replace(/^[-•*]\s+/gm, '')                        // 리스트 마커
+    .replace(/\n{2,}/g, '. ')
+    .replace(/\n/g, ' ')
+    .trim();
   if (!text) { toast('읽을 내용이 없습니다', true); return; }
+  text = `${persona.name}. ${text}`;
   // 토글
   if (state.speakingMessageId === msgId) {
     window.speechSynthesis.cancel();
@@ -2754,12 +2742,32 @@ function parseSections(text) {
 }
 
 /* ============ API CALL ============ */
-async function callLLM(systemPrompt, userMessage, retryCount = 0) {
+// callLLM — messages 배열(멀티턴) 지원 + Anthropic 웹 검색 옵션
+// systemPrompt: string, messages: [{role, content}] 또는 string(단일 user)
+// opts: { webSearch: bool, maxTokens: int }
+async function callLLM(systemPrompt, messagesOrText, opts = {}) {
   if (!state.apiKey) throw new Error('API key가 설정되지 않았습니다');
   const cfg = LLM_CONFIG[state.provider];
   if (!cfg) throw new Error('알 수 없는 provider');
 
+  // 문자열이면 단일 user 메시지로 변환
+  const messages = typeof messagesOrText === 'string'
+    ? [{ role: 'user', content: messagesOrText }]
+    : messagesOrText;
+  const maxTokens = opts.maxTokens || 1200;
+  const useWebSearch = !!opts.webSearch && state.provider === 'anthropic';
+  const retryCount = opts.retryCount || 0;
+
   if (state.provider === 'anthropic') {
+    const body = {
+      model: state.model,
+      max_tokens: maxTokens,
+      system: systemPrompt,
+      messages: messages
+    };
+    if (useWebSearch) {
+      body.tools = [{ type: 'web_search_20250305', name: 'web_search', max_uses: 4 }];
+    }
     const res = await fetch(cfg.endpoint, {
       method: 'POST',
       headers: {
@@ -2768,12 +2776,7 @@ async function callLLM(systemPrompt, userMessage, retryCount = 0) {
         'anthropic-dangerous-direct-browser-access': 'true',
         'content-type': 'application/json'
       },
-      body: JSON.stringify({
-        model: state.model,
-        max_tokens: 600,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: userMessage }]
-      })
+      body: JSON.stringify(body)
     });
     const data = await res.json();
     if (!res.ok) {
@@ -2783,7 +2786,22 @@ async function callLLM(systemPrompt, userMessage, retryCount = 0) {
       if (/credit balance/i.test(raw)) throw new Error('Anthropic 잔액 부족 — Billing에서 충전');
       throw new Error(raw);
     }
-    return (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+    // 텍스트 블록만 추출 (web_search 결과/citation 블록은 텍스트에 자연 통합됨)
+    const textBlocks = (data.content || [])
+      .filter(b => b.type === 'text')
+      .map(b => b.text);
+    // 인용 URL 수집 (web_search_tool_result 안의 citations)
+    const citations = [];
+    (data.content || []).forEach(b => {
+      if (b.type === 'text' && Array.isArray(b.citations)) {
+        b.citations.forEach(c => {
+          if (c.url && !citations.find(x => x.url === c.url)) {
+            citations.push({ url: c.url, title: c.title || c.url });
+          }
+        });
+      }
+    });
+    return { text: textBlocks.join('\n'), citations };
   }
 
   if (state.provider === 'groq') {
@@ -2795,10 +2813,10 @@ async function callLLM(systemPrompt, userMessage, retryCount = 0) {
       },
       body: JSON.stringify({
         model: state.model,
-        max_tokens: 600,
+        max_tokens: maxTokens,
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: userMessage }
+          ...messages
         ]
       })
     });
@@ -2810,20 +2828,105 @@ async function callLLM(systemPrompt, userMessage, retryCount = 0) {
         const wait = m ? Math.ceil(parseFloat(m[1])) : 30;
         if (retryCount < 1) {
           await sleep((wait + 1) * 1000);
-          return callLLM(systemPrompt, userMessage, retryCount + 1);
+          return callLLM(systemPrompt, messagesOrText, { ...opts, retryCount: retryCount + 1 });
         }
         throw new Error('Groq 한도 초과 — 잠시 후 재시도');
       }
       if (res.status === 401) throw new Error('Groq API key가 올바르지 않습니다.');
       throw new Error(raw);
     }
-    return data?.choices?.[0]?.message?.content || '';
+    return { text: data?.choices?.[0]?.message?.content || '', citations: [] };
   }
 
   throw new Error('지원되지 않는 provider');
 }
 
 /* ============ MEETING FLOW ============ */
+// 대화 히스토리를 LLM messages 배열로 변환 (특정 페르소나 시점)
+function buildConversationHistory(forPersonaId) {
+  // 사용자 메시지 + 모든 페르소나 발언을 시간순으로
+  // forPersona 본인 발언은 assistant, 나머지(사용자+다른 페르소나)는 user 역할로 합침
+  const hist = [];
+  state.messages.forEach(m => {
+    if (m.type === 'user') {
+      hist.push({ role: 'user', content: `[Juns] ${m.content}` });
+    } else if (m.type === 'persona') {
+      const p = PERSONAS.find(x => x.id === m.personaId);
+      const name = p ? p.name : m.personaId;
+      const txt = m.content || (m.parsed && (m.parsed.FACTS || m.parsed.RAW)) || '';
+      if (m.personaId === forPersonaId) {
+        hist.push({ role: 'assistant', content: txt });
+      } else {
+        hist.push({ role: 'user', content: `[${name}] ${txt}` });
+      }
+    }
+  });
+  // 연속된 같은 role 병합 (Anthropic 요구사항)
+  const merged = [];
+  hist.forEach(m => {
+    const last = merged[merged.length - 1];
+    if (last && last.role === m.role) {
+      last.content += '\n\n' + m.content;
+    } else {
+      merged.push({ ...m });
+    }
+  });
+  // 반드시 user로 시작해야 함
+  if (merged.length && merged[0].role === 'assistant') {
+    merged.unshift({ role: 'user', content: '(회의 시작)' });
+  }
+  return merged;
+}
+
+// 페르소나 한 명의 발언 턴 — typing 표시 → LLM 호출 → 메시지 추가
+async function runPersonaTurn(persona, instruction) {
+  const typingMsg = { id: 'typing_' + persona.id, type: 'typing', personaId: persona.id };
+  appendMessage(typingMsg);
+
+  // 대화 히스토리 + 이번 지시
+  const history = buildConversationHistory(persona.id);
+  const messages = [...history];
+  // 마지막이 user가 아니면 instruction을 user로, 맞으면 합침
+  if (messages.length && messages[messages.length - 1].role === 'user') {
+    messages[messages.length - 1].content += '\n\n' + instruction;
+  } else {
+    messages.push({ role: 'user', content: instruction });
+  }
+
+  const useWebSearch = state.provider === 'anthropic';
+
+  try {
+    const result = await callLLM(persona.system, messages, { webSearch: useWebSearch, maxTokens: 1200 });
+    const text = sanitizeKorean(result.text || '');
+    removeTypingMessage(persona.id);
+    const msg = {
+      id: 'msg_' + persona.id + '_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+      type: 'persona',
+      personaId: persona.id,
+      content: text,
+      citations: result.citations || [],
+      ts: Date.now()
+    };
+    state.messages.push(msg);
+    appendMessage(msg);
+    return msg;
+  } catch (err) {
+    removeTypingMessage(persona.id);
+    const friendly = err.message.length > 90 ? err.message.slice(0, 90) + '…' : err.message;
+    const errMsg = {
+      id: 'msg_err_' + persona.id + '_' + Date.now(),
+      type: 'persona',
+      personaId: persona.id,
+      content: '⚠ ' + friendly,
+      parsed: { RAW: '⚠ ' + friendly },
+      ts: Date.now()
+    };
+    state.messages.push(errMsg);
+    appendMessage(errMsg);
+    return errMsg;
+  }
+}
+
 async function startMeeting() {
   if (state.inProgress) return;
   const agenda = $('#agendaInput').value.trim();
@@ -2848,80 +2951,35 @@ async function startMeeting() {
   $('#btnStart').disabled = true;
   $('#btnStart').textContent = '회의 시작 중...';
 
-  // 화면 전환 — 시작 화면 → 채팅 화면
+  // 화면 전환
   $('#startScreen').hidden = true;
   $('#chatScreen').hidden = false;
   $('#summarySection').hidden = false;
   $('#memoSection').hidden = false;
   $('#chatAgenda').textContent = agenda;
   $('#memoInput').value = '';
-  $('#summaryContent').innerHTML = '<p class="summary-empty">회의가 끝났으면 <b>+ 종합 정리 생성</b>을 눌러 4명 의견을 한 페이지로 정리하세요.</p>';
+  $('#summaryContent').innerHTML = '<p class="summary-empty">회의가 끝났으면 <b>+ 종합 정리 생성</b>을 눌러 의견을 한 페이지로 정리하세요.</p>';
   clearChat();
 
-  // 1. 사용자 메시지로 안건 추가
-  const userMsg = {
-    id: 'msg_user_' + Date.now(),
-    type: 'user',
-    content: agenda,
-    ts: Date.now()
-  };
+  // 사용자 메시지
+  const userMsg = { id: 'msg_user_' + Date.now(), type: 'user', content: agenda, ts: Date.now() };
   state.messages.push(userMsg);
   appendMessage(userMsg);
 
-  const callMsg = `[주제]\n${agenda}\n\n위 주제에 대해 본인 분야 시각으로 INSIGHT + IDEAS(3~5개) + REFERENCES를 발산하세요.`;
-  const isGroq = state.provider === 'groq';
-
-  // 페르소나별 메시지 추가 함수
-  const runOne = async (p) => {
-    // 1. typing 인디케이터
-    const typingMsg = { id: 'typing_' + p.id, type: 'typing', personaId: p.id };
-    appendMessage(typingMsg);
-
-    try {
-      const reply = await callLLM(p.system, callMsg);
-      const parsed = parseSections(reply);
-      removeTypingMessage(p.id);
-      // 메시지 추가
-      const msg = {
-        id: 'msg_' + p.id + '_' + Date.now(),
-        type: 'persona',
-        personaId: p.id,
-        content: reply,
-        parsed: parsed,
-        ts: Date.now()
-      };
-      state.messages.push(msg);
-      state.facts[p.id] = parsed; // 옛 호환
-      appendMessage(msg);
-    } catch (err) {
-      removeTypingMessage(p.id);
-      const friendly = err.message.length > 80 ? err.message.slice(0, 80) + '…' : err.message;
-      const errMsg = {
-        id: 'msg_err_' + p.id + '_' + Date.now(),
-        type: 'persona',
-        personaId: p.id,
-        content: '⚠ ' + friendly,
-        parsed: { RAW: '⚠ ' + friendly },
-        ts: Date.now()
-      };
-      state.messages.push(errMsg);
-      appendMessage(errMsg);
-    }
-  };
+  const director = PERSONAS.find(p => p.id === 'director');
+  const maker = PERSONAS.find(p => p.id === 'maker');
 
   try {
-    if (isGroq) {
-      // Groq — 순차 호출
-      for (let i = 0; i < PERSONAS.length; i++) {
-        await runOne(PERSONAS[i]);
-        if (i < PERSONAS.length - 1) await sleep(1500);
-      }
-    } else {
-      // Anthropic — 페르소나별 typing 표시하면서 순차 (시각적 카톡 느낌)
-      for (let i = 0; i < PERSONAS.length; i++) {
-        await runOne(PERSONAS[i]);
-      }
-    }
+    // 1. 디렉터(서다현)가 먼저 — 컨셉·트렌드로 운을 뗌. 필요하면 웹 검색.
+    await runPersonaTurn(director,
+      '방금 Juns가 던진 주제에 반응해줘. 지금 이게 왜 흥미로운지, 어떤 컨셉·트렌드로 가면 좋을지 네 시각을 짧게 던져. 필요하면 실제 뜨는 사례를 웹에서 찾아서 구체적으로. 회의 첫 발언이니까 너무 길지 않게, 대화 물꼬를 트듯이.');
+
+    if (state.provider === 'groq') await sleep(1200);
+
+    // 2. 메이커(이준호)가 디렉터 말 받아서 — 실현·공정 관점으로 받아침
+    await runPersonaTurn(maker,
+      '서다현(디렉터)이 방금 컨셉 얘기를 했어. 그걸 받아서 "그거 만들려면 이렇게" 하고 공정·재료·실현 관점으로 대화하듯 받아쳐. 동의하거나 다른 방향을 제안하거나. 짧고 자연스럽게.');
+
     autoSave();
   } finally {
     state.inProgress = false;
@@ -3123,12 +3181,10 @@ function speakCard(personaId) {
 
 /* ============ FOLLOW-UP MODE ============ */
 
-// 키워드 기반 자동 라우팅
+// 키워드 기반 자동 라우팅 (2명)
 const ROUTING_KEYWORDS = {
-  product: ['고객', '사용자', '시장', '대체재', '수요', '구매', '재구매', '브랜드', '카테고리', '경쟁', '가격대', '포지셔닝', 'JTBD', '니즈', '페르소나'],
-  engineer: ['공정', '소재', '제조', '양산', '출력', '사출', 'CNC', 'FDM', 'SLA', 'SLS', 'MJF', 'TPU', 'PLA', 'ABS', 'PETG', 'ASA', '금형', '외주', '가공', '품질', 'BEP', 'MOQ', '진공', '판금', '다이캐스팅', '리드타임', '공차', '강도'],
-  marketer: ['채널', '마케팅', '광고', '카페', '유튜브', '인스타', '스마트스토어', '쿠팡', '콘텐츠', '쇼츠', '검색', 'SEO', '노출', '협찬', '트래픽', '인플루언서', '커뮤니티'],
-  finance: ['세금', '세무', '단가', '마진', '현금흐름', '부가세', '종소세', '회계', '재고', '간이', '회수', '흑자도산', '손익분기', 'ROI', '수익', '비용', '영업이익', '매출']
+  director: ['컨셉', '트렌드', '디자인', '스타일', '미감', '느낌', '분위기', '캐릭터', '세계관', '브랜드', '아이디어', '컬러', '색', '무드', '레퍼런스', '인기', '유행', '요즘', '시장', '타겟', '감성', '스토리'],
+  maker: ['공정', '제작', '만들', '소재', '재료', '출력', '사출', 'CNC', 'FDM', 'SLA', 'SLS', '프린팅', '실리콘', '캐스팅', 'TPU', 'PLA', 'ABS', 'PETG', 'ASA', '레진', '금형', '후처리', '도색', '몰드', '양산', '수량', '단가', '비용', '품질', '강도', '내구성']
 };
 
 function routePersona(question) {
@@ -3141,71 +3197,10 @@ function routePersona(question) {
   return sorted[0][1] > 0 ? sorted[0][0] : null;
 }
 
-function buildFollowupContext(persona, question) {
-  // 채팅 메시지에서 본인 + 다른 페르소나 이전 메시지 추출
-  const myMessages = state.messages
-    .filter(m => m.type === 'persona' && m.personaId === persona.id)
-    .slice(-3);
-  const myFactsText = myMessages.length > 0
-    ? myMessages.map(m => {
-        const p = m.parsed || {};
-        const ins = p.INSIGHT || p.PERSPECTIVE || '';
-        const ideas = p.IDEAS || p.FACTS || p.RAW || '';
-        return (ins ? `시각: ${ins}\n` : '') + (ideas ? `${ideas}` : '');
-      }).join('\n\n').slice(0, 800)
-    : '(이전 답변 없음)';
-
-  const otherFacts = PERSONAS
-    .filter(p => p.id !== persona.id)
-    .map(p => {
-      const msgs = state.messages
-        .filter(m => m.type === 'persona' && m.personaId === p.id)
-        .slice(-2);
-      if (msgs.length === 0) return `[${p.name}] (없음)`;
-      const txt = msgs.map(m => {
-        const ps = m.parsed || {};
-        const ins = ps.INSIGHT || ps.PERSPECTIVE || '';
-        const ideas = (ps.IDEAS || ps.FACTS || ps.RAW || '').slice(0, 250);
-        return (ins ? `시각: ${ins}\n` : '') + ideas;
-      }).join('\n').slice(0, 400);
-      return `[${p.name} · ${p.tag}]\n${txt}`;
-    }).join('\n\n');
-
-  // 사용자의 이전 질문들 (최근 4개)
-  const userQuestions = state.messages
-    .filter(m => m.type === 'user')
-    .slice(-5, -1) // 현재 질문 제외, 직전 4개
-    .map(m => `Q: ${m.content}`)
-    .join('\n');
-
-  return `[원래 주제]
-${state.agenda}
-
-[당신이 이전에 발산한 내용]
-${myFactsText}
-
-[다른 베테랑의 발산 — 참고용]
-${otherFacts}
-${userQuestions ? `\n[Juns의 이전 질문들]\n${userQuestions}\n` : ''}
-[Juns의 새 질문]
-${question}
-
-[당신의 역할 — 카톡 대화 톤의 응답]
-주제에서 사용자 질문 방향으로 본인 분야 시각으로 응답하세요.
-- 카톡 답변처럼 자연스럽고 친근한 톤. 본인 분야 베테랑답게 구체적이고 영감을 주게.
-- INSIGHT (1문장) + IDEAS (2~5개 — 짧을수록 좋음, 첫 회의보다 더 좁고 구체적인 발산) + REFERENCES (3~6개) 형식 유지.
-- 다른 베테랑이 짚은 방향을 보완·확장하거나 연결할 수 있음.
-- 사용자가 "더 보여줘" 같은 확장 요청이면 새 아이디어 3~5개, "이것 자세히" 같은 깊이 요청이면 IDEAS 1~3개 + 더 깊은 설명.
-- 한국어만. 인사말·결론 멘트 금지.`;
-}
-
 async function sendFollowup() {
   if (state.inProgress) return;
   const question = $('#followupInput').value.trim();
-  if (!question) {
-    toast('질문을 입력해주세요', true);
-    return;
-  }
+  if (!question) { toast('할 말을 입력해주세요', true); return; }
   if (!state.apiKey) {
     toast('SETTINGS에서 API key를 먼저 입력해주세요', true);
     openModal('modalSettings');
@@ -3220,89 +3215,44 @@ async function sendFollowup() {
   $('#btnFollowupSend').disabled = true;
   $('#btnFollowupSend').textContent = '...';
 
-  // 라우팅
+  // 라우팅 — 누가 답할지
   let targetPersonas = [];
   if (state.followupTarget === 'auto') {
     const routed = routePersona(question);
-    targetPersonas = routed ? [PERSONAS.find(p => p.id === routed)] : PERSONAS;
+    // 자동: 매칭되면 그 사람 먼저 답하고, 매칭 안 되면 디렉터 먼저 → 메이커 받아침
+    if (routed) {
+      const main = PERSONAS.find(p => p.id === routed);
+      const other = PERSONAS.find(p => p.id !== routed);
+      targetPersonas = [main, other]; // 주 담당 먼저, 동료가 받아침
+    } else {
+      targetPersonas = [PERSONAS.find(p => p.id === 'director'), PERSONAS.find(p => p.id === 'maker')];
+    }
   } else if (state.followupTarget === 'all') {
-    targetPersonas = PERSONAS;
+    targetPersonas = [PERSONAS.find(p => p.id === 'director'), PERSONAS.find(p => p.id === 'maker')];
   } else {
     targetPersonas = [PERSONAS.find(p => p.id === state.followupTarget)];
   }
   targetPersonas = targetPersonas.filter(Boolean);
 
   // 사용자 메시지 추가
-  const userMsg = {
-    id: 'msg_user_' + Date.now(),
-    type: 'user',
-    content: question,
-    ts: Date.now()
-  };
+  const userMsg = { id: 'msg_user_' + Date.now(), type: 'user', content: question, ts: Date.now() };
   state.messages.push(userMsg);
   appendMessage(userMsg);
 
-  // 옛 호환 — followup도 함께 기록
-  const followup = {
-    id: 'q_' + Date.now(),
-    question,
-    answers: [],
-    target: state.followupTarget,
-    ts: Date.now()
-  };
-  state.followups.push(followup);
-
-  const isGroq = state.provider === 'groq';
-
-  const runOne = async (persona) => {
-    const typingMsg = { id: 'typing_' + persona.id, type: 'typing', personaId: persona.id };
-    appendMessage(typingMsg);
-    try {
-      const callMsg = buildFollowupContext(persona, question);
-      const rawReply = await callLLM(persona.system, callMsg);
-      const parsed = parseSections(rawReply);
-      removeTypingMessage(persona.id);
-      const msg = {
-        id: 'msg_' + persona.id + '_' + Date.now(),
-        type: 'persona',
-        personaId: persona.id,
-        content: rawReply,
-        parsed: parsed,
-        ts: Date.now()
-      };
-      state.messages.push(msg);
-      followup.answers.push({ personaId: persona.id, text: rawReply, parsed: parsed, ts: Date.now() });
-      appendMessage(msg);
-    } catch (err) {
-      removeTypingMessage(persona.id);
-      const friendly = err.message.length > 80 ? err.message.slice(0, 80) + '…' : err.message;
-      const errMsg = {
-        id: 'msg_err_' + persona.id + '_' + Date.now(),
-        type: 'persona',
-        personaId: persona.id,
-        content: '⚠ ' + friendly,
-        parsed: { RAW: '⚠ ' + friendly },
-        ts: Date.now()
-      };
-      state.messages.push(errMsg);
-      followup.answers.push({ personaId: persona.id, text: '⚠ ' + friendly, ts: Date.now() });
-      appendMessage(errMsg);
-    }
-  };
-
   try {
-    if (isGroq) {
-      for (let i = 0; i < targetPersonas.length; i++) {
-        await runOne(targetPersonas[i]);
-        if (i < targetPersonas.length - 1) await sleep(1500);
+    for (let i = 0; i < targetPersonas.length; i++) {
+      const persona = targetPersonas[i];
+      let instruction;
+      if (i === 0) {
+        instruction = 'Juns가 방금 한 말에 너답게 반응해. 질문이면 답하고, 새 방향이면 같이 발전시켜. 필요하면 웹에서 실제 사례·이미지·정보를 찾아와서 구체적으로. 짧고 자연스럽게 대화하듯.';
+      } else {
+        instruction = '동료가 방금 한 말과 Juns의 말을 보고, 네 관점에서 받아쳐. 동의하거나 보완하거나 다른 방향을 제안하거나. 굳이 더 보탤 게 없으면 짧게 동의만 해도 돼. 자연스럽게.';
       }
-    } else {
-      // Anthropic도 순차 — 카톡 시각 흐름
-      for (let i = 0; i < targetPersonas.length; i++) {
-        await runOne(targetPersonas[i]);
-      }
+      await runPersonaTurn(persona, instruction);
+      if (state.provider === 'groq' && i < targetPersonas.length - 1) await sleep(1200);
     }
     $('#followupInput').value = '';
+    $('#followupInput').style.height = 'auto';
     autoSave();
   } finally {
     state.inProgress = false;
@@ -3331,42 +3281,36 @@ function speakFollowup(followupId, personaId) {
 let meetingPlaybackQueue = [];
 let meetingPlaybackPlaying = false;
 
-// 회의 전체 발화 스크립트 빌더 — 안건 → 4 팩트시트 → 후속 → 메모 순
+// 회의 전체 발화 스크립트 빌더 — messages 시간순
 function buildMeetingScript() {
   const items = [];
+  const clean = (t) => (t || '')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/https?:\/\/[^\s]+/g, '')
+    .replace(/\*\*/g, '')
+    .replace(/^[-•*]\s+/gm, '')
+    .replace(/\n{2,}/g, '. ')
+    .replace(/\n/g, ' ')
+    .trim();
 
-  if (state.agenda && state.agenda.trim()) {
-    items.push({ text: '안건. ' + state.agenda.trim() });
-  }
-
-  // 4 페르소나 팩트시트 — 정의된 순서대로
-  PERSONAS.forEach((p) => {
-    if (state.facts[p.id]) {
-      const text = buildSpeechText(p, state.facts[p.id]);
-      if (text) {
-        items.push({ text: `${p.name}의 팩트시트. ${text}` });
+  state.messages.forEach(m => {
+    if (m.type === 'user') {
+      items.push({ text: 'Juns. ' + clean(m.content) });
+    } else if (m.type === 'persona') {
+      const p = PERSONAS.find(x => x.id === m.personaId);
+      const name = p ? p.name : m.personaId;
+      let txt = m.content || (m.parsed && (m.parsed.FACTS || m.parsed.RAW)) || '';
+      txt = clean(txt);
+      if (txt && !txt.startsWith('⚠')) {
+        items.push({ text: `${name}. ${txt}` });
       }
     }
   });
 
-  // 후속 질문/응답 — 시간순
-  (state.followups || []).forEach((f, i) => {
-    if (f.question) {
-      items.push({ text: `추가 질문 ${i + 1}. ${f.question}` });
-    }
-    (f.answers || []).forEach((a) => {
-      const persona = PERSONAS.find((x) => x.id === a.personaId);
-      if (persona && a.text) {
-        items.push({ text: `${persona.name}의 답변. ${a.text}` });
-      }
-    });
-  });
-
-  // 메모
   if (state.memo && state.memo.trim()) {
-    items.push({ text: '의장의 메모. ' + state.memo.trim() });
+    items.push({ text: 'Juns의 메모. ' + state.memo.trim() });
   }
-
   return items;
 }
 
@@ -3769,57 +3713,46 @@ async function generateSummary() {
   if (btn) { btn.disabled = true; btn.textContent = '생성 중...'; }
   $('#summaryContent').innerHTML = '<p class="summary-empty">종합 정리 생성 중… <span class="typing-dots"><span></span><span></span><span></span></span></p>';
 
-  // 회의 내용 텍스트로 변환
+  // 회의 내용 텍스트로 변환 (대화 그대로)
   const meetingText = state.messages.map(m => {
-    if (m.type === 'user') return `[Juns의 질문/안건]\n${m.content}\n`;
+    if (m.type === 'user') return `[Juns]\n${m.content}\n`;
     if (m.type === 'persona') {
       const p = PERSONAS.find(x => x.id === m.personaId);
       const name = p ? p.name : m.personaId;
-      const parsed = m.parsed || {};
-      const ins = parsed.INSIGHT || parsed.PERSPECTIVE || '';
-      const ideas = parsed.IDEAS || '';
-      const refs = parsed.REFERENCES || '';
-      const facts = parsed.FACTS || parsed.RAW || '';
-      let txt = `[${name}]\n`;
-      if (ins) txt += `시각: ${ins}\n`;
-      if (ideas) txt += `아이디어:\n${ideas}\n`;
-      if (refs) txt += `키워드: ${refs}\n`;
-      if (!ideas && !ins && facts) txt += facts + '\n';
-      return txt;
+      const txt = m.content || (m.parsed && (m.parsed.FACTS || m.parsed.RAW)) || '';
+      return `[${name}]\n${txt}\n`;
     }
     return '';
   }).join('\n');
 
-  const summarySystem = `당신은 1인 사업자·창작자의 회의 결과를 한 페이지로 종합하는 큐레이터입니다.
-4명 베테랑(The Visionary, The Craftsman, The Curator, The Scout)의 발산 결과를 받아 한 페이지로 정리합니다.
-한국어로만 작성하며, 외국어 단어 금지. 사용자가 회의 후 메모로 사용할 수 있도록 명료하게 구성하세요.
+  const summarySystem = `당신은 창작자·1인 사업자의 회의 대화를 한 페이지로 깔끔히 정리하는 큐레이터입니다.
+서다현(크리에이티브 디렉터)과 이준호(메이커)가 Juns와 나눈 회의 대화를 받아 정리합니다.
+한국어로만, 외국어 단어 금지. Juns가 회의 후 보고 바로 행동할 수 있게 명료하게.
 
 [출력 형식 — 마크다운]
 ## 주제
-회의 주제를 1~2문장으로 요약
+무엇을 논의했는지 1~2문장
 
-## 핵심 방향 (4명 종합)
-1. **컨셉** (Visionary 시각): 한 줄
-2. **공정·제작** (Craftsman 시각): 한 줄
-3. **채널·문화** (Curator 시각): 한 줄
-4. **수익·자본** (Scout 시각): 한 줄
+## 핵심 결론
+- 회의에서 모인 가장 중요한 방향 3~5개 (bullet)
 
-## 흥미로운 아이디어 Top 5
-1. 가장 흥미로운 아이디어 — 어떤 페르소나가 제시했는지 표기
-2. ...
-(4명 발산 중 가장 신선하거나 시너지 좋은 5개)
+## 컨셉·디자인 (서다현)
+- 디렉터가 제안한 컨셉·트렌드·방향 핵심
+
+## 제작·실현 (이준호)
+- 메이커가 제안한 공정·재료·방법 핵심
 
 ## 검색해볼 키워드
-중요 키워드·트렌드 이름 8~12개 쉼표 구분
+실제 언급된 브랜드·작가·트렌드·기법 이름 6~10개 쉼표 구분
 
-## 다음 단계 제안
-- 사용자가 이어서 할 만한 구체 액션 3~5개 (예: "이 컨셉으로 시제품 30개", "이 키워드 검색해서 레퍼런스 5개 모으기")
+## 다음 단계
+- Juns가 바로 할 만한 구체 액션 3~4개
 
-다른 텍스트, 인사말, 결론 멘트 금지. 위 마크다운 그대로 출력.`;
+다른 텍스트·인사말 금지. 위 마크다운만 출력.`;
 
   try {
-    const reply = await callLLM(summarySystem, `[회의 전체 기록]\n\n${meetingText}\n\n위 회의를 종합 정리하세요.`);
-    const cleaned = sanitizeKorean(reply);
+    const result = await callLLM(summarySystem, `[회의 대화 전체]\n\n${meetingText}\n\n위 대화를 종합 정리하세요.`, { maxTokens: 1500 });
+    const cleaned = sanitizeKorean(result.text || '');
     state.summary = cleaned;
     renderSummary(cleaned);
     autoSave();
