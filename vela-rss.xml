@@ -6,96 +6,69 @@
     <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
     <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
     <language>ko</language>
-    <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
-    <lastBuildDate>Mon, 25 May 2026 06:48:25 +0900</lastBuildDate>
+    <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
+    <lastBuildDate>Mon, 01 Jun 2026 06:53:24 +0900</lastBuildDate>
     <generator>Vela Weekly Collector</generator>
     <ttl>10080</ttl>
     <item>
       <title>[Cover] Let&apos;s build GPT · 처음부터 만드는 GPT</title>
       <link>https://juns9990.github.io/vela/vela-prototype.html</link>
-      <guid isPermaLink="false">vela-cover-2026-W22</guid>
+      <guid isPermaLink="false">vela-cover-2026-W23</guid>
       <description>이번 주 Vela가 추천하는 깊이 있는 강의. Andrej Karpathy의 시그니처.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>Cover Story</category>
     </item>
     <item>
-      <title>[LLM] 싱가포르 AI 미래 강화, 새로운 국립 파트너십</title>
+      <title>[LLM] 싱가포르 인공지능 미래 강화: 새로운 국가 파트너십</title>
       <link>https://deepmind.google/blog/strengthening-singapores-ai-future-a-new-national-partnership/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/strengthening-singapores-ai-future-a-new-national-partnership/</guid>
-      <description>구글 딥마인드와 싱가포르가 보건, 교육, 지속 가능성 등 복잡한 문제를 해결하기 위해 선도적인 AI를 적용하기 위한 새로운 국립 파트너십을 맺었습니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <description>구글 딥마인드와 싱가포르가 건강, 교육, 지속 가능성 등 복잡한 도전을 해결하기 위해 최첨단 인공지능을 적용하는 새로운 국가 파트너십을 발표했습니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[LLM] 실제 세계 장소에 가상으로 방문하는 프로젝트 제니와 스트리트 뷰</title>
+      <title>[LLM] 실제 세계 장소를 시뮬레이션하는 프로젝트 제니와 스트리트 뷰</title>
       <link>https://deepmind.google/blog/simulate-real-world-places-with-project-genie-and-street-view/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/simulate-real-world-places-with-project-genie-and-street-view/</guid>
-      <description>구글 AI 초고급 구독자에게 전 세계적으로 액세스를 확대하고 스트리트 뷰를 기반으로 새로운 기능을 소개합니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <description>구글 AI 얼티메이트 구독자를 세계적으로 확대하고 스트리트 뷰를 기반으로 새로운 기능을 소개합니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[LLM] 과학의 새로운 시대, Gemini로 시작</title>
+      <title>[LLM] 과학의 새로운 시대에 맞는 AI 실험과 도구</title>
       <link>https://deepmind.google/blog/gemini-for-science-ai-experiments-and-tools-for-a-new-era-of-discovery/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/gemini-for-science-ai-experiments-and-tools-for-a-new-era-of-discovery/</guid>
-      <description>과학 탐험의 규모와 정밀성을 확장하기 위한 도구와 실험을 모은 컬렉션입니다. Gemini은 과학의 새로운 시대를 열어가는 AI 도구와 실험을 제공합니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <description>과학 탐구의 범위와 정밀성을 확장하기 위한 도구와 실험을 모은 컬렉션입니다. 다양한 과학 분야에 적용할 수 있는 AI 도구와 실험을 소개하고, 과학자들이 새로운 발견을 위해 사용할 수 있는 도구를 제공합니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[LLM] 내용의 창작과 편집 과정을 쉽게 이해하세요</title>
+      <title>[LLM] 내용이 어떻게 만들어지고 편집되었는지 이해하기 쉽게</title>
       <link>https://deepmind.google/blog/making-it-easier-to-understand-how-content-was-created-and-edited/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/making-it-easier-to-understand-how-content-was-created-and-edited/</guid>
-      <description>웹에서 내용이 어떻게 만들어지고 편집되었는지 이해하는 것을 돕기 위해 도구를 확장하고 있습니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <description>웹 상에서 내용이 어떻게 만들어지고 편집되었는지 이해하기 쉽게 도와드리기 위해 도구를 확장하고 있습니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[LLM] 세포 나이를 역전시키는 새로운 요인 발견</title>
+      <title>[LLM] 세포 나이를 되돌리다: 새로운 유전적 지표 발견</title>
       <link>https://deepmind.google/blog/fast-tracking-genetic-leads-to-reverse-cellular-aging/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/fast-tracking-genetic-leads-to-reverse-cellular-aging/</guid>
-      <description>과학자들은 Co-Scientist를 사용하여 인간 세포를 재생시키는 성공적인 새로운 요인을 발견했다. 연구 결과는 세포의 나이를 역전시키는 새로운 방법을 제공한다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <description>과학자들은 Co-Scientist를 사용하여 인간 세포를 재생생성하는 새로운 요인들을 발견했습니다. 이 새로운 발견은 세포 나이를 되돌리는데 중요한 역할을 할 것으로 예상됩니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[LLM] I/O 2026: 인공지능을 더 도움이 되는 제품으로 만들기</title>
-      <link>https://blog.google/innovation-and-ai/technology/developers-tools/google-io-2026-collection/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/developers-tools/google-io-2026-collection/</guid>
-      <description>구글 I/O 2026에서 우리는 인공지능을 더 많은 사람들에게 도움이 되는 제품으로 만드는 방법에 대해 공유했습니다. 발표된 모든 내용을 확인하세요.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[LLM] AI 모드가 미국인들의 검색 방법을 어떻게 바꾸고 있나</title>
-      <link>https://blog.google/products-and-platforms/products/search/ai-mode-us-insights/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/ai-mode-us-insights/</guid>
-      <description>미국인들은 AI 모드를 어떻게 사용하고 있는지 보여주는 그래픽이 색다른 일러스트레이션과 함께 밝고 푸른 배경에 나타난다. AI 모드는 검색 결과를 개인화하고, 정보를 더 쉽게 찾을 수 있도록 돕는다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Agent] Gemini 시대에 오신 것을 환영합니다</title>
-      <link>https://blog.google/innovation-and-ai/sundar-pichai-io-2026/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/sundar-pichai-io-2026/</guid>
-      <description>Google I/O 2026에서 발표된 Gemini은 인공지능의 새로운 시대를 열었습니다. Gemini은 사용자 경험을 개선하고, 인공지능 시스템을 더 인간적인 방식으로 만들기 위해 설계되었습니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
-      <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[LLM] 미주리에 새로운 커뮤니티 투자 발표</title>
+      <title>[LLM] We’re announcing new community investments in Missouri.</title>
       <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/missouri-programs/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/missouri-programs/</guid>
-      <description>미주리 주에서 다음세대 직무력과 에너지 프로그램에 투자하여 지역 경제를 발전시키고 있습니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <description>We’re helping build the state’s next-generation workforce and investing in energy programs.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
@@ -103,139 +76,166 @@
       <title>[Vision] 2026 I/O에서 발표된 100가지 혁신</title>
       <link>https://blog.google/innovation-and-ai/technology/ai/google-io-2026-all-our-announcements/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-io-2026-all-our-announcements/</guid>
-      <description>Gemini 로고와 함께 &apos;Ready, Set, I/O&apos;라는 색다른 로고가 등장했다. 구글은 2026년 I/O에서 100가지 혁신을 발표했다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <description>구글은 2026년 I/O에서 다양한 혁신을 발표했습니다. 그 중 가장 눈에 띄는 것은 Gemini과 같은 새로운 기술입니다. 이 기술은 사용자 경험을 향상시키고 인공지능을 더욱 발전시키기 위해 개발되었습니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[LLM] 구글 비ーム에서 더 나은 그룹 회의</title>
+      <title>[LLM] 구글 비(Google Beam)가 더 좋은 그룹 회의를 경험하다</title>
       <link>https://blog.google/innovation-and-ai/models-and-research/google-research/google-beam-group-meetings/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/models-and-research/google-research/google-beam-group-meetings/</guid>
-      <description>구글 비ーム에서 새로운 실험을 통해 2인실 내 회의와 3인 화면 회의를 병행하는 새로운 그룹 회의 방식을 도입했습니다. 이 새로운 실험은 인공지능(AI) 기술을 활용하여 회의 참여자 간의 상호 작용을 향상시키는 데 중점을 둡니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <description>구글 비(Google Beam)은 2명이 실내에, 3명이 화면상에 있는 작은 그룹 회의를 경험할 수 있는 새로운 실험을 시작했습니다. 이 새로운 실험은 인공지능(AI) 기술을 통해 더 편리하고 효과적인 회의를 가능하게 합니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Agent] Superhuman Safe and Agile Racing through Multi-Agent Reinforcement Learning</title>
-      <link>https://arxiv.org/abs/2605.22748v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2605.22748v1</guid>
-      <description>Autonomous systems have achieved superhuman performance in isolation or simulation, yet they remain brittle in shared, dynamic real-world spaces. This failure stems from the dominant single-agent paradigm for physical applications, where other actors are ignored or treated as env</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
-      <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[LLM] 인공지능의 미래를 열다, NVIDIA GTC Taipei LIVE</title>
+      <title>[LLM] NVIDIA GTC 타오페이에서 AI의 미래를 열다</title>
       <link>https://blogs.nvidia.com/blog/nvidia-gtc-taipei-computex-2026-news/</link>
       <guid isPermaLink="true">https://blogs.nvidia.com/blog/nvidia-gtc-taipei-computex-2026-news/</guid>
-      <description>인공지능(AI)의 미래를 열다. 세계 최고의 개발자, 연구자, 산업 리더들이 모여 AI의 최신 혁신을 함께 발견하고는 새로운 산업을 열어갈 수 있는 AI 공장과 확장 인프라를 포함한 다양한 주제를 다루고 있습니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <description>NVIDIA GTC 타오페이에서 세계의 개발자, 연구원 및 산업 리더들이 모여 AI의 가장 최근의 혁신을 둘러싼 주제에 대해 논의하고 있습니다. AI 공장과 확장 인프라를 포함한 모든 산업에 걸쳐서.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
     </item>
     <item>
-      <title>[LLM] 구글 I/O 2026 &apos;대화&apos; 단계로 가는 길</title>
+      <title>[LLM] 구글 I/O 2026 다이얼로그 스테이지에서 무슨 일이?</title>
       <link>https://blog.google/innovation-and-ai/technology/ai/io-2026-dialogues-recap/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/io-2026-dialogues-recap/</guid>
-      <description>알파벳 CEO 수ندر 피차이(CEO Sundar Pichai)가 2026년 I/O 콘퍼런스 &apos;대화&apos; 단계에서 열린 대화에 대해 이야기합니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <description>알파벳 CEO 수ندر 피차이(Alphabet CEO Sundar Pichai)는 I/O 2026 다이얼로그 스테이지에서 대화 중입니다. 구글이 내년 2027년 1분기부터 AI 기술에 중점을 둔 새로운 제품과 서비스를 출시할 예정입니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Infra] 다양성 훈련이 테스트 시 검색 능력 향상</title>
-      <link>https://arxiv.org/abs/2605.22817v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2605.22817v1</guid>
-      <description>인공지능 모델은 새로운 환경에 일반화하고, AlphaEvolve와 같은 검색 절차 내에서 다양한 작업에 대한 보상을 선택하는 롤아웃을 포함하여, 추론 확장 검색 절차 내에서 작동해야합니다. 하지만 표준 LLM 후 훈련 최적화 패러다임은 이 새로운 요구 사항을 충족하지 못합니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
-      <category>Infra</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Vision] 자각VLN: 시각-언어 탐색에서 자각을 통한 합리적인 결정</title>
-      <link>https://arxiv.org/abs/2605.22816v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2605.22816v1</guid>
-      <description>시각-언어 탐색(VLN)에서는 언어 명령을 시각 환경 내 자신의 움직임에 연결하는 에이전트가 필요합니다. 현재 최고 수준의 방법은 시각-언어 모델(VLM)의 합리적인 결정 능력을 활용하여 종단 간 행동 예측을 하지만, 종종</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <title>[Vision] 확산 후포스터 샘플러가 실패하는 시점, 이유, 방법: 한 번에 모든 것을 이해하자</title>
+      <link>https://arxiv.org/abs/2605.30330v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2605.30330v1</guid>
+      <description>확산 모델은 자연 데이터의 복잡한 분포를 모델링하는 데 뛰어난 능력을 가지고 있어, 이미징문제의 후포스터 샘플링에서 인기 있는 및 효과적인 선택이 되었다. 기존의 방법들은 추론 시간에 측정 모델을 포함시킬 수 있지만, 실험적 샘플 크기에 따라 샘플러가 실패할 수 있는 이유를 이해하고 있다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[LLM] 미래에 대비한 능력 개발을 위한 생성 AI</title>
-      <link>https://research.google/blog/towards-developing-future-ready-skills-with-generative-ai/</link>
-      <guid isPermaLink="true">https://research.google/blog/towards-developing-future-ready-skills-with-generative-ai/</guid>
-      <description>생성 AI는 교육 혁신을 이끌고 있습니다. 새로운 기술과 방법을 통해 교육의 질을 향상하고 학생들의 학습 경험을 개선하고 있습니다. 그러나 이러한 기술의 잠재력은 여전히 미박인데, 교육의 미래를 준비하기 위해 우리는 이러한 기술을 어떻게 활용할 수 있을까요?</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <title>[LLM] 12개의 주요 I/O 2026 순간을 다시 살펴보세요</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/io-2026-keynote-moment-videos/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/io-2026-keynote-moment-videos/</guid>
+      <description>I/O 2026의 주간 키노트에서 전시된 색다른 로고와 함께, 키노트의 스틸컷들이 어우러진 배경</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[LLM] 구글 연구소 과학자들이 Empirical Research Assistance를 어떻게 사용하고 있는가?</title>
+      <title>[LLM] 007의 첫 번째 빛, 클라우드 게임으로 출격</title>
+      <link>https://blogs.nvidia.com/blog/geforce-now-thursday-007-first-light-launch/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/geforce-now-thursday-007-first-light-launch/</guid>
+      <description>007의 새로운 시작을 경험하라. GeForce NOW은 007 First Light를 통해 회원들이 장미빛 밤의 스파이 이야기를 거의 모든 기기에서 즐길 수 있도록 합니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
+    </item>
+    <item>
+      <title>[LLM] Io 2026 퀴즈, 구글 AI 스튜디오에서 만들다</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/</guid>
+      <description>Io 2026 주요 발표에 대해 퀴즈를 만들기 위해 구글 AI 스튜디오를 사용했습니다. 이 퀴즈는 Io 2026의 주요 이슈를 반영했습니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[LLM] 제미니 오미니와 제미니 3.5의 9가지 데모</title>
+      <link>https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni-3-5-videos/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni-3-5-videos/</guid>
+      <description>제미니 오미니와 제미니 3.5은 인공지능의 새로운 표준을 제시합니다. 이들의 데모는 인공지능의 가능성을 보여줍니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[LLM] 미래 연구소에서 나온 실제 인공지능 프로토타입</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/university-waterloo-labs/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/university-waterloo-labs/</guid>
+      <description>워털로 대학교 학생들은 교육과 직장의 미래를 재창조하기 위해 신호 언어 교사와 같은 인공지능 프로토타입을 개발했습니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Vision] GPIC: 거대한 허용 이미지 코퍼스, 시각 생성을 위한 새로운 도전</title>
+      <link>https://arxiv.org/abs/2605.30341v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2605.30341v1</guid>
+      <description>시각 생성 모델링을 위한 확장 가능한 방법을 연구하려면 대규모, 접근 가능한, 안정적인 데이터셋이 필요합니다. 우리는 GPIC, 약 28조 픽셀을 가진 거대한 허용 이미지 코퍼스를 소개합니다. GPIC는 다양한 인터넷 이미지를 캡션으로 한 cutting-edge 비전-언어 모델에 의해 캡션け된 다채로운 이미지로 구성됩니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
+      <category>Vision</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[LLM] 결정 지점에서 샘플링: 합리적인 추론</title>
+      <link>https://arxiv.org/abs/2605.30327v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2605.30327v1</guid>
+      <description>전문가 추론 모델은 강화 학습을 통해 훈련 된 기반 언어 모델에 적용됩니다. 최근 연구에서는 기반 모델의 분포의 한 버전인 &apos;파워 분포&apos;에서 샘플링 함으로써 비슷한 추론 성능을 얻는다는 것을 보여주었습니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Tool] 불확실성 기반 3D 가우시안 스팟팅 매핑</title>
+      <link>https://arxiv.org/abs/2605.30342v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2605.30342v1</guid>
+      <description>우리는 불확실성 측정과 3D 가우시안 스팟팅 매핑을 위한 새로운 프레임워크인 GAVIS를 제안한다. 이 프레임워크는 3D 가우시안 스팟팅 매핑에서 훈련된 시점에서 보이지 않는 영역의 예측이 불신할만큼 불확실하다는 관찰에서 시작된다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
+      <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[LLM] 구글 연구원들이 Empirical Research Assistance를 어떻게 사용하는가?</title>
       <link>https://research.google/blog/four-ways-google-research-scientists-have-been-using-empirical-research-assistance/</link>
       <guid isPermaLink="true">https://research.google/blog/four-ways-google-research-scientists-have-been-using-empirical-research-assistance/</guid>
-      <description>구글 연구소 과학자들은 Empirical Research Assistance를 데이터 마이닝 및 모델링에 사용하고 있다. 이 도구는 연구 과정을 자동화하고, 데이터 분석을 간소화하며, 연구 결과를 더 신뢰할 수 있도록 도와주고 있다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <description>구글 연구원들은 Empirical Research Assistance를 데이터 마이닝과 모델링에 활용하고 있다. 이 기술은 연구 과정을 자동화하고, 데이터를 분석하는 데 도움을 주는 것으로 보인다. 연구원들은 이 기술을 사용하여 연구 결과를 더 빠르게 얻을 수 있을 것으로 기대된다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
-    </item>
-    <item>
-      <title>[LLM] 세계 협력과 오픈 리소스로 과학적 영향력을 촉발하다</title>
-      <link>https://research.google/blog/catalyzing-scientific-impact-through-global-partnerships-and-open-resources/</link>
-      <guid isPermaLink="true">https://research.google/blog/catalyzing-scientific-impact-through-global-partnerships-and-open-resources/</guid>
-      <description>과학적 발견과 발전을 촉발하는 데 있어 세계 협력과 오픈 리소스의 중요성이 증가하고 있다. 데이터 마이닝과 모델링을 통해 새로운 지식을 창출하고, 지식 공유를 통해 협력을 강화하는 것이 가능하다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google Research</source>
-    </item>
-    <item>
-      <title>[LLM] 전력망 시뮬레이션을 위한 대규모 전력망 데이터셋 구축</title>
-      <link>https://www.microsoft.com/en-us/research/blog/building-realistic-electric-transmission-grid-dataset-at-scale-a-pipeline-from-open-dataset/</link>
-      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/building-realistic-electric-transmission-grid-dataset-at-scale-a-pipeline-from-open-dataset/</guid>
-      <description>마이크로소프트 연구소에서는 미국 전력망의 근사 전송 토폴로지 데이터셋을 공개했습니다. 전력망 수준의 전력망 행동을 연구하는 능력은 현대적인 전력망 운영을 위해 필수적입니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
-    </item>
-    <item>
-      <title>[Featured] AI 모드가 미국인들의 검색 방법을 어떻게 바꾸고 있나</title>
-      <link>https://blog.google/products-and-platforms/products/search/ai-mode-us-insights/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/ai-mode-us-insights/</guid>
-      <description>미국인들은 AI 모드를 어떻게 사용하고 있는지 보여주는 그래픽이 색다른 일러스트레이션과 함께 밝고 푸른 배경에 나타난다. AI 모드는 검색 결과를 개인화하고, 정보를 더 쉽게 찾을 수 있도록 돕는다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
-      <category>Featured</category>
-    </item>
-    <item>
-      <title>[Featured] Gemini 시대에 오신 것을 환영합니다</title>
-      <link>https://blog.google/innovation-and-ai/sundar-pichai-io-2026/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/sundar-pichai-io-2026/</guid>
-      <description>Google I/O 2026에서 발표된 Gemini은 인공지능의 새로운 시대를 열었습니다. Gemini은 사용자 경험을 개선하고, 인공지능 시스템을 더 인간적인 방식으로 만들기 위해 설계되었습니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
-      <category>Featured</category>
-    </item>
-    <item>
-      <title>[Featured] 미주리에 새로운 커뮤니티 투자 발표</title>
-      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/missouri-programs/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/missouri-programs/</guid>
-      <description>미주리 주에서 다음세대 직무력과 에너지 프로그램에 투자하여 지역 경제를 발전시키고 있습니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
-      <category>Featured</category>
     </item>
     <item>
       <title>[Featured] 2026 I/O에서 발표된 100가지 혁신</title>
       <link>https://blog.google/innovation-and-ai/technology/ai/google-io-2026-all-our-announcements/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-io-2026-all-our-announcements/</guid>
-      <description>Gemini 로고와 함께 &apos;Ready, Set, I/O&apos;라는 색다른 로고가 등장했다. 구글은 2026년 I/O에서 100가지 혁신을 발표했다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <description>구글은 2026년 I/O에서 다양한 혁신을 발표했습니다. 그 중 가장 눈에 띄는 것은 Gemini과 같은 새로운 기술입니다. 이 기술은 사용자 경험을 향상시키고 인공지능을 더욱 발전시키기 위해 개발되었습니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] 구글 비ーム에서 더 나은 그룹 회의</title>
+      <title>[Featured] 구글 비(Google Beam)가 더 좋은 그룹 회의를 경험하다</title>
       <link>https://blog.google/innovation-and-ai/models-and-research/google-research/google-beam-group-meetings/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/models-and-research/google-research/google-beam-group-meetings/</guid>
-      <description>구글 비ーム에서 새로운 실험을 통해 2인실 내 회의와 3인 화면 회의를 병행하는 새로운 그룹 회의 방식을 도입했습니다. 이 새로운 실험은 인공지능(AI) 기술을 활용하여 회의 참여자 간의 상호 작용을 향상시키는 데 중점을 둡니다.</description>
-      <pubDate>Mon, 25 May 2026 06:48:25 +0900</pubDate>
+      <description>구글 비(Google Beam)은 2명이 실내에, 3명이 화면상에 있는 작은 그룹 회의를 경험할 수 있는 새로운 실험을 시작했습니다. 이 새로운 실험은 인공지능(AI) 기술을 통해 더 편리하고 효과적인 회의를 가능하게 합니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] NVIDIA GTC 타오페이에서 AI의 미래를 열다</title>
+      <link>https://blogs.nvidia.com/blog/nvidia-gtc-taipei-computex-2026-news/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/nvidia-gtc-taipei-computex-2026-news/</guid>
+      <description>NVIDIA GTC 타오페이에서 세계의 개발자, 연구원 및 산업 리더들이 모여 AI의 가장 최근의 혁신을 둘러싼 주제에 대해 논의하고 있습니다. AI 공장과 확장 인프라를 포함한 모든 산업에 걸쳐서.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] 구글 I/O 2026 다이얼로그 스테이지에서 무슨 일이?</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/io-2026-dialogues-recap/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/io-2026-dialogues-recap/</guid>
+      <description>알파벳 CEO 수ندر 피차이(Alphabet CEO Sundar Pichai)는 I/O 2026 다이얼로그 스테이지에서 대화 중입니다. 구글이 내년 2027년 1분기부터 AI 기술에 중점을 둔 새로운 제품과 서비스를 출시할 예정입니다.</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] 확산 후포스터 샘플러가 실패하는 시점, 이유, 방법: 한 번에 모든 것을 이해하자</title>
+      <link>https://arxiv.org/abs/2605.30330v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2605.30330v1</guid>
+      <description>확산 모델은 자연 데이터의 복잡한 분포를 모델링하는 데 뛰어난 능력을 가지고 있어, 이미징문제의 후포스터 샘플링에서 인기 있는 및 효과적인 선택이 되었다. 기존의 방법들은 추론 시간에 측정 모델을 포함시킬 수 있지만, 실험적 샘플 크기에 따라 샘플러가</description>
+      <pubDate>Mon, 01 Jun 2026 06:53:24 +0900</pubDate>
       <category>Featured</category>
     </item>
   </channel>
