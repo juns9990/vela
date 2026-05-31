@@ -9,7 +9,7 @@
  * - 폰트 CDN은 stale-while-revalidate (오프라인 대비)
  * ============================================================= */
 
-const CACHE_VERSION = 'vela-boardroom-v0.9.8';
+const CACHE_VERSION = 'vela-boardroom-v0.9.9';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const FONT_CACHE = `${CACHE_VERSION}-fonts`;
 
