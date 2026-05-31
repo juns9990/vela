@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.9.9 — 아이디어 회의실</title>
+<title>Vela Compass v1.0.0 — 아이디어 회의실</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
@@ -1816,7 +1816,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.9.9</span>
+    <span>v1.0.0</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1866,6 +1866,7 @@
         <div class="chat-agenda" id="chatAgenda"></div>
       </div>
       <div class="chat-header-actions">
+        <button id="btnSaveMeetingTop" class="chat-icon-btn" type="button" title="이 회의 저장">💾</button>
         <button id="btnPlayMeetingTop" class="chat-icon-btn" type="button" title="회의 전체 읽기">
           <span class="play-icon">▶</span>
         </button>
@@ -1945,7 +1946,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.9.9 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v1.0.0 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -2039,14 +2040,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.9.9 — 아이디어 회의실 (2인 토론)
+ * Vela Compass v1.0.0 — 아이디어 회의실 (2인 토론)
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const CACHE_VERSION = 'vela-boardroom-v0.9.9';
+const CACHE_VERSION = 'vela-boardroom-v1.0.0';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -2243,7 +2244,7 @@ function restoreLastMeeting() {
                     || (last.facts && Object.keys(last.facts).length > 0);
     if (!hasContent) return;
     const updated = new Date(last.lastUpdated || last.date).getTime();
-    if (Date.now() - updated > 24 * 60 * 60 * 1000) return;
+    if (Date.now() - updated > 7 * 24 * 60 * 60 * 1000) return; // 7일 이내 회의만 자동 복원
     loadSession(last.id, { silent: true });
   } catch (e) {
     console.warn('[boardroom] restore failed:', e);
@@ -2286,6 +2287,10 @@ function bindEvents() {
   // 채팅 헤더 액션 — 상단 ▶
   const btnPlayTop = $('#btnPlayMeetingTop');
   if (btnPlayTop) btnPlayTop.addEventListener('click', playMeeting);
+
+  // 저장 버튼 — 현재 회의 명시적 저장
+  const btnSaveTop = $('#btnSaveMeetingTop');
+  if (btnSaveTop) btnSaveTop.addEventListener('click', saveMeetingNow);
 
   // 종합 정리 생성
   const btnSummary = $('#btnGenerateSummary');
@@ -3466,6 +3471,20 @@ function formatRelative(iso) {
 }
 
 // 자동 저장 — 회의 시작/후속/메모 변경 시 호출. 안건 없으면 저장 X
+// 저장 버튼 — 현재 회의를 명시적으로 저장하고 확인 표시
+function saveMeetingNow() {
+  if (!state.agenda || !state.messages || state.messages.length === 0) {
+    toast('저장할 회의 내용이 없습니다', true);
+    return;
+  }
+  // 세션 ID가 없으면 새로 부여 (autoSave 조건 충족)
+  if (!state.sessionId) state.sessionId = 'sess_' + Date.now();
+  // 메모도 함께 저장
+  state.memo = $('#memoInput') ? $('#memoInput').value : state.memo;
+  autoSave();
+  toast('회의 저장됨 — 기록(SESSIONS)에서 다시 열 수 있어요');
+}
+
 function autoSave() {
   if (!state.agenda || !state.sessionId) return;
   const sessions = loadSessions();
