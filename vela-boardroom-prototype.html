@@ -3719,8 +3719,10 @@ function loadSession(id, opts = {}) {
 
   $('#btnNewMeetingTop').hidden = false;
   updateAutoSaveIndicator();
-  closeModal('modalSessions');
-  toast('회의 불러옴 — 후속 질문/메모 추가하면 자동 저장됨');
+  if (!opts.silent) {
+    closeModal('modalSessions');
+    toast('회의 불러옴 — 후속 질문/메모 추가하면 자동 저장됨');
+  }
 }
 
 function newSession() {
