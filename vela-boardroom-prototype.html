@@ -3967,25 +3967,28 @@ if ('serviceWorker' in navigator
         // 1시간마다 update 체크 (장시간 PWA 사용 시)
         setInterval(() => reg.update().catch(() => {}), 60 * 60 * 1000);
 
-        // 새 SW가 활성화 대기 중일 때 — 자동 활성화
+        // 새 SW가 활성화 대기 중일 때 — 회의 중이 아니면 활성화
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;
           if (!newWorker) return;
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // 새 SW 설치됨 → 즉시 활성화 (skipWaiting)
-              newWorker.postMessage({ type: 'SKIP_WAITING' });
-              setTimeout(() => {
-                if (typeof toast === 'function') toast('새 버전으로 업데이트됨 — 새로고침 권장');
-              }, 500);
+              const meetingActive = state.inProgress || (state.messages && state.messages.length > 0);
+              if (meetingActive) {
+                window.__velaPendingSW = newWorker;
+                if (typeof toast === 'function') toast('새 버전 준비됨 — 회의 끝나고 적용됩니다');
+              } else {
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+              }
             }
           });
         });
 
-        // SW가 controller 변경되면 (새 버전 활성화) 페이지 새로고침
         let refreshing = false;
         navigator.serviceWorker.addEventListener('controllerchange', () => {
           if (refreshing) return;
+          const meetingActive = state.inProgress || (state.messages && state.messages.length > 0);
+          if (meetingActive) return; // 회의 중 — 새로고침 안 함
           refreshing = true;
           window.location.reload();
         });
