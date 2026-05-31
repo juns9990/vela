@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v0.9.7 — 아이디어 회의실</title>
+<title>Vela Compass v0.9.8 — 아이디어 회의실</title>
 <meta name="description" content="Vela Compass — 4인 베테랑이 본인 분야 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구." />
 
 <!-- PWA -->
@@ -1816,7 +1816,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v0.9.7</span>
+    <span>v0.9.8</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1945,7 +1945,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.9.7 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v0.9.8 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -2039,14 +2039,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v0.9.7 — Factsheet mode
+ * Vela Compass v0.9.8 — Factsheet mode
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const VERSION = 'v0.9.7';
+const VERSION = 'v0.9.8';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -2074,10 +2074,12 @@ const LLM_CONFIG = {
     endpoint: 'https://api.groq.com/openai/v1/chat/completions',
     keyPlaceholder: 'gsk_...',
     keyHint: 'console.groq.com 에서 발급 (카드 등록 불필요)',
-    pricingNote: '무료. ⚠ Llama는 한국어 토큰 깨짐 가능 (영어/외국어 섞임). 고품질은 Anthropic 권장.',
+    pricingNote: '무료. GPT-OSS가 한국어 가장 안정적. Llama는 토큰 깨짐 가능. 웹 검색·이미지는 Anthropic만.',
     models: [
-      { id: 'llama-3.1-8b-instant',     label: 'Llama 3.1 8B (빠름, 권장)',         tag: 'LLAMA 8B' },
-      { id: 'llama-3.3-70b-versatile',  label: 'Llama 3.3 70B (한국어 강함)',       tag: 'LLAMA 70B' }
+      { id: 'openai/gpt-oss-120b',      label: 'GPT-OSS 120B (한국어 안정, 권장)', tag: 'GPT-OSS 120B' },
+      { id: 'openai/gpt-oss-20b',       label: 'GPT-OSS 20B (빠름)',               tag: 'GPT-OSS 20B' },
+      { id: 'llama-3.3-70b-versatile',  label: 'Llama 3.3 70B',                    tag: 'LLAMA 70B' },
+      { id: 'llama-3.1-8b-instant',     label: 'Llama 3.1 8B (빠르지만 깨짐 잦음)', tag: 'LLAMA 8B' }
     ]
   }
 };
@@ -2184,8 +2186,18 @@ let state = {
 };
 function loadProviderKeys() {
   state.apiKey = localStorage.getItem(apiKeyStorageKey(state.provider)) || '';
-  state.model = localStorage.getItem(modelStorageKey(state.provider))
-             || LLM_CONFIG[state.provider].models[0].id;
+  let saved = localStorage.getItem(modelStorageKey(state.provider));
+  const validIds = LLM_CONFIG[state.provider].models.map(m => m.id);
+  // 옛 깨짐 잦은 모델은 권장 모델로 자동 전환
+  const deprecated = ['llama-3.1-8b-instant'];
+  if (saved && deprecated.includes(saved) && state.provider === 'groq') {
+    saved = null; // 기본(120b)으로
+  }
+  // 저장된 모델이 현재 목록에 없으면 기본으로
+  if (!saved || !validIds.includes(saved)) {
+    saved = LLM_CONFIG[state.provider].models[0].id;
+  }
+  state.model = saved;
 }
 loadProviderKeys();
 
@@ -2677,14 +2689,16 @@ const HANJA_MAP = {
 // 베트남어/헝가리어 등 외국어 의심 단어 → 한국어 대체
 const FOREIGN_WORD_MAP = {
   'nhưng': '그러나', 'không': '없음', 'lehet': '가능',
-  'kann': '가능', 'możliwe': '가능'
+  'kann': '가능', 'możliwe': '가능',
+  'gibi': '같이', 'çünkü': '왜냐하면', 've': '그리고',
+  'için': '위해', 'aynı': '같은'
 };
 
 function sanitizeKorean(text) {
   if (!text) return text;
   let s = text;
 
-  // 0. 깨진 문자(replacement character) 제거 — Groq 토큰 깨짐의 주범
+  // 0. 깨진 문자(replacement character) 제거
   s = s.replace(/\uFFFD/g, '');
 
   // 1. 한자 단어 매핑 (의미 보존)
@@ -2695,30 +2709,40 @@ function sanitizeKorean(text) {
   // 2. 남은 개별 한자 제거 (CJK Unified Ideographs)
   s = s.replace(/[\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]/g, '');
 
-  // 3. 알려진 외국어 단어 매핑
+  // 3. 알려진 비영어 라틴 단어 매핑 (Groq가 종종 섞는 것들)
   Object.entries(FOREIGN_WORD_MAP).forEach(([fw, ko]) => {
     const re = new RegExp('\\b' + fw + '\\b', 'gi');
     s = s.replace(re, ko);
   });
 
-  // 4. 베트남어/헝가리어 등 diacritic 라틴 문자 제거 (영어엔 없음)
-  s = s.replace(/[ăâđêôơưĂÂĐÊÔƠƯőűŐŰ]/g, '');
-  // 결합 문자(combining marks) — 베트남어 톤 등
-  s = s.replace(/[\u0300-\u036F]/g, '');
+  // 4. 비라틴·비한글 외국 문자 통째 제거
+  //    아랍(0600-06FF), 히브리(0590-05FF), 태국(0E00-0E7F), 키릴(0400-04FF),
+  //    데바나가리(0900-097F), 그리스(0370-03FF), 아르메니아(0530-058F) 등
+  s = s.replace(/[\u0370-\u03FF\u0400-\u04FF\u0530-\u058F\u0590-\u05FF\u0600-\u06FF\u0700-\u074F\u0900-\u097F\u0E00-\u0E7F\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/g, '');
 
-  // 5. 일본어 히라가나/가타카나 제거
+  // 5. 베트남어/헝가리어 등 diacritic 라틴 문자 제거
+  s = s.replace(/[ăâđêôơưĂÂĐÊÔƠƯőűŐŰ]/g, '');
+  s = s.replace(/[\u0300-\u036F]/g, ''); // 결합 문자
+
+  // 6. 일본어 히라가나/가타카나 제거
   s = s.replace(/[\u3040-\u309F\u30A0-\u30FF]/g, '');
 
-  // 6. 음절 사이에 낀 외톨이 한글 자모(조합 실패 흔적) 제거
-  //    'ㅋㅋ','ㅎㅎ','ㅠㅠ','ㅜㅜ' 웃음/감탄은 보존하기 위해, 완성 음절 사이에 낀 경우만 제거
-  s = s.replace(/([가-힣])[\u1100-\u115F\u1160-\u11FF]+([가-힣])/g, '$1$2');
-  // 한글 호환 자모(ㄱ-ㅎ, ㅏ-ㅣ)가 완성 음절에 바로 붙은 깨짐: '안ㄴ녕' → '안녕'
-  s = s.replace(/([가-힣])[\u3131-\u3163]+([가-힣])/g, '$1$2');
+  // 7. 외톨이 한글 자모 제거 — 웃음/감탄(ㅋㅋ ㅎㅎ ㅠㅠ ㅜㅜ)만 보존
+  //    먼저 웃음/감탄 표현을 임시 토큰으로 보호
+  const laughs = [];
+  s = s.replace(/[ㅋㅎㅠㅜ]{2,}/g, (mt) => {
+    laughs.push(mt);
+    return `\u0001${laughs.length - 1}\u0001`;
+  });
+  // 완성 음절 사이/주변에 낀 호환 자모(ㄱ-ㅎ,ㅏ-ㅣ) 및 조합 자모(초성/중성/종성) 제거
+  s = s.replace(/[\u1100-\u11FF\u3131-\u3163\uA960-\uA97F\uD7B0-\uD7FF]/g, '');
+  // 웃음 복원
+  s = s.replace(/\u0001(\d+)\u0001/g, (mt, i) => laughs[+i] || '');
 
-  // 7. 제어문자 제거
+  // 8. 제어문자 제거
   s = s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '');
 
-  // 8. 연속 공백 정리
+  // 9. 연속 공백 정리
   s = s.replace(/[ \t]+/g, ' ').replace(/ +\n/g, '\n').replace(/\n +/g, '\n');
   s = s.replace(/\n{3,}/g, '\n\n').trim();
 
@@ -3249,14 +3273,19 @@ async function sendFollowup() {
   try {
     for (let i = 0; i < targetPersonas.length; i++) {
       const persona = targetPersonas[i];
+      const isLast = (i === targetPersonas.length - 1);
       let instruction;
       if (i === 0) {
-        instruction = 'Juns가 방금 한 말에 너답게 바로 반응해. 질문이면 답하고, 새 방향이면 같이 발전시켜. 실제 브랜드·작가·기법·사례 이름을 구체적으로 들고(가능하면 웹 검색). 동료에게 넘길 부분이 있으면 "이준호/서다현 생각은?" 식으로 공을 넘겨. 2~4문장 대화하듯.';
+        instruction = 'Juns가 방금 한 말에 너답게 바로 반응해. 질문이면 답하고, 새 방향이면 같이 발전시켜. 실제 브랜드·작가·기법·사례 이름을 구체적으로. 2~4문장 대화하듯.';
       } else {
-        instruction = '바로 위에서 동료가 한 말을 직접 인용하며 받아쳐. "OO 말처럼", "근데 그건" 식으로 동료 발언에 반응하는 게 핵심이야. 동의·보완·반박 다 좋아. 같은 얘기 반복 말고 네 전문 관점에서 새로 더해. 더 보탤 게 정말 없으면 짧게 동의만. 2~4문장.';
+        instruction = '바로 위에서 동료가 한 말을 직접 인용하며 받아쳐. "OO 말처럼", "근데 그건" 식으로 동료 발언에 반응하는 게 핵심. 동의·보완·반박 다 좋아. 같은 얘기 반복 말고 네 관점에서 새로 더해. 2~4문장.';
+      }
+      // 마지막 발언자는 Juns에게 다음을 묻는 질문으로 끝내서 대화가 이어지게
+      if (isLast) {
+        instruction += ' 그리고 마지막에 Juns에게 다음 방향을 묻는 짧은 질문 하나를 던져서 대화가 계속 이어지게 해.';
       }
       await runPersonaTurn(persona, instruction);
-      if (state.provider === 'groq' && i < targetPersonas.length - 1) await sleep(1200);
+      if (state.provider === 'groq' && i < targetPersonas.length - 1) await sleep(1000);
     }
     $('#followupInput').value = '';
     $('#followupInput').style.height = 'auto';
