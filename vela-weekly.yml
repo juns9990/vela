@@ -30,8 +30,10 @@ jobs:
       - name: Run Vela weekly collector
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
         run: python vela-collect.py
         # 표준 라이브러리만 사용 - pip install 불필요
+        # UNSPLASH_ACCESS_KEY는 선택사항 (없으면 og:image + 검증된 풀로 작동)
 
       - name: Show issue summary
         run: |
