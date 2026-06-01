@@ -1569,7 +1569,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.21.0</strong> · 매주 이미지 회전</div>
+        <div><strong style="color:var(--accent);">v0.22.0</strong> · 큐레이션 강화</div>
       </div>
     </div>
   </footer>
@@ -1705,9 +1705,21 @@
     document.getElementById('cover-byline').innerHTML =
       COVER.byline.map(b => `<span>${b}</span>`).join('<span style="opacity:0.4">·</span>');
     document.getElementById('cover-credit').textContent = COVER.credit;
+    const coverEl = document.getElementById('cover-image');
+    // YouTube 썸네일을 1순위로 사용 (영상이 있으면 가장 확실한 이미지)
+    const ytThumb = COVER.videoId ? `https://i.ytimg.com/vi/${COVER.videoId}/maxresdefault.jpg` : null;
+    const fallback = COVER.image;
     const img = new Image();
-    img.onload = () => { document.getElementById('cover-image').style.backgroundImage = `url(${COVER.image})`; };
-    img.src = COVER.image;
+    img.onload = () => { coverEl.style.backgroundImage = `url(${img.src})`; };
+    img.onerror = () => {
+      // YouTube 썸네일 실패 시 Unsplash 이미지로, 그것도 실패하면 그라데이션 유지
+      if (img.src !== fallback && fallback) {
+        const img2 = new Image();
+        img2.onload = () => { coverEl.style.backgroundImage = `url(${fallback})`; };
+        img2.src = fallback;
+      }
+    };
+    img.src = ytThumb || fallback;
   }
 
   function renderFeatured() {
