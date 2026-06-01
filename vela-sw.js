@@ -1,7 +1,7 @@
 // Vela Service Worker · v0.21.0
 // 이미지 매주 회전 + PWA 캐시 동적 리소스 네트워크 우선
 
-const CACHE_VERSION = 'v0.21.0';
+const CACHE_VERSION = 'v0.23.0';
 const CACHE_NAME = `vela-cache-${CACHE_VERSION}`;
 
 // 정적 리소스만 캐싱 (HTML/매니페스트/아이콘)
