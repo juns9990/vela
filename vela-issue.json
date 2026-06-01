@@ -1,162 +1,184 @@
 {
-  "version": "v0.20.0",
+  "version": "v0.23.0",
   "meta": {
     "issue_year": 2026,
     "issue_week": 23,
     "monday": "2026-06-01",
     "next_monday": "2026-06-08",
-    "generated_at": "2026-06-01T06:50:34.703651+09:00"
+    "generated_at": "2026-06-01T23:36:39.289957+09:00"
   },
-  "editorsNote": "AI 모델들은 더 자연스럽게 발전하고 있다.",
+  "domains": [
+    {
+      "key": "Generative",
+      "label": "Generative AI",
+      "desc": "이미지·영상·음성 생성과 멀티모달"
+    },
+    {
+      "key": "Agentic",
+      "label": "Agents & Reasoning",
+      "desc": "자율 에이전트와 추론 능력"
+    },
+    {
+      "key": "Models",
+      "label": "Models & Infra",
+      "desc": "언어모델·학습·서빙 인프라"
+    },
+    {
+      "key": "Applied",
+      "label": "Applied & Safety",
+      "desc": "로보틱스·응용·정렬과 안전"
+    }
+  ],
+  "editorsNote": "이번 주 AI 흐름은 MCP 서버가 주도한다.",
   "trends": [
     {
-      "theme": "인공지능 미래와 파트너십",
+      "theme": "에이전트 경험과 기술",
+      "indices": [
+        3,
+        4,
+        7
+      ]
+    },
+    {
+      "theme": "AI 혁신과 발표",
+      "indices": [
+        2,
+        5,
+        8
+      ]
+    },
+    {
+      "theme": "모델과 트레이닝",
       "indices": [
         1,
-        3,
-        5
-      ]
-    },
-    {
-      "theme": "실제 세계와 시뮬레이션",
-      "indices": [
-        2
-      ]
-    },
-    {
-      "theme": "혁신과 투자",
-      "indices": [
-        4,
-        6,
-        7,
-        8
+        6
       ]
     }
   ],
   "numbers": {
-    "raw_collected": 133,
+    "raw_collected": 126,
     "academic_count": 30,
     "industry_count": 15,
-    "fresh_this_week": 22,
-    "top_category": "LLM",
-    "top_score_title": "싱가포르 인공지능 미래 강화: 새로운 국가 파트너십…",
-    "blog_sources": 46,
+    "fresh_this_week": 30,
+    "top_category": "Vision",
+    "top_score_title": "1,000+ 모형과 연결하세요 - MCP 서버…",
+    "blog_sources": 53,
     "news_sources": 25
   },
   "cover": {
     "label": "Cover Story · Week 23",
-    "headline": "Let's build GPT · 처음부터 만드는 GPT",
-    "deck": "이번 주 Vela가 추천하는 깊이 있는 강의. Andrej Karpathy의 시그니처.",
+    "headline": "But what is a GPT? · 트랜스포머 시각 입문",
+    "deck": "이번 주 Vela가 추천하는 깊이 있는 강의. 3Blue1Brown의 시그니처.",
     "byline": [
-      "By ANDREJ KARPATHY",
-      "1:56:20",
+      "By 3BLUE1BROWN",
+      "27:14",
       "Curated"
     ],
-    "image": "https://images.unsplash.com/photo-1675557009285-4a3f0bba8a0a?w=1600&q=80",
-    "videoId": "kCc8FmEb1nY",
+    "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1600&q=80",
+    "videoId": "wjZofJX0v4M",
     "credit": "Click image to play"
   },
   "thisMonth": [
     {
-      "date": "MAY 16",
-      "category": "LLM",
-      "title": "싱가포르 인공지능 미래 강화: 새로운 국가 파트너십",
-      "deck": "구글 딥마인드와 싱가포르가 건강, 교육, 지속 가능성 등 복잡한 도전을 해결하기 위해 최첨단 인공지능을 적용하는 새로운 국가 파트너십을 발표했습니다.",
-      "why": "싱가포르 인공지능 산업의 미래를 위한 새로운 전략이 발표되었습니다.",
-      "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=70",
-      "url": "https://deepmind.google/blog/strengthening-singapores-ai-future-a-new-national-partnership/"
-    },
-    {
-      "date": "MAY 17",
-      "category": "LLM",
-      "title": "실제 세계 장소를 시뮬레이션하는 프로젝트 제니와 스트리트 뷰",
-      "deck": "구글 AI 얼티메이트 구독자를 세계적으로 확대하고 스트리트 뷰를 기반으로 새로운 기능을 소개합니다.",
-      "why": "실제 세계 장소 시뮬레이션 기술이 AI 산업에 미치는 영향",
-      "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=70",
-      "url": "https://deepmind.google/blog/simulate-real-world-places-with-project-genie-and-street-view/"
-    },
-    {
-      "date": "MAY 17",
-      "category": "LLM",
-      "title": "과학의 새로운 시대에 맞는 AI 실험과 도구",
-      "deck": "과학 탐구의 범위와 정밀성을 확장하기 위한 도구와 실험을 모은 컬렉션입니다. 다양한 과학 분야에 적용할 수 있는 AI 도구와 실험을 소개하고, 과학자들이 새로운 발견을 위해 사용할 수 있는 도구를 제공합니다.",
-      "why": "과학자들이 더 빠르게 새로운 발견을 하기 위한 AI 도구와 실험을 소개",
-      "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70",
-      "url": "https://deepmind.google/blog/gemini-for-science-ai-experiments-and-tools-for-a-new-era-of-discovery/"
-    },
-    {
-      "date": "MAY 17",
-      "category": "LLM",
-      "title": "내용이 어떻게 만들어지고 편집되었는지 이해하기 쉽게",
-      "deck": "웹 상에서 내용이 어떻게 만들어지고 편집되었는지 이해하기 쉽게 도와드리기 위해 도구를 확장하고 있습니다.",
-      "why": "웹 상의 내용 가치와 신뢰성을 높이는 데 중요한 역할을 합니다.",
-      "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70",
-      "url": "https://deepmind.google/blog/making-it-easier-to-understand-how-content-was-created-and-edited/"
-    },
-    {
-      "date": "MAY 18",
-      "category": "LLM",
-      "title": "세포 나이를 되돌리다: 새로운 유전적 지표 발견",
-      "deck": "과학자들은 Co-Scientist를 사용하여 인간 세포를 재생생성하는 새로운 요인들을 발견했습니다. 이 새로운 발견은 세포 나이를 되돌리는데 중요한 역할을 할 것으로 예상됩니다.",
-      "why": "세포 나이를 되돌리는 기술은 인공지능과 생명공학의 새로운 경계를 열어줄 것입니다.",
-      "image": "https://images.unsplash.com/photo-1696258686454-60082b2c33e2?w=600&q=70",
-      "url": "https://deepmind.google/blog/fast-tracking-genetic-leads-to-reverse-cellular-aging/"
+      "date": "MAR 19",
+      "category": "Tool",
+      "title": "1,000+ 모형과 연결하세요 - MCP 서버",
+      "deck": "오늘 우리는 MCP 서버를 출시하고 있습니다. MCP 서버는 AI 보조기를 위한 호스팅 엔드포인트로, 대화에서 1,000+ 생성 AI 모형을 검색, 실행, 연결할 수 있습니다. 단 한 명령어만 필요합니다. SDK나 문서를 읽을 필요도 없습니다.",
+      "why": "AI 보조기와의 연결성 강화",
+      "image": "https://storage.ghost.io/c/0e/15/0e15ee8a-bd95-4b71-9258-950f77f4d196/content/images/2026/03/UJpuKYXqQ_R4eoEZoVR-G_odU3yLjy.png",
+      "url": "https://blog.fal.ai/connect-your-ai-to-1-000-models-with-the-fal-mcp-server/"
     },
     {
       "date": "MAY 20",
+      "category": "Vision",
+      "title": "I/O 2026에서 발표된 100가지 혁신",
+      "deck": "I/O 2026에서 구글은 다양한 새로운 기술과 서비스를 발표했습니다. 구글은 인공지능, 컴퓨팅, 및 기타 분야에서 큰 발전을 이루었습니다. 이번 행사에서 발표된 기술들은 향후 몇 년 동안 산업을 변화시키는 데 큰 영향을 미칠 것으로 예상됩니다.",
+      "why": "인공지능과 컴퓨팅 기술의 새로운 지평을 열어 보세요.",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/100_things_Social.width-1300.png",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/google-io-2026-all-our-announcements/"
+    },
+    {
+      "date": "MAY 29",
+      "category": "Audio",
+      "title": "센서가 말할 수 있게 만드는 기술: 다중 모드 JEPA",
+      "deck": "Transformer 기반 아키텍처는 언어와 시각 분야의 시퀀스 모델링을 발전시켰지만, 다변수 시간 시리즈의 일반적인 목적 표현 학습은 여전히 미흡하다. 우리는 채널에 대한 인식을 통합한 CHARM(채널 인식 기반 표현 모델)이라는 새로운 기술을 소개",
+      "why": "다변수 시간 시리즈를 위한 새로운 표현 학습 기술",
+      "image": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "url": "https://arxiv.org/abs/2605.31580v1"
+    },
+    {
+      "date": "MAY 21",
+      "category": "Agent",
+      "title": "작은 모델을 위한 에이전트 경험, MagenticLite",
+      "deck": "MagenticLite은 브라우저와 로컬 파일 시스템에서 단일 워크플로우로 작동하는 작은 모델을 위한 에이전트 시스템입니다. 이 시스템은 효율적인 일상 업무를 지원하기 위해 특화된 모델과 조율을 결합합니다.",
+      "why": "작은 모델을 위한 에이전트 경험을 개선하는 신기술",
+      "image": "https://www.microsoft.com/en-us/research/wp-content/uploads/2026/05/MagenticLite-TWLIFB-1200x627-1-scaled.jpg",
+      "url": "https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/"
+    },
+    {
+      "date": "MAY 16",
       "category": "LLM",
-      "title": "We’re announcing new community investments in Missouri.",
-      "deck": "We’re helping build the state’s next-generation workforce and investing in energy programs.",
-      "why": "",
-      "image": "https://images.unsplash.com/photo-1676277791608-ac54783d753b?w=600&q=70",
-      "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/missouri-programs/"
+      "title": "싱가포르 인공지능 미래 강화: 새로운 국가 협력",
+      "deck": "구글 딥마인드와 싱가포르는 건강, 교육, 지속 가능성 등 복잡한 도전을 해결하기 위해 선도적인 인공지능을 적용하기 위해 협력하고 있습니다.",
+      "why": "싱가포르가 인공지능을 통해 미래를 강화하는 데 중요한 역할을 하는 국가 협력의 새로운 모델을 선도합니다.",
+      "image": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=600&q=70",
+      "url": "https://deepmind.google/blog/strengthening-singapores-ai-future-a-new-national-partnership/"
+    },
+    {
+      "date": "MAY 29",
+      "category": "Vision",
+      "title": "DiT 트레이너 없이 멀티 이벤트 비디오 생성",
+      "deck": "텍스트를 비디오로 변환하는 기술에서 장시간의 멀티 이벤트 비디오 생성이 어려운 문제가 있습니다. 확산 프로세스의 본질을 참고하여, 우리는 비디오 확산 트랜스포머(DiT)를 조사하고 DiT의 노이즈 제거 과정을 중간 지점에서 끊을 수 있는 TURNING",
+      "why": "멀티 이벤트 비디오 생성 기술을 위한 새로운 방법을 찾기 위해",
+      "image": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "url": "https://arxiv.org/abs/2605.31590v1"
     }
   ],
   "featured": [
     {
-      "label": "Vision",
-      "title": "2026 I/O에서 발표된 100가지 혁신",
-      "deck": "구글은 2026년 I/O에서 다양한 혁신을 발표했습니다. 그 중 가장 눈에 띄는 것은 Gemini과 같은 새로운 기술입니다. 이 기술은 사용자 경험을 향상시키고 인공지능을 더욱 발전시키기 위해 개발되었습니다.",
-      "why": "인공지능과 사용자 경험을 향상시키기 위한 새로운 기술",
-      "byline": "GOOGLE AI · Google AI",
-      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=70",
-      "url": "https://blog.google/innovation-and-ai/technology/ai/google-io-2026-all-our-announcements/"
-    },
-    {
-      "label": "LLM",
-      "title": "구글 비(Google Beam)가 더 좋은 그룹 회의를 경험하다",
-      "deck": "구글 비(Google Beam)은 2명이 실내에, 3명이 화면상에 있는 작은 그룹 회의를 경험할 수 있는 새로운 실험을 시작했습니다. 이 새로운 실험은 인공지능(AI) 기술을 통해 더 편리하고 효과적인 회의를 가능하게 합니다.",
-      "why": "새로운 회의 기술이 AI 산업에 미치는 영향에 주목할 가치가 있습니다.",
-      "byline": "GOOGLE AI · Google AI",
-      "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=70",
-      "url": "https://blog.google/innovation-and-ai/models-and-research/google-research/google-beam-group-meetings/"
-    },
-    {
-      "label": "LLM",
-      "title": "NVIDIA GTC 타오페이에서 AI의 미래를 열다",
-      "deck": "NVIDIA GTC 타오페이에서 세계의 개발자, 연구원 및 산업 리더들이 모여 AI의 가장 최근의 혁신을 둘러싼 주제에 대해 논의하고 있습니다. AI 공장과 확장 인프라를 포함한 모든 산업에 걸쳐서.",
-      "why": "AI 산업의 미래를 결정할 신기술과 혁신에 대한 첫 번째 인사이트",
+      "label": "Robotics",
+      "title": "나비다 연구소, 로봇이 현실 세계로",
+      "deck": "로봇 기술은 새로운 단계로 진입하고 있습니다. 제어된 데모와 스크립트된 자동화에서 벗어나 현실 세계에서 일반화되고 신뢰할 수 있는 물리적 자율성을 구현하는 방향으로 나아가고 있습니다. 나비다 연구소는 ICRA에서 로봇 기술에 대한 새로운 연구를 발표했",
+      "why": "로봇 기술이 현실 세계로 나아감에 따라 AI 산업의 새로운 가능성을 열어보는 것",
       "byline": "NVIDIA · NVIDIA",
-      "image": "https://images.unsplash.com/photo-1655720828018-edd2daec9349?w=600&q=70",
-      "url": "https://blogs.nvidia.com/blog/nvidia-gtc-taipei-computex-2026-news/"
+      "image": "https://blogs.nvidia.com/wp-content/uploads/2026/05/ICRA2026Blog-scaled.jpg",
+      "url": "https://blogs.nvidia.com/blog/icra-research-robotics-simulation-to-real-world/"
+    },
+    {
+      "label": "Infra",
+      "title": "애플, 프라이버시 보장 머신 러닝 및 AI 워크샵 2026",
+      "deck": "애플은 프라이버시가 기본적인 인간 권리라고 믿고 있습니다. 인공지능 기술이 사람들의 일상 생활에 더욱 통합되면서 프라이버시 보장 기술 연구를 진전시키는 것은 프라이버시를 보장하기 위해 점점 더 중요해지고 있습니다.",
+      "why": "프라이버시 보장 기술이 AI 산업의 미래에 미치는 영향",
+      "byline": "APPLE ML · Apple ML",
+      "image": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "url": "https://machinelearning.apple.com/updates/ppml-2026"
+    },
+    {
+      "label": "Tool",
+      "title": "레이더: 현실 비디오에서 가시각 시각화",
+      "deck": "현실 비디오에서 가시각 시각화를 위한 자가 학습 기술이 아직도 확장하기 어렵다. 이는 현실 비디오로 학습하는 단단함과 다수의 네트워크 시스템 설계의 확장 성이 어렵다는 점에서 비롯된다. 우리는 레이더를 소개한다, 현실 비디오에서 가시각 시각화를 위한 ",
+      "why": "현실 비디오에서 가시각 시각화를 위한 새로운 기술",
+      "byline": "ARXIV · Ulrich Prestel et al.",
+      "image": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "url": "https://arxiv.org/abs/2605.31535v1"
+    },
+    {
+      "label": "Agent",
+      "title": "인공지능 공장: 지능의 새로운 기반 구조",
+      "deck": "인공지능 공장은 토큰 공장으로, 실시간으로 힘을 지능으로 변환한다. 그리고 에이전트 인공지능이 확대되고 기업에서 항상 켜져 있는 특별한 에이전트가 배치되는 동안, 퍼포먼스 당 와트와 비용 당 토큰이 경제적인 문제가 된다.",
+      "why": "기업 내 에이전트 인공지능의 확대와 실시간 지능 생산에 대한 새로운 기반 구조",
+      "byline": "NVIDIA · NVIDIA",
+      "image": "https://blogs.nvidia.com/wp-content/uploads/2026/05/AI_v001-1680x945.png",
+      "url": "https://blogs.nvidia.com/blog/ai-factories-the-new-infrastructure-of-intelligence/"
     },
     {
       "label": "LLM",
-      "title": "구글 I/O 2026 다이얼로그 스테이지에서 무슨 일이?",
-      "deck": "알파벳 CEO 수ندر 피차이(Alphabet CEO Sundar Pichai)는 I/O 2026 다이얼로그 스테이지에서 대화 중입니다. 구글이 내년 2027년 1분기부터 AI 기술에 중점을 둔 새로운 제품과 서비스를 출시할 예정입니다.",
-      "why": "구글이 내년 AI 기술에 중점을 둔 제품과 서비스 출시를 앞두고, CEO의 전략과 계획을 이해하는 것이 중요합니다.",
-      "byline": "GOOGLE AI · Google AI",
-      "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70",
-      "url": "https://blog.google/innovation-and-ai/technology/ai/io-2026-dialogues-recap/"
-    },
-    {
-      "label": "Vision",
-      "title": "확산 후포스터 샘플러가 실패하는 시점, 이유, 방법: 한 번에 모든 것을 이해하자",
-      "deck": "확산 모델은 자연 데이터의 복잡한 분포를 모델링하는 데 뛰어난 능력을 가지고 있어, 이미징문제의 후포스터 샘플링에서 인기 있는 및 효과적인 선택이 되었다. 기존의 방법들은 추론 시간에 측정 모델을 포함시킬 수 있지만, 실험적 샘플 크기에 따라 샘플러가",
-      "why": "확산 모델의 한계를 이해하는 것은 AI의 후포스터 샘플링 분야의 중요한 문제",
-      "byline": "ARXIV · Benjamin A. Burns et al.",
-      "image": "https://images.unsplash.com/photo-1581090700227-1e37b190418e?w=600&q=70",
-      "url": "https://arxiv.org/abs/2605.30330v1"
+      "title": "실제 세계 장소 모방하기, 프로젝트 제니와 스트리트 뷰",
+      "deck": "구글 AI 우수 구독자들에게 글로벌 접근성을 확장하고 새로운 스트리트 뷰 기능을 소개합니다. 스트리트 뷰를 기반으로 한 프로젝트 제니를 통해 실제 세계 장소를 모방할 수 있습니다.",
+      "why": "실제 세계 장소를 모방하는 기술, 프로젝트 제니와 스트리트 뷰를 통해 AI가 창의력을 발휘하는 새로운 가능성",
+      "byline": "DEEPMIND · DeepMind",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/projectgenie-social.width-1300.png",
+      "url": "https://deepmind.google/blog/simulate-real-world-places-with-project-genie-and-street-view/"
     }
   ],
   "videos": [
@@ -195,381 +217,403 @@
   ],
   "industry": [
     {
-      "date": "MAY 22",
-      "source": "Ars Technica",
-      "title": "텍사스 AG, 메타에 WhatsApp 암호화 문제 제기",
-      "deck": "텍사스 주의 법무장관이 메타를 상대로 소송을 제기했다. 그 이유는 WhatsApp이 끝에서 끝까지 암호화가 제공되지 않는다는 것이다. 그러나 미국 상원 의원 후보자가 제출한 소송에는 실제 증거가 부족하다는 비판이 있다.",
-      "url": "https://arstechnica.com/security/2026/05/texas-ag-sues-meta-over-claims-that-whatsapp-doesnt-provide-end-to-end-encryption/"
+      "date": "MAY 31",
+      "source": "Hacker News",
+      "title": "1비트 보나이 이미지 4B 이미지 생성, 로컬 디바이스에",
+      "deck": "로컬 디바이스에 4B 이미지 생성 기술을 개발한 연구가 발표되었습니다. 이 기술은 1비트 보나이 이미지 생성을 통해 고해상도 이미지 생성을 가능하게 하는데, 이는 기존의 이미지 생성 모델보다 훨씬 빠르고 효율적입니다. 연구팀은 이 기술을 사용하여 다양한 이미지 생성 결과를 얻었으며, 이",
+      "url": "https://prismml.com/news/bonsai-image-4b"
     },
     {
       "date": "MAY 22",
       "source": "Ars Technica",
-      "title": "오픈소스 코드에 대규모 도배 공격",
-      "deck": "GitHub은 오픈소스 코드 도배 공격을 벌이는 팀 PCP의 또 다른 희생자가 되었다. 이 팀은 소프트웨어 공급 사슬 공격을 일으키는 대규모 범죄 조직이다.",
+      "title": "오픈소스 코드에 해킹 그룹의 배신",
+      "deck": "GitHub은 TeamPCP이라는 해커 그룹의 또 다른 희생자가 되었다. 이 그룹은 소프트웨어 공급 사슬 공격을 일으키며 오픈소스 코드를 오염시키고 있다.",
       "url": "https://arstechnica.com/information-technology/2026/05/a-hacker-group-is-poisoning-open-source-code-at-an-unprecedented-scale/"
     },
     {
       "date": "MAY 26",
       "source": "Ars Technica",
-      "title": "오픈 소스 패키지에 심각한 취약점 발견, 325만 명의 AI 에이전트 위험",
-      "deck": "Starlette라는 패키지에서 'BadHost' 취약성이 발견되었습니다. 이 패키지는 매주 325만 명의 다운로드를 기록하고 있습니다.",
+      "title": "오픈소스 패키지에 심각한 취약점 발견, 3천만 명의 AI 에이전트 위협",
+      "deck": "스타렐레(open source package)에서 'BadHost' 취약성이 발견되었습니다. 이 패키지는 주간 3억 2천 5백만 번 다운로드되었습니다.",
       "url": "https://arstechnica.com/information-technology/2026/05/millions-of-ai-agents-imperiled-by-critical-vulnerability-in-open-source-package/"
     },
     {
       "date": "MAY 28",
       "source": "Ars Technica",
-      "title": "코드에 데이터 삭제 명령어 숨겨서 AI 코더들 혼내버린 개발자",
-      "deck": "코드에 숨겨진 명령어로 AI 코딩 에이전트를 이용해 앱 출력을 삭제하는 사례가 발견되었습니다. 개발자는 AI 코더들의 오버피팅 문제를 해결하기 위해 이러한 방법을 사용했습니다.",
+      "title": "코드에 데이터 삭제 명령어를 숨겨뒀다... 개발자들의 비밀이 드러났다",
+      "deck": "개발자가 AI 코딩 에이전트에게 숨겨둔 명령어로 앱 출력을 삭제하도록 지시한 사례가 발견되었습니다. 이 명령어는 jqwik 라이브러리에 포함되어 있었는데, 이를 통해 개발자가 에이전트에게 데이터 삭제를 명령할 수 있었습니다.",
       "url": "https://arstechnica.com/security/2026/05/fed-up-with-vibe-coders-dev-sneaks-data-nuking-prompt-injection-into-their-code/"
     },
     {
-      "date": "MAY 28",
-      "source": "Wired AI",
-      "title": "웨이모, 중국에서 제작한 로보택시 '오자이' 출시",
-      "deck": "미국 캘리포니아와 애리조나에서 다음 몇 주 안에 일반인들이 탑승할 수 있는 오자이 색상의 로보택시가 운영을 시작합니다.",
-      "url": "https://www.wired.com/story/here-comes-ojai-waymos-new-chinese-made-robotaxi/"
-    },
-    {
-      "date": "MAY 28",
-      "source": "Wired AI",
-      "title": "AI가 바꾼 코딩 세계로 돌아오는 새 엄마들",
-      "deck": "소프트웨어 개발에서 일하는 새 엄마들은 AI가 바꾼 직장 세계를 어렵게 맞이하고 있다. AI가 직장에서 어떤 영향을 미치는지 새 엄마들은 직접 겪고 있다.",
-      "url": "https://www.wired.com/story/women-parental-leave-return-office-ai/"
-    },
-    {
       "date": "MAY 29",
+      "source": "Wired AI",
+      "title": "갬마 스파크와 함께 생생한 경험: 나의 이메일, 문서, 일정에 접근해 생일파티 계획까지...",
+      "deck": "구글의 새로운 인공지능 에이전트는 나의 이메일, 문서, 일정 등을 분석해 생일파티를 계획했지만, 가장 중요한 사람을 놓쳤습니다.",
+      "url": "https://www.wired.com/story/google-gemini-spark-ai-agent-hands-on/"
+    },
+    {
+      "date": "MAY 30",
       "source": "TechCrunch",
-      "title": "개발자들은 AI 없이 일할 수 없다고 거부하다",
-      "deck": "AI는 개발자가 코드를 더 빠르게 작성하는 데 도움이 되지만, 연구자들은 AI가 더 나은 코드를 생산하지 못한다는 경고를 내놓고 있다. 이는 개발자들에게 나중에 문제를 일으킬 수 있다.",
-      "url": "https://techcrunch.com/2026/05/29/coders-are-refusing-to-work-without-ai-and-that-could-come-back-to-bite-them/"
+      "title": "구글 24/7 AI 어시스턴트 Gemini Spark, 실용적이지만 왜 별도의 제품인가?",
+      "deck": "Gemini Spark는 일상 업무를 자동화하는 데 도움을 주는 AI 어시스턴트지만, 구글이 별도의 제품으로 출시한 이유는 불분명하다. Gemini Spark는 이메일 요약부터 지역 이벤트 계획까지 다양한 업무를 지원하며, 사용자들은 이 어시스턴트를 통해 일상 업무를 효율적으로 처리할 ",
+      "url": "https://techcrunch.com/2026/05/30/i-put-googles-24-7-ai-assistant-gemini-spark-to-work-and-its-actually-pretty-useful/"
     },
     {
-      "date": "MAY 29",
-      "source": "Wired AI",
-      "title": "아마존, 인공지능 애니메이션 TV 시리즈 '굿 어드바이스 컵케이크' 제작... 원작자 분노",
-      "deck": "BuzzFeed가 몇년 전 만들었던 '굿 어드바이스 컵케이크'의 원작자 로린 브란츠가 아마존과 계약했다. 하지만 로린 브란츠는 아마존이 인공지능 기술을 사용해 새로운 시리즈를 만들었음에도 불구하고 그녀에게 허가받지 않고 라이선스를 취득했다고 주장한다.",
-      "url": "https://www.wired.com/story/story/amazon-is-making-an-ai-animated-good-advice-cupcake-tv-show-its-original-creator-is-furious/"
+      "date": "MAY 31",
+      "source": "Hacker News",
+      "title": "블루투스 이름으로 항공기 경고",
+      "deck": "유나이티드 항공 767기가 블루투스 이름이 경고를 일으키면서 뉴어크로 돌아왔다. Hacker News의 인기 게시물 중 하나.",
+      "url": "https://simpleflying.com/united-airlines-767-returns-newark-bluetooth-name-alert/"
+    },
+    {
+      "date": "MAY 31",
+      "source": "Hacker News",
+      "title": "구글 시트에서 워크북 추출하는 ChatGPT",
+      "deck": "ChatGPT는 구글 시트에서 워크북을 추출하는 새로운 기술을 개발했다. 이 기술은 구글 시트의 데이터를 로컬로 다운로드할 수 있게 해주며, 사용자는 워크북을 추출하고 편집할 수 있다. Hacker News에서는 이 기술에 대한 많은 관심과 토론이 있다.",
+      "url": "https://www.promptarmor.com/resources/gpt-for-google-sheets-data-exfiltration"
     }
   ],
   "signals": [
     {
-      "id": "dm-182491f5",
+      "id": "fal-019e2b89",
       "source": "blog",
-      "sourceLabel": "DeepMind",
-      "title": "싱가포르 인공지능 미래 강화: 새로운 국가 파트너십",
-      "abstract": "구글 딥마인드와 싱가포르가 건강, 교육, 지속 가능성 등 복잡한 도전을 해결하기 위해 최첨단 인공지능을 적용하는 새로운 국가 파트너십을 발표했습니다.",
-      "url": "https://deepmind.google/blog/strengthening-singapores-ai-future-a-new-national-partnership/",
-      "published": "2026-05-16",
+      "sourceLabel": "fal",
+      "title": "1,000+ 모형과 연결하세요 - MCP 서버",
+      "abstract": "오늘 우리는 MCP 서버를 출시하고 있습니다. MCP 서버는 AI 보조기를 위한 호스팅 엔드포인트로, 대화에서 1,000+ 생성 AI 모형을 검색, 실행, 연결할 수 있습니다. 단 한 명령어만 필요합니다. SDK나 문서를 읽을 필요도 없습니다.",
+      "url": "https://blog.fal.ai/connect-your-ai-to-1-000-models-with-the-fal-mcp-server/",
+      "published": "2026-03-19",
       "tags": [
-        "LLM"
+        "Tool"
       ],
-      "authors": "DeepMind",
-      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=70",
-      "score": 5,
-      "why": "싱가포르 인공지능 산업의 미래를 위한 새로운 전략이 발표되었습니다."
-    },
-    {
-      "id": "dm-50e6453b",
-      "source": "blog",
-      "sourceLabel": "DeepMind",
-      "title": "실제 세계 장소를 시뮬레이션하는 프로젝트 제니와 스트리트 뷰",
-      "abstract": "구글 AI 얼티메이트 구독자를 세계적으로 확대하고 스트리트 뷰를 기반으로 새로운 기능을 소개합니다.",
-      "url": "https://deepmind.google/blog/simulate-real-world-places-with-project-genie-and-street-view/",
-      "published": "2026-05-17",
-      "tags": [
-        "LLM"
-      ],
-      "authors": "DeepMind",
-      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=70",
-      "score": 5,
-      "why": "실제 세계 장소 시뮬레이션 기술이 AI 산업에 미치는 영향"
-    },
-    {
-      "id": "dm-519b4bba",
-      "source": "blog",
-      "sourceLabel": "DeepMind",
-      "title": "과학의 새로운 시대에 맞는 AI 실험과 도구",
-      "abstract": "과학 탐구의 범위와 정밀성을 확장하기 위한 도구와 실험을 모은 컬렉션입니다. 다양한 과학 분야에 적용할 수 있는 AI 도구와 실험을 소개하고, 과학자들이 새로운 발견을 위해 사용할 수 있는 도구를 제공합니다.",
-      "url": "https://deepmind.google/blog/gemini-for-science-ai-experiments-and-tools-for-a-new-era-of-discovery/",
-      "published": "2026-05-17",
-      "tags": [
-        "LLM"
-      ],
-      "authors": "DeepMind",
-      "thumb": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70",
-      "score": 5,
-      "why": "과학자들이 더 빠르게 새로운 발견을 하기 위한 AI 도구와 실험을 소개"
-    },
-    {
-      "id": "dm-c2723450",
-      "source": "blog",
-      "sourceLabel": "DeepMind",
-      "title": "내용이 어떻게 만들어지고 편집되었는지 이해하기 쉽게",
-      "abstract": "웹 상에서 내용이 어떻게 만들어지고 편집되었는지 이해하기 쉽게 도와드리기 위해 도구를 확장하고 있습니다.",
-      "url": "https://deepmind.google/blog/making-it-easier-to-understand-how-content-was-created-and-edited/",
-      "published": "2026-05-17",
-      "tags": [
-        "LLM"
-      ],
-      "authors": "DeepMind",
-      "thumb": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70",
-      "score": 5,
-      "why": "웹 상의 내용 가치와 신뢰성을 높이는 데 중요한 역할을 합니다."
-    },
-    {
-      "id": "dm-0c2850c0",
-      "source": "blog",
-      "sourceLabel": "DeepMind",
-      "title": "세포 나이를 되돌리다: 새로운 유전적 지표 발견",
-      "abstract": "과학자들은 Co-Scientist를 사용하여 인간 세포를 재생생성하는 새로운 요인들을 발견했습니다. 이 새로운 발견은 세포 나이를 되돌리는데 중요한 역할을 할 것으로 예상됩니다.",
-      "url": "https://deepmind.google/blog/fast-tracking-genetic-leads-to-reverse-cellular-aging/",
-      "published": "2026-05-18",
-      "tags": [
-        "LLM"
-      ],
-      "authors": "DeepMind",
-      "thumb": "https://images.unsplash.com/photo-1696258686454-60082b2c33e2?w=600&q=70",
-      "score": 5,
-      "why": "세포 나이를 되돌리는 기술은 인공지능과 생명공학의 새로운 경계를 열어줄 것입니다."
-    },
-    {
-      "id": "googai-58130303",
-      "source": "blog",
-      "sourceLabel": "Google AI",
-      "title": "We’re announcing new community investments in Missouri.",
-      "abstract": "We’re helping build the state’s next-generation workforce and investing in energy programs.",
-      "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/missouri-programs/",
-      "published": "2026-05-20",
-      "tags": [
-        "LLM"
-      ],
-      "authors": "Google AI",
-      "thumb": "https://images.unsplash.com/photo-1676277791608-ac54783d753b?w=600&q=70",
-      "score": 5
+      "authors": "fal",
+      "thumb": "https://storage.ghost.io/c/0e/15/0e15ee8a-bd95-4b71-9258-950f77f4d196/content/images/2026/03/UJpuKYXqQ_R4eoEZoVR-G_odU3yLjy.png",
+      "score": 4,
+      "why": "AI 보조기와의 연결성 강화",
+      "domain": "Models"
     },
     {
       "id": "googai-c1e2764b",
       "source": "blog",
       "sourceLabel": "Google AI",
-      "title": "2026 I/O에서 발표된 100가지 혁신",
-      "abstract": "구글은 2026년 I/O에서 다양한 혁신을 발표했습니다. 그 중 가장 눈에 띄는 것은 Gemini과 같은 새로운 기술입니다. 이 기술은 사용자 경험을 향상시키고 인공지능을 더욱 발전시키기 위해 개발되었습니다.",
+      "title": "I/O 2026에서 발표된 100가지 혁신",
+      "abstract": "I/O 2026에서 구글은 다양한 새로운 기술과 서비스를 발표했습니다. 구글은 인공지능, 컴퓨팅, 및 기타 분야에서 큰 발전을 이루었습니다. 이번 행사에서 발표된 기술들은 향후 몇 년 동안 산업을 변화시키는 데 큰 영향을 미칠 것으로 예상됩니다.",
       "url": "https://blog.google/innovation-and-ai/technology/ai/google-io-2026-all-our-announcements/",
       "published": "2026-05-20",
       "tags": [
         "Vision"
       ],
       "authors": "Google AI",
-      "thumb": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=70",
-      "score": 5,
-      "why": "인공지능과 사용자 경험을 향상시키기 위한 새로운 기술"
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/100_things_Social.width-1300.png",
+      "score": 4,
+      "why": "인공지능과 컴퓨팅 기술의 새로운 지평을 열어 보세요.",
+      "domain": "Generative"
     },
     {
-      "id": "googai-9e924c46",
-      "source": "blog",
-      "sourceLabel": "Google AI",
-      "title": "구글 비(Google Beam)가 더 좋은 그룹 회의를 경험하다",
-      "abstract": "구글 비(Google Beam)은 2명이 실내에, 3명이 화면상에 있는 작은 그룹 회의를 경험할 수 있는 새로운 실험을 시작했습니다. 이 새로운 실험은 인공지능(AI) 기술을 통해 더 편리하고 효과적인 회의를 가능하게 합니다.",
-      "url": "https://blog.google/innovation-and-ai/models-and-research/google-research/google-beam-group-meetings/",
-      "published": "2026-05-20",
+      "id": "arxiv-2605.31580",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "센서가 말할 수 있게 만드는 기술: 다중 모드 JEPA",
+      "abstract": "Transformer 기반 아키텍처는 언어와 시각 분야의 시퀀스 모델링을 발전시켰지만, 다변수 시간 시리즈의 일반적인 목적 표현 학습은 여전히 미흡하다. 우리는 채널에 대한 인식을 통합한 CHARM(채널 인식 기반 표현 모델)이라는 새로운 기술을 소개한다.",
+      "url": "https://arxiv.org/abs/2605.31580v1",
+      "published": "2026-05-29",
       "tags": [
-        "LLM"
+        "Audio",
+        "Architecture"
       ],
-      "authors": "Google AI",
-      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=70",
-      "score": 5,
-      "why": "새로운 회의 기술이 AI 산업에 미치는 영향에 주목할 가치가 있습니다."
+      "authors": "Utsav Dutta et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 3,
+      "why": "다변수 시간 시리즈를 위한 새로운 표현 학습 기술",
+      "domain": "Generative"
     },
     {
-      "id": "nvid-15ae0d33",
+      "id": "msr-7dff8125",
       "source": "blog",
-      "sourceLabel": "NVIDIA",
-      "title": "NVIDIA GTC 타오페이에서 AI의 미래를 열다",
-      "abstract": "NVIDIA GTC 타오페이에서 세계의 개발자, 연구원 및 산업 리더들이 모여 AI의 가장 최근의 혁신을 둘러싼 주제에 대해 논의하고 있습니다. AI 공장과 확장 인프라를 포함한 모든 산업에 걸쳐서.",
-      "url": "https://blogs.nvidia.com/blog/nvidia-gtc-taipei-computex-2026-news/",
+      "sourceLabel": "Microsoft Research",
+      "title": "작은 모델을 위한 에이전트 경험, MagenticLite",
+      "abstract": "MagenticLite은 브라우저와 로컬 파일 시스템에서 단일 워크플로우로 작동하는 작은 모델을 위한 에이전트 시스템입니다. 이 시스템은 효율적인 일상 업무를 지원하기 위해 특화된 모델과 조율을 결합합니다.",
+      "url": "https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/",
       "published": "2026-05-21",
       "tags": [
-        "LLM"
+        "Agent"
       ],
-      "authors": "NVIDIA",
-      "thumb": "https://images.unsplash.com/photo-1655720828018-edd2daec9349?w=600&q=70",
-      "score": 5,
-      "why": "AI 산업의 미래를 결정할 신기술과 혁신에 대한 첫 번째 인사이트"
+      "authors": "Microsoft Research",
+      "thumb": "https://www.microsoft.com/en-us/research/wp-content/uploads/2026/05/MagenticLite-TWLIFB-1200x627-1-scaled.jpg",
+      "score": 4,
+      "why": "작은 모델을 위한 에이전트 경험을 개선하는 신기술",
+      "domain": "Agentic"
     },
     {
-      "id": "googai-18f4f93f",
+      "id": "dm-182491f5",
       "source": "blog",
-      "sourceLabel": "Google AI",
-      "title": "구글 I/O 2026 다이얼로그 스테이지에서 무슨 일이?",
-      "abstract": "알파벳 CEO 수ندر 피차이(Alphabet CEO Sundar Pichai)는 I/O 2026 다이얼로그 스테이지에서 대화 중입니다. 구글이 내년 2027년 1분기부터 AI 기술에 중점을 둔 새로운 제품과 서비스를 출시할 예정입니다.",
-      "url": "https://blog.google/innovation-and-ai/technology/ai/io-2026-dialogues-recap/",
-      "published": "2026-05-22",
+      "sourceLabel": "DeepMind",
+      "title": "싱가포르 인공지능 미래 강화: 새로운 국가 협력",
+      "abstract": "구글 딥마인드와 싱가포르는 건강, 교육, 지속 가능성 등 복잡한 도전을 해결하기 위해 선도적인 인공지능을 적용하기 위해 협력하고 있습니다.",
+      "url": "https://deepmind.google/blog/strengthening-singapores-ai-future-a-new-national-partnership/",
+      "published": "2026-05-16",
       "tags": [
         "LLM"
       ],
-      "authors": "Google AI",
-      "thumb": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70",
-      "score": 5,
-      "why": "구글이 내년 AI 기술에 중점을 둔 제품과 서비스 출시를 앞두고, CEO의 전략과 계획을 이해하는 것이 중요합니다."
+      "authors": "DeepMind",
+      "thumb": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=600&q=70",
+      "score": 4,
+      "why": "싱가포르가 인공지능을 통해 미래를 강화하는 데 중요한 역할을 하는 국가 협력의 새로운 모델을 선도합니다.",
+      "domain": "Models"
     },
     {
-      "id": "arxiv-2605.30330",
+      "id": "arxiv-2605.31590",
       "source": "arxiv",
       "sourceLabel": "ArXiv",
-      "title": "확산 후포스터 샘플러가 실패하는 시점, 이유, 방법: 한 번에 모든 것을 이해하자",
-      "abstract": "확산 모델은 자연 데이터의 복잡한 분포를 모델링하는 데 뛰어난 능력을 가지고 있어, 이미징문제의 후포스터 샘플링에서 인기 있는 및 효과적인 선택이 되었다. 기존의 방법들은 추론 시간에 측정 모델을 포함시킬 수 있지만, 실험적 샘플 크기에 따라 샘플러가 실패할 수 있는 이유를 이해하고 있다.",
-      "url": "https://arxiv.org/abs/2605.30330v1",
-      "published": "2026-05-28",
+      "title": "DiT 트레이너 없이 멀티 이벤트 비디오 생성",
+      "abstract": "텍스트를 비디오로 변환하는 기술에서 장시간의 멀티 이벤트 비디오 생성이 어려운 문제가 있습니다. 확산 프로세스의 본질을 참고하여, 우리는 비디오 확산 트랜스포머(DiT)를 조사하고 DiT의 노이즈 제거 과정을 중간 지점에서 끊을 수 있는 TURNING POINT를 발견했습니다.",
+      "url": "https://arxiv.org/abs/2605.31590v1",
+      "published": "2026-05-29",
       "tags": [
-        "Vision"
+        "Vision",
+        "Architecture"
       ],
-      "authors": "Benjamin A. Burns et al.",
-      "thumb": "https://images.unsplash.com/photo-1581090700227-1e37b190418e?w=600&q=70",
-      "score": 5,
-      "why": "확산 모델의 한계를 이해하는 것은 AI의 후포스터 샘플링 분야의 중요한 문제"
+      "authors": "Ruotong Liao et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "why": "멀티 이벤트 비디오 생성 기술을 위한 새로운 방법을 찾기 위해",
+      "domain": "Generative"
     },
     {
-      "id": "googai-3404b326",
-      "source": "blog",
-      "sourceLabel": "Google AI",
-      "title": "12개의 주요 I/O 2026 순간을 다시 살펴보세요",
-      "abstract": "I/O 2026의 주간 키노트에서 전시된 색다른 로고와 함께, 키노트의 스틸컷들이 어우러진 배경",
-      "url": "https://blog.google/innovation-and-ai/technology/ai/io-2026-keynote-moment-videos/",
-      "published": "2026-05-28",
-      "tags": [
-        "LLM"
-      ],
-      "authors": "Google AI",
-      "thumb": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=70",
-      "score": 5,
-      "why": "AI 산업의 주요 이슈와 혁신을 한 눈에 파악할 수 있는 최고의 자리"
-    },
-    {
-      "id": "nvid-293d0267",
+      "id": "nvid-2f29b639",
       "source": "blog",
       "sourceLabel": "NVIDIA",
-      "title": "007의 첫 번째 빛, 클라우드 게임으로 출격",
-      "abstract": "007의 새로운 시작을 경험하라. GeForce NOW은 007 First Light를 통해 회원들이 장미빛 밤의 스파이 이야기를 거의 모든 기기에서 즐길 수 있도록 합니다.",
-      "url": "https://blogs.nvidia.com/blog/geforce-now-thursday-007-first-light-launch/",
+      "title": "나비다 연구소, 로봇이 현실 세계로",
+      "abstract": "로봇 기술은 새로운 단계로 진입하고 있습니다. 제어된 데모와 스크립트된 자동화에서 벗어나 현실 세계에서 일반화되고 신뢰할 수 있는 물리적 자율성을 구현하는 방향으로 나아가고 있습니다. 나비다 연구소는 ICRA에서 로봇 기술에 대한 새로운 연구를 발표했습니다.",
+      "url": "https://blogs.nvidia.com/blog/icra-research-robotics-simulation-to-real-world/",
       "published": "2026-05-28",
       "tags": [
-        "LLM"
+        "Robotics"
       ],
       "authors": "NVIDIA",
-      "thumb": "https://images.unsplash.com/photo-1684163761883-1d0b8e8e3a18?w=600&q=70",
-      "score": 5,
-      "why": "클라우드 게임 플랫폼 GeForce NOW이 새로운 게임을 추가해 AI 기술에 대한 기대감을 높이는 계기가 되었습니다."
+      "thumb": "https://blogs.nvidia.com/wp-content/uploads/2026/05/ICRA2026Blog-scaled.jpg",
+      "score": 2,
+      "why": "로봇 기술이 현실 세계로 나아감에 따라 AI 산업의 새로운 가능성을 열어보는 것",
+      "domain": "Applied"
     },
     {
-      "id": "googai-bb031988",
+      "id": "apple-4d3a2b07",
       "source": "blog",
-      "sourceLabel": "Google AI",
-      "title": "Io 2026 퀴즈, 구글 AI 스튜디오에서 만들다",
-      "abstract": "Io 2026 주요 발표에 대해 퀴즈를 만들기 위해 구글 AI 스튜디오를 사용했습니다. 이 퀴즈는 Io 2026의 주요 이슈를 반영했습니다.",
-      "url": "https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/",
-      "published": "2026-05-29",
+      "sourceLabel": "Apple ML",
+      "title": "애플, 프라이버시 보장 머신 러닝 및 AI 워크샵 2026",
+      "abstract": "애플은 프라이버시가 기본적인 인간 권리라고 믿고 있습니다. 인공지능 기술이 사람들의 일상 생활에 더욱 통합되면서 프라이버시 보장 기술 연구를 진전시키는 것은 프라이버시를 보장하기 위해 점점 더 중요해지고 있습니다.",
+      "url": "https://machinelearning.apple.com/updates/ppml-2026",
+      "published": "2026-06-01",
       "tags": [
-        "LLM"
+        "Infra"
       ],
-      "authors": "Google AI",
-      "thumb": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70",
-      "score": 5,
-      "why": "Io 2026 주요 발표를 반영한 퀴즈를 만들기 위해 사용한 새로운 기술"
+      "authors": "Apple ML",
+      "thumb": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "score": 2,
+      "why": "프라이버시 보장 기술이 AI 산업의 미래에 미치는 영향",
+      "domain": "Models"
     },
     {
-      "id": "googai-6aee6b02",
-      "source": "blog",
-      "sourceLabel": "Google AI",
-      "title": "제미니 오미니와 제미니 3.5의 9가지 데모",
-      "abstract": "제미니 오미니와 제미니 3.5은 인공지능의 새로운 표준을 제시합니다. 이들의 데모는 인공지능의 가능성을 보여줍니다.",
-      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni-3-5-videos/",
-      "published": "2026-05-29",
-      "tags": [
-        "LLM"
-      ],
-      "authors": "Google AI",
-      "thumb": "https://images.unsplash.com/photo-1655720828018-edd2daec9349?w=600&q=70",
-      "score": 5,
-      "why": "인공지능의 가능성을 보여주는 데모"
-    },
-    {
-      "id": "googai-7a1c98af",
-      "source": "blog",
-      "sourceLabel": "Google AI",
-      "title": "미래 연구소에서 나온 실제 인공지능 프로토타입",
-      "abstract": "워털로 대학교 학생들은 교육과 직장의 미래를 재창조하기 위해 신호 언어 교사와 같은 인공지능 프로토타입을 개발했습니다.",
-      "url": "https://blog.google/innovation-and-ai/technology/ai/university-waterloo-labs/",
-      "published": "2026-05-29",
-      "tags": [
-        "LLM"
-      ],
-      "authors": "Google AI",
-      "thumb": "https://images.unsplash.com/photo-1676277791608-ac54783d753b?w=600&q=70",
-      "score": 5,
-      "why": "교육과 직장의 미래를 재창조하기 위한 혁신적인 인공지능 기술"
-    },
-    {
-      "id": "arxiv-2605.30341",
+      "id": "arxiv-2605.31535",
       "source": "arxiv",
       "sourceLabel": "ArXiv",
-      "title": "GPIC: 거대한 허용 이미지 코퍼스, 시각 생성을 위한 새로운 도전",
-      "abstract": "시각 생성 모델링을 위한 확장 가능한 방법을 연구하려면 대규모, 접근 가능한, 안정적인 데이터셋이 필요합니다. 우리는 GPIC, 약 28조 픽셀을 가진 거대한 허용 이미지 코퍼스를 소개합니다. GPIC는 다양한 인터넷 이미지를 캡션으로 한 cutting-edge 비전-언어 모델에 의해 캡션け된 다채로운 이미지로 구성됩니다.",
-      "url": "https://arxiv.org/abs/2605.30341v1",
-      "published": "2026-05-28",
-      "tags": [
-        "Vision"
-      ],
-      "authors": "Keshigeyan Chandrasegaran et al.",
-      "thumb": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=70",
-      "score": 4,
-      "why": "대규모 시각 데이터셋을 통해 AI가 더 나은 시각 생성 모델을 학습할 수 있는지 확인할 수 있습니다."
-    },
-    {
-      "id": "arxiv-2605.30327",
-      "source": "arxiv",
-      "sourceLabel": "ArXiv",
-      "title": "결정 지점에서 샘플링: 합리적인 추론",
-      "abstract": "전문가 추론 모델은 강화 학습을 통해 훈련 된 기반 언어 모델에 적용됩니다. 최근 연구에서는 기반 모델의 분포의 한 버전인 '파워 분포'에서 샘플링 함으로써 비슷한 추론 성능을 얻는다는 것을 보여주었습니다.",
-      "url": "https://arxiv.org/abs/2605.30327v1",
-      "published": "2026-05-28",
-      "tags": [
-        "LLM"
-      ],
-      "authors": "Felix Zhou et al.",
-      "thumb": "https://images.unsplash.com/photo-1676277791608-ac54783d753b?w=600&q=70",
-      "score": 4,
-      "why": "인공지능이 문제를 해결할 때 '왜'를 결정하는 새로운 방법"
-    },
-    {
-      "id": "arxiv-2605.30342",
-      "source": "arxiv",
-      "sourceLabel": "ArXiv",
-      "title": "불확실성 기반 3D 가우시안 스팟팅 매핑",
-      "abstract": "우리는 불확실성 측정과 3D 가우시안 스팟팅 매핑을 위한 새로운 프레임워크인 GAVIS를 제안한다. 이 프레임워크는 3D 가우시안 스팟팅 매핑에서 훈련된 시점에서 보이지 않는 영역의 예측이 불신할만큼 불확실하다는 관찰에서 시작된다.",
-      "url": "https://arxiv.org/abs/2605.30342v1",
-      "published": "2026-05-28",
+      "title": "레이더: 현실 비디오에서 가시각 시각화",
+      "abstract": "현실 비디오에서 가시각 시각화를 위한 자가 학습 기술이 아직도 확장하기 어렵다. 이는 현실 비디오로 학습하는 단단함과 다수의 네트워크 시스템 설계의 확장 성이 어렵다는 점에서 비롯된다. 우리는 레이더를 소개한다, 현실 비디오에서 가시각 시각화를 위한 통합된,",
+      "url": "https://arxiv.org/abs/2605.31535v1",
+      "published": "2026-05-29",
       "tags": [
         "Tool"
       ],
-      "authors": "Shangjie Xue et al.",
-      "thumb": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=70",
-      "score": 4,
-      "why": "AI 매핑 기술의 신뢰성 향상과 불확실성 관리"
+      "authors": "Ulrich Prestel et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 3,
+      "why": "현실 비디오에서 가시각 시각화를 위한 새로운 기술",
+      "domain": "Models"
     },
     {
-      "id": "goog-480c46de",
+      "id": "nvid-0ddc0ce0",
       "source": "blog",
-      "sourceLabel": "Google Research",
-      "title": "구글 연구원들이 Empirical Research Assistance를 어떻게 사용하는가?",
-      "abstract": "구글 연구원들은 Empirical Research Assistance를 데이터 마이닝과 모델링에 활용하고 있다. 이 기술은 연구 과정을 자동화하고, 데이터를 분석하는 데 도움을 주는 것으로 보인다. 연구원들은 이 기술을 사용하여 연구 결과를 더 빠르게 얻을 수 있을 것으로 기대된다.",
-      "url": "https://research.google/blog/four-ways-google-research-scientists-have-been-using-empirical-research-assistance/",
-      "published": "2026-04-29",
+      "sourceLabel": "NVIDIA",
+      "title": "인공지능 공장: 지능의 새로운 기반 구조",
+      "abstract": "인공지능 공장은 토큰 공장으로, 실시간으로 힘을 지능으로 변환한다. 그리고 에이전트 인공지능이 확대되고 기업에서 항상 켜져 있는 특별한 에이전트가 배치되는 동안, 퍼포먼스 당 와트와 비용 당 토큰이 경제적인 문제가 된다.",
+      "url": "https://blogs.nvidia.com/blog/ai-factories-the-new-infrastructure-of-intelligence/",
+      "published": "2026-05-27",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "NVIDIA",
+      "thumb": "https://blogs.nvidia.com/wp-content/uploads/2026/05/AI_v001-1680x945.png",
+      "score": 4,
+      "why": "기업 내 에이전트 인공지능의 확대와 실시간 지능 생산에 대한 새로운 기반 구조",
+      "domain": "Agentic"
+    },
+    {
+      "id": "dm-50e6453b",
+      "source": "blog",
+      "sourceLabel": "DeepMind",
+      "title": "실제 세계 장소 모방하기, 프로젝트 제니와 스트리트 뷰",
+      "abstract": "구글 AI 우수 구독자들에게 글로벌 접근성을 확장하고 새로운 스트리트 뷰 기능을 소개합니다. 스트리트 뷰를 기반으로 한 프로젝트 제니를 통해 실제 세계 장소를 모방할 수 있습니다.",
+      "url": "https://deepmind.google/blog/simulate-real-world-places-with-project-genie-and-street-view/",
+      "published": "2026-05-17",
       "tags": [
         "LLM"
       ],
-      "authors": "Google Research",
-      "thumb": "https://images.unsplash.com/photo-1655720828018-edd2daec9349?w=600&q=70",
-      "score": 3,
-      "why": "AI 연구의 효율성을 높이는 신기술"
+      "authors": "DeepMind",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/projectgenie-social.width-1300.png",
+      "score": 4,
+      "why": "실제 세계 장소를 모방하는 기술, 프로젝트 제니와 스트리트 뷰를 통해 AI가 창의력을 발휘하는 새로운 가능성",
+      "domain": "Models"
+    },
+    {
+      "id": "arxiv-2605.31596",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "KLIP: localized distribution shift detection via KL-divergence with diffusion priors in Inverse Problems",
+      "abstract": "Diffusion models have shown promising performance as data-driven priors for computational imaging, as well as some capacity to detect out-of-distribution (OOD) images. However, existing approaches to OOD detection often require some knowledge of the shifted distribution, fail to ",
+      "url": "https://arxiv.org/abs/2605.31596v1",
+      "published": "2026-05-29",
+      "tags": [
+        "Vision"
+      ],
+      "authors": "Alireza Kheirandish et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Generative"
+    },
+    {
+      "id": "fal-9b192d63",
+      "source": "blog",
+      "sourceLabel": "fal",
+      "title": "생각 속으로 움직이는 세계에서 장기 신뢰를 구축하는 방법",
+      "abstract": "생각 속으로 움직이는 세계에서 신뢰를 구축하려면 어떻게 해야 할까요. 신뢰는 우리가 믿을 수 있는 시스템을 만드는 데 중요합니다. 하지만 시스템은 빠르게 변하고 있으므로 신뢰를 유지하는 것은 어렵습니다. 신뢰를 구축하고 유지하는 방법에 대한 아이디어를 찾는 것이 중요합니다.",
+      "url": "https://blog.fal.ai/building-long-term-trust-in-a-world-where-creation-moves-at-the-speed-of-thought/",
+      "published": "2026-05-15",
+      "tags": [
+        "Safety"
+      ],
+      "authors": "fal",
+      "thumb": "https://storage.ghost.io/c/0e/15/0e15ee8a-bd95-4b71-9258-950f77f4d196/content/images/size/w1200/2026/05/creativecraft.png",
+      "score": 2,
+      "why": "AI 산업에서 신뢰를 구축하는 것이 중요합니다. 신뢰가 없으면 사용자가 시스템에 의존하지 않으며, 시스템의 신뢰성이 떨어집니다.",
+      "domain": "Applied"
+    },
+    {
+      "id": "fal-e4d2ea73",
+      "source": "blog",
+      "sourceLabel": "fal",
+      "title": "인월드 TTS-1.5 Max, 실시간 음성 모델로 출격",
+      "abstract": "인월드 TTS-1.5 Max가 플랫폼 fal에 추가되었습니다. 이 모델은 저주파 음성 생성, 표현력 향상, 그리고 다언어 지원을 목표로 하고 있습니다.",
+      "url": "https://blog.fal.ai/inworld-tts-1-5-max-now-available-on-fal/",
+      "published": "2026-03-24",
+      "tags": [
+        "Audio"
+      ],
+      "authors": "fal",
+      "thumb": "https://storage.ghost.io/c/0e/15/0e15ee8a-bd95-4b71-9258-950f77f4d196/content/images/size/w1200/2026/03/Screenshot-2026-03-24-at-9.36.52---AM.png",
+      "score": 2,
+      "why": "실시간 음성 모델로 AI 산업의 새로운 표지점을 열어보는 기회",
+      "domain": "Generative"
+    },
+    {
+      "id": "arxiv-2605.30571",
+      "source": "arxiv",
+      "sourceLabel": "HF Daily",
+      "title": "인공지능 추론의 물리적 한계: 배치-1 LLM 디코딩에서 메모리 제한",
+      "abstract": "인공지능 추론의 물리적 한계를 조사한 연구가 발표되었습니다. 연구 결과, 배치-1 LLM 디코딩에서 메모리가 제한되는 것으로 나타났습니다. 이는 인공지능 모델의 성능 향상을 위한 새로운 접근 방식의 필요성을 제기합니다.",
+      "url": "https://arxiv.org/abs/2605.30571",
+      "published": "2026-06-01",
+      "tags": [
+        "Infra"
+      ],
+      "authors": "Daily Papers",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 2,
+      "why": "인공지능 추론의 물리적 한계를 극복하기 위한 새로운 기술 개발",
+      "domain": "Models"
+    },
+    {
+      "id": "arxiv-2605.31584",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "긴문맥 추론을 위한 LongTraceRL: 탐색 에이전트 트레잭토리에서 규칙 보상으로 학습",
+      "abstract": "긴문맥 추론은 대형 언어 모델의 주요 과제 중 하나로, 긴 내용 속에서 중요한 정보를 찾고 통합하는 데 어려움을 겪습니다. 보증 가능한 보상(RLVR)과 함께 강화 학습은 이 과제에 대해 약간의 약속을 보여주었지만 현재의 방법은 여전히 한계가 있습니다.",
+      "url": "https://arxiv.org/abs/2605.31584v1",
+      "published": "2026-05-29",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Nianyi Lin et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "why": "긴문맥 추론 기술을 통해 언어 모델의 성능을 향상하고 더 복잡한 문맥을 처리할 수 있는 능력을 강화하는 데 중요한 역할을 합니다.",
+      "domain": "Agentic"
+    },
+    {
+      "id": "dm-519b4bba",
+      "source": "blog",
+      "sourceLabel": "DeepMind",
+      "title": "과학의 새로운 시대, Gemini: 인공지능 실험과 도구",
+      "abstract": "과학 탐구의 범위와 정밀성을 확장하기 위한 도구와 실험을 모은 컬렉션입니다. Gemini은 과학적 발견의 새로운 시대를 열기 위한 인공지능의 가능성을 열어보는 것입니다.",
+      "url": "https://deepmind.google/blog/gemini-for-science-ai-experiments-and-tools-for-a-new-era-of-discovery/",
+      "published": "2026-05-17",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "DeepMind",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/science__keyword__blog-header.width-1300.jpg",
+      "score": 4,
+      "why": "과학적 발견의 새로운 시대를 열기 위한 AI 기술의 가능성",
+      "domain": "Models"
+    },
+    {
+      "id": "msr-f3c47f4e",
+      "source": "blog",
+      "sourceLabel": "Microsoft Research",
+      "title": "베가: 인공지능 시대에 디지털 식별의 영역 제한",
+      "abstract": "베가는 전체 자격 증명을 하나의 증명으로 변환하고, 필요한 만큼만 공유하며, 실제 앱에서 작동하는 성능을 제공합니다. 베가는 전체 자격 증명을 하나의 증명으로 변환하고, 필요한 만큼만 공유하며, 실제 앱에서 작동하는 성능을 제공합니다. 베가는 전체 자격 증명을 하나의 증명으로 변환하고, 필요한 만큼만 공유하며, 실제 앱에서 작동하는 성능을 제공합니다.",
+      "url": "https://www.microsoft.com/en-us/research/blog/vega-zero-knowledge-proofs-for-digital-identity-in-the-age-of-ai/",
+      "published": "2026-05-21",
+      "tags": [
+        "Tool"
+      ],
+      "authors": "Microsoft Research",
+      "thumb": "https://www.microsoft.com/en-us/research/wp-content/uploads/2026/05/VEGA-TWLIFB-1200x627-1.jpg",
+      "score": 2,
+      "why": "인공지능 시대에 디지털 식별의 보안과를 강화하는 신기술",
+      "domain": "Models"
+    },
+    {
+      "id": "arxiv-2605.30888",
+      "source": "arxiv",
+      "sourceLabel": "HF Daily",
+      "title": "RLHF의 반대편: 보상 모델 자가 개선에 대한 온-폴리시 피드백",
+      "abstract": "보상 모델을 자가 개선시키기 위해 온-폴리시 피드백을 사용하는 새로운 접근법이 제시됩니다. 이 접근법은 보상 모델이 자신의 성능을 평가하고 개선하는 것을 가능하게 합니다.",
+      "url": "https://arxiv.org/abs/2605.30888",
+      "published": "2026-06-01",
+      "tags": [
+        "Safety"
+      ],
+      "authors": "Daily Papers",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 2,
+      "why": "ChatGPT 메모리 기능과 정면 경쟁할 신기술",
+      "domain": "Applied"
+    },
+    {
+      "id": "arxiv-2605.31563",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "분쟁되는 근거: 혐오언급 탐지에서 분류와 설명성 평가를 재조명하다",
+      "abstract": "인간의 의견 불일치가 라벨링에서 널리 알려진 현상이다. 그러나 토큰 수준의 인간 근거를 통해 포착된 설명의 다양성은 훨씬 덜 탐구된 영역이다. 또한 인간 라벨과 근거를 가장 잘 평가하는 방법은 무엇인지, 아니면 가장 잘 합쳐야 하는 방법은 무엇인지 불분명하다.",
+      "url": "https://arxiv.org/abs/2605.31563v1",
+      "published": "2026-05-29",
+      "tags": [
+        "Audio"
+      ],
+      "authors": "Benedetta Muscato et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 2,
+      "why": "인간 라벨과 근거를 평가하는 새로운 기준을 제시하는 연구",
+      "domain": "Generative"
     }
   ]
 }
