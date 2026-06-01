@@ -56,6 +56,42 @@ CATEGORY_RULES = [
     ("LLM",     ["llm", "language model", "transformer", "attention", "gpt", "llama", "mistral", "claude", "gemini", "deepseek"]),
 ]
 
+# 4개 대분야 (Domain) — 8개 세분류를 묶음. AGI/ASI 빅픽처는 생성형에 흡수.
+# 분야별 보기에서 콘텐츠가 휑하지 않도록 큰 단위로 묶음.
+DOMAIN_MAP = {
+    "Vision":   "Generative",   # 생성형 AI (이미지/영상)
+    "Audio":    "Generative",   # 생성형 AI (음성)
+    "Agent":    "Agentic",      # 에이전트 & 추론
+    "LLM":      "Models",       # 모델 & 인프라
+    "Infra":    "Models",       # 모델 & 인프라
+    "Tool":     "Models",       # 모델 & 인프라
+    "Robotics": "Applied",      # 응용 & 안전
+    "Safety":   "Applied",      # 응용 & 안전
+}
+
+# 대분야 표시 정보 (영문 라벨 + 한글 설명)
+DOMAINS = [
+    {"key": "Generative", "label": "Generative AI",      "desc": "이미지·영상·음성 생성과 멀티모달"},
+    {"key": "Agentic",    "label": "Agents & Reasoning",  "desc": "자율 에이전트와 추론 능력"},
+    {"key": "Models",     "label": "Models & Infra",      "desc": "언어모델·학습·서빙 인프라"},
+    {"key": "Applied",    "label": "Applied & Safety",    "desc": "로보틱스·응용·정렬과 안전"},
+]
+
+# 추론(reasoning) 관련은 Agentic으로 보정
+REASONING_KW = ["reasoning", "chain-of-thought", "chain of thought", "o1 ", "o3 ", "step-by-step", "deliberation"]
+
+def assign_domain(item):
+    """세분류 + 제목 키워드로 4개 대분야 결정."""
+    cat = (item.get("tags") or ["LLM"])[0]
+    title = (item.get("title", "") + " " + item.get("abstract", "")).lower()
+    # 추론 키워드 있으면 Agentic으로
+    if any(k in title for k in REASONING_KW):
+        return "Agentic"
+    # AGI/ASI 빅픽처 → 생성형(미래 전망)으로 흡수
+    if any(k in title for k in ["agi", "superintelligence", "asi ", "artificial general"]):
+        return "Generative"
+    return DOMAIN_MAP.get(cat, "Models")
+
 # YouTube 큐레이션 (정적 — 강의/원리 영상은 자주 안 바뀌므로 손으로 관리)
 CURATED_VIDEOS = [
     {"title": "Let's build GPT — 처음부터 만드는 GPT", "byline": "Andrej Karpathy", "duration": "1:56:20", "videoId": "kCc8FmEb1nY"},
@@ -64,6 +100,9 @@ CURATED_VIDEOS = [
     {"title": "신경망의 본질 — Deep Learning Chapter 1", "byline": "3Blue1Brown", "duration": "18:40", "videoId": "aircAruvnKk"},
     {"title": "Attention in transformers, visually explained", "byline": "3Blue1Brown", "duration": "26:10", "videoId": "eMlx5fFNoYc"},
     {"title": "How DeepSeek Rewrote the AI Playbook", "byline": "Computerphile", "duration": "16:33", "videoId": "gY4Z-9QlZ64"},
+    {"title": "Deep Dive into LLMs like ChatGPT", "byline": "Andrej Karpathy", "duration": "3:31:24", "videoId": "7xTGNNLPyMI"},
+    {"title": "How might LLMs store facts — MLP 해부", "byline": "3Blue1Brown", "duration": "22:43", "videoId": "9-Jl0dxWQs8"},
+    {"title": "Building Agents — 에이전트 설계 원리", "byline": "Andrew Ng", "duration": "1:02:11", "videoId": "sal78ACtGTc"},
 ]
 
 # 검증된 이미지 풀 (v0.18~v0.20에서 장기간 정상 작동 확인된 9개만 사용)
@@ -250,14 +289,18 @@ CATEGORY_KEYWORDS = {
 
 
 def resolve_image(item, unsplash_key=None):
-    """하이브리드 이미지: og:image → Unsplash 키워드 → 검증된 풀."""
+    """하이브리드 이미지: og:image → Unsplash 키워드 → 검증된 풀(최후).
+    돌려쓰기 최소화를 위해 og:image를 모든 출처에서 시도."""
     src = item.get("source", "")
     url = item.get("url", "")
     cat = (item.get("tags") or ["LLM"])[0]
-    if src in ("blog", "news"):
-        og = fetch_og_image(url)
-        if og:
-            return og
+
+    # 1) 모든 출처에서 og:image 먼저 시도 (ArXiv도 abs 페이지에 썸네일 있음)
+    og = fetch_og_image(url)
+    if og:
+        return og
+
+    # 2) Unsplash 키워드 검색 (API 키 있을 때만)
     if unsplash_key:
         kws = CATEGORY_KEYWORDS.get(cat, ["artificial intelligence"])
         title = item.get("title", "").lower()
@@ -267,6 +310,8 @@ def resolve_image(item, unsplash_key=None):
         u = fetch_unsplash_keyword(kws, unsplash_key, seed_str=url)
         if u:
             return u
+
+    # 3) 최후 폴백: 검증된 풀 (URL 해시로 최대한 분산)
     return pick_image(cat, url)
 
 
@@ -901,7 +946,9 @@ def main():
     # 6. 빌드
     print("\n[5/6] Building issue JSON...")
     # Cover: 영상 우선
-    cover_video = valid_videos[0]
+    # Cover: 영상 풀에서 주차별 회전 (매주 다른 강의가 커버로)
+    cover_idx = int(hashlib.md5(f"{meta['issue_year']}-{meta['issue_week']}".encode("utf-8")).hexdigest(), 16) % len(valid_videos)
+    cover_video = valid_videos[cover_idx]
     cover = {
         "label": f"Cover Story · Week {meta['issue_week']}",
         "headline": cover_video["title"].replace("—", "·"),
@@ -978,9 +1025,17 @@ def main():
             "url": s.get("url", "")
         })
 
+    # signals 각 항목에 대분야(domain) 태깅 (분야별 필터용)
+    signals_out = []
+    for s in validated_academic[:20]:
+        s_copy = dict(s)
+        s_copy["domain"] = assign_domain(s)
+        signals_out.append(s_copy)
+
     issue = {
-        "version": "v0.20.0",
+        "version": "v0.23.0",
         "meta": meta,
+        "domains": DOMAINS,
         "editorsNote": editors_note,
         "trends": trend_clusters,
         "numbers": numbers,
@@ -989,7 +1044,7 @@ def main():
         "featured": featured,
         "videos": valid_videos[:4],
         "industry": industry_section,
-        "signals": validated_academic[:20]
+        "signals": signals_out
     }
 
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
