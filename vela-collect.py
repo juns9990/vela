@@ -66,97 +66,49 @@ CURATED_VIDEOS = [
     {"title": "How DeepSeek Rewrote the AI Playbook", "byline": "Computerphile", "duration": "16:33", "videoId": "gY4Z-9QlZ64"},
 ]
 
-# 이미지 풀 (썸네일용 - 토픽별 여러 장, 매주/항목별 회전)
-IMG_POOL_MULTI = {
-    "LLM": [
-        "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=70",
-        "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70",
-        "https://images.unsplash.com/photo-1655720828018-edd2daec9349?w=600&q=70",
-        "https://images.unsplash.com/photo-1676277791608-ac54783d753b?w=600&q=70",
-        "https://images.unsplash.com/photo-1684163761883-1d0b8e8e3a18?w=600&q=70",
-        "https://images.unsplash.com/photo-1696258686454-60082b2c33e2?w=600&q=70",
-    ],
-    "Vision": [
-        "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=70",
-        "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=70",
-        "https://images.unsplash.com/photo-1581090700227-1e37b190418e?w=600&q=70",
-        "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600&q=70",
-        "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&q=70",
-    ],
-    "Agent": [
-        "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=70",
-        "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=600&q=70",
-        "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=600&q=70",
-        "https://images.unsplash.com/photo-1675557009875-436f7a7a5e9f?w=600&q=70",
-        "https://images.unsplash.com/photo-1488229297570-58520851e868?w=600&q=70",
-    ],
-    "Robotics": [
-        "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=600&q=70",
-        "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=70",
-        "https://images.unsplash.com/photo-1561557944-6e7860d1a7eb?w=600&q=70",
-        "https://images.unsplash.com/photo-1563207153-f403bf289096?w=600&q=70",
-        "https://images.unsplash.com/photo-1589254065878-42c9da997008?w=600&q=70",
-    ],
-    "Safety": [
-        "https://images.unsplash.com/photo-1620207418302-439b387441b0?w=600&q=70",
-        "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=70",
-        "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=600&q=70",
-        "https://images.unsplash.com/photo-1510511459019-5dda7724fd87?w=600&q=70",
-        "https://images.unsplash.com/photo-1633265486064-086b219458ec?w=600&q=70",
-    ],
-    "Audio": [
-        "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=70",
-        "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&q=70",
-        "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=70",
-        "https://images.unsplash.com/photo-1453738773917-9c3eff1db985?w=600&q=70",
-        "https://images.unsplash.com/photo-1607734834519-d8576ae60ea6?w=600&q=70",
-    ],
-    "Tool": [
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=70",
-        "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=600&q=70",
-        "https://images.unsplash.com/photo-1607706189992-eae578626c86?w=600&q=70",
-        "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=70",
-        "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=600&q=70",
-    ],
-    "Infra": [
-        "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=70",
-        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=70",
-        "https://images.unsplash.com/photo-1597733336794-12d05021d510?w=600&q=70",
-        "https://images.unsplash.com/photo-1551703599-6b3e8379aa8b?w=600&q=70",
-        "https://images.unsplash.com/photo-1606765962248-7ff407b51667?w=600&q=70",
-    ],
-}
-IMG_DEFAULT = IMG_POOL_MULTI["LLM"][0]
-
-# 호환성: 단일 매핑 (첫 이미지)
-IMG_POOL = {k: v[0] for k, v in IMG_POOL_MULTI.items()}
-
-# 항목별 이미지 선택 — URL 해시로 결정 (같은 항목은 항상 같은 이미지, 다른 항목은 다른 이미지)
-def pick_image(category, seed_str):
-    """카테고리 내에서 seed(보통 URL)에 따라 이미지 회전 선택."""
-    pool = IMG_POOL_MULTI.get(category, IMG_POOL_MULTI["LLM"])
-    if not seed_str:
-        return pool[0]
-    # seed 문자열을 해시해서 풀 인덱스 결정 (결정적이지만 항목마다 다름)
-    idx = int(hashlib.md5(seed_str.encode("utf-8")).hexdigest(), 16) % len(pool)
-    return pool[idx]
-
-# 커버(메인) 이미지 풀 — 매주 회전
-COVER_IMAGES = [
-    "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1600&q=80",
-    "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1600&q=80",
-    "https://images.unsplash.com/photo-1655720033654-a4239dd42d10?w=1600&q=80",
-    "https://images.unsplash.com/photo-1675557009285-4a3f0bba8a0a?w=1600&q=80",
-    "https://images.unsplash.com/photo-1684163761883-1d0b8e8e3a18?w=1600&q=80",
-    "https://images.unsplash.com/photo-1696258686454-60082b2c33e2?w=1600&q=80",
-    "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=1600&q=80",
-    "https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=1600&q=80",
+# 검증된 이미지 풀 (v0.18~v0.20에서 장기간 정상 작동 확인된 9개만 사용)
+# 추측 ID 사용 금지 — 깨진 이미지 방지
+VERIFIED_IMAGES = [
+    "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=70",  # 보라 큐브 (LLM)
+    "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=70",  # 회로 (Vision)
+    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=70",  # 매트릭스 (Agent)
+    "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=600&q=70",  # 로봇팔 (Robotics)
+    "https://images.unsplash.com/photo-1620207418302-439b387441b0?w=600&q=70",  # 추상 (Safety)
+    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=70",     # 네온 (Audio)
+    "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=70",     # 코드 (Tool)
+    "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=70",  # 서버 (Infra)
+    "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70",  # 그라데이션
 ]
 
+IMG_DEFAULT = VERIFIED_IMAGES[0]
+
+# 호환성: 카테고리별 대표 이미지 (검증된 풀에서 매핑)
+IMG_POOL = {
+    "LLM":      VERIFIED_IMAGES[0],
+    "Vision":   VERIFIED_IMAGES[1],
+    "Agent":    VERIFIED_IMAGES[2],
+    "Robotics": VERIFIED_IMAGES[3],
+    "Safety":   VERIFIED_IMAGES[4],
+    "Audio":    VERIFIED_IMAGES[5],
+    "Tool":     VERIFIED_IMAGES[6],
+    "Infra":    VERIFIED_IMAGES[7],
+}
+
+# 항목별 이미지 선택 — URL 해시로 검증된 풀에서 회전
+# (카테고리 구분 없이 9개 공용 풀 사용 → 깨진 이미지 0, 항목마다 다양)
+def pick_image(category, seed_str):
+    """검증된 9개 풀에서 seed(URL)에 따라 회전 선택. 절대 깨지지 않음."""
+    if not seed_str:
+        return VERIFIED_IMAGES[0]
+    idx = int(hashlib.md5(seed_str.encode("utf-8")).hexdigest(), 16) % len(VERIFIED_IMAGES)
+    return VERIFIED_IMAGES[idx]
+
+# 커버(메인) 이미지 — 검증된 풀에서 주차별 회전 (1600px 크게)
 def pick_cover_image(week_seed):
-    """발행 주차에 따라 매주 다른 커버 이미지 선택."""
-    idx = int(hashlib.md5(str(week_seed).encode("utf-8")).hexdigest(), 16) % len(COVER_IMAGES)
-    return COVER_IMAGES[idx]
+    """발행 주차에 따라 검증된 풀에서 커버 선택 (1600px)."""
+    idx = int(hashlib.md5(str(week_seed).encode("utf-8")).hexdigest(), 16) % len(VERIFIED_IMAGES)
+    # w=600 → w=1600으로 교체해 큰 커버용
+    return VERIFIED_IMAGES[idx].replace("w=600&q=70", "w=1600&q=80")
 
 
 # ============================================================
@@ -177,24 +129,183 @@ def categorize(text):
 
 
 def estimate_score(item):
-    """간이 점수 (1-5). 발행 신선도 + 출처 권위 + 키워드 신호로 추정."""
-    score = 3
+    """점수 (1-5). 화제성·인기주제·권위·신선도 종합. 손이 가는 항목이 위로."""
+    score = 2.5  # 기본값 낮춤 (무명 항목은 아래로)
     src = item.get("source", "")
-    title = (item.get("title", "") + " " + item.get("abstract", "")).lower()
-    if src == "blog" and any(d in item.get("url", "") for d in ["anthropic.com", "openai.com", "deepmind.google", "ai.googleblog", "blog.google"]):
-        score = 5
+    url = item.get("url", "")
+    title_raw = item.get("title", "")
+    title = (title_raw + " " + item.get("abstract", "")).lower()
+
+    # 1) 출처 권위 (대형 연구소 블로그 = 높음)
+    AUTHORITY = ["anthropic.com", "openai.com", "deepmind.google", "ai.googleblog",
+                 "blog.google", "ai.meta.com", "mistral.ai", "huggingface.co"]
+    if src == "blog" and any(d in url for d in AUTHORITY):
+        score += 1.5
     elif src == "github":
-        score = 4
-    elif src == "arxiv":
-        score = 4 if any(k in title for k in ["sota", "state-of-the-art", "outperform", "frontier", "novel", "release"]) else 3
-    if any(k in title for k in ["gpt-5", "claude 5", "gemini 2", "llama 4", "agi", "breakthrough"]):
-        score = 5
-    return min(5, max(1, score))
+        score += 1.0
+    elif src == "news":
+        score += 0.5
+
+    # 2) 화제성 키워드 (사람들이 클릭하는 단어) — 강한 가중치
+    HOT_TOPICS = [
+        "gpt-5", "gpt5", "claude", "gemini", "llama 4", "llama4", "deepseek",
+        "agent", "agentic", "multi-agent", "autonomous",  # 에이전트 AI ← 요청
+        "generative", "diffusion", "text-to-", "image gen", "video gen",  # 생성형 AI ← 요청
+        "reasoning", "o1", "o3", "chain-of-thought",  # 추론
+        "open-source", "open source", "open weights", "release", "launch",
+        "multimodal", "vision-language", "rag", "fine-tun",
+        "benchmark", "sota", "state-of-the-art", "outperform", "frontier",
+        "breakthrough", "agi", "scaling",
+    ]
+    hot_hits = sum(1 for k in HOT_TOPICS if k in title)
+    score += min(1.5, hot_hits * 0.5)  # 화제 키워드 많을수록 (최대 +1.5)
+
+    # 3) HN 점수 반영 (커뮤니티 화제성)
+    authors = item.get("authors", "")
+    if "pts" in authors:
+        try:
+            pts = int(authors.split()[0])
+            if pts >= 200: score += 1.5
+            elif pts >= 100: score += 1.0
+            elif pts >= 50: score += 0.5
+        except Exception:
+            pass
+
+    # 4) 제목 품질 (너무 짧거나 학술 약어 범벅이면 감점)
+    if len(title_raw) < 20:
+        score -= 0.5
+
+    return min(5, max(1, round(score)))
 
 
 def make_id(prefix, raw):
     h = hashlib.md5(raw.encode()).hexdigest()[:8]
     return f"{prefix}-{h}"
+
+
+def fetch_og_image(url, timeout=8):
+    """기사/블로그 페이지에서 og:image 메타태그 추출. 실패 시 None."""
+    if not url:
+        return None
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            html = r.read(100000).decode("utf-8", errors="ignore")
+    except Exception:
+        return None
+    patterns = [
+        r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']',
+        r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
+        r'<meta[^>]+name=["\']twitter:image["\'][^>]+content=["\']([^"\']+)["\']',
+    ]
+    for pat in patterns:
+        m = re.search(pat, html, re.IGNORECASE)
+        if m:
+            img = m.group(1).strip()
+            if img.startswith("//"):
+                img = "https:" + img
+            elif img.startswith("/"):
+                from urllib.parse import urlparse
+                p = urlparse(url)
+                img = f"{p.scheme}://{p.netloc}{img}"
+            if img.startswith("http") and len(img) < 500:
+                return img
+    return None
+
+
+def fetch_unsplash_keyword(keywords, api_key, seed_str=""):
+    """Unsplash API로 키워드 관련 사진 검색. API 키 없으면 None."""
+    if not api_key or not keywords:
+        return None
+    query = "+".join(keywords[:2])
+    try:
+        url = f"https://api.unsplash.com/search/photos?query={query}&per_page=10&orientation=landscape&content_filter=high"
+        req = urllib.request.Request(url, headers={
+            "Authorization": f"Client-ID {api_key}",
+            "User-Agent": USER_AGENT
+        })
+        with urllib.request.urlopen(req, timeout=10) as r:
+            data = json.loads(r.read().decode("utf-8"))
+            results = data.get("results", [])
+            if results:
+                idx = int(hashlib.md5(seed_str.encode("utf-8")).hexdigest(), 16) % len(results) if seed_str else 0
+                raw = results[idx].get("urls", {}).get("raw", "")
+                if raw:
+                    return raw + "&w=600&q=70&fit=crop"
+    except Exception:
+        pass
+    return None
+
+
+CATEGORY_KEYWORDS = {
+    "LLM":      ["artificial intelligence", "neural network"],
+    "Vision":   ["computer vision", "camera technology"],
+    "Agent":    ["automation", "robot assistant"],
+    "Robotics": ["robotics", "robot arm"],
+    "Safety":   ["cybersecurity", "data protection"],
+    "Audio":    ["sound wave", "audio technology"],
+    "Tool":     ["coding", "software development"],
+    "Infra":    ["data center", "server technology"],
+}
+
+
+def resolve_image(item, unsplash_key=None):
+    """하이브리드 이미지: og:image → Unsplash 키워드 → 검증된 풀."""
+    src = item.get("source", "")
+    url = item.get("url", "")
+    cat = (item.get("tags") or ["LLM"])[0]
+    if src in ("blog", "news"):
+        og = fetch_og_image(url)
+        if og:
+            return og
+    if unsplash_key:
+        kws = CATEGORY_KEYWORDS.get(cat, ["artificial intelligence"])
+        title = item.get("title", "").lower()
+        if "agent" in title: kws = ["ai agent", "automation"]
+        elif "diffusion" in title or "image" in title: kws = ["digital art", "generative"]
+        elif "robot" in title: kws = ["robotics", "robot"]
+        u = fetch_unsplash_keyword(kws, unsplash_key, seed_str=url)
+        if u:
+            return u
+    return pick_image(cat, url)
+
+
+def diversify_by_topic(items, max_per_topic=3):
+    """주제 다양성 보장 — 상위권에서 한 카테고리가 독식하지 않게 재정렬.
+    점수 순서는 최대한 유지하되, 같은 카테고리가 연속/과다하지 않도록 분산."""
+    if not items:
+        return items
+    # 카테고리별 큐 분리 (점수 순 유지)
+    from collections import defaultdict, deque
+    buckets = defaultdict(deque)
+    for it in items:
+        cat = (it.get("tags") or ["LLM"])[0]
+        buckets[cat].append(it)
+
+    # 라운드로빈으로 뽑되, 점수 높은 카테고리부터
+    result = []
+    topic_count = defaultdict(int)
+    remaining = sum(len(q) for q in buckets.values())
+
+    while remaining > 0:
+        # 이번 라운드: 각 카테고리에서 가장 점수 높은 것 후보로
+        candidates = []
+        for cat, q in buckets.items():
+            if q:
+                candidates.append((cat, q[0]))
+        if not candidates:
+            break
+        # 후보 중 점수 높은 순, 단 이미 많이 뽑힌 주제는 후순위
+        candidates.sort(key=lambda c: (
+            -c[1].get("score", 0) + topic_count[c[0]] * 1.2  # 많이 뽑힌 주제 페널티
+        ))
+        cat, item = candidates[0]
+        buckets[cat].popleft()
+        result.append(item)
+        topic_count[cat] += 1
+        remaining -= 1
+
+    return result
 
 
 def safe_get_url(url, max_redirects=3):
@@ -552,6 +663,12 @@ def main():
         ("https://www.together.ai/blog?format=rss",  "Together AI",     "tog"),
         ("https://cohere.com/blog/rss.xml",          "Cohere",          "coh"),
         ("https://lmsys.org/rss.xml",                "LMSYS",           "lmsys"),
+        # 에이전트 AI 전문 소스 (요청)
+        ("https://blog.langchain.dev/rss/",          "LangChain",       "lc"),
+        ("https://www.llamaindex.ai/blog/feed.xml",  "LlamaIndex",      "li"),
+        # 생성형 AI / 이미지·영상 전문 소스 (요청)
+        ("https://runwayml.com/blog/rss.xml",        "Runway",          "rway"),
+        ("https://blog.fal.ai/rss/",                 "fal",             "fal"),
     ]
     blog_count = 0
     for url, label, key in BLOG_SOURCES:
@@ -663,6 +780,14 @@ def main():
     industry = [s for s in scored if s.get("source") == "news"]
     print(f"  Academic pool: {len(academic)}, Industry pool: {len(industry)}")
 
+    # 주제 다양성 재정렬 — 생성형/에이전트/멀티모달 등이 골고루 노출되게
+    # (점수 순서 유지하되 한 주제 독식 방지)
+    academic = diversify_by_topic(academic)
+    # 카테고리 분포 출력 (진단용)
+    from collections import Counter
+    cat_dist = Counter((s.get("tags") or ["?"])[0] for s in academic[:20])
+    print(f"  Topic distribution (top 20): {dict(cat_dist)}")
+
     # 4. 검증 — URL 살아있는지 (학술 30개 + 산업 15개까지 시도, 검증 실패해도 보존)
     print("\n[3/6] Validating URLs...")
     validated_academic = []
@@ -729,6 +854,24 @@ def main():
         validated_academic = translated_academic + validated_academic[20:]
     else:
         print("  ⚠️ GROQ_API_KEY env var not set — content remains in English")
+
+    # ============================================================
+    # 5.3. 하이브리드 이미지 — 표시될 항목만 (og:image + Unsplash 키워드 + 폴백)
+    # ============================================================
+    print("\n[이미지] Resolving hybrid images (og:image + fallback)...")
+    unsplash_key = os.environ.get("UNSPLASH_ACCESS_KEY", "").strip() or None
+    if unsplash_key:
+        print("  ✓ Unsplash API key found — 키워드 검색 활성화")
+    else:
+        print("  · Unsplash 키 없음 — og:image + 검증된 풀만 사용 (정상 작동)")
+    img_resolved = 0
+    # 표시되는 항목만 (This Month 6 + Featured 5 + Signals 20 + Industry 8 ≈ 상위 20 academic + 8 industry)
+    for item in validated_academic[:20] + validated_industry[:8]:
+        new_img = resolve_image(item, unsplash_key)
+        if new_img and new_img != item.get("thumb"):
+            item["thumb"] = new_img
+            img_resolved += 1
+    print(f"  ✓ {img_resolved}개 항목 이미지 갱신 (og:image 또는 키워드 검색)")
 
     # ============================================================
     # 5.5. Magazine Edition — Editor's Note + Trend Spotting
