@@ -1410,6 +1410,14 @@
       <div class="section-meta" id="signal-count">— results</div>
     </div>
     <div class="toolbar toolbar-cats">
+      <div class="filter-group" style="margin-bottom: 12px;">
+        <span style="margin-right: 8px;">DOMAIN</span>
+        <button class="filter-chip domain-chip active" data-domain="all">All</button>
+        <button class="filter-chip domain-chip" data-domain="Generative">Generative AI</button>
+        <button class="filter-chip domain-chip" data-domain="Agentic">Agents &amp; Reasoning</button>
+        <button class="filter-chip domain-chip" data-domain="Models">Models &amp; Infra</button>
+        <button class="filter-chip domain-chip" data-domain="Applied">Applied &amp; Safety</button>
+      </div>
       <div class="filter-group">
         <span style="margin-right: 8px;">CATEGORY</span>
         <button class="filter-chip active" data-cat="all">All</button>
@@ -1569,7 +1577,7 @@
       <div class="colophon-meta">
         <div>Personal Edition</div>
         <div>Built by Juns · 2026</div>
-        <div><strong style="color:var(--accent);">v0.22.0</strong> · 큐레이션 강화</div>
+        <div><strong style="color:var(--accent);">v0.23.0</strong> · 분야별 보기</div>
       </div>
     </div>
   </footer>
@@ -1685,7 +1693,7 @@
 
 
   let state = {
-    filter: 'all', sort: 'score', showStarred: false,
+    filter: 'all', domain: 'all', sort: 'score', showStarred: false,
     starred: new Set(JSON.parse(localStorage.getItem('vela.starred') || '[]')),
     read: new Set(JSON.parse(localStorage.getItem('vela.read') || '[]'))
   };
@@ -1889,6 +1897,7 @@
 
   function getFilteredSignals() {
     let items = SIGNALS;
+    if (state.domain !== 'all') items = items.filter(s => (s.domain || 'Models') === state.domain);
     if (state.filter !== 'all') items = items.filter(s => s.tags.includes(state.filter));
     if (state.showStarred) items = items.filter(s => state.starred.has(s.id));
     if (state.sort === 'score') items = [...items].sort((a, b) => b.score - a.score || b.published.localeCompare(a.published));
@@ -2033,7 +2042,22 @@
     });
   });
 
-  // CATEGORY · Signals 섹션 안 카테고리 chip
+  // DOMAIN · 대분야 chip (4개 큰 분야)
+  document.querySelectorAll('[data-domain]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-domain]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.domain = btn.dataset.domain;
+      // 대분야 선택 시 세부 카테고리는 All로 리셋 (혼란 방지)
+      state.filter = 'all';
+      document.querySelectorAll('[data-cat]').forEach(b => b.classList.remove('active'));
+      const allCatBtn = document.querySelector('[data-cat="all"]');
+      if (allCatBtn) allCatBtn.classList.add('active');
+      renderSignals();
+    });
+  });
+
+  // CATEGORY · Signals 섹션 안 세부 카테고리 chip
   document.querySelectorAll('[data-cat]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('[data-cat]').forEach(b => b.classList.remove('active'));
