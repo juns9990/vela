@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v1.1.0 — 아이디어 회의실</title>
+<title>Vela Compass v1.1.1 — 아이디어 회의실</title>
 <meta name="description" content="Vela Compass — 3인 베테랑(컨셉·공정·사업)이 실시간으로 토론하며 1인 사업자의 아이디어를 검증하는 회의실." />
 
 <!-- PWA -->
@@ -1893,7 +1893,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v1.1.0</span>
+    <span>v1.1.1</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1909,8 +1909,8 @@
       <span class="title">Agenda — 주제·아이디어</span>
       <span class="line"></span>
     </div>
-    <h1 class="agenda-headline">오늘의 <em>아이디어</em>를<br/>회의에 올려주세요.</h1>
-    <p class="agenda-kicker">크리에이티브 디렉터·메이커·전략가 셋이 실시간으로 토론하며 최고의 아이디어를 찾습니다.</p>
+    <h1 class="agenda-headline"><em>아이디어</em>를<br/>올려주세요.</h1>
+    <p class="agenda-kicker">셋이서 따져봅니다 — 컨셉, 공정, 그리고 돈.</p>
 
     <div class="agenda-input-wrap">
       <textarea
@@ -2027,7 +2027,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v1.1.0 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v1.1.1 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -2121,14 +2121,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v1.1.0 — 아이디어 회의실 (3인 토론 + 공정 다이어그램)
+ * Vela Compass v1.1.1 — 아이디어 회의실 (3인 토론 + 공정 다이어그램)
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const CACHE_VERSION = 'vela-boardroom-v1.1.0';
+const CACHE_VERSION = 'vela-boardroom-v1.1.1';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -2183,6 +2183,12 @@ const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효]
 - 사용자(Juns)가 말하면 바로 반응. 질문이면 답하고, 막연하면 되묻거나 방향 제시.
 - 구체적으로. "트렌드 반영하세요" 같은 공허한 말 금지. 실제 브랜드·작가·제품·기법·가격을 든다.
 - 절대 응답 맨 앞에 자기 이름(예: "서다현:")을 쓰지 마라. 화면에 이미 이름이 표시된다. 바로 말 내용으로 시작.
+
+[금액 표기 — 한국식으로만]
+- 한국 사람이 실제로 쓰는 단위로만 적는다: '원'과 '만원'. 예) 120원, 500원, 1,800원, 1.2만원, 2만원, 10,200원.
+- **'0.1천원', '0.2천원', '0.5천원', '0.18천원' 같은 소수점 '천원' 표기는 절대 금지.** 각각 100원, 200원, 500원, 180원으로 적는다.
+- '천원'이라는 단위 자체를 쓰지 마라. 1,000원 이상은 콤마로(예: 1,000원, 10,200원), 만 단위는 '만원'(예: 1.5만원, 12만원)으로.
+- 단가·원가·마진을 말할 때 단위를 일관되게. 같은 발언 안에서 원과 천원을 섞지 마라.
 
 [웹 검색 — 가능하면 적극적으로]
 - 트렌드·실제 사례·가격·최신 인기작을 다룰 때 웹 검색해서 진짜 정보를 가져온다 (가능한 경우).
