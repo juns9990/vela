@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- 매거진 식별: 시안 그라데이션 배경 (Compass의 검은 배경과 즉시 구분) -->
+  <defs>
+    <linearGradient id="velaMagBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5eead4"/>
+      <stop offset="100%" stop-color="#0e7a6a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#velaMagBg)"/>
+  <!-- 매거진 세리프 V (어두운 잉크색) -->
+  <text x="256" y="372" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="900" font-size="360" text-anchor="middle" fill="#0a0a0a">V</text>
+  <!-- 북극성 모티프 (항해 = Vela 미션 '신호를 항해로') -->
+  <g transform="translate(372,138)">
+    <path d="M0,-34 L8,-8 L34,0 L8,8 L0,34 L-8,8 L-34,0 L-8,-8 Z" fill="#0a0a0a"/>
+    <circle cx="0" cy="0" r="6" fill="#5eead4"/>
+  </g>
+</svg>
