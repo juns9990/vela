@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v1.1.1 — 아이디어 회의실</title>
+<title>Vela Compass v1.1.2 — 아이디어 회의실</title>
 <meta name="description" content="Vela Compass — 3인 베테랑(컨셉·공정·사업)이 실시간으로 토론하며 1인 사업자의 아이디어를 검증하는 회의실." />
 
 <!-- PWA -->
@@ -1893,7 +1893,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v1.1.1</span>
+    <span>v1.1.2</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -2027,7 +2027,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v1.1.1 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v1.1.2 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -2121,14 +2121,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v1.1.1 — 아이디어 회의실 (3인 토론 + 공정 다이어그램)
+ * Vela Compass v1.1.2 — 아이디어 회의실 (3인 토론 + 공정 다이어그램)
  *
  * Single round, single call per persona.
  * Persona = veteran specialist who states ONLY facts in their domain.
  * No opinions, no recommendations, no debate.
  * ============================================================= */
 
-const CACHE_VERSION = 'vela-boardroom-v1.1.1';
+const CACHE_VERSION = 'vela-boardroom-v1.1.2';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -2335,12 +2335,54 @@ function openModal(id) { $('#'+id).classList.add('open'); }
 function closeModal(id) { $('#'+id).classList.remove('open'); }
 
 /* ============ INIT ============ */
+/* ============ 홈 화면 문구 로테이션 ============ */
+// 홈 열 때마다 다음 문구로 순환 (localStorage 인덱스). 유머 20선.
+const HEADLINE_POOL = [
+  { h: '일단 <em>던져</em> 보세요.', k: '욕은 셋이 나눠 먹을게요.' },
+  { h: '어차피 <em>만들</em> 거잖아요.', k: '말리거나, 같이 만들거나 — 셋이 정합니다.' },
+  { h: '또 <em>야근</em>거리 가져오셨네요.', k: '컨셉·공정·단가까지 같이 새워드림.' },
+  { h: '망해도 셋이 같이 <em>망해요</em>.', k: '부담 갖지 말고 올려봐요.' },
+  { h: '사장님, 이거 <em>팔려요</em>?', k: '솔직하게 말해줄게요. 상처는 본인 책임.' },
+  { h: '<em>3대 1</em>입니다.', k: '근데 다 당신 편이에요.' },
+  { h: '정답은 <em>없어요</em>.', k: '대신 셋이 우깁니다.' },
+  { h: '여긴 <em>예스맨</em> 없어요.', k: '셋 다 할 말 하는 타입.' },
+  { h: '칭찬만 듣고 싶으면 <em>뒤로가기</em>.', k: '여긴 솔직한 셋이라.' },
+  { h: '예쁘다 vs <em>안 팔려</em>.', k: '그 사이 어디쯤에서 만나기로 했어요.' },
+  { h: '안 될 이유 <em>100개</em> 준비됨.', k: '될 이유 1개만 가져오세요.' },
+  { h: '머릿속 그거 <em>꺼내요</em>.', k: '안 꺼내면 또 까먹잖아요.' },
+  { h: '출력 버튼은 <em>잠깐</em>.', k: '회의부터 하고 누르시죠.' },
+  { h: '또 <em>필라멘트</em> 태우기 전에.', k: '단가는 정민철이 계산해줘요.' },
+  { h: '창고에 <em>재고탑</em> 쌓기 전에.', k: '셋이 미리 걱정해드림.' },
+  { h: '새벽 3시 아이디어, <em>위험</em>합니다.', k: '셋한테 검수 맡기세요.' },
+  { h: '텀블벅 <em>올리기</em> 전에.', k: '셋이 먼저 까봅니다.' },
+  { h: '전략가 첫마디는 <em>"얼마에 팔 건데요"</em>.', k: '각오하세요.' },
+  { h: '만들고 싶은 거 말고 <em>팔리는</em> 거.', k: '그 얘기 해봅시다.' },
+  { h: '일단 <em>깔아봅시다</em>.', k: '셋이 심사 들어갑니다.' }
+];
+function rotateHeadline() {
+  try {
+    const hEl = document.querySelector('.agenda-headline');
+    const kEl = document.querySelector('.agenda-kicker');
+    if (!hEl || !kEl || !HEADLINE_POOL.length) return;
+    const KEY = 'vela_compass_headline_idx';
+    let prev = parseInt(localStorage.getItem(KEY), 10);
+    if (isNaN(prev)) prev = -1;
+    const idx = (prev + 1) % HEADLINE_POOL.length;
+    localStorage.setItem(KEY, String(idx));
+    hEl.innerHTML = HEADLINE_POOL[idx].h;
+    kEl.textContent = HEADLINE_POOL[idx].k;
+  } catch (e) {
+    /* localStorage 차단 등 실패 시 HTML 기본 문구 유지 */
+  }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   refreshApiStatus();
   refreshModelTag();
   bindEvents();
   bindInstallButton();
   handleUrlAction();
+  rotateHeadline();
   restoreLastMeeting();
 });
 
