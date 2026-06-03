@@ -1,8 +1,8 @@
 {
-  "id": "vela-compass",
+  "id": "/vela/vela-compass",
   "name": "Vela Compass",
   "short_name": "Compass",
-  "description": "4인 베테랑 페르소나가 분야별 팩트와 방향성을 짚어주는 1인 사업자 의사결정 도구",
+  "description": "세 베테랑(컨셉·공정·사업)이 실시간으로 토론하며 1인 사업자의 아이디어를 검증하는 관전형 회의실 PWA.",
   "start_url": "./vela-boardroom-prototype.html",
   "scope": "./vela-boardroom-prototype.html",
   "display": "standalone",
