@@ -2,6 +2,14 @@
   "version": "1.0",
   "issues": [
     {
+      "file": "vela-issue-2026-W25.json",
+      "year": 2026,
+      "week": 25,
+      "monday": "2026-06-15",
+      "headline": "신경망의 본질 · Deep Learning Chapter 1",
+      "signal_count": 20
+    },
+    {
       "file": "vela-issue-2026-W24.json",
       "year": 2026,
       "week": 24,
@@ -66,5 +74,5 @@
       "signal_count": 8
     }
   ],
-  "updated_at": "2026-06-08T07:00:47.582854+09:00"
+  "updated_at": "2026-06-15T07:04:57.784531+09:00"
 }
