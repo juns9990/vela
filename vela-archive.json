@@ -2,6 +2,14 @@
   "version": "1.0",
   "issues": [
     {
+      "file": "vela-issue-2026-W27.json",
+      "year": 2026,
+      "week": 27,
+      "monday": "2026-06-29",
+      "headline": "How might LLMs store facts · MLP 해부",
+      "signal_count": 20
+    },
+    {
       "file": "vela-issue-2026-W26.json",
       "year": 2026,
       "week": 26,
@@ -82,5 +90,5 @@
       "signal_count": 8
     }
   ],
-  "updated_at": "2026-06-22T07:10:10.602786+09:00"
+  "updated_at": "2026-06-29T06:57:18.242232+09:00"
 }

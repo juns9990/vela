@@ -6,236 +6,236 @@
     <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
     <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
     <language>ko</language>
-    <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-    <lastBuildDate>Mon, 22 Jun 2026 07:10:10 +0900</lastBuildDate>
+    <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+    <lastBuildDate>Mon, 29 Jun 2026 06:57:18 +0900</lastBuildDate>
     <generator>Vela Weekly Collector</generator>
     <ttl>10080</ttl>
     <item>
-      <title>[Cover] Let&apos;s build GPT · 처음부터 만드는 GPT</title>
+      <title>[Cover] How might LLMs store facts · MLP 해부</title>
       <link>https://juns9990.github.io/vela/vela-prototype.html</link>
-      <guid isPermaLink="false">vela-cover-2026-W26</guid>
-      <description>이번 주 Vela가 추천하는 깊이 있는 강의. Andrej Karpathy의 시그니처.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
+      <guid isPermaLink="false">vela-cover-2026-W27</guid>
+      <description>이번 주 Vela가 추천하는 깊이 있는 강의. 3Blue1Brown의 시그니처.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
       <category>Cover Story</category>
     </item>
     <item>
-      <title>[Agent] 다중 에이전트 인공지능 안전 연구에 10억 달러 투자</title>
+      <title>[Agent] 다중 에이전트 AI 안전 연구에 1억 달러 투자</title>
       <link>https://deepmind.google/blog/investing-in-multi-agent-ai-safety-research/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/investing-in-multi-agent-ai-safety-research/</guid>
-      <description>구글 딥마인드와 파트너들이 다중 에이전트 안전 연구를 위한 10억 달러의 자금 지원을 발표했습니다. 이 연구는 인공지능이 다른 에이전트와 상호작용할 때 발생할 수 있는 위험을 줄이기 위해 중요합니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
+      <description>구글 딥마인드와 파트너들이 다중 에이전트 안전 연구에 1억 달러를 투자하기로 발표했다. 이 연구는 인공지능이 여러 에이전트와 상호작용할 때 발생할 수 있는 위험을 줄이기 위한 것이다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[Tool] 1,000+ 모델과 연결하세요! fal MCP Server</title>
+      <title>[Tool] 1,000+ 모델과 연결하세요! MCP 서버는 AI 보조 프로그램을 위한 호스트드 엔드포인트</title>
       <link>https://blog.fal.ai/connect-your-ai-to-1-000-models-with-the-fal-mcp-server/</link>
       <guid isPermaLink="true">https://blog.fal.ai/connect-your-ai-to-1-000-models-with-the-fal-mcp-server/</guid>
-      <description>오늘 우리는 fal MCP Server를 출시합니다. 이 호스팅 엔드포인트는 AI 보조기를 사용하여 1,000+ 생성 AI 모델을 바로 대화에서 검색, 실행, 연결할 수 있게 해줍니다. 단 하나의 명령어만. SDK가 필요하지 않습니다. 문서를 읽을 필요도 없습니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
+      <description>오늘 우리는 MCP 서버를 다시 출시합니다. MCP 서버는 대화에서 1,000+ 생성 AI 모델을 검색, 실행, 연결할 수 있는 호스트드 엔드포인트입니다. 단 하나의 명령. SDK가 필요하지 않습니다. 문서를 읽을 필요도 없습니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
       <category>Tool</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
     </item>
     <item>
-      <title>[Vision] 구글 I/O 2026에서 Gemini을 활용한 개발</title>
+      <title>[Vision] 구글 I/O 2026을 위한 Gemini을 사용한 개발</title>
       <link>https://blog.google/innovation-and-ai/technology/ai/io-2026-google-ai/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/io-2026-google-ai/</guid>
-      <description>구글 I/O 2026에 참여하기 위해 Gemini을 사용하여 개발한 내용을 소개합니다. 개발 과정에서 사용된 이미지는 Antigravity Coffee Co. 팝업, 색다른 조각물과 Timmy TPU 비디오의 스크린샷 등이 포함됩니다. 이미지 왼쪽에는 &apos;AI&apos;라는 단어가 세 번 반복되고, 다양한 아이콘도 사용되었습니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
+      <description>구글 I/O 2026에 사용된 이미지는 Antigravity Coffee Co. 팝업, 색다른 종이낭자리, Timmy TPU 비디오의 스틸 등이 포함되어 있다. 왼쪽에는 AI라는 단어 3번이 반복되어 있으며, 다양한 아이콘도 함께 있다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
       <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Audio] 지니미 3.5 라이브 트랜슬레이트, 실시간 자연스러운 대화 번역</title>
+      <title>[Audio] 자연스러운 음성 번역, 지니미 3.5 라이브 트랜슬레이트</title>
       <link>https://deepmind.google/blog/fluid-natural-voice-translation-with-gemini-35-live-translate/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/fluid-natural-voice-translation-with-gemini-35-live-translate/</guid>
-      <description>지니미 3.5 라이브 트랜슬레이트는 구글 AI 스튜디오, 구글 트랜슬레이트, 구글 미트에 실시간 자연스러운 대화 번역 기능을 제공합니다. 지니미 3.5 라이브 트랜슬레이트는 대화 중 실시간으로 번역을 수행하며, 사용자 친화적인 인터페이스로 사용자 경험을 향상합니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
+      <description>지니미 3.5 라이브 트랜슬레이트는 실시간 음성 번역을 구글 AI 스튜디오, 구글 트랜슬레이트, 구글 미트에 적용한다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
       <category>Audio</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[Robotics] 놀라운 에이전트 학습, 로봇이 새로운 세계를 개척한다</title>
-      <link>https://arxiv.org/abs/2606.19419</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.19419</guid>
-      <description>로봇이 새로운 세계를 개척하는 데 도움을 주는 놀라운 에이전트 학습 기술을 소개합니다. 이 기술은 로봇이 환경을 탐험하고 학습하는 새로운 방법을 제공합니다. 로봇이 새로운 세계를 개척하는 데 도움을 주는 놀라운 에이전트 학습 기술을 소개합니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>Robotics</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">HF Daily</source>
-    </item>
-    <item>
-      <title>[Infra] DeepSWIP: 신경심볼릭 로직 프로그램의 카운터페이탈 논리</title>
-      <link>https://arxiv.org/abs/2606.20526v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.20526v1</guid>
-      <description>신경심볼릭 시스템인 DeepProbLog은 신경망과 확률 로직을 결합하지만 표준 추론은 연관적인 nature로 진행된다. 카운터페이탈 논리를 위해서는 개입과 증거에 대한 원인적 의미론이 필요하다. 우리는 DeepSWIP, 단일 월드 카운터페이탈 논리를 소개한다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>Infra</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[LLM] IO 2026 퀴즈에 참여하고 구글 AI 스튜디오의 기발한 코드를 만나보세요!</title>
-      <link>https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/</guid>
-      <description>우리는 구글 AI 스튜디오를 이용하여 IO 2026 발표 중 가장 큰 뉴스에 대한 퀴즈를 만들었습니다. 구글 AI 스튜디오를 사용하여 퀴즈를 만들면서 AI와 개발자 간의 연결고리를 찾았습니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Tool] Measuring the impact of learning with AI in Sierra Leone and beyond</title>
-      <link>https://deepmind.google/blog/measuring-the-impact-of-learning-with-ai-in-sierra-leone-and-beyond/</link>
-      <guid isPermaLink="true">https://deepmind.google/blog/measuring-the-impact-of-learning-with-ai-in-sierra-leone-and-beyond/</guid>
-      <description>Results from a randomized controlled trial show the potential of Gemini’s Guided Learning feature to boost engagement and accelerate learning.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>Tool</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
-    </item>
-    <item>
-      <title>[Vision] 확산 Gemma의 투명도는 얼마나 될까?</title>
-      <link>https://arxiv.org/abs/2606.20560v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.20560v1</guid>
-      <description>LLM의 추론 투명도는 모델의 결정 이해, 부정합 및 오동작 방지를 위한 중요한 기능입니다. 그러나 확산 Gemma는 연속적 임베딩 공간에서 더 많은 계산을 수행합니다. 이로 인해 모델의 투명도가 낮아질까요?</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Audio] 말하는 방식은 어떻게 지시되어 있을까? 스타일 캡션 텍스트 투 스피치의 교차 주의 집중</title>
-      <link>https://arxiv.org/abs/2606.20532v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.20532v1</guid>
-      <description>스타일 캡션 텍스트 투 스피치 시스템은 자연어를 통해 음성 특성을 제어하지만, 개별 단어가 음성 출력에 미치는 영향은 명확하지 않다. 이에 대한 이해는 표현적 TTS에서 실패 모드를 진단하고 제어 가능성을 향상하는 데 중요하다. 우리는</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>Audio</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Safety] 언어 모델 가족 내에서 발생하는 미.Align 이력 감지 및 완화 위한 작용 가능한 활성화 방향</title>
-      <link>https://arxiv.org/abs/2606.20225v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.20225v1</guid>
-      <description>안전하지 않은 코드에 언어 모델을 미세 조정하면 내부 구조가 잘 이해되지 않은 미.Align 이 발생한다. 이 미.Align 이 구조가 공유되는 활성화 공간 방향과 관련이 있는지 조사했다. 네 가지 instruction-tune 데이터셋에서 미.Align 이 발생하는 방향을 조사했다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>Safety</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Robotics] 자율주행 로봇의 시선 예측 속도 향상</title>
-      <link>https://arxiv.org/abs/2606.20491v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.20491v1</guid>
-      <description>인간의 시각적 주의는 구조화된 스캔패스를 통해 효율적으로 장면을 처리하지만, 로봇 자율성에 이 행동을 심어주는 것은 아직 초보 단계에 있으며 기존 예측 모델의 높은 계산 비용에 의해 방해받고 있습니다. 이를 해결하기 위해 GazeLNN을 소개합니다. GazeLNN은 로봇의 시선 예측을 빠르게하고 효율적으로하는 새로운 모델입니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
+      <title>[Robotics] Bridging Performance and Generalization in Reinforcement Learning for Agile Flight</title>
+      <link>https://arxiv.org/abs/2606.27348v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2606.27348v1</guid>
+      <description>Autonomous drone racing is a fundamentally challenging regime for autonomous aerial robots, requiring time-optimal control while operating under persistent actuation saturation. While reinforcement learning (RL) has achieved human-level performance in this domain, current methods</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
       <category>Robotics</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Infra] 실행 상태 캡슐: 저-latency, 작은 배치, 장치 내 물리 AI 서비스를 위한 그래프 바운드 실행 상태 체크 포인트 및 복원</title>
-      <link>https://arxiv.org/abs/2606.20537v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.20537v1</guid>
-      <description>주류 LLM 서비스 시스템은 주로 페이지드 또는 radix key-value (KV) 캐시를 통해 prefix 작업을 재사용합니다. 이는 고속 전송, 고 병렬성 서비스에 매우 효과적이지만 실행 상태의 단일 위치적 프래그먼트만 관리합니다. 우리는 반대 방향의 체계를 연구합니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>Infra</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Agent] 작은 모델을 위한 에이전트 경험: MagenticLite, MagenticBrain, Fara1.5</title>
+      <title>[Agent] 작은 모델을 위한 에이전트 경험, MagenticLite!</title>
       <link>https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/</link>
       <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/</guid>
-      <description>MagenticLite는 웹 브라우저와 로컬 파일 시스템에서 작동하는 작은 모델을 위한 에이전트 시스템입니다. 이 시스템은 효율적인 에이전트 성능을 지원하기 위해 모델과 오케스트레이션을 결합합니다. MagenticLite는 일상적인 업무에 대한 에이전트 경험을 최적화합니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
+      <description>MagenticLite은 브라우저와 로컬 파일 시스템에서 작동하는 작은 모델을 위한 에이전트 시스템입니다. 이 시스템은 효율적인 에이전트 성능을 지원하기 위해 특수 모델과 오케스트레이션을 결합합니다. MagenticLite은 일상적인 작업을 위한 에이전트 경험을 최적화하기 위해 개발되었습니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
     </item>
     <item>
-      <title>[LLM] 제미니 오미니, 제미니 3.5의 9가지 데모</title>
-      <link>https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni-3-5-videos/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni-3-5-videos/</guid>
-      <description>제미니 오미니와 제미니 3.5은 인공지능의 새로운 표준을 제시합니다. 이 두 모델은 이전의 모델과는 차별화된 성능과 기능을 자랑합니다. 제미니 오미니는 기존의 모델과는 다른 방식으로 정보를 처리하고, 제미니 3.5은 더 나은 성능과 효율성을 제공합니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Tool] SARLO-80: 전 세계 SAR 언어 옵틱 데이터셋 80cm</title>
-      <link>https://arxiv.org/abs/2606.20523v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.20523v1</guid>
-      <description>광학 벤치마크로 인해 멀티모달 기초 모델이 급속도로 발전했지만, 합성레이더(SAR)와 같은 유사한 자원은 한정되어 있습니다. 기존의 SAR-광학 데이터셋은 주로 저해상도, 강도만 있는 지면 탐지 제품에 의존하고 있습니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>Tool</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Vision] 시간 비용 효율적인 일상생활 활동 영역에서 긴 비디오 시각적 추론</title>
-      <link>https://arxiv.org/abs/2606.20561v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.20561v1</guid>
-      <description>긴 비디오 질문 답변(LVQA)에는 시간이 오래 걸리는 비디오 내에서 희소 query 관련 증거를 식별하는 것이 포함됩니다. 기존 접근 방식은 비용이 많이 드는 컴퓨팅 비용을 초래하는 큰 시각 언어 모델(VLM)을 사용하여 비디오를하게 처리하거나 희소한 캐시를 사용하여 비디오를 처리합니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
+      <title>[Vision] 신체와 환경을 조합한 인공지능 에이전트, 현실 세계에서 자율로 움직일 수 있게</title>
+      <link>https://arxiv.org/abs/2606.27251v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2606.27251v1</guid>
+      <description>미래의 인공지능 에이전트는 다양한 도구를 조합하여 실세계에서 자율적으로 움직일 수 있어야 합니다. 이를 위해, 기존의 고립된 기술을 통합하여 새로운 에이전트를 개발하고자 합니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
       <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Audio] FlowEdit: 영구 발음 개선 기술</title>
-      <link>https://arxiv.org/abs/2606.20518v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.20518v1</guid>
-      <description>음성 합성 시스템은 외래 단어의 발음 오류를 수정하기 위해 재학습이 필요합니다. FlowEdit은 모델을 재학습하지 않고도 외래 단어의 발음 오류를 수정하는 기술을 제안합니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
+      <title>[Audio] 신형 로봇 조종 프레임워크: Embodied Test-Time Scaling</title>
+      <link>https://arxiv.org/abs/2606.27268v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2606.27268v1</guid>
+      <description>로봇 조종과 같은 체현된 태스크에 대한 테스트 시간 스케일링 연구가 최근에 시작되었습니다. 그러나 두 가지 주요 문제가 해결되지 않았습니다: (1) 사유는 정책의 성능을 개선할 수 있지만 스케일링 메커니즘에 대한 연구가 드물고, (2) 역사적 정보를 적절하게 통합하는 방법을 찾지 못했습니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
       <category>Audio</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[LLM] 구글서치, 중고 및 반려 옷 쇼핑을 업그레이드하는 5가지 방법</title>
-      <link>https://blog.google/products-and-platforms/products/search/thrifting-tips/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/thrifting-tips/</guid>
-      <description>구글서치가 중고 및 반려 옷 쇼핑을 어떻게 개선할 수 있을지 살펴보겠습니다. 구글서치의 새로운 기능은 사용자가 중고 및 반려 옷을 찾는 것을 더 쉽게 만드는 데 도움이 될 것입니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
+      <title>[Robotics] 세계 행동 모델이 재현 학습을 위한 반복 재생을 가능하게 한다</title>
+      <link>https://arxiv.org/abs/2606.27374v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2606.27374v1</guid>
+      <description>로봇 행동을 예측하는 것 이상으로, 세계 행동 모델(WAMs)은 미래 시각 관찰을 생성할 수도 있다. 우리는 이러한 생성 능력을 기반으로 Recurrent Generative Replay(REGEN)이라고 하는 반복 재생을 위한 지속적인 모방 학습 프레임워크를 제안한다. 이 프레임워크는 가짜 재생 경로를 합성하여 로봇이 새로운 환경에서 학습할 수 있게 한다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Robotics</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Agent] 인공지능 에이전트의 미래를 위한 보안</title>
+      <link>https://deepmind.google/blog/securing-the-future-of-ai-agents/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/securing-the-future-of-ai-agents/</guid>
+      <description>인공지능 에이전트의 내부 시스템을 보호하기 위한 AI Control Roadmap를 만들었습니다. 기존의 안전장치와 실시간 모니터링을 결합하여 내부 시스템을 보장하는 방안을 제시했습니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
+    </item>
+    <item>
+      <title>[LLM] 내 I/O 2026 퀴즈, 구글 AI 스튜디오로 만들어 보세요!</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/</guid>
+      <description>우리는 구글 AI 스튜디오를 이용하여 I/O 2026 주요 발표에 대한 퀴즈를 만들었습니다. 이 퀴즈는 AI 기술과 관련된 흥미로운 내용을 담고 있습니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Tool] 다중 언어 LiveCodeBench: 코드 생성 모델 평가를 위한 새로운 표준</title>
-      <link>https://arxiv.org/abs/2606.20517v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.20517v1</guid>
-      <description>LiveCodeBench(LCB)는 최근 코드 생성 모델을 평가하는 데 널리 사용되는 벤치마크로 떠올랐다. LCB는 경쟁 프로그래밍 문제를 수집하고 새로운 문제를 지속적으로 추가하며, 문제의 릴리즈 날짜를 기준으로 필터링하여 코드 생성 모델을 평가하는 데 도움을 준다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>Tool</category>
+      <title>[Vision] 세대를 뛰어넘는 이미지 생성: DanceOPD</title>
+      <link>https://arxiv.org/abs/2606.27377v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2606.27377v1</guid>
+      <description>이미지 생성은 다양한 기능을 통합하는 단일 모델을 필요로 한다. 텍스트-이미지 생성, 지역 편집, 전역 편집 등이 그 예이다. 그러나 이러한 기능은 자연스럽게 일치하지 않고 충돌하기도 한다. 예를 들어, 편집 기능은 텍스트-이미지 생성 성능을 저하한다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Featured] IO 2026 퀴즈에 참여하고 구글 AI 스튜디오의 기발한 코드를 만나보세요!</title>
+      <title>[Tool] 베가: 인공지능 시대에 디지털 신원 인증을 위한 자명증</title>
+      <link>https://www.microsoft.com/en-us/research/blog/vega-zero-knowledge-proofs-for-digital-identity-in-the-age-of-ai/</link>
+      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/vega-zero-knowledge-proofs-for-digital-identity-in-the-age-of-ai/</guid>
+      <description>베가는 전체 신원 인증 정보를 단일 증명으로 변환하고, 필요할 때만 필요한 정보만 공유하며, 실제 앱에서 작동하는 성능을 제공합니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
+    </item>
+    <item>
+      <title>[Infra] 엔비디아와 아마존웹서비스, 프로덕션급 인공지능을 실현한다</title>
+      <link>https://blogs.nvidia.com/blog/nvidia-aws-ai-production-scale/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/nvidia-aws-ai-production-scale/</guid>
+      <description>대규모 인공지능 시스템을 구축하는 것은 엄청난 도전이다. 저-latency 추론, 빠른 벡터 검색, 강력한 GPU 가격 성능 및 운영 복잡성을 증가시키지 않고 성장할 수 있는 인프라가 필요하다. NVIDIA는 아마존웹서비스와 함께 최신 연구를 진행하고 있다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Infra</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
+    </item>
+    <item>
+      <title>[Robotics] 개방형 데이터, 학습, 평가를 위한 크롤링 행동 복제</title>
+      <link>https://arxiv.org/abs/2606.27375v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2606.27375v1</guid>
+      <description>ABC를 소개합니다. ABC는 크롤링 행동 복제를 위한 완전한 개방형 스택입니다. ABC-130K: 현재까지 가장 큰 개방형 텔레오퍼레이션 데이터셋은 3,500시간의 데이터를 포함하고 있으며 130K 에피소드와 195 종류의 다양한 태스크를 커버합니다. 또한, 우리는 우리의</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Robotics</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Agent] 네이티브아이는 통신업무에 신뢰할 수 있는 AI 에이전트를 제공합니다.</title>
+      <link>https://blogs.nvidia.com/blog/telecom-ai-agents-dtw-ignite-2026/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/telecom-ai-agents-dtw-ignite-2026/</guid>
+      <description>통신 사업자는 생성형 AI를 이용한 네트워크 관리, 고객 지원 및 백오피스 운영 자동화를 통해 놀라운 수익을 얻었습니다. 그 중 대부분의 영향은 작업 기반 자동화였습니다. 예를 들어, 자동화는 특정 단계를 가속화하는 반면, 에이전트는 24시간 7일 신뢰할 수 있는 작업을 수행할 수 있습니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
+    </item>
+    <item>
+      <title>[LLM] 구찌부터 버그를 찾아서: 구글 서치가 thrift 쇼핑을 개선하는 5 가지 방법</title>
+      <link>https://blog.google/products-and-platforms/products/search/thrifting-tips/</link>
+      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/thrifting-tips/</guid>
+      <description>구글 서치는 thrift 쇼핑을 더 쉽고 효율적으로 만드는 데 도움이 될 수 있는 새로운 기능을 추가하고 있습니다. 이 기능들은 사용자가 원하는 제품을 빠르게 찾을 수 있도록 도와주며, thrift 쇼핑의 즐거움을 더 높여줍니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Vision] 자율 진화 한 통합 멀티모달 이해 및 생성</title>
+      <link>https://arxiv.org/abs/2606.27376v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2606.27376v1</guid>
+      <description>현재 대부분의 통합 멀티모달 모델은 시각 이해와 이미지 생성을 모두 지원하지만, 인간의.Annotation, 선호 레이블, 또는 외부 보상 모델과 같은 사후 훈련 감독이 필요합니다. 우리는 통합 멀티모달 모델이 능력과 생성 능력을 모두 향상할 수 있는지 여부를 묻습니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Vision</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Tool] 아이어, LOTUSLITE 감염 바이러스 또 발견</title>
+      <link>https://www.microsoft.com/en-us/research/blog/ire-identifies-another-lotuslite-specimen/</link>
+      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/ire-identifies-another-lotuslite-specimen/</guid>
+      <description>프로젝트 아이어는 최신 바이러스 샘플을 분석하여 역역 엔지니어링을 통해 감염의 의도를 파악하였습니다. 이 과정에서 대부분의 주요 EDR 도구가 감지하지 못한 LOTUSLITE 특징을 식별하였습니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
+    </item>
+    <item>
+      <title>[Audio] 인월드 TTS-1.5 Max, 실시간 음성 모델로 플랫폼에 출시</title>
+      <link>https://blog.fal.ai/inworld-tts-1-5-max-now-available-on-fal/</link>
+      <guid isPermaLink="true">https://blog.fal.ai/inworld-tts-1-5-max-now-available-on-fal/</guid>
+      <description>인월드 TTS-1.5 Max가 플랫폼에 추가되었습니다. 이 모델은 낮은 지연 시간의 음성 생성, 개선된 표현력, 그리고 다언어 지원을 특징으로 합니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Audio</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
+    </item>
+    <item>
+      <title>[Featured] 신체와 환경을 조합한 인공지능 에이전트, 현실 세계에서 자율로 움직일 수 있게</title>
+      <link>https://arxiv.org/abs/2606.27251v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2606.27251v1</guid>
+      <description>미래의 인공지능 에이전트는 다양한 도구를 조합하여 실세계에서 자율적으로 움직일 수 있어야 합니다. 이를 위해, 기존의 고립된 기술을 통합하여 새로운 에이전트를 개발하고자 합니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] 신형 로봇 조종 프레임워크: Embodied Test-Time Scaling</title>
+      <link>https://arxiv.org/abs/2606.27268v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2606.27268v1</guid>
+      <description>로봇 조종과 같은 체현된 태스크에 대한 테스트 시간 스케일링 연구가 최근에 시작되었습니다. 그러나 두 가지 주요 문제가 해결되지 않았습니다: (1) 사유는 정책의 성능을 개선할 수 있지만 스케일링 메커니즘에 대한 연구가 드물고, (2) 역사적 정보를 </description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] 세계 행동 모델이 재현 학습을 위한 반복 재생을 가능하게 한다</title>
+      <link>https://arxiv.org/abs/2606.27374v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2606.27374v1</guid>
+      <description>로봇 행동을 예측하는 것 이상으로, 세계 행동 모델(WAMs)은 미래 시각 관찰을 생성할 수도 있다. 우리는 이러한 생성 능력을 기반으로 Recurrent Generative Replay(REGEN)이라고 하는 반복 재생을 위한 지속적인 모방 학습 프</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] 인공지능 에이전트의 미래를 위한 보안</title>
+      <link>https://deepmind.google/blog/securing-the-future-of-ai-agents/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/securing-the-future-of-ai-agents/</guid>
+      <description>인공지능 에이전트의 내부 시스템을 보호하기 위한 AI Control Roadmap를 만들었습니다. 기존의 안전장치와 실시간 모니터링을 결합하여 내부 시스템을 보장하는 방안을 제시했습니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] 내 I/O 2026 퀴즈, 구글 AI 스튜디오로 만들어 보세요!</title>
       <link>https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/</guid>
-      <description>우리는 구글 AI 스튜디오를 이용하여 IO 2026 발표 중 가장 큰 뉴스에 대한 퀴즈를 만들었습니다. 구글 AI 스튜디오를 사용하여 퀴즈를 만들면서 AI와 개발자 간의 연결고리를 찾았습니다.</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>Featured</category>
-    </item>
-    <item>
-      <title>[Featured] Measuring the impact of learning with AI in Sierra Leone and beyond</title>
-      <link>https://deepmind.google/blog/measuring-the-impact-of-learning-with-ai-in-sierra-leone-and-beyond/</link>
-      <guid isPermaLink="true">https://deepmind.google/blog/measuring-the-impact-of-learning-with-ai-in-sierra-leone-and-beyond/</guid>
-      <description>Results from a randomized controlled trial show the potential of Gemini’s Guided Learning feature to boost engagement and accelerate learnin</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>Featured</category>
-    </item>
-    <item>
-      <title>[Featured] 확산 Gemma의 투명도는 얼마나 될까?</title>
-      <link>https://arxiv.org/abs/2606.20560v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.20560v1</guid>
-      <description>LLM의 추론 투명도는 모델의 결정 이해, 부정합 및 오동작 방지를 위한 중요한 기능입니다. 그러나 확산 Gemma는 연속적 임베딩 공간에서 더 많은 계산을 수행합니다. 이로 인해 모델의 투명도가 낮아질까요?</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>Featured</category>
-    </item>
-    <item>
-      <title>[Featured] 말하는 방식은 어떻게 지시되어 있을까? 스타일 캡션 텍스트 투 스피치의 교차 주의 집중</title>
-      <link>https://arxiv.org/abs/2606.20532v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.20532v1</guid>
-      <description>스타일 캡션 텍스트 투 스피치 시스템은 자연어를 통해 음성 특성을 제어하지만, 개별 단어가 음성 출력에 미치는 영향은 명확하지 않다. 이에 대한 이해는 표현적 TTS에서 실패 모드를 진단하고 제어 가능성을 향상하는 데 중요하다. 우리는</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
-      <category>Featured</category>
-    </item>
-    <item>
-      <title>[Featured] 언어 모델 가족 내에서 발생하는 미.Align 이력 감지 및 완화 위한 작용 가능한 활성화 방향</title>
-      <link>https://arxiv.org/abs/2606.20225v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.20225v1</guid>
-      <description>안전하지 않은 코드에 언어 모델을 미세 조정하면 내부 구조가 잘 이해되지 않은 미.Align 이 발생한다. 이 미.Align 이 구조가 공유되는 활성화 공간 방향과 관련이 있는지 조사했다. 네 가지 instruction-tune 데이터셋에서 미.Ali</description>
-      <pubDate>Mon, 22 Jun 2026 07:10:10 +0900</pubDate>
+      <description>우리는 구글 AI 스튜디오를 이용하여 I/O 2026 주요 발표에 대한 퀴즈를 만들었습니다. 이 퀴즈는 AI 기술과 관련된 흥미로운 내용을 담고 있습니다.</description>
+      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
       <category>Featured</category>
     </item>
   </channel>
