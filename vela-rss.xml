@@ -6,236 +6,236 @@
     <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
     <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
     <language>ko</language>
-    <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
-    <lastBuildDate>Mon, 29 Jun 2026 06:57:18 +0900</lastBuildDate>
+    <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
+    <lastBuildDate>Mon, 06 Jul 2026 06:54:48 +0900</lastBuildDate>
     <generator>Vela Weekly Collector</generator>
     <ttl>10080</ttl>
     <item>
-      <title>[Cover] How might LLMs store facts · MLP 해부</title>
+      <title>[Cover] Building Agents · 에이전트 설계 원리</title>
       <link>https://juns9990.github.io/vela/vela-prototype.html</link>
-      <guid isPermaLink="false">vela-cover-2026-W27</guid>
-      <description>이번 주 Vela가 추천하는 깊이 있는 강의. 3Blue1Brown의 시그니처.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <guid isPermaLink="false">vela-cover-2026-W28</guid>
+      <description>이번 주 Vela가 추천하는 깊이 있는 강의. Andrew Ng의 시그니처.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Cover Story</category>
     </item>
     <item>
-      <title>[Agent] 다중 에이전트 AI 안전 연구에 1억 달러 투자</title>
+      <title>[Agent] 다중 에이전트 AI 안전 연구에 10억 달러 투자</title>
       <link>https://deepmind.google/blog/investing-in-multi-agent-ai-safety-research/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/investing-in-multi-agent-ai-safety-research/</guid>
-      <description>구글 딥마인드와 파트너들이 다중 에이전트 안전 연구에 1억 달러를 투자하기로 발표했다. 이 연구는 인공지능이 여러 에이전트와 상호작용할 때 발생할 수 있는 위험을 줄이기 위한 것이다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <description>구글 딥마인드와 파트너들이 다중 에이전트 안전 연구에 10억 달러를 투자하기 위한 펀딩을 발표했다. 다중 에이전트는 여러 에이전트가 협력하거나 경쟁하는 시스템을 의미한다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[Tool] 1,000+ 모델과 연결하세요! MCP 서버는 AI 보조 프로그램을 위한 호스트드 엔드포인트</title>
+      <title>[Tool] 1,000+ 모델에 연결하세요! MCP 서버가 대세</title>
       <link>https://blog.fal.ai/connect-your-ai-to-1-000-models-with-the-fal-mcp-server/</link>
       <guid isPermaLink="true">https://blog.fal.ai/connect-your-ai-to-1-000-models-with-the-fal-mcp-server/</guid>
-      <description>오늘 우리는 MCP 서버를 다시 출시합니다. MCP 서버는 대화에서 1,000+ 생성 AI 모델을 검색, 실행, 연결할 수 있는 호스트드 엔드포인트입니다. 단 하나의 명령. SDK가 필요하지 않습니다. 문서를 읽을 필요도 없습니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <description>오늘날 MCP 서버를 출시합니다. 이 서버는 대화에서 1,000개 이상의 생성 AI 모델을 검색, 실행, 연결할 수 있는 호스트드 엔드포인트입니다. 단 한 명령만. SDK는 필요하지 않습니다. 문서를 읽을 필요도 없습니다. 이게 무엇인가요?</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Tool</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
     </item>
     <item>
-      <title>[Vision] 구글 I/O 2026을 위한 Gemini을 사용한 개발</title>
-      <link>https://blog.google/innovation-and-ai/technology/ai/io-2026-google-ai/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/io-2026-google-ai/</guid>
-      <description>구글 I/O 2026에 사용된 이미지는 Antigravity Coffee Co. 팝업, 색다른 종이낭자리, Timmy TPU 비디오의 스틸 등이 포함되어 있다. 왼쪽에는 AI라는 단어 3번이 반복되어 있으며, 다양한 아이콘도 함께 있다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
-      <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Audio] 자연스러운 음성 번역, 지니미 3.5 라이브 트랜슬레이트</title>
+      <title>[Audio] 자연스러운 목소리 번역, Gemini 3.5 Live Translate</title>
       <link>https://deepmind.google/blog/fluid-natural-voice-translation-with-gemini-35-live-translate/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/fluid-natural-voice-translation-with-gemini-35-live-translate/</guid>
-      <description>지니미 3.5 라이브 트랜슬레이트는 실시간 음성 번역을 구글 AI 스튜디오, 구글 트랜슬레이트, 구글 미트에 적용한다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <description>Gemini 3.5 Live Translate은 실시간 자연스러운 대화 번역을 Google AI Studio, Google Translate 및 Google Meet에 제공합니다. 이 기술은 언어 처리 및 인공지능의 발전으로 가능하며, 사용자 경험을 개선하고 새로운 사용 사례를 열어줍니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Audio</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[Robotics] Bridging Performance and Generalization in Reinforcement Learning for Agile Flight</title>
-      <link>https://arxiv.org/abs/2606.27348v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.27348v1</guid>
-      <description>Autonomous drone racing is a fundamentally challenging regime for autonomous aerial robots, requiring time-optimal control while operating under persistent actuation saturation. While reinforcement learning (RL) has achieved human-level performance in this domain, current methods</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <title>[Robotics] QuadRocket: 로켓형 항공 로봇 테스트베드</title>
+      <link>https://arxiv.org/abs/2607.02474v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2607.02474v1</guid>
+      <description>QuadRocket은 로켓형 시스템의 고급 추력 벡터 제어 전략을 검증하기 위한 저비용 저위험 플랫폼을 제공하는 쿼드 로켓 프로토 타입입니다. 프로토 타입은 쿼드 로봇에 탑재된 원통형 메인 바디로 구성되어 있습니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Robotics</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Agent] 작은 모델을 위한 에이전트 경험, MagenticLite!</title>
+      <title>[Agent] 작은 모델을 위한 에이전트 경험, MagenticLite와 MagenticBrain</title>
       <link>https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/</link>
       <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/magenticlite-magenticbrain-fara1-5-an-agentic-experience-optimized-for-small-models/</guid>
-      <description>MagenticLite은 브라우저와 로컬 파일 시스템에서 작동하는 작은 모델을 위한 에이전트 시스템입니다. 이 시스템은 효율적인 에이전트 성능을 지원하기 위해 특수 모델과 오케스트레이션을 결합합니다. MagenticLite은 일상적인 작업을 위한 에이전트 경험을 최적화하기 위해 개발되었습니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <description>MagenticLite는 브라우저와 로컬 파일 시스템에서 작동하는 작은 모델을 위한 에이전트 시스템입니다. 이 시스템은 효율적인 에이전트 성능을 지원하기 위해 모델과 오케스트레이션을 결합합니다. MagenticLite는 다양한 작업을 위한 효율적인 에이전트 성능을 제공합니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
     </item>
     <item>
-      <title>[Vision] 신체와 환경을 조합한 인공지능 에이전트, 현실 세계에서 자율로 움직일 수 있게</title>
-      <link>https://arxiv.org/abs/2606.27251v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.27251v1</guid>
-      <description>미래의 인공지능 에이전트는 다양한 도구를 조합하여 실세계에서 자율적으로 움직일 수 있어야 합니다. 이를 위해, 기존의 고립된 기술을 통합하여 새로운 에이전트를 개발하고자 합니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <title>[LLM] 버지니아에 새로운 지역 공동체 투자, 지역 일자리와 에너지 가성비 확대</title>
+      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/virginia-community-investments/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/virginia-community-investments/</guid>
+      <description>버지니아 주의 다음 세대 직업군을 구축하고 에너지 프로그램에 투자하는 데 도움을 주고 있습니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Vision] Unlocking Britain’s next era of productivity: Building a nation of AI trailblazers</title>
+      <link>https://blog.google/company-news/inside-google/around-the-globe/google-europe/united-kingdom/unlocking-britains-next-era-of-productivity-building-a-nation-of-ai-trailblazers/</link>
+      <guid isPermaLink="true">https://blog.google/company-news/inside-google/around-the-globe/google-europe/united-kingdom/unlocking-britains-next-era-of-productivity-building-a-nation-of-ai-trailblazers/</guid>
+      <description>Four illustrated characters representing different professional roles, including a scientist, technician, explorer, and observer.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Audio] 신형 로봇 조종 프레임워크: Embodied Test-Time Scaling</title>
-      <link>https://arxiv.org/abs/2606.27268v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.27268v1</guid>
-      <description>로봇 조종과 같은 체현된 태스크에 대한 테스트 시간 스케일링 연구가 최근에 시작되었습니다. 그러나 두 가지 주요 문제가 해결되지 않았습니다: (1) 사유는 정책의 성능을 개선할 수 있지만 스케일링 메커니즘에 대한 연구가 드물고, (2) 역사적 정보를 적절하게 통합하는 방법을 찾지 못했습니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
-      <category>Audio</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Robotics] 세계 행동 모델이 재현 학습을 위한 반복 재생을 가능하게 한다</title>
-      <link>https://arxiv.org/abs/2606.27374v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.27374v1</guid>
-      <description>로봇 행동을 예측하는 것 이상으로, 세계 행동 모델(WAMs)은 미래 시각 관찰을 생성할 수도 있다. 우리는 이러한 생성 능력을 기반으로 Recurrent Generative Replay(REGEN)이라고 하는 반복 재생을 위한 지속적인 모방 학습 프레임워크를 제안한다. 이 프레임워크는 가짜 재생 경로를 합성하여 로봇이 새로운 환경에서 학습할 수 있게 한다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
-      <category>Robotics</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+      <title>[Infra] 인공지능 inference 소프트웨어 스택으로 token 비용 최저</title>
+      <link>https://blogs.nvidia.com/blog/inference-software-lowest-token-cost/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/inference-software-lowest-token-cost/</guid>
+      <description>기업이 AI 시범 프로젝트에서 실제 AI 공장으로 전환하는 과정에서, 하드웨어 성능은 더 이상 주요 고려사항이 아니다. 기업은 이제 AI를 실제로 사용할 때 token당 비용, token당 전력 소비, 필요한 대기 시간을 고려해야 한다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
+      <category>Infra</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
     </item>
     <item>
       <title>[Agent] 인공지능 에이전트의 미래를 위한 보안</title>
       <link>https://deepmind.google/blog/securing-the-future-of-ai-agents/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/securing-the-future-of-ai-agents/</guid>
-      <description>인공지능 에이전트의 내부 시스템을 보호하기 위한 AI Control Roadmap를 만들었습니다. 기존의 안전장치와 실시간 모니터링을 결합하여 내부 시스템을 보장하는 방안을 제시했습니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <description>인공지능 에이전트의 내부 시스템을 보호하기 위한 AI Control Roadmap를 통해 전통적인 보안 수단과 실시간 모니터링을 결합합니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[LLM] 내 I/O 2026 퀴즈, 구글 AI 스튜디오로 만들어 보세요!</title>
-      <link>https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/</guid>
-      <description>우리는 구글 AI 스튜디오를 이용하여 I/O 2026 주요 발표에 대한 퀴즈를 만들었습니다. 이 퀴즈는 AI 기술과 관련된 흥미로운 내용을 담고 있습니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <title>[LLM] 알라배마에 새로운 투자와 지역 사회 지원으로 강화</title>
+      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/alabama-investment-june-2026/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/alabama-investment-june-2026/</guid>
+      <description>구글은 2026년과 2027년 알라배마 주 잭슨 카운티에 데이터 센터 캠퍼스를 확장하기 위해 15억 달러를 투자한다고 발표했다. 2019년부터 이전 산업 시설을 재활용해 운영해왔던...</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Vision] 세대를 뛰어넘는 이미지 생성: DanceOPD</title>
-      <link>https://arxiv.org/abs/2606.27377v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.27377v1</guid>
-      <description>이미지 생성은 다양한 기능을 통합하는 단일 모델을 필요로 한다. 텍스트-이미지 생성, 지역 편집, 전역 편집 등이 그 예이다. 그러나 이러한 기능은 자연스럽게 일치하지 않고 충돌하기도 한다. 예를 들어, 편집 기능은 텍스트-이미지 생성 성능을 저하한다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <title>[Tool] LLM의 학습 데이터 삭제를 위한 정확성 테스트베드</title>
+      <link>https://arxiv.org/abs/2607.02513v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2607.02513v1</guid>
+      <description>LLMs는 민감한 학습 데이터를 기억하고 개인 식별 정보(PPI)를 포함하고 있어 신뢰할 수 있는 후속 제거 방법이 필요합니다. 학습 데이터 삭제를 위한 unlearning이 새로운 해결책으로 떠오르면서, 현재 최고 수준의 방법은 대부분 localize-first, unlearn 순서로 진행됩니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
+      <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Vision] OrbitQuant: 이미지 및 비디오 디퓨전 트랜스폼의 데이터에 상관없는 압축</title>
+      <link>https://arxiv.org/abs/2607.02461v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2607.02461v1</guid>
+      <description>디퓨전 트랜스폼(DiT)은 이미지 및 비디오 생성에서 최고의 성능을 보여주지만, 다단계 샘플링 및 매개변수 수가 증가하는 문제로 인해 추론 비용이 높아진다. 후 훈련 압축(PQQ)은 자연스러운 해결책이지만, DiT 활성도가 단계, 프롬프트 및 ...</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Tool] 베가: 인공지능 시대에 디지털 신원 인증을 위한 자명증</title>
-      <link>https://www.microsoft.com/en-us/research/blog/vega-zero-knowledge-proofs-for-digital-identity-in-the-age-of-ai/</link>
-      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/vega-zero-knowledge-proofs-for-digital-identity-in-the-age-of-ai/</guid>
-      <description>베가는 전체 신원 인증 정보를 단일 증명으로 변환하고, 필요할 때만 필요한 정보만 공유하며, 실제 앱에서 작동하는 성능을 제공합니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
-      <category>Tool</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
-    </item>
-    <item>
-      <title>[Infra] 엔비디아와 아마존웹서비스, 프로덕션급 인공지능을 실현한다</title>
-      <link>https://blogs.nvidia.com/blog/nvidia-aws-ai-production-scale/</link>
-      <guid isPermaLink="true">https://blogs.nvidia.com/blog/nvidia-aws-ai-production-scale/</guid>
-      <description>대규모 인공지능 시스템을 구축하는 것은 엄청난 도전이다. 저-latency 추론, 빠른 벡터 검색, 강력한 GPU 가격 성능 및 운영 복잡성을 증가시키지 않고 성장할 수 있는 인프라가 필요하다. NVIDIA는 아마존웹서비스와 함께 최신 연구를 진행하고 있다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
-      <category>Infra</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
-    </item>
-    <item>
-      <title>[Robotics] 개방형 데이터, 학습, 평가를 위한 크롤링 행동 복제</title>
-      <link>https://arxiv.org/abs/2606.27375v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.27375v1</guid>
-      <description>ABC를 소개합니다. ABC는 크롤링 행동 복제를 위한 완전한 개방형 스택입니다. ABC-130K: 현재까지 가장 큰 개방형 텔레오퍼레이션 데이터셋은 3,500시간의 데이터를 포함하고 있으며 130K 에피소드와 195 종류의 다양한 태스크를 커버합니다. 또한, 우리는 우리의</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
-      <category>Robotics</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Agent] 네이티브아이는 통신업무에 신뢰할 수 있는 AI 에이전트를 제공합니다.</title>
-      <link>https://blogs.nvidia.com/blog/telecom-ai-agents-dtw-ignite-2026/</link>
-      <guid isPermaLink="true">https://blogs.nvidia.com/blog/telecom-ai-agents-dtw-ignite-2026/</guid>
-      <description>통신 사업자는 생성형 AI를 이용한 네트워크 관리, 고객 지원 및 백오피스 운영 자동화를 통해 놀라운 수익을 얻었습니다. 그 중 대부분의 영향은 작업 기반 자동화였습니다. 예를 들어, 자동화는 특정 단계를 가속화하는 반면, 에이전트는 24시간 7일 신뢰할 수 있는 작업을 수행할 수 있습니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
-      <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
-    </item>
-    <item>
-      <title>[LLM] 구찌부터 버그를 찾아서: 구글 서치가 thrift 쇼핑을 개선하는 5 가지 방법</title>
-      <link>https://blog.google/products-and-platforms/products/search/thrifting-tips/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/thrifting-tips/</guid>
-      <description>구글 서치는 thrift 쇼핑을 더 쉽고 효율적으로 만드는 데 도움이 될 수 있는 새로운 기능을 추가하고 있습니다. 이 기능들은 사용자가 원하는 제품을 빠르게 찾을 수 있도록 도와주며, thrift 쇼핑의 즐거움을 더 높여줍니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Vision] 자율 진화 한 통합 멀티모달 이해 및 생성</title>
-      <link>https://arxiv.org/abs/2606.27376v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.27376v1</guid>
-      <description>현재 대부분의 통합 멀티모달 모델은 시각 이해와 이미지 생성을 모두 지원하지만, 인간의.Annotation, 선호 레이블, 또는 외부 보상 모델과 같은 사후 훈련 감독이 필요합니다. 우리는 통합 멀티모달 모델이 능력과 생성 능력을 모두 향상할 수 있는지 여부를 묻습니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
-      <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Tool] 아이어, LOTUSLITE 감염 바이러스 또 발견</title>
-      <link>https://www.microsoft.com/en-us/research/blog/ire-identifies-another-lotuslite-specimen/</link>
-      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/ire-identifies-another-lotuslite-specimen/</guid>
-      <description>프로젝트 아이어는 최신 바이러스 샘플을 분석하여 역역 엔지니어링을 통해 감염의 의도를 파악하였습니다. 이 과정에서 대부분의 주요 EDR 도구가 감지하지 못한 LOTUSLITE 특징을 식별하였습니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
-      <category>Tool</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
-    </item>
-    <item>
-      <title>[Audio] 인월드 TTS-1.5 Max, 실시간 음성 모델로 플랫폼에 출시</title>
+      <title>[Audio] 인월드 TTS-1.5 Max, fal 플랫폼에 출시</title>
       <link>https://blog.fal.ai/inworld-tts-1-5-max-now-available-on-fal/</link>
       <guid isPermaLink="true">https://blog.fal.ai/inworld-tts-1-5-max-now-available-on-fal/</guid>
-      <description>인월드 TTS-1.5 Max가 플랫폼에 추가되었습니다. 이 모델은 낮은 지연 시간의 음성 생성, 개선된 표현력, 그리고 다언어 지원을 특징으로 합니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <description>인월드 TTS-1.5 Max가 fal 플랫폼에 추가되었습니다. 이 모델은 실시간 음성 모델의 새로운 버전으로, 낮은 지연 시간의 대화 생성, 표현력 향상, 그리고 다언어 지원을 강조합니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Audio</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
     </item>
     <item>
-      <title>[Featured] 신체와 환경을 조합한 인공지능 에이전트, 현실 세계에서 자율로 움직일 수 있게</title>
-      <link>https://arxiv.org/abs/2606.27251v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.27251v1</guid>
-      <description>미래의 인공지능 에이전트는 다양한 도구를 조합하여 실세계에서 자율적으로 움직일 수 있어야 합니다. 이를 위해, 기존의 고립된 기술을 통합하여 새로운 에이전트를 개발하고자 합니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <title>[Safety] 생각 속으로 움직이는 창의의 속도에 맞춰 신뢰를 구축하는 방법</title>
+      <link>https://blog.fal.ai/building-long-term-trust-in-a-world-where-creation-moves-at-the-speed-of-thought/</link>
+      <guid isPermaLink="true">https://blog.fal.ai/building-long-term-trust-in-a-world-where-creation-moves-at-the-speed-of-thought/</guid>
+      <description>생각 속으로 움직이는 창의의 속도에 맞춰 신뢰를 구축하는 방법에 대해 Sean Bonawitz, fal의 신뢰 및 안전 책임자와 함께 이야기해 보았습니다. 그는 미국 해군에서 EOD 중대장으로 근무했으며, 사람들을 보호하고 앞으로 나아가도록 도울 수 있는 일을 맡았습니다. 그의 임무는 항상 생명을 보호하는 것이었습니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
+      <category>Safety</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
+    </item>
+    <item>
+      <title>[Robotics] 로봇이 더 빠르게 움직일 수 있도록 도와주는 자이베르 싱하</title>
+      <link>https://blogs.nvidia.com/blog/nvidia-life-jaiveer-singh/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/nvidia-life-jaiveer-singh/</guid>
+      <description>자이베르 싱하가 로봇에 대해 이야기할 때 그는 장식보다는 기반을 강조한다. 그는 기계 내부의 보드, 개발자의 카메라를 통해 로봇을 볼 수 있는 소프트웨어, 로봇이 움직일 수 있도록 하는 엔지니어링을 먼저 언급한다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
+      <category>Robotics</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
+    </item>
+    <item>
+      <title>[Agent] 클라우드가 블랙웰 울트라에 만난다: 안서픽의 모델이 에이저에 도착</title>
+      <link>https://blogs.nvidia.com/blog/anthropic-nvidia-gb300-blackwell-ultra-microsoft-azure/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/anthropic-nvidia-gb300-blackwell-ultra-microsoft-azure/</guid>
+      <description>안서픽의 클라우드 모델은 마이크로소프트 에이저에 호스트되어 에이저 내에서 에이저 특화된 기업들이 자율성과 도메인 특화된 인공지능 모델을 개발하기 위한 강력한 새로운 방법을 제공합니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
+    </item>
+    <item>
+      <title>[LLM] 인공지능으로 영국 주택 건설 속도 높여</title>
+      <link>https://deepmind.google/blog/unlocking-uk-house-building-with-ai-accelerated-planning/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/unlocking-uk-house-building-with-ai-accelerated-planning/</guid>
+      <description>영국 정부는 구글 딥마인드와 함께 새로운 인공지능을 사용한 프로토타입을 개발하여 주택 결정을 빠르게 하는 것을 목표로하고 있습니다. 이 프로토타입은 영국의 주택 부족 문제를 해결하기 위해 개발되었습니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
+    </item>
+    <item>
+      <title>[Vision] 시각 기반 자기 반영을 위한 비전-언어 모델</title>
+      <link>https://arxiv.org/abs/2607.02490v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2607.02490v1</guid>
+      <description>비전-언어 모델은 멀티 모달 입력에 대해 텍스트 체인으로의 사고를 생성할 수 있습니다. 이 체인 사고에서 중요한 능력은 자기 반영입니다. 이전의 결정을 재방문하고 이전의 오류를 수정합니다. 그러나 기존의 LVLM은 적절히 자기 반영을 수행하지 못하는 경우가 많습니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
+      <category>Vision</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Audio] 오디오북 내레이션 매력의 비밀</title>
+      <link>https://arxiv.org/abs/2607.02473v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2607.02473v1</guid>
+      <description>오디오북 내레이션은 청취자의 경험을 결정하는 중요한 요소입니다. 내레이션의 품질은 장르, 제목, 청취자에 따라 달라질 수 있습니다. 본 연구에서는 내레이션의 품질이 오디오북의 매력에 어떤 영향을 미치는지 조사했습니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
+      <category>Audio</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Safety] LLM의 온라인 안전 감시</title>
+      <link>https://arxiv.org/abs/2607.02510v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2607.02510v1</guid>
+      <description>인공지능 모델의 안전성 향상을 위해, 배포 시점에 안전한 출력을 생성할 수 있는지 여부를 실시간으로 감시하고 경보를 울리는 것이 중요합니다. 우리는 간단한 실시간 감시 시스템을 연구하여, 안전성을 검증하는 신호를 변환하는 방법을 제안합니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
+      <category>Safety</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Featured] Unlocking Britain’s next era of productivity: Building a nation of AI trailblaze</title>
+      <link>https://blog.google/company-news/inside-google/around-the-globe/google-europe/united-kingdom/unlocking-britains-next-era-of-productivity-building-a-nation-of-ai-trailblazers/</link>
+      <guid isPermaLink="true">https://blog.google/company-news/inside-google/around-the-globe/google-europe/united-kingdom/unlocking-britains-next-era-of-productivity-building-a-nation-of-ai-trailblazers/</guid>
+      <description>Four illustrated characters representing different professional roles, including a scientist, technician, explorer, and observer.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] 신형 로봇 조종 프레임워크: Embodied Test-Time Scaling</title>
-      <link>https://arxiv.org/abs/2606.27268v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.27268v1</guid>
-      <description>로봇 조종과 같은 체현된 태스크에 대한 테스트 시간 스케일링 연구가 최근에 시작되었습니다. 그러나 두 가지 주요 문제가 해결되지 않았습니다: (1) 사유는 정책의 성능을 개선할 수 있지만 스케일링 메커니즘에 대한 연구가 드물고, (2) 역사적 정보를 </description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
-      <category>Featured</category>
-    </item>
-    <item>
-      <title>[Featured] 세계 행동 모델이 재현 학습을 위한 반복 재생을 가능하게 한다</title>
-      <link>https://arxiv.org/abs/2606.27374v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2606.27374v1</guid>
-      <description>로봇 행동을 예측하는 것 이상으로, 세계 행동 모델(WAMs)은 미래 시각 관찰을 생성할 수도 있다. 우리는 이러한 생성 능력을 기반으로 Recurrent Generative Replay(REGEN)이라고 하는 반복 재생을 위한 지속적인 모방 학습 프</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <title>[Featured] 인공지능 inference 소프트웨어 스택으로 token 비용 최저</title>
+      <link>https://blogs.nvidia.com/blog/inference-software-lowest-token-cost/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/inference-software-lowest-token-cost/</guid>
+      <description>기업이 AI 시범 프로젝트에서 실제 AI 공장으로 전환하는 과정에서, 하드웨어 성능은 더 이상 주요 고려사항이 아니다. 기업은 이제 AI를 실제로 사용할 때 token당 비용, token당 전력 소비, 필요한 대기 시간을 고려해야 한다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
       <title>[Featured] 인공지능 에이전트의 미래를 위한 보안</title>
       <link>https://deepmind.google/blog/securing-the-future-of-ai-agents/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/securing-the-future-of-ai-agents/</guid>
-      <description>인공지능 에이전트의 내부 시스템을 보호하기 위한 AI Control Roadmap를 만들었습니다. 기존의 안전장치와 실시간 모니터링을 결합하여 내부 시스템을 보장하는 방안을 제시했습니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <description>인공지능 에이전트의 내부 시스템을 보호하기 위한 AI Control Roadmap를 통해 전통적인 보안 수단과 실시간 모니터링을 결합합니다.</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] 내 I/O 2026 퀴즈, 구글 AI 스튜디오로 만들어 보세요!</title>
-      <link>https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/</guid>
-      <description>우리는 구글 AI 스튜디오를 이용하여 I/O 2026 주요 발표에 대한 퀴즈를 만들었습니다. 이 퀴즈는 AI 기술과 관련된 흥미로운 내용을 담고 있습니다.</description>
-      <pubDate>Mon, 29 Jun 2026 06:57:18 +0900</pubDate>
+      <title>[Featured] 알라배마에 새로운 투자와 지역 사회 지원으로 강화</title>
+      <link>https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/alabama-investment-june-2026/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/alabama-investment-june-2026/</guid>
+      <description>구글은 2026년과 2027년 알라배마 주 잭슨 카운티에 데이터 센터 캠퍼스를 확장하기 위해 15억 달러를 투자한다고 발표했다. 2019년부터 이전 산업 시설을 재활용해 운영해왔던...</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] LLM의 학습 데이터 삭제를 위한 정확성 테스트베드</title>
+      <link>https://arxiv.org/abs/2607.02513v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2607.02513v1</guid>
+      <description>LLMs는 민감한 학습 데이터를 기억하고 개인 식별 정보(PPI)를 포함하고 있어 신뢰할 수 있는 후속 제거 방법이 필요합니다. 학습 데이터 삭제를 위한 unlearning이 새로운 해결책으로 떠오르면서, 현재 최고 수준의 방법은 대부분 localiz</description>
+      <pubDate>Mon, 06 Jul 2026 06:54:48 +0900</pubDate>
       <category>Featured</category>
     </item>
   </channel>
