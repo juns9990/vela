@@ -2,6 +2,14 @@
   "version": "1.0",
   "issues": [
     {
+      "file": "vela-issue-2026-W32.json",
+      "year": 2026,
+      "week": 32,
+      "monday": "2026-08-03",
+      "headline": "[1시간] LLM 입문 강의",
+      "signal_count": 20
+    },
+    {
       "file": "vela-issue-2026-W31.json",
       "year": 2026,
       "week": 31,
@@ -122,5 +130,5 @@
       "signal_count": 8
     }
   ],
-  "updated_at": "2026-07-27T06:52:33.659820+09:00"
+  "updated_at": "2026-08-03T06:47:14.085078+09:00"
 }
