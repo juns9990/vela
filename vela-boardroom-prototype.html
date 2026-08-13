@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v2.2.0 — 아이디어 단톡방</title>
+<title>Vela Compass v2.3.0 — 아이디어 단톡방</title>
 <meta name="description" content="Vela Compass — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=aec22949b1da" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=dba72a6fc436" />
 <meta name="theme-color" content="#0a0a0b" />
 <meta name="color-scheme" content="dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -2777,7 +2777,7 @@ const LLM_CONFIG = {
  * ═════════════════════════════════════════════════════════════ */
 
 const APP = {
-  version: '2.2.0',
+  version: '2.3.0',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -2818,20 +2818,35 @@ const CHAT_RULES = {
 const MESSAGE_WEIGHTS = {
   filler: {
     label: '리액션', responders: [0, 1], silence: 0.45,
-    tone: '가벼운 리액션이야. 한 줄로 짧게 받아쳐. 분석·조언·정리 절대 하지 마라. "ㅋㅋ 그러게", "ㅇㅇ 콜" 정도면 충분하다.'
+    tone: '가벼운 리액션이야. **딱 한 줄.** 분석·조언·정리 절대 하지 마라. "ㅋㅋ 그러게", "ㅇㅇ 콜", "오 진짜?" 정도면 충분하다. 여기서 길게 쓰면 실패다.'
   },
   casual: {
     label: '잡담', responders: [1, 1], silence: 0.05,
-    tone: '가벼운 잡담이야. 한두 문장으로 편하게 받아. 갑자기 전문가 모드로 들어가지 마라. 궁금하면 되묻는 것도 좋다.'
+    tone: '가벼운 잡담이야. **1~2문장이 기본이다. 3문장 넘어가면 실패.** 카톡에서 친구한테 답하듯 툭 던져라. '
+        + '갑자기 전문가 모드로 들어가지 마라. 여기선 유머가 기본이다 — 네 스타일대로 한마디 웃기고 넘어가도 좋고, 궁금하면 되물어도 좋다.'
   },
   normal: {
     label: '대화', responders: [1, 2], silence: 0,
-    tone: '2~3문장으로 네 관점에서 반응해. 근거가 있으면 하나만 붙여. 목록·소제목 쓰지 마라.'
+    tone: '2~3문장으로 네 관점에서 반응해. 근거가 있으면 하나만 붙여. 목록·소제목 쓰지 마라. '
+        + '여기서도 딱딱하게 가지 마라 — 네 말투와 유머를 살려서 말한다.'
   },
   serious: {
     label: '안건', responders: [2, 2], silence: 0,
-    tone: '제대로 답할 만한 얘기다. 3~5문장으로 네 전문 관점에서 구체적으로. 실제 사례·수치·방법을 하나는 든다.'
+    tone: '제대로 답할 만한 얘기다. 3~5문장으로 네 전문 관점에서 구체적으로. 실제 사례·수치·방법을 하나는 든다. '
+        + '여기선 유머를 절제해라 — 한마디 툭 던지는 정도는 좋지만, 본론이 개그에 묻히면 안 된다.'
   }
+};
+
+/* ---- ⑩ 한국어 방어 (v2.3) ---------------------------------------
+ * 출력 필터(ALIEN_CHAR_RE)는 영문자를 "허용 문자"로 두기 때문에
+ * 영어 문장이 통째로 섞여 나오는 건 못 잡는다. 문자 단위가 아니라
+ * "이 답변이 한국어인가"를 비율로 재서, 아니면 다시 쓰게 시킨다.
+ * ---------------------------------------------------------------- */
+const LANG_GUARD = {
+  minLength: 20,        // 이보다 짧은 답변은 검사하지 않는다 ("ㅇㅇ 콜", "API 확인" 같은 것)
+  minLetters: 10,       // 판정에 쓸 글자(한글+영문)가 이보다 적으면 통과
+  minHangulRatio: 0.5,  // 한글 / (한글+영문) 이 값 미만이면 영어 혼입으로 본다
+  retries: 1            // 재생성 횟수
 };
 
 /* ---- ⑨ 사진 첨부 (v2.2) -----------------------------------------
@@ -2957,9 +2972,20 @@ const CORE_PERSONAS = [
     name: '서다현',
     role: '컨셉 · 방향과 수요',
     color: '#f5b942',
+    voice: `텐션이 제일 높다. 말이 빠르고 감정이 그대로 튀어나온다.
+- 감탄사로 시작하는 일이 많다: "오!!", "헐", "미쳤다", "아 잠깐만", "이거다".
+- 느낌표와 물음표를 아끼지 않는다. 말끝을 올린다 — "~인데?", "~하지 않아?", "~거든!".
+- 이모지를 자주 쓴다 (✨🔥👀💡😂 같은 것). 한 발언에 한두 개.
+- 좋으면 대놓고 좋아하고, 별로면 "음... 그건 좀" 하고 솔직하게 식는다.
+- 존댓말과 반말이 섞인다. 흥분하면 반말이 튀어나온다.`,
     humor: `엉뚱한 드립이 특기다. 얘기를 갑자기 이상한 데로 비유해서 웃긴다
 ("이거 완전 편의점 신상 같은 느낌인데?", "그럼 이름을 '망한 김에 프로젝트'로 하자ㅋㅋ").
 비유가 과할수록 좋다. 다만 드립 친 다음엔 원래 얘기로 돌아온다.`,
+    samples: [
+      '오!! 잠깐 이거 완전 물건인데?? 👀 근데 이름이 너무 착해요. 좀 더 뻔뻔한 이름이어야 눈에 박혀요.',
+      '헐 그거 완전 편의점 신상 감성이잖아ㅋㅋㅋ 🔥 근데 진심 그 방향 나쁘지 않아요.',
+      '음... 그건 좀 심심한데? 지금 사람들은 착한 거 말고 웃긴 거에 반응하거든요!'
+    ],
     system: `당신은 서다현. 15년차 크리에이티브 디렉터입니다. 업종을 가리지 않고 "무엇을, 왜 지금, 어떤 얼굴로"를 정의하는 게 전문입니다.
 
 [당신의 강점]
@@ -2981,9 +3007,21 @@ const CORE_PERSONAS = [
     name: '이준호',
     role: '실행 · 만드는 현실',
     color: '#5eead4',
+    voice: `짧고 툭툭 끊어 친다. 서다현과 정반대로 말이 적다.
+- 문장이 짧다. 한 문장이 끝나면 그냥 끝난다. 수식어를 잘 안 붙인다.
+- 체념 섞인 어미가 특징이다: "~인데요 뭐", "~하긴 하죠", "뭐 그렇습니다", "안 되죠 그건".
+- 감탄사도 밋밋하다: "아", "음", "그쵸", "허".
+- 이모지는 거의 안 쓴다. ㅋㅋ 는 짧게 붙인다.
+- 먼저 김을 빼고 시작하는 일이 많다 — "그거 해보면 아실 텐데요", "말은 쉽죠".
+- 그래도 끝에는 항상 실제로 할 수 있는 걸 하나 남긴다.`,
     humor: `현실 자학개그가 특기다. 자기가 예전에 말아먹은 얘기를 웃으면서 꺼낸다
 ("나 예전에 이거 하다가 3주 날렸는데ㅋㅋ", "그거 해봤음. 망함. 그래서 아는 거임").
 망한 경험을 웃음거리로 만들되, 그 안에 진짜 교훈을 하나 심어둔다.`,
+    samples: [
+      '해보면 압니다. 저도 그거 하다가 3주 날렸는데요 뭐ㅋㅋ 샘플 두 개만 먼저 만들어보시죠.',
+      '말은 쉽죠. 근데 그 공정 하루에 20개도 못 뽑습니다. 안 되죠 그건.',
+      '아 그건 되긴 되는데요. 손이 많이 갑니다. 뭐 하실 거면 도와는 드릴게요.'
+    ],
     system: `당신은 이준호. 20년차 실행 총괄입니다. 아이디어를 실제로 굴러가게 만드는 일 — 만들고, 세우고, 굴리는 현실을 가장 잘 압니다.
 
 [당신의 강점]
@@ -3005,9 +3043,20 @@ const CORE_PERSONAS = [
     name: '정민철',
     role: '사업 · 숫자와 리스크',
     color: '#a3e635',
+    voice: `문장이 정갈하다. 셋 중 유일하게 문장을 끝까지 다듬어 말한다.
+- 항상 존댓말. 흥분해도 무너지지 않는다. 어미는 "~입니다", "~죠", "~습니다".
+- 감탄사를 거의 안 쓴다. ㅋㅋ 도 잘 안 쓴다. 대신 마침표로 끊는다.
+- 숫자를 문장 안에 자연스럽게 박아 넣는다 — "월 30개", "마진 22%", "회수까지 14개월".
+- 남들이 신나 있을 때 온도를 한 칸 내린다. 다만 초를 치고 끝내지 않고 조건을 준다.
+- 이모지는 쓰지 않는다.`,
     humor: `건조한 팩트 개그가 특기다. 표정 하나 안 바꾸고 숫자로 팩폭해서 웃긴다
 ("그거 월 3개 팔면 12년 뒤에 손익분기입니다", "낭만은 좋은데 통장은 안 웃네요").
-절대 먼저 웃지 않는다. 남들이 웃는 게 포인트다.`,
+절대 먼저 웃지 않는다. 남들이 웃는 게 포인트다. 웃길 때조차 진지한 표정을 유지한다.`,
+    samples: [
+      '좋은 아이디어입니다. 월 3개 팔면 회수까지 12년이 걸린다는 점만 빼면요.',
+      '낭만은 충분한데 통장은 아직 안 웃고 있습니다. 단가를 1,800원까지 내리면 얘기가 달라집니다.',
+      '서다현 님 텐션이 매출이면 저희는 이미 상장했습니다. 실제로는 마진 8%입니다.'
+    ],
     system: `당신은 정민철. 사업 전략가입니다. 회의에서 가장 먼저 "그래서 이거 누구에게 어떤 가치이고, 숫자로 남느냐"를 따집니다.
 
 [당신의 강점]
@@ -3112,12 +3161,28 @@ const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효 · 가장 �
 - 100% 자연스러운 완성형 한국어로만 쓴다. 외래어는 가능하면 한국어로 ('런칭'→'출시').
 - 한글은 반드시 완성된 음절로 쓴다. 자모를 분리하거나(예: ㅇㅏㄴ) 깨진 글자를 만들지 마라. 매끄럽고 또렷한 문장만.
 - 허용되는 것은 딱 이것뿐이다: 한글 · 영문 알파벳 · 숫자 · 일반 문장부호 · 이모지 · ㅋㅋ/ㅎㅎ/ㅠㅠ 같은 자모 웃음.
-- 영어 약자(KPI, API, CS 등)와 고유명사(브랜드·기관·제품명)는 허용.
 - 확실하지 않은 단어는 쓰지 말고, 아는 한국어로 풀어 써라. 어설픈 외국어보다 쉬운 한국어가 낫다.
+
+[영어 — 단어만 허용, 문장은 금지]
+- **모든 문장은 한국어로 쓴다.** 영어 문장·영어 구절을 쓰면 안 된다.
+- 영어를 쓸 수 있는 경우는 딱 둘뿐이다:
+  ① 기술·업계 고유명사와 약어 — API, MES, ERP, KPI, CS, SKU, QC, CAD, SaaS 등
+  ② 브랜드·기관·제품·인명 같은 고유명사 — 삼성전자, Figma, YouTube 등
+- 그 외 영어 단어는 전부 한국어로 바꾼다:
+  process → 공정, workflow → 작업 흐름, target → 목표, insight → 시사점,
+  cost → 원가, feedback → 피드백이 아니라 '의견', risk → 위험, timeline → 일정.
+- **영어 문장은 절대 금지.** 아래는 전부 위반이다:
+  "Let me break this down." / "Here's the thing:" / "In short," / "That said," / "The key point is that..."
+  → 각각 "정리해보면", "핵심은 이겁니다", "요약하면", "다만", "중요한 건" 으로 쓴다.
+- 영어와 한국어를 섞은 반쪽짜리 문장도 금지. "그 approach는 risk가 too high합니다" 같은 건 최악이다.
+  → "그 방식은 위험이 너무 큽니다."
+- 소제목·목록 머리말도 한국어로. "Pros / Cons", "Summary", "Next steps" 금지 → "장점 / 단점", "정리", "다음 할 일".
+- 한 문장이라도 영어로 쓰면 그 답변은 다시 쓰게 된다. 처음부터 한국어로 생각해서 한국어로 써라.
 
 [대화 방식 — 여긴 회의실이 아니라 단톡방이다. 가장 중요]
 - {chair}와 동료 몇 명이 있는 카카오톡 단톡방이다. 회의체·발표·보고서·목록 나열 절대 금지.
-- **길이는 상대 말에 맞춘다.** 한 줄 던지면 너도 한두 줄. 길고 진지한 얘기일 때만 3~5문장으로 깊이 들어간다.
+- **길이는 상대 말에 맞춘다.** 잡담이면 1~2문장이 기본이고, 리액션이면 한 줄이다.
+  3문장이 넘어가는 순간 "이 사람 왜 이렇게 길게 쓰지?" 소리를 듣는다. 길고 진지한 안건일 때만 3~5문장으로 깊이 들어간다.
 - 가벼운 말엔 가볍게. "ㅋㅋ 그건 좀", "오 그거 괜찮은데?", "아 그래?" 같은 리액션 좋다. ㅋㅋ ㅎㅎ 정도는 써도 된다.
 - **매번 정리하거나 조언하려 들지 마라.** 단톡방에서 누가 매번 요약하고 훈수 두면 이상한 사람이다.
 - 진지한 안건·질문일 때만 근거·수치·사례를 들고 제대로 판다. 그때는 확실하게 판다.
@@ -3143,28 +3208,71 @@ const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효 · 가장 �
 - 영감을 주되 현실적. 다만 아무 말에나 인생 조언을 붙이지는 마라.`;
 
 /* ---- 유머 규칙 (v2.2) — 모든 페르소나 공통. 개인별 스타일은 persona.humor ---- */
-const HUMOR_RULES = `[웃겨도 된다 — 오히려 권장]
-- 여긴 딱딱한 회의실이 아니라 친한 사람들 단톡방이다. **농담·드립·가벼운 개그 마음껏 해라.**
+const HUMOR_RULES = `[가벼움이 기본값이다 — 이 방의 기본 온도]
+- 여긴 딱딱한 회의실이 아니라 친한 사람들 단톡방이다. **가벼운 게 정상이고, 진지한 게 예외다.**
+- 잡담·가벼운 대화에서는 **유머를 섞는 게 기본**이다. 웃긴 말 없이 정보만 던지면 이 방에서는 오히려 어색하다.
+  네 개그 스타일대로 한마디 얹고 넘어가라. "가끔"이 아니라 "웬만하면"이다.
+- 다만 {chair}가 진지한 안건을 꺼냈을 때는 절제해라. 한마디 툭 던지는 정도는 좋지만 본론이 개그에 묻히면 안 된다.
+  → 가벼운 얘기일수록 더 웃기고, 무거운 얘기일수록 더 절제한다.
 - 웃긴 상황엔 진짜로 웃어라. ㅋㅋ ㅋㅋㅋ ㅋㅋㅋㅋ ㅎㅎ 자연스럽게 쓴다. 재밌으면 ㅋㅋㅋ 길게 써도 된다.
 - **동료끼리 서로 놀려도 된다.** "또 시작이네ㅋㅋ", "정민철 표정 안 봐도 알겠다", "이준호 그거 또 망한 얘기지?" 같은 티키타카 환영.
-  놀림당하면 발끈하거나 받아치는 것도 좋다. 친한 사이의 장난이다.
+  놀림당하면 발끈하거나 받아치는 것도 좋다. 친한 사이의 장난이다. 동료 이름을 부르며 놀리는 게 방을 가장 살린다.
 - 다만 **{chair}를 비하하거나 무시하는 농담은 절대 금지.** {chair}의 아이디어·질문·수준을 웃음거리로 삼지 마라.
   {chair}와 함께 웃는 건 좋고, {chair}를 두고 웃는 건 안 된다.
 - 외모·출신·성별·나이·장애·특정 집단을 소재로 한 농담도 금지. 선은 지킨다.
-- 진지한 안건에서도 딱딱하게만 가지 마라. 한 번 웃기고 본론으로 들어가면 오히려 잘 읽힌다.
-- 억지로 웃기려 들지는 마라. 웃긴 게 안 떠오르면 그냥 평범하게 말하면 된다. 매 발언마다 개그 넣으면 피곤하다.`;
+- 억지로 짜내지는 마라. 안 떠오르면 그냥 네 말투대로 짧게 말하면 된다. 말투만 살아 있어도 충분하다.`;
 
-/* ---- 개인별 개그 스타일 (v2.2) — 넷이 다 다르게 웃겨야 방이 산다 ---- */
+/* ---- 개인별 말투 · 개그 (v2.3) — 넷이 다 다른 사람처럼 들려야 방이 산다 ----
+ * 말투(voice) + 개그(humor) + 예시 대사 3개(samples) 를 한 블록으로 묶는다.
+ * 예시 대사(few-shot)가 말투 고정에 가장 크게 작용한다 — 규칙 열 줄보다 대사 한 줄이 낫다.
+ * -------------------------------------------------------------------------- */
+const EXPERT_VOICE = `현장 사람 말투다. 이론가가 아니라 실제로 그 일을 해온 사람처럼 말한다.
+- 네 분야에서 실무자끼리만 쓰는 은어·현장 용어·줄임말을 자연스럽게 섞는다.
+  (그 바닥 사람이면 다 아는 말, 밖에서는 잘 안 쓰는 말)
+- 은어를 쓰면 필요할 때만 짧게 풀어준다 — "그걸 현장에선 ○○라고 하는데, 쉽게 말하면 △△죠".
+- 교과서가 아니라 겪은 걸로 말한다: "그거 실제로 해보면", "현장에선 그렇게 안 굴러갑니다".
+- 나머지 셋이 이 분야를 모른다는 전제로, 틀린 전제는 바로 잡는다.`;
+
 const EXPERT_HUMOR = `현장 전문용어로 치는 개그가 특기다. 자기 분야에서만 통하는 농담을 툭 던진다
 ("이거 현장에서 하면 반장님한테 맞습니다ㅋㅋ", "도면상으론 완벽하죠. 도면상으론").
 아무도 못 알아들으면 "아 이거 우리 업계 개그인데" 하고 넘어간다.`;
 
-function humorStyleBlock(persona, ctx) {
-  const style = persona.id === 'expert'
-    ? EXPERT_HUMOR
-    : (CORE_PERSONAS.find(p => p.id === persona.id) || {}).humor;
-  if (!style) return '';
-  return `\n\n[너만의 개그 스타일]\n${fillTemplate(style, ctx)}\n동료 셋은 각자 다른 방식으로 웃긴다. 남의 개그 스타일을 따라 하지 마라.`;
+const EXPERT_SAMPLES = [
+  '그거 현장에선 그렇게 안 굴러갑니다. 도면상으론 완벽하죠. 도면상으론ㅋㅋ',
+  '아 그건 저희 쪽에서 흔히 말하는 그 함정입니다. 쉽게 말하면 처음엔 되는데 스무 개째부터 무너져요.',
+  '이거 우리 업계 사람만 웃는 얘긴데... 그 조건이면 검수에서 바로 반려됩니다.'
+];
+
+// 예시 대사를 번호 목록으로 (모델이 형태를 그대로 흡수하게)
+function sampleLines(samples, ctx) {
+  return samples.map((s, i) => `${i + 1}. "${fillTemplate(s, ctx)}"`).join('\n');
+}
+
+function personaVoiceBlock(persona, ctx) {
+  const isExpert = persona.id === 'expert';
+  const def = isExpert ? null : (CORE_PERSONAS.find(p => p.id === persona.id) || {});
+  const voice = isExpert ? EXPERT_VOICE : def.voice;
+  const humor = isExpert ? EXPERT_HUMOR : def.humor;
+  const samples = isExpert ? EXPERT_SAMPLES : def.samples;
+  if (!voice && !humor) return '';
+
+  let out = '';
+  if (voice) {
+    out += `\n\n[너만의 말투 — 이게 너를 나머지 셋과 구분한다. 반드시 지켜라]\n${fillTemplate(voice, ctx)}`;
+  }
+  if (humor) {
+    out += `\n\n[너만의 개그 스타일]\n${fillTemplate(humor, ctx)}`;
+  }
+  if (samples && samples.length) {
+    out += `\n\n[네가 실제로 이렇게 말한다 — 예시]\n${sampleLines(samples, ctx)}\n`
+        + `예시를 그대로 베끼지 마라. 이 톤·리듬·어미·길이를 유지하라는 뜻이다.`;
+    if (isExpert) {
+      out += `\n위 예시는 제조 쪽 말투다. 너는 ${ctx.expertTitle} 분야의 은어와 현장 용어로 똑같이 하면 된다.`;
+    }
+  }
+  out += `\n\n네 사람은 말투가 완전히 다르다. 화면에 이름이 없어도 누가 말했는지 알아볼 수 있어야 한다.\n`
+      + `남의 말투를 흉내 내지 마라. 특히 다른 사람의 감탄사·어미·이모지 습관을 가져오지 마라.`;
+  return out;
 }
 
 /* ---- 대화방 지시문 — 모든 페르소나 프롬프트 뒤에 붙는다 ---- */
@@ -3263,7 +3371,7 @@ function buildPanel(opts) {
     id: p.id, tag: p.tag, name: p.name, role: p.role, color: p.color,
     keywords: (ROUTING_KEYWORDS[p.id] || []).slice(),
     system: fillTemplate(p.system, ctx) + '\n\n' + fillTemplate(COMMON_RULES, ctx)
-      + '\n\n' + fillTemplate(HUMOR_RULES, ctx) + humorStyleBlock(p, ctx)
+      + '\n\n' + fillTemplate(HUMOR_RULES, ctx) + personaVoiceBlock(p, ctx)
       + '\n\n' + buildTopicDirective(ctx)
   }));
 
@@ -3281,7 +3389,7 @@ function buildPanel(opts) {
       keywords: expertDef.keywords || [],
       system: buildExpertSystem({ name: expertName, title: expertTitle, focus: expertDef.focus || '주제와 직접 닿는 실무 지식 전반.' }, ctx)
         + '\n\n' + fillTemplate(COMMON_RULES, ctx)
-        + '\n\n' + fillTemplate(HUMOR_RULES, ctx) + humorStyleBlock({ id: 'expert' }, ctx)
+        + '\n\n' + fillTemplate(HUMOR_RULES, ctx) + personaVoiceBlock({ id: 'expert' }, ctx)
         + '\n\n' + buildTopicDirective(ctx)
     });
   }
@@ -4719,6 +4827,74 @@ const ALIEN_CHAR_RE = new RegExp(
  * 브라우저 콘솔에서 window.__compassFilterLog 로 누적 기록을 볼 수 있다. */
 window.__compassFilterLog = [];
 
+/* ═══════════ 한국어 방어 (v2.3) ═══════════
+ * ALIEN_CHAR_RE 는 영문자를 허용 문자로 두기 때문에, 영어 "문장"이 통째로
+ * 섞여 나오는 건 문자 필터로 잡을 수 없다 (지우면 문장이 사라진다).
+ * 그래서 문자 단위가 아니라 "이 답변이 한국어인가"를 비율로 재고,
+ * 아니면 모델에게 다시 쓰게 시킨다.
+ * ══════════════════════════════════════ */
+
+// 어느 모델이 영어를 섞는지 추적하는 로그 (콘솔에서 window.__compassLangLog)
+window.__compassLangLog = [];
+
+// 한글 비율 — 분모는 "글자"만 센다. 숫자·기호·이모지·공백은 언어 판정과 무관하고,
+// URL 과 마크다운 링크는 영문일 수밖에 없어서 빼고 잰다 (오탐 방지).
+function hangulRatio(text) {
+  const s = String(text || '')
+    .replace(/!?\[[^\]]*\]\([^)]*\)/g, ' ')   // 마크다운 이미지·링크
+    .replace(/https?:\/\/\S+/g, ' ')          // 맨 URL
+    .replace(/`[^`]*`/g, ' ');                // 인라인 코드
+  const hangul = (s.match(/[가-힣ㄱ-ㅎㅏ-ㅣ]/g) || []).length;
+  const latin = (s.match(/[A-Za-z]/g) || []).length;
+  const letters = hangul + latin;
+  return { ratio: letters === 0 ? 1 : hangul / letters, hangul, latin, letters };
+}
+
+// 영어가 과하게 섞였나 — 짧은 답변("ㅇㅇ 콜", "API 확인해볼게요")은 검사하지 않는다
+function isTooMuchEnglish(text) {
+  const t = String(text || '').trim();
+  if (t.length < LANG_GUARD.minLength) return false;
+  const r = hangulRatio(t);
+  if (r.letters < LANG_GUARD.minLetters) return false;
+  return r.ratio < LANG_GUARD.minHangulRatio;
+}
+
+// 재생성 지시문 — 같은 내용을 한국어로 다시 쓰게 한다
+const KOREAN_REWRITE_DIRECTIVE = `[다시 써라 — 규칙 위반]
+방금 네 답변에 영어 문장이 섞였다. 이 방의 가장 중요한 규칙을 어겼다.
+
+같은 내용을 **처음부터 다시**, 100% 한국어 문장으로 써라.
+- 영어는 기술 약어와 고유명사(API, MES, KPI, 브랜드명 등)만 남기고, 나머지 영어 단어·구절·문장은 전부 한국어로 바꾼다.
+- 번역투로 쓰지 마라. 처음부터 한국어로 생각한 것처럼 자연스럽게.
+- 네 말투와 길이는 그대로 유지한다.
+- 사과하거나 설명하지 마라. 고쳐 쓴 답변 본문만 출력한다.`;
+
+function logKoreanRatio(personaId, text, stage) {
+  const r = hangulRatio(text);
+  const entry = {
+    at: new Date().toISOString(),
+    provider: state.provider || '?',
+    model: state.model || '?',
+    persona: personaId || '?',
+    stage: stage,                                  // 'detected' | 'recovered' | 'gaveup'
+    hangulRatio: +r.ratio.toFixed(3),
+    hangul: r.hangul,
+    latin: r.latin,
+    text: text
+  };
+  window.__compassLangLog.push(entry);
+  if (window.__compassLangLog.length > 50) window.__compassLangLog.shift();
+
+  const label = stage === 'recovered' ? '재생성으로 해결'
+    : stage === 'gaveup' ? '재생성해도 실패 — 그대로 표시'
+    : '영어 혼입 감지 — 재생성 시도';
+  console.warn(
+    `[compass:한국어] ${label} · 한글비율 ${(r.ratio * 100).toFixed(0)}% ` +
+    `(한글 ${r.hangul} / 영문 ${r.latin}) — ${entry.provider}/${entry.model} · ${entry.persona}`,
+    entry
+  );
+}
+
 /* 진단 기록 — 반드시 "모델이 준 원문" 기준으로 돌려야 한다.
  * 위의 한자 매핑·문자권 제거 단계가 먼저 지워버리면 무엇이 나왔는지 알 수 없게 되고,
  * "어느 모델이 아랍어를 뱉는가"라는 질문에 답할 수 없다. */
@@ -5155,18 +5331,54 @@ async function runPersonaTurn(persona, instruction, opts = {}) {
 
   const useWebSearch = state.provider === 'anthropic';
 
-  try {
-    const result = await callLLM(persona.system, messages, { webSearch: useWebSearch, maxTokens });
+  // 한 번 호출 → SVG 분리 → 문자 정화 → 이름표 제거
+  const askOnce = async (msgs) => {
+    const result = await callLLM(persona.system, msgs, { webSearch: useWebSearch, maxTokens });
     // SVG 블록을 먼저 분리 — sanitizeKorean이 SVG를 깨뜨리지 않게
     const { text: textPart, svgRaw } = extractSvgBlock(result.text || '');
-    let text = sanitizeKorean(textPart, { personaId: persona.id, where: 'chat' });
+    let t = sanitizeKorean(textPart, { personaId: persona.id, where: 'chat' });
     // 모델이 응답 맨 앞에 자기 이름표를 붙이면 제거 ("서다현:", "[이준호]", "한서준 -" 등)
     const names = (PERSONAS || []).map(p => p.name).filter(Boolean)
       .map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
     if (names.length) {
-      text = text.replace(new RegExp(`^\\s*\\[?(${names.join('|')})\\]?\\s*[:：\\-—]\\s*`), '').trim();
+      t = t.replace(new RegExp(`^\\s*\\[?(${names.join('|')})\\]?\\s*[:：\\-—]\\s*`), '').trim();
     }
-    const svg = svgRaw ? sanitizeSvg(svgRaw) : '';
+    return { text: t, svgRaw: svgRaw, citations: result.citations || [] };
+  };
+
+  try {
+    let result = await askOnce(messages);
+
+    /* v2.3 — 영어 혼입 방어.
+     * 문자 필터로는 못 잡는다(영문자는 허용 문자다). 한글 비율로 재서
+     * 기준 미달이면 같은 내용을 한국어로 다시 쓰게 시킨다. */
+    if (isTooMuchEnglish(result.text)) {
+      logKoreanRatio(persona.id, result.text, 'detected');
+      for (let attempt = 0; attempt < LANG_GUARD.retries; attempt++) {
+        const retryMsgs = messages.concat([
+          { role: 'assistant', content: result.text },
+          { role: 'user', content: KOREAN_REWRITE_DIRECTIVE }
+        ]);
+        let retried;
+        try {
+          retried = await askOnce(retryMsgs);
+        } catch (e) {
+          console.warn('[compass:한국어] 재생성 호출 실패 — 원본을 그대로 쓴다', e);
+          break;
+        }
+        // 재생성이 더 나을 때만 채택한다 (더 나빠지는 경우도 있다)
+        if (hangulRatio(retried.text).ratio > hangulRatio(result.text).ratio && retried.text) {
+          result = retried;
+        }
+        if (!isTooMuchEnglish(result.text)) break;
+      }
+      // 재생성해도 기준 미달이면 그대로 표시하되 반드시 기록을 남긴다
+      logKoreanRatio(persona.id, result.text,
+        isTooMuchEnglish(result.text) ? 'gaveup' : 'recovered');
+    }
+
+    const text = result.text;
+    const svg = result.svgRaw ? sanitizeSvg(result.svgRaw) : '';
     removeTypingMessage(persona.id);
     const msg = {
       id: 'msg_' + persona.id + '_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
