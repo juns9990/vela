@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v1.1.3 — 아이디어 회의실</title>
-<meta name="description" content="Vela Compass — 3인 베테랑(컨셉·공정·사업)이 실시간으로 토론하며 1인 사업자의 아이디어를 검증하는 회의실." />
+<title>Vela Compass v2.0.0 — 아이디어 회의실</title>
+<meta name="description" content="Vela Compass — 어떤 업종이든 주제를 던지면 베테랑 3인 + 주제별 전문가 1인이 라운드제로 토론하고 회의록까지 만들어주는 회의실." />
 
-<!-- PWA -->
-<link rel="manifest" href="vela-boardroom-manifest.json?v=13" />
+<!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
+<link rel="manifest" href="vela-boardroom-manifest.json?b=edc45679214c" />
 <meta name="theme-color" content="#0a0a0b" />
 <meta name="color-scheme" content="dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -45,8 +45,9 @@
     --c-marketer: #f06b9b;
     --c-finance: #a3e635;
     --c-strategist: #a3e635;
+    --c-expert: #f06b9b;
     --c-warn: #ef4444;
-    /* 공정 다이어그램(SVG) 팔레트 */
+    /* 프로세스 다이어그램(SVG) 팔레트 */
     --svg-input: #888780;
     --svg-process: #5eead4;
     --svg-warn: #e24b4a;
@@ -603,6 +604,7 @@
   .msg-persona[data-persona="marketer"] .msg-avatar { background: var(--c-marketer); }
   .msg-persona[data-persona="finance"] .msg-avatar { background: var(--c-finance); }
   .msg-persona[data-persona="strategist"] .msg-avatar { background: var(--c-strategist); }
+  .msg-persona[data-persona="expert"] .msg-avatar { background: var(--c-expert); }
   .msg-persona[data-persona="product"] .msg-persona-bubble,
   .msg-persona[data-persona="director"] .msg-persona-bubble { color: var(--c-product); }
   .msg-persona[data-persona="engineer"] .msg-persona-bubble,
@@ -610,10 +612,12 @@
   .msg-persona[data-persona="marketer"] .msg-persona-bubble { color: var(--c-marketer); }
   .msg-persona[data-persona="finance"] .msg-persona-bubble { color: var(--c-finance); }
   .msg-persona[data-persona="strategist"] .msg-persona-bubble { color: var(--c-strategist); }
+  .msg-persona[data-persona="expert"] .msg-persona-bubble { color: var(--c-expert); }
   /* 페르소나별 강조색 (볼드 하이라이트용) */
   .msg-persona[data-persona="director"] .msg-persona-bubble { --accent: var(--c-product); }
   .msg-persona[data-persona="maker"] .msg-persona-bubble { --accent: var(--c-engineer); }
   .msg-persona[data-persona="strategist"] .msg-persona-bubble { --accent: var(--c-strategist); }
+  .msg-persona[data-persona="expert"] .msg-persona-bubble { --accent: var(--c-expert); }
   .msg-persona-bubble > * { color: var(--text); }
   .msg-persona-bubble .msg-insight { color: currentColor; }
   .msg-persona-bubble .msg-text strong { color: var(--accent, currentColor); font-weight: 700; }
@@ -864,7 +868,7 @@
     flex-shrink: 0;
   }
 
-  /* 공정 다이어그램 (SVG) */
+  /* 프로세스 다이어그램 (SVG) */
   .msg-svg {
     margin: 11px 0 5px;
     padding: 14px;
@@ -1860,6 +1864,302 @@
     .brand-sub { font-size: 9px; }
     .masthead-meta button { padding: 5px 8px; font-size: 10px; }
   }
+
+  /* ============================================================
+     v2.0 — 회의 모드 / 라운드 / 회의록 카드
+     ============================================================ */
+
+  /* ---- 시작 화면: 회의 모드 선택 ---- */
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .mode-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 14px 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+    color: var(--text-dim);
+    font-family: var(--sans);
+  }
+  .mode-card:hover { border-color: var(--text-faint); transform: translateY(-1px); }
+  .mode-card.active {
+    border-color: var(--cyan);
+    background: rgba(94, 234, 212, 0.06);
+    color: var(--text);
+  }
+  .mode-card .mc-icon {
+    display: block;
+    font-size: 15px;
+    line-height: 1;
+    margin-bottom: 8px;
+    color: var(--cyan);
+  }
+  .mode-card .mc-label {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+    color: inherit;
+  }
+  .mode-card .mc-desc {
+    display: block;
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--text-faint);
+    word-break: keep-all;
+  }
+
+  /* ---- 빠른 회의 토글 + 비용 표기 ---- */
+  .agenda-options {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .quick-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 8px 12px;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .quick-toggle:hover { border-color: var(--text-faint); }
+  .quick-toggle input { accent-color: var(--cyan); margin: 0; cursor: pointer; }
+  .quick-toggle.on { border-color: var(--cyan); color: var(--cyan); }
+  .cost-note {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
+  }
+  .cost-note b { color: var(--text-dim); font-weight: 500; }
+
+  /* ---- 라운드 바 ---- */
+  .round-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 12px 14px;
+    margin: -8px 0 18px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    border-radius: 3px;
+  }
+  .round-steps {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+  }
+  .round-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+  .round-step .rs-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1px solid var(--text-faint);
+    flex-shrink: 0;
+  }
+  .round-step.done { color: var(--text-dim); }
+  .round-step.done .rs-dot { background: var(--text-dim); border-color: var(--text-dim); }
+  .round-step.current { color: var(--cyan); }
+  .round-step.current .rs-dot {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.18);
+  }
+  .round-sep { color: var(--line); font-size: 10px; }
+  .round-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .btn-round {
+    background: var(--cyan);
+    color: var(--bg);
+    border: none;
+    padding: 9px 16px;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: opacity 0.15s ease, transform 0.12s ease;
+  }
+  .btn-round:hover:not(:disabled) { transform: translateY(-1px); }
+  .btn-round:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-round.ghost {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+  .btn-round.ghost:hover { border-color: var(--cyan); color: var(--cyan); }
+  .round-cost {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  /* ---- 회의록 카드 ---- */
+  .minutes-section { margin-bottom: 40px; }
+  .minutes-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--cyan);
+    border-radius: 4px;
+    padding: 22px 24px 20px;
+  }
+  .minutes-head {
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .minutes-topic {
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.35;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    word-break: keep-all;
+  }
+  .minutes-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .minutes-block { margin-bottom: 18px; }
+  .minutes-block:last-child { margin-bottom: 0; }
+  .minutes-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 9px;
+  }
+  .minutes-body {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--text);
+    word-break: keep-all;
+  }
+  .minutes-body p { margin: 0 0 8px; }
+  .minutes-body p:last-child { margin-bottom: 0; }
+  .minutes-issues {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text-dim);
+  }
+  .minutes-issues li { margin-bottom: 5px; }
+  .action-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 11px 13px;
+    margin-bottom: 8px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    border-left: 2px solid var(--cyan);
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .action-item:last-child { margin-bottom: 0; }
+  .action-item input {
+    accent-color: var(--cyan);
+    margin-top: 3px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .action-item .ai-text {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+    word-break: keep-all;
+  }
+  .action-item.done { border-left-color: var(--text-faint); }
+  .action-item.done .ai-text { color: var(--text-faint); text-decoration: line-through; }
+  .minutes-share {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .minutes-share button {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    padding: 9px 14px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .minutes-share button:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  /* ---- 전문가 석 안내 ---- */
+  .expert-note {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    margin-left: auto;
+  }
+  .expert-note b { color: var(--c-expert); font-weight: 500; }
+
+  @media (max-width: 720px) {
+    .mode-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .mode-card { padding: 12px 11px; }
+    .mode-card .mc-label { font-size: 13px; }
+    .round-bar { padding: 10px 12px; gap: 8px; }
+    .round-actions { width: 100%; justify-content: space-between; }
+    .minutes-card { padding: 18px 16px 16px; }
+    .minutes-topic { font-size: 17px; }
+    .minutes-body { font-size: 13.5px; }
+    .expert-note { margin-left: 0; width: 100%; }
+  }
 </style>
 </head>
 <body>
@@ -1893,7 +2193,7 @@
 <div class="issue-strip">
   <div class="left">
     <span>VOL. 0 · ISSUE 1</span>
-    <span>v1.1.3</span>
+    <span id="versionTag">v2.0.0</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -1902,21 +2202,24 @@
 
 <main>
 
-  <!-- START SCREEN — 회의 시작 전 (안건 입력) -->
+  <!-- START SCREEN — 회의 시작 전 (주제 입력 + 모드 선택) -->
   <section class="start-screen" id="startScreen">
     <div class="section-label">
       <span class="num">§ 01</span>
-      <span class="title">Agenda — 주제·아이디어</span>
+      <span class="title">Agenda — 주제 · 회의 모드</span>
       <span class="line"></span>
     </div>
-    <h1 class="agenda-headline"><em>아이디어</em>를<br/>올려주세요.</h1>
-    <p class="agenda-kicker">셋이서 따져봅니다 — 컨셉, 공정, 그리고 돈.</p>
+    <h1 class="agenda-headline"><em>주제</em>를<br/>올려주세요.</h1>
+    <p class="agenda-kicker">업종 무관 — 셋에 주제별 전문가 하나가 더 붙습니다.</p>
+
+    <!-- 회의 모드 4종 (CONFIG.MEETING_MODES 로 렌더) -->
+    <div class="mode-grid" id="modeGrid"></div>
 
     <div class="agenda-input-wrap">
       <textarea
         id="agendaInput"
         class="agenda-input"
-        placeholder="예) 3D 캐릭터를 만들고 싶어. 요즘 뜨는 컨셉과 공정·판매 방향을 찾고 있어."
+        placeholder="예) 동네 카페 신메뉴 라인업을 새로 짜고 싶어."
       ></textarea>
       <button id="btnMic" class="btn-mic" type="button" title="음성으로 입력 (한국어)" aria-label="음성으로 입력">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1926,6 +2229,14 @@
           <line x1="8" y1="23" x2="16" y2="23"/>
         </svg>
       </button>
+    </div>
+
+    <div class="agenda-options">
+      <label class="quick-toggle" id="quickToggle">
+        <input type="checkbox" id="inputQuick" />
+        <span>빠른 회의 · 발산→결론 2라운드</span>
+      </label>
+      <span class="cost-note" id="costNote"></span>
     </div>
 
     <div class="agenda-controls">
@@ -1954,19 +2265,22 @@
     <!-- 참여자 표시 (누가 토론 중인지) -->
     <div class="chat-participants" id="chatParticipants"></div>
 
+    <!-- 라운드 진행 바 (발산 → 반박 → 수렴 → 결론) -->
+    <div class="round-bar" id="roundBar" hidden>
+      <div class="round-steps" id="roundSteps"></div>
+      <div class="round-actions">
+        <span class="round-cost" id="roundCost"></span>
+        <button id="btnNextRound" class="btn-round" type="button">다음 라운드 →</button>
+      </div>
+    </div>
+
     <!-- 메시지 리스트 -->
     <div class="chat-messages" id="chatMessages">
       <!-- 메시지 동적 추가 -->
     </div>
 
-    <!-- 페르소나 선택 chip (응답 대상) -->
-    <div class="chat-routing" id="chatRouting">
-      <button class="routing-chip active" data-target="auto">자동</button>
-      <button class="routing-chip" data-target="all">전원</button>
-      <button class="routing-chip" data-target="director" title="서다현 · 크리에이티브 디렉터"><span class="dot" style="background:var(--c-product)"></span>서다현</button>
-      <button class="routing-chip" data-target="maker" title="이준호 · 메이커"><span class="dot" style="background:var(--c-engineer)"></span>이준호</button>
-      <button class="routing-chip" data-target="strategist" title="정민철 · 전략가"><span class="dot" style="background:var(--c-strategist)"></span>정민철</button>
-    </div>
+    <!-- 페르소나 선택 chip (응답 대상) — 패널이 정해지면 JS가 렌더 -->
+    <div class="chat-routing" id="chatRouting"></div>
 
     <!-- 하단 입력창 (카톡 스타일) -->
     <div class="chat-input-bar">
@@ -1981,23 +2295,23 @@
       <textarea
         id="followupInput"
         class="chat-input"
-        placeholder="추가 질문이나 새 방향을 던져보세요. 예) 어글리 큐트 컨셉 더 보여줘"
+        placeholder="라운드 사이에 자유롭게 끼어드세요. 예) 그 방법 비용부터 다시 따져줘"
         rows="1"
       ></textarea>
       <button id="btnFollowupSend" class="btn-send" type="button" title="전송 (Enter) · 줄바꿈 (Shift+Enter)">→</button>
     </div>
   </section>
 
-  <!-- SUMMARY — 회의 종합 정리 -->
-  <section class="summary-section" id="summarySection" hidden>
+  <!-- MINUTES — 회의록 카드 (결론 + 액션 아이템 3개) -->
+  <section class="minutes-section" id="minutesSection" hidden>
     <div class="section-label">
       <span class="num">§ 02</span>
-      <span class="title">Summary — 회의 종합 정리</span>
+      <span class="title">Minutes — 회의록</span>
       <span class="line"></span>
-      <button id="btnGenerateSummary" class="btn-new-meeting" type="button">+ 종합 정리 생성</button>
+      <button id="btnGenerateMinutes" class="btn-new-meeting" type="button">+ 회의록 생성</button>
     </div>
-    <div class="summary-content" id="summaryContent">
-      <p class="summary-empty">회의가 끝났으면 <b>+ 종합 정리 생성</b>을 눌러 대화 내용을 한 페이지로 정리하세요.</p>
+    <div class="summary-content" id="minutesContent">
+      <p class="summary-empty">마지막 <b>결론</b> 라운드까지 진행하면 회의록이 자동으로 만들어집니다. 중간에 끊고 <b>+ 회의록 생성</b>을 눌러도 됩니다.</p>
     </div>
   </section>
 
@@ -2005,7 +2319,7 @@
   <section class="memo-section" id="memoSection" hidden>
     <div class="section-label">
       <span class="num">§ 03</span>
-      <span class="title">Memo by the Chair (Juns)</span>
+      <span class="title">Memo by the Chair</span>
       <span class="line"></span>
     </div>
     <textarea
@@ -2027,7 +2341,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v1.1.3 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v2.0.0 · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -2052,7 +2366,7 @@
       <option value="anthropic">Anthropic Claude (유료, 최고 품질)</option>
       <option value="groq">Groq + Llama (무료)</option>
     </select>
-    <div class="modal-info" id="providerInfo">회의 1회당 약 80원 (Sonnet 4.6 기준).</div>
+    <div class="modal-info" id="providerInfo">1콜당 약 20원 (Sonnet 4.6 기준).</div>
 
     <label id="labelApiKey">API Key</label>
     <input type="password" id="inputApiKey" placeholder="sk-ant-..." autocomplete="off" />
@@ -2121,14 +2435,14 @@
 
 <script>
 /* =============================================================
- * Vela Compass v1.1.3 — 아이디어 회의실 (3인 토론 + 공정 다이어그램)
+ * Vela Compass v2.0.0 — 범용 아이디어 회의실
  *
- * Single round, single call per persona.
- * Persona = veteran specialist who states ONLY facts in their domain.
- * No opinions, no recommendations, no debate.
+ * 업종 무관. 사용자가 주제를 던지면
+ *   ① 고정 3인(컨셉·실행·사업) + ② 주제로 자동 배정되는 전문가 1인 이
+ *   발산 → 반박 → 수렴 → 결론 라운드로 토론하고, 회의록 카드를 만든다.
+ *
+ * 유지보수: 회의 모드·라운드·전문가 목록은 아래 CONFIG 블록 한 곳에만 있다.
  * ============================================================= */
-
-const CACHE_VERSION = 'vela-boardroom-v1.1.3';
 
 const STORAGE_KEYS = {
   provider: 'vela.boardroom.provider',
@@ -2144,7 +2458,7 @@ const LLM_CONFIG = {
     endpoint: 'https://api.anthropic.com/v1/messages',
     keyPlaceholder: 'sk-ant-...',
     keyHint: 'console.anthropic.com 에서 발급',
-    pricingNote: '회의 1회당 약 80원 (Sonnet 4.6, 4호출). ✓ 한국어 품질 최고 — 베테랑 페르소나 권장.',
+    pricingNote: '1콜당 약 20원 (Sonnet 4.6). 4라운드 정식 회의 12콜 ≈ 240원, 빠른 회의 5콜 ≈ 100원. ✓ 한국어 품질 최고 — 권장.',
     models: [
       { id: 'claude-sonnet-4-6',           label: 'Sonnet 4.6 (권장)',          tag: 'SONNET 4.6' },
       { id: 'claude-opus-4-7',             label: 'Opus 4.7 (최고 품질, 비쌈)', tag: 'OPUS 4.7' },
@@ -2166,111 +2480,449 @@ const LLM_CONFIG = {
   }
 };
 
-/* ============ PERSONAS — 팩트 + 방향성 페어 ============ */
+/* ═════════════════════════════════════════════════════════════
+ *  CONFIG — 회의 모드 · 라운드 · 전문가 목록
+ *
+ *  ★ 업종/모드/전문가 추가는 이 블록만 고치면 끝난다.
+ *    · 모드 추가        → MEETING_MODES 에 한 줄
+ *    · 라운드 순서 변경  → 모드의 rounds 배열
+ *    · 전문가 추가      → EXPERT_POOL 에 한 줄 (keywords 로 자동 배정됨)
+ * ═════════════════════════════════════════════════════════════ */
 
-// 공통 출력 규칙 — 4명 페르소나 모두에 공통 (이전엔 4번 반복됨)
+const APP = {
+  version: '2.0.0',
+  chair: 'Juns',              // 의장(사용자) 표기명
+  costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 예상 비용 표기용
+};
+
+/* ---- ① 라운드 정의 ---------------------------------------------
+ * order: 'all'  = 패널 전원(고정 3인 + 전문가)
+ *        'core' = 고정 3인만
+ *        'none' = 페르소나 발언 없음 (회의록 합성 1콜)
+ * instruction(ctx) → 그 라운드에서 각 페르소나에게 주는 지시문
+ *   ctx = { topic, mode, persona, panel, pos:'first'|'mid'|'last', chair }
+ * ---------------------------------------------------------------- */
+const ROUND_DEFS = {
+  diverge: {
+    id: 'diverge', label: '발산', order: 'all',
+    instruction: (ctx) => {
+      if (ctx.pos === 'first') {
+        return `${ctx.chair}가 주제를 던졌어: 『${ctx.topic}』\n`
+          + `${ctx.mode.focus}\n`
+          + `네가 먼저 운을 뗀다. 네 전문 관점에서 지금 이게 왜 중요한지, 어떤 방향이 있는지 이 업종의 실제 사례·이름·수치와 함께 짚어. `
+          + `마지막에 다음 사람에게 자연스럽게 공을 넘겨. 3~5문장, 대화하듯.`;
+      }
+      const tail = ctx.pos === 'last'
+        ? ` 마지막에 ${ctx.chair}에게 다음 방향을 묻는 짧은 질문 하나를 던져 대화가 이어지게 해.` : '';
+      return `바로 위 동료 발언을 읽고 직접 받아쳐. "OO 말처럼", "근데 그건" 식으로 인용하며 시작한다.\n`
+        + `${ctx.mode.focus}\n`
+        + `네 전문 영역에서만 나올 수 있는 새 각도를 반드시 하나 보태. 같은 얘기 반복 금지. 3~5문장.${tail}`;
+    }
+  },
+  rebut: {
+    id: 'rebut', label: '반박', order: 'all',
+    instruction: (ctx) => {
+      const tail = ctx.pos === 'last'
+        ? ` 마지막에 "그래서 우리가 진짜 정해야 할 건 OO 아니야?" 식으로 쟁점을 한 줄로 정리해.` : '';
+      return `[반박 라운드] 지금까지 나온 말 중 가장 약한 지점을 골라 정면으로 반박해.\n`
+        + `- 누구의 어떤 말인지 반드시 인용하고, 왜 위험한지 근거(수치·사례·규정·경험)를 댄다.\n`
+        + `- 반박만 하고 끝내지 말고 대안을 반드시 하나 붙인다.\n`
+        + `- 아직 아무도 말 안 한 리스크가 있으면 그걸 먼저 꺼내라. 눈치 보지 마라.\n`
+        + `주제: 『${ctx.topic}』. 3~5문장.${tail}`;
+    }
+  },
+  converge: {
+    id: 'converge', label: '수렴', order: 'core',
+    instruction: (ctx) => {
+      const tail = ctx.pos === 'last'
+        ? ` 마지막에 ${ctx.chair}에게 "이 방향으로 좁혀도 될까?" 하고 확인을 구해.` : '';
+      return `[수렴 라운드] 이제 벌린 걸 좁힌다. 지금까지 나온 안 중 살릴 것 2개와 버릴 것을 네 관점에서 고르고, `
+        + `왜 그런지 기준을 분명히 말해. 새 아이디어를 더 꺼내지 마라 — 정리하는 라운드다.\n`
+        + `주제: 『${ctx.topic}』. 3~4문장.${tail}`;
+    }
+  },
+  conclude: {
+    id: 'conclude', label: '결론', order: 'none', synthesize: true
+  }
+};
+
+/* ---- ② 회의 모드 4종 -------------------------------------------
+ * rounds: ROUND_DEFS 의 키 배열 — 이 순서대로 진행된다.
+ * quickRounds: "빠른 회의" 체크 시 쓰는 축약 시퀀스 (콜 절감)
+ * ---------------------------------------------------------------- */
+const MEETING_MODES = [
+  {
+    id: 'diverge', label: '아이디어 발산', icon: '✦',
+    desc: '넓게 벌리고 새 각도 찾기',
+    focus: '지금은 가능한 방향을 넓게 벌리는 자리다. 안전한 정답보다 아직 아무도 안 해본 각도를 꺼내라.',
+    headline: '무엇이든 <em>던져</em> 보세요.', kicker: '넷이 넓게 펼쳐드립니다.',
+    placeholder: '예) 동네 카페 신메뉴 라인업을 새로 짜고 싶어.',
+    rounds: ['diverge', 'rebut', 'converge', 'conclude']
+  },
+  {
+    id: 'solve', label: '문제 해결', icon: '⚑',
+    desc: '증상 말고 원인부터',
+    focus: '지금은 문제를 푸는 자리다. 증상이 아니라 진짜 원인을 짚고, 바로 실행 가능한 해법을 대라.',
+    headline: '<em>막힌 데</em>가 어디예요?', kicker: '원인부터 같이 파봅니다.',
+    placeholder: '예) 배송 지연 클레임이 지난달부터 두 배로 늘었어. 원인을 못 찾겠어.',
+    rounds: ['diverge', 'rebut', 'converge', 'conclude']
+  },
+  {
+    id: 'decide', label: '의사결정', icon: '⚖',
+    desc: '선택지 놓고 하나 고르기',
+    focus: '지금은 결정하는 자리다. 선택지를 분명히 세우고, 판단 기준과 트레이드오프를 숫자·사실로 비교하라.',
+    headline: '<em>고민</em> 중이신 거죠.', kicker: '기준을 세워 하나로 좁힙니다.',
+    placeholder: '예) 자체 쇼핑몰을 새로 만들지, 기존 플랫폼에 남을지 정해야 해.',
+    rounds: ['diverge', 'rebut', 'converge', 'conclude']
+  },
+  {
+    id: 'review', label: '리뷰', icon: '◎',
+    desc: '이미 있는 것 냉정하게 평가',
+    focus: '지금은 이미 있는 것을 평가하는 자리다. 좋은 점은 짧게, 고칠 점은 구체적으로. 두루뭉술한 칭찬 금지.',
+    headline: '<em>봐드릴게요</em>. 솔직하게.', kicker: '좋은 점 하나, 고칠 점 둘.',
+    placeholder: '예) 우리 회사 소개 페이지 구성인데 어떤지 봐줘. (내용 붙여넣기)',
+    rounds: ['diverge', 'rebut', 'conclude']
+  }
+];
+// 빠른 회의 — 모드와 무관하게 발산 → 결론 2라운드만
+const QUICK_ROUNDS = ['diverge', 'conclude'];
+
+/* ---- ③ 고정 3인 -------------------------------------------------
+ * 업종 서술 없이 "역할"만 정의한다. 주제 어휘는 buildPanel() 이 주입.
+ * 프롬프트 안의 {chair} {topic} {panel} {expertName} {expertTitle} 는 자동 치환.
+ * ---------------------------------------------------------------- */
+const CORE_PERSONAS = [
+  {
+    id: 'director',
+    tag: 'CREATIVE DIRECTOR',
+    name: '서다현',
+    role: '컨셉 · 방향과 수요',
+    color: '#f5b942',
+    system: `당신은 서다현. 15년차 크리에이티브 디렉터입니다. 업종을 가리지 않고 "무엇을, 왜 지금, 어떤 얼굴로"를 정의하는 게 전문입니다.
+
+[당신의 강점]
+- 사람들이 지금 무엇에 반응하는지, 어떤 흐름이 오고 있는지 읽는다.
+- 막연한 이야기를 "이건 이런 컨셉, 이런 포지션"으로 한 문장에 꽂는다.
+- 잘된 사례를 뜯어 작동 원리를 뽑아내고, 그걸 이 주제에 맞게 비튼다.
+- 이름·문구·첫인상이 결과를 어떻게 바꾸는지 안다.
+
+[회의에서 당신의 역할]
+- 주제를 듣고 "왜 지금 이게 흥미로운지", "어떤 방향이면 살아남는지"를 짚는다.
+- 이 주제가 속한 업계의 실제 사례·이름·용어를 든다. 다른 업종 예시로 때우지 마라.
+- 이준호(실행)·정민철(사업)·{expertName}({expertTitle})의 말을 받아 컨셉을 다듬는다.
+- {chair}가 막연하면 "어떤 느낌을 원해? A야 B야?" 하고 방향을 좁혀준다.`
+  },
+  {
+    id: 'maker',
+    tag: 'EXECUTION LEAD',
+    name: '이준호',
+    role: '실행 · 만드는 현실',
+    color: '#5eead4',
+    system: `당신은 이준호. 20년차 실행 총괄입니다. 아이디어를 실제로 굴러가게 만드는 일 — 만들고, 세우고, 굴리는 현실을 가장 잘 압니다.
+
+[당신의 강점]
+- 어떤 아이디어든 "이걸 실제로 하려면 무엇이 몇 단계로 필요한지" 즉시 분해한다.
+- 어디서 막히는지, 무엇이 먼저 깨지는지 경험으로 안다.
+- 일정·인력·도구·난이도를 현실적으로 잡는다. 리소스가 적은 1인·소규모 팀 기준으로.
+- 완벽한 계획보다 이번 주에 시작할 수 있는 최소 버전을 먼저 만든다.
+
+[회의에서 당신의 역할]
+- 서다현이 컨셉을 던지면 "그거 하려면 이 순서, 이 준비물" 하고 실현 경로를 즉시 제시.
+- "그건 지금 인력으로는 안 돌아가, 대신 이렇게" 같은 현실적인 제동과 대안.
+- 이 업종에서 실제로 쓰는 도구·절차·기준을 이름으로 든다. 일반론 금지.
+- {chair}가 "이거 어떻게 해?" 물으면 단계별로 짧고 명확하게.`
+  },
+  {
+    id: 'strategist',
+    tag: 'STRATEGIST',
+    name: '정민철',
+    role: '사업 · 숫자와 리스크',
+    color: '#a3e635',
+    system: `당신은 정민철. 사업 전략가입니다. 회의에서 가장 먼저 "그래서 이거 누구에게 어떤 가치이고, 숫자로 남느냐"를 따집니다.
+
+[당신의 강점]
+- 대상·규모·비용·수익을 숫자로 본다. "원가 X면 소비자가 Y, 마진 Z%" 식으로 구체적.
+- 돈이 아닌 주제(내부 과제·공공·비영리·개인 프로젝트)면 매출 대신 시간·인건비·리스크·성과 지표로 같은 계산을 한다.
+- 어느 채널·경로로 사람이 들어오고 얼마가 새는지 안다.
+- 안 되는 이유를 대는 사람이 아니라, 되게 만드는 조건을 찾는 사람이다.
+
+[회의에서 당신의 역할]
+- 서다현(컨셉)·이준호(실행)·{expertName}({expertTitle}) 얘기를 듣고 "그래서 누가, 얼마에, 얼마나?"를 짚는다.
+- 무조건 초 치지 않는다. 안 될 것 같으면 반드시 "이렇게 비틀면 된다"는 길을 같이 제시한다.
+- 실제 가격대·비용·채널·수수료를 구체적인 숫자로. 막연한 "수요가 있을 것" 금지.
+- 주제와 무관하게 억지로 돈 얘기를 만들지는 마라. 숫자가 의미 없는 주제면 성과 기준으로 따진다.`
+  }
+];
+
+/* ---- ④ 전문가 석 풀 ---------------------------------------------
+ * 주제 텍스트에 keywords 가 몇 개 걸리는지로 자동 배정된다.
+ * 전문가 추가 = 여기에 한 줄. system 프롬프트는 buildExpertSystem() 이 조립.
+ *   draws: true  → 프로세스 다이어그램(SVG)을 이 전문가가 그린다 (기본은 이준호)
+ * ---------------------------------------------------------------- */
+const EXPERT_POOL = [
+  {
+    id: 'process', name: '한서준', title: '공정 엔지니어', tag: 'PROCESS ENGINEER', draws: true,
+    keywords: ['3d', '프린팅', '프린터', '사출', '금형', '공정', '양산', '제조', '가공', 'cnc', '후처리', '불량', '수율', '조립', '설비', '라인', '치수', '소재', '재료', '도장', '용접', '절삭', '공장'],
+    focus: '제조 공정·설비·수율·품질. 어떤 방식으로 만들면 몇 개까지 몇 원에 나오는지, 어디서 불량이 터지는지.'
+  },
+  {
+    id: 'dev', name: '윤태경', title: '시니어 개발자', tag: 'SENIOR DEVELOPER', draws: true,
+    keywords: ['앱', '웹', 'api', '서버', '코드', '개발', '배포', '버그', 'db', '데이터베이스', '프론트', '백엔드', 'ai', '모델', '자동화', '스크립트', '보안', '인증', '트래픽', '아키텍처', '리팩터', '오류'],
+    focus: '소프트웨어 설계·구현·운영. 무엇을 어떤 순서로 만들고, 어디가 병목이며, 나중에 무엇이 부채가 되는지.'
+  },
+  {
+    id: 'planner', name: '조은비', title: '서비스 기획자', tag: 'SERVICE PLANNER', draws: true,
+    keywords: ['ux', 'ui', '유저', '사용자', '플로우', '온보딩', '기능', '서비스', '리텐션', '전환율', '화면', '설계', '가입', '이탈', '퍼널', '경험', '고객여정', '만족도'],
+    focus: '사용자 흐름과 기능 우선순위. 어디서 사람이 이탈하고, 무엇을 빼야 오히려 잘 쓰이는지.'
+  },
+  {
+    id: 'medical', name: '임현우', title: '의료 전문가', tag: 'MEDICAL EXPERT',
+    keywords: ['환자', '진료', '병원', '임상', '의료', '건강', '약', '치료', '증상', '간호', '검진', '한의', '재활', '의원', '수술', '처방'],
+    focus: '임상 근거와 의료 현장·규제. 안전 기준, 표시·광고 제한, 실제 진료 동선에서 무엇이 걸리는지.'
+  },
+  {
+    id: 'food', name: '배지원', title: 'F&B 셰프 · MD', tag: 'F&B EXPERT',
+    keywords: ['메뉴', '맛', '레시피', '카페', '식당', '음식', '베이커리', '원가율', '식자재', '주방', '커피', '디저트', '위생', '유통기한', '반찬', '배달'],
+    focus: '메뉴 구성과 주방 현실. 원가율·회전율·조리 동선, 실제로 팔리는 가격대와 계절성.'
+  },
+  {
+    id: 'legal', name: '노재현', title: '법무 · 계약 자문', tag: 'LEGAL ADVISOR',
+    keywords: ['계약', '법', '규제', '인허가', '저작권', '약관', '특허', '상표', '분쟁', '소송', '개인정보', '세금', '노무', '준법', '라이선스'],
+    focus: '계약·규제·권리 관계. 지금 구조에서 나중에 터질 법적 리스크와, 미리 넣어둬야 할 조항.'
+  },
+  {
+    id: 'edu', name: '문가영', title: '교육 설계자', tag: 'LEARNING DESIGNER',
+    keywords: ['교육', '수업', '커리큘럼', '학생', '강의', '학습', '교재', '학원', '연수', '자격증', '과정', '평가', '훈련'],
+    focus: '학습 설계와 전달. 무엇을 어떤 순서로 가르쳐야 남고, 어디서 수강생이 떨어져 나가는지.'
+  },
+  {
+    id: 'marketing', name: '천유리', title: '그로스 마케터', tag: 'GROWTH MARKETER',
+    keywords: ['광고', '마케팅', '유입', 'sns', '인스타', '유튜브', '캠페인', '바이럴', '콘텐츠', '노출', '키워드', '검색', '리뷰', '브랜딩', '홍보', '팔로워'],
+    focus: '유입과 전환. 어떤 채널에서 얼마에 사람이 오고, 어떤 메시지가 실제로 눌리는지.'
+  },
+  {
+    id: 'ops', name: '구본석', title: '운영 · 물류 매니저', tag: 'OPERATIONS MANAGER', draws: true,
+    keywords: ['재고', '물류', '배송', '운영', '인력', '스케줄', 'cs', '창고', '발주', '납기', '반품', '교대', '매장', '프랜차이즈', '공급'],
+    focus: '재고·물류·인력 운영. 규모가 커질 때 어디가 먼저 무너지고, 어떤 지표를 매일 봐야 하는지.'
+  },
+  {
+    id: 'generalist', name: '서지안', title: '도메인 리서처', tag: 'DOMAIN RESEARCHER',
+    keywords: [], fallback: true,
+    focus: '주제와 직접 닿는 실무 지식 전반. 이 분야 사람들이 실제로 쓰는 기준·용어·관행.'
+  }
+];
+
+/* ---- ⑤ 자동 라우팅 키워드 (후속 질문을 누가 먼저 받을지) ---------- */
+const ROUTING_KEYWORDS = {
+  director: ['컨셉', '방향', '트렌드', '이름', '네이밍', '브랜딩', '느낌', '분위기', '인상', '포지션', '차별', '스토리', '메시지', '디자인', '감성', '요즘', '유행', '레퍼런스', '사례', '컬러', '무드'],
+  maker: ['어떻게', '만들', '구현', '실행', '절차', '순서', '단계', '일정', '기간', '인력', '도구', '운영', '품질', '난이도', '준비물', '테스트', '제작', '설치', '세팅', '작업'],
+  strategist: ['비용', '가격', '예산', '수익', '매출', '마진', '원가', '시장', '고객', '수요', '경쟁', '규모', '지표', 'kpi', 'roi', '채널', '투자', '손익', '얼마', '타겟', '수수료', '돈']
+  // expert 키워드는 배정된 전문가의 keywords 가 런타임에 합쳐진다
+};
+
+/* ---- ⑥ 프로세스 다이어그램(SVG) 트리거 --------------------------- */
+const PROCESS_KEYWORDS = [
+  '어떻게 만들', '어떻게 제작', '어떻게 진행', '어떻게 운영', '어떻게 구현',
+  '프로세스', '프로세스 설계', '절차', '순서도', '플로차트', '플로우', '워크플로우',
+  '단계별', '단계로', '만드는 과정', '진행 과정', '제작 과정', '제조 과정',
+  '다이어그램', '도식', '구조도', '아키텍처', '파이프라인', '작업 순서',
+  '어떤 순서', '흐름', '동선', '여정', '체크리스트', '셋업', '세팅', '공정'
+];
+
+/* ═════════════════════════ /CONFIG ═════════════════════════ */
+
+/* ============ PERSONA 조립 ============ */
+
+// 공통 출력 규칙 — 패널 전원에 공통
 const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효]
-- 100% 자연스러운 완성형 한국어로만 쓴다. 한자·일본어·베트남어 등 외국어 단어 절대 금지. 외래어는 한국어로 ('큐어링'→'경화').
+- 100% 자연스러운 완성형 한국어로만 쓴다. 한자·일본어·베트남어 등 외국어 단어 절대 금지. 외래어는 가능하면 한국어로 ('런칭'→'출시').
 - 한글은 반드시 완성된 음절로 쓴다. 자모를 분리하거나(예: ㅇㅏㄴ) 깨진 글자를 만들지 마라. 매끄럽고 또렷한 문장만.
-- 영어 약자(TPU, SLA, IP 등)와 고유명사(브랜드·작가·작품명)는 허용.
+- 영어 약자(KPI, API, CS 등)와 고유명사(브랜드·기관·제품명)는 허용.
 
 [대화 방식 — 진짜 회의실, 가장 중요]
 - 이건 카톡 같은 실시간 회의실이다. 짧고 자연스럽게. 보고서·목록 나열 절대 금지.
 - 한 번에 3~5문장. 핵심을 친근하게, 근거 한두 개를 곁들여. 너무 한 줄로 끊지도, 장황하게 늘어놓지도 마라.
-- **동료(다른 베테랑)의 직전 발언이 대화에 있으면, 반드시 그 말을 직접 인용하며 시작한다.** 동료 이름을 부르고("이준호 말처럼", "정민철이 짚은 단가는", "서다현이 말한 OO은") 그 말에 동의·반박·발전시킨다. 동료 말을 무시하고 혼자 새 얘기만 하면 안 된다.
+- **동료(다른 베테랑)의 직전 발언이 대화에 있으면, 반드시 그 말을 직접 인용하며 시작한다.** 동료 이름을 부르고("이준호 말처럼", "정민철이 짚은 비용은", "{expertName}이 말한 OO은") 그 말에 동의·반박·발전시킨다. 동료 말을 무시하고 혼자 새 얘기만 하면 안 된다.
 - **쉽게 합의하고 끝내지 마라.** 동료 말에 일부 동의해도, 네 전문 분야 관점에서 최소 한 가지는 다른 각도·우려·대안을 반드시 보탠다. 너무 빨리 의견이 모이면 회의가 시시해진다. 각자 입장을 지키며 부딪쳐라.
 - 진짜 토론처럼: "맞아 근데", "오 그거 좋은데 나는", "그건 좀 어려워, 오히려", "동의해. 거기에 더하면" 식으로 받아친다.
-- 사용자(Juns)가 말하면 바로 반응. 질문이면 답하고, 막연하면 되묻거나 방향 제시.
-- 구체적으로. "트렌드 반영하세요" 같은 공허한 말 금지. 실제 브랜드·작가·제품·기법·가격을 든다.
+- 사용자({chair})가 말하면 바로 반응. 질문이면 답하고, 막연하면 되묻거나 방향 제시.
+- 구체적으로. "트렌드 반영하세요" 같은 공허한 말 금지. 이 업종의 실제 이름·제품·기관·방법·수치를 든다.
 - 절대 응답 맨 앞에 자기 이름(예: "서다현:")을 쓰지 마라. 화면에 이미 이름이 표시된다. 바로 말 내용으로 시작.
 
 [금액 표기 — 한국식으로만]
 - 한국 사람이 실제로 쓰는 단위로만 적는다: '원'과 '만원'. 예) 120원, 500원, 1,800원, 1.2만원, 2만원, 10,200원.
 - **'0.1천원', '0.2천원', '0.5천원', '0.18천원' 같은 소수점 '천원' 표기는 절대 금지.** 각각 100원, 200원, 500원, 180원으로 적는다.
 - '천원'이라는 단위 자체를 쓰지 마라. 1,000원 이상은 콤마로(예: 1,000원, 10,200원), 만 단위는 '만원'(예: 1.5만원, 12만원)으로.
-- 단가·원가·마진을 말할 때 단위를 일관되게. 같은 발언 안에서 원과 천원을 섞지 마라.
+- 금액을 말할 때 단위를 일관되게. 같은 발언 안에서 원과 천원을 섞지 마라. 주제와 무관한데 억지로 금액을 만들지는 마라.
 
 [웹 검색 — 가능하면 적극적으로]
-- 트렌드·실제 사례·가격·최신 인기작을 다룰 때 웹 검색해서 진짜 정보를 가져온다 (가능한 경우).
-- 검색 못 하는 환경이면 네가 아는 실제 사례·브랜드·작가 이름을 최대한 구체적으로 든다. 막연하게 얼버무리지 마라.
+- 최신 동향·실제 사례·가격·규정을 다룰 때 웹 검색해서 진짜 정보를 가져온다 (가능한 경우).
+- 검색 못 하는 환경이면 네가 아는 실제 사례·기관·제품 이름을 최대한 구체적으로 든다. 막연하게 얼버무리지 마라.
 - 이미지·링크가 도움 되면 마크다운으로 넣어도 좋다 (![](url) 또는 [텍스트](url)).
 
 [톤]
 - 업계 최고 수준 전문가가 친한 후배에게 솔직하게 조언하듯. 격식 없이, 날카롭게.
 - 영감을 주되 현실적. "이거 진짜 되겠다" 싶은 수준만.`;
 
-const PERSONAS = [
-  {
-    id: 'director',
-    tag: 'CREATIVE DIRECTOR',
-    name: '서다현',
-    role: '크리에이티브 디렉터 · 트렌드와 컨셉',
-    color: '#f5b942',
-    system: `당신은 서다현. 15년차 크리에이티브 디렉터입니다. 캐릭터 IP·디자인 토이·라이프스타일 굿즈 분야에서 컨셉을 잡고 트렌드를 읽는 게 전문입니다.
+/* ---- 주제 주입 지시문 — 모든 페르소나 프롬프트 뒤에 붙는다 ---- */
+function buildTopicDirective(ctx) {
+  return `[이번 회의]
+- 주제: 『${ctx.topic}』
+- 형식: ${ctx.mode.label} 회의${ctx.quick ? ' (빠른 회의 · 2라운드)' : ''}
+- 패널: ${ctx.panelLine}
+- 의장: ${ctx.chair}
 
-[당신의 강점]
-- 지금 뜨는 미감과 문화 흐름을 정확히 안다 (어글리 큐트, Y2K, 도파민 컬러, 코어 미학, 페이크 빈티지 등).
-- LABUBU·Sonny Angel·Smiski·망그러진곰·잔망루피 같은 실제 성공 IP의 작동 원리를 분석한다.
-- 막연한 아이디어를 "이건 이런 컨셉, 이런 세계관"으로 날카롭게 정의한다.
-- 한국적 정서와 글로벌 트렌드를 연결하는 감각.
+[업종 어휘 — 반드시 지켜라]
+- 이 주제가 속한 분야에서 실제로 쓰는 용어·지표·채널·규정·경쟁자 이름으로 말한다.
+- 이 분야와 무관한 다른 업종의 예시(굿즈·3D 프린팅 등)를 습관적으로 끌어오지 마라. 주제가 그 분야일 때만 쓴다.
+- 이 분야를 잘 모르면 아는 척하지 말고, 대신 무엇을 확인해야 하는지 구체적인 질문으로 던져라.`;
+}
 
-[회의에서 당신의 역할]
-- 사용자 주제를 듣고 "지금 이게 왜 흥미로운지", "어떤 컨셉으로 가면 살아남는지"를 짚는다.
-- 실제 뜨는 사례를 웹에서 찾아 "지금 이런 게 인기야, 너는 이렇게 비틀면 돼" 식으로 구체적으로.
-- 동료 메이커(이준호)가 공정 얘기하면 "그 공정이면 이런 컨셉이 더 살겠다" 식으로 받아친다.
-- 사용자가 막연하면 "어떤 느낌을 원해? A야 B야?" 하고 방향을 좁혀준다.
-- 짧게, 대화하듯. 한 번에 핵심 1~2개만.`
-  },
-  {
-    id: 'maker',
-    tag: 'MAKER / ENGINEER',
-    name: '이준호',
-    role: '제조·공정 전문가 · 실현과 재료',
-    color: '#5eead4',
-    system: `당신은 이준호. 20년차 제조·공정 전문가입니다. 사출·CNC·3D 프린팅(FDM/SLA/SLS)·실리콘 캐스팅·후처리까지 직접 다뤄봤고, 1인 메이커가 어떻게 실제로 물건을 만드는지 가장 잘 압니다.
+/* ---- 템플릿 치환 ---- */
+function fillTemplate(str, ctx) {
+  return String(str)
+    .split('{chair}').join(ctx.chair)
+    .split('{topic}').join(ctx.topic)
+    .split('{panel}').join(ctx.panelLine)
+    .split('{expertName}').join(ctx.expertName)
+    .split('{expertTitle}').join(ctx.expertTitle);
+}
 
-[당신의 강점]
-- 어떤 디자인이든 "이건 이 공정으로 이렇게 만들면 돼"를 즉시 안다.
-- 공정이 미감을 어떻게 바꾸는지 안다 (실리콘 캐스팅의 손맛, SLA의 정밀함, 플록킹의 벨벳 질감).
-- 재료의 표현력 (TPU 말랑함, PMMA 투명, ASA 야외 내구성, 우레탄 무게감).
-- Bambu Lab P2S + AMS 같은 요즘 1인 메이커 장비의 가능성을 안다.
-- 비용·수량·난이도를 현실적으로 판단 — 30개 한정이면 실리콘, 5000개면 사출.
+/* ---- 전문가 석 system 프롬프트 조립 (전문가 추가 시 여기만 통과) ---- */
+function buildExpertSystem(expert, ctx) {
+  return `당신은 ${expert.name}. ${expert.title}입니다. 이번 회의에 '전문가 석'으로 초빙됐습니다.
+
+[전문 영역]
+${expert.focus}
 
 [회의에서 당신의 역할]
-- 디렉터(서다현)가 컨셉을 던지면 "그거 만들려면 이 공정, 이 재료" 하고 실현 방법을 즉시 제시.
-- "그건 FDM으로는 표면이 안 나와, SLA로 가야 해" 같은 현실적인 제동·대안.
-- 실제 재료명·장비·기법을 구체적으로. 필요하면 웹에서 최신 재료·기법·가격 검색.
-- 사용자가 "이거 어떻게 만들어?" 물으면 단계별로 짧고 명확하게.
-- 동료가 비현실적인 컨셉 내면 "그거 멋진데 양산 단가가..." 하고 솔직하게.
-- 짧게, 대화하듯. 전문 용어는 풀어서.`
-  },
-  {
-    id: 'strategist',
-    tag: 'STRATEGIST',
-    name: '정민철',
-    role: '사업 전략가 · 시장과 수익',
-    color: '#a3e635',
-    system: `당신은 정민철. 1인 사업·D2C·굿즈 커머스를 오래 봐온 사업 전략가입니다. 회의에서 가장 먼저 "그래서 이거 누가, 얼마에 사느냐, 마진은 남느냐"를 따집니다.
+- 주제 『${ctx.topic}』에서 이 분야가 아니면 못 짚는 사실·수치·규정·함정을 댄다.
+- 나머지 셋(서다현·이준호·정민철)은 이 분야 사람이 아니다. 그들이 놓친 도메인 리스크를 정확히 지적한다.
+- 일반론 금지. 이 분야 실무자가 실제로 쓰는 용어·기준·지표를 그대로 쓴다.
+- 네가 이 방에서 이 분야 최고 실무자다. 틀린 전제는 바로 잡아라. 눈치 보지 마라.
+- 다만 혼자 강의하지 마라. 동료 말을 받아 회의 흐름 안에서 말한다.`;
+}
 
-[당신의 강점]
-- 타겟 고객·가격대·마진 구조를 숫자로 본다. "원가 X면 소비자가 Y, 마진 Z%" 식으로 구체적.
-- 판매 채널(스마트스토어·텀블벅·와디즈·인스타·오프라인 팝업)별 현실과 수수료를 안다.
-- 어떤 컨셉이 '귀엽다'에서 끝나지 않고 '지갑을 열게' 만드는지 판단한다.
-- 한정판·예약판매(선주문)·번들·세트가 같은 1인 메이커가 실제로 쓰는 판매 전략을 안다.
-- LABUBU·Sonny Angel·잔망루피 같은 IP가 실제로 얼마에 팔리고 어떻게 돈을 버는지 안다.
+/* ---- 전문가 자동 배정 — 주제 키워드 스코어링 ---- */
+function pickExpert(topic) {
+  const t = String(topic || '').toLowerCase();
+  let best = null, bestScore = 0;
+  EXPERT_POOL.forEach(e => {
+    if (!e.keywords || e.keywords.length === 0) return;
+    const score = e.keywords.filter(k => t.includes(k.toLowerCase())).length;
+    if (score > bestScore) { best = e; bestScore = score; }
+  });
+  if (best) return { expert: best, score: bestScore };
+  return { expert: EXPERT_POOL.find(e => e.fallback) || EXPERT_POOL[EXPERT_POOL.length - 1], score: 0 };
+}
 
-[회의에서 당신의 역할]
-- 서다현(컨셉)·이준호(공정) 얘기를 듣고 "그래서 이거 누가 사? 얼마에? 마진 남아?"를 짚는다.
-- 단, 무조건 초 치는 사람 아님. 안 팔릴 것 같으면 반드시 "이렇게 비틀면 팔린다"는 길을 같이 제시한다.
-- 실제 가격대·플랫폼·수수료·펀딩 사례를 구체적인 숫자로 든다. 막연한 "수요가 있을 것" 금지.
-- Juns가 막연하면 "타겟이 누구야? 객단가 얼마 생각해? 첫 물량 몇 개?" 하고 사업 관점으로 좁힌다.
-- 동료 컨셉·공정이 좋아도 단가가 안 맞으면 솔직하게 짚되, 대안 가격·대안 채널을 제시.
-- 짧게, 대화하듯. 숫자는 또렷하게.`
+// 키워드가 하나도 안 걸릴 때만 — 짧은 분류 콜 1회로 직함을 받아온다.
+// 실패해도 제너럴리스트로 그냥 진행한다 (회의는 절대 막히지 않는다).
+async function refineExpertTitle(topic) {
+  if (!state.apiKey) return null;
+  try {
+    const res = await callLLM(
+      '너는 회의 준비 담당이다. 주제를 보고 그 회의에 반드시 필요한 실무 전문가의 "직함" 하나만 한국어로 답한다. 설명·문장부호 없이 직함만. 예) 물류 운영 전문가',
+      `주제: ${topic}\n필요한 전문가 직함 하나만.`,
+      { maxTokens: 60 }
+    );
+    const title = sanitizeKorean(res.text || '').split('\n')[0].replace(/["'`.]/g, '').trim();
+    if (title && title.length <= 20) return title;
+  } catch (e) { /* 무시 — 제너럴리스트로 진행 */ }
+  return null;
+}
+
+/* ---- 패널 조립 — 고정 3인 + 전문가 1인 ----
+ * 전역 PERSONAS 를 이 함수가 갈아끼운다 (렌더·라우팅·복원이 모두 이 배열을 본다).
+ */
+let PERSONAS = [];
+
+function buildPanel(opts) {
+  const expertDef = opts.expert || {};
+  const expertName = expertDef.name || '전문가';
+  const expertTitle = expertDef.title || '도메인 전문가';
+  const mode = getMode(opts.modeId);
+  const coreLine = CORE_PERSONAS.map(p => `${p.name}(${p.role})`).join(', ');
+  const ctx = {
+    topic: opts.topic || '',
+    mode: mode,
+    quick: !!opts.quick,
+    chair: APP.chair,
+    expertName: expertName,
+    expertTitle: expertTitle,
+    panelLine: `${coreLine}, ${expertName}(${expertTitle})`
+  };
+
+  const core = CORE_PERSONAS.map(p => ({
+    id: p.id, tag: p.tag, name: p.name, role: p.role, color: p.color,
+    system: fillTemplate(p.system, ctx) + '\n\n' + fillTemplate(COMMON_RULES, ctx)
+      + '\n\n' + buildTopicDirective(ctx)
+  }));
+
+  const expert = {
+    id: 'expert',
+    expertId: expertDef.id || 'generalist',
+    tag: expertDef.tag || 'DOMAIN EXPERT',
+    name: expertName,
+    role: expertTitle,
+    color: '#f06b9b',
+    draws: !!expertDef.draws,
+    keywords: expertDef.keywords || [],
+    system: buildExpertSystem({ name: expertName, title: expertTitle, focus: expertDef.focus || '주제와 직접 닿는 실무 지식 전반.' }, ctx)
+      + '\n\n' + fillTemplate(COMMON_RULES, ctx) + '\n\n' + buildTopicDirective(ctx)
+  };
+
+  PERSONAS = [...core, expert];
+  return PERSONAS;
+}
+
+// 아직 패널이 없을 때(빈 화면·구세션)를 위한 안전한 기본 패널
+function ensurePanel() {
+  if (!PERSONAS || PERSONAS.length === 0) {
+    buildPanel({ topic: state.agenda || '', modeId: state.mode, quick: state.quick, expert: state.expert });
   }
-];
+  return PERSONAS;
+}
 
-// 페르소나의 system prompt에 공통 규칙을 자동 결합
-PERSONAS.forEach(p => { p.system = p.system + '\n\n' + COMMON_RULES; });
+// 모르는 personaId(아주 옛 세션 등)도 렌더는 되게 — 회색 스텁 반환
+function resolvePersona(id) {
+  const found = (PERSONAS || []).find(p => p.id === id);
+  if (found) return found;
+  const legacy = { product: '서다현', engineer: '이준호', marketer: '마케터', finance: '정민철' };
+  return { id: id, name: legacy[id] || id, tag: 'ARCHIVE', role: '', color: '#9a9a93', system: '' };
+}
+
+function getMode(id) {
+  return MEETING_MODES.find(m => m.id === id) || MEETING_MODES[0];
+}
+function getRounds(modeId, quick) {
+  return quick ? QUICK_ROUNDS.slice() : getMode(modeId).rounds.slice();
+}
+// 라운드 참여 인원
+function roundParticipants(roundKey) {
+  const def = ROUND_DEFS[roundKey];
+  ensurePanel();
+  if (!def || def.order === 'none') return [];
+  if (def.order === 'core') return PERSONAS.filter(p => p.id !== 'expert');
+  return PERSONAS.slice();
+}
+// 남은 콜 수 / 예상 비용
+function estimateCalls(modeId, quick, fromIndex) {
+  const rounds = getRounds(modeId, quick);
+  let calls = 0;
+  rounds.forEach((key, i) => {
+    if (typeof fromIndex === 'number' && i < fromIndex) return;
+    const def = ROUND_DEFS[key];
+    if (!def) return;
+    if (def.order === 'none') calls += 1;                       // 회의록 합성 1콜
+    else if (def.order === 'core') calls += CORE_PERSONAS.length;
+    else calls += CORE_PERSONAS.length + 1;
+  });
+  return calls;
+}
+function formatCost(calls) {
+  return `${calls}콜 · 약 ${(calls * APP.costPerCallKRW).toLocaleString('ko-KR')}원`;
+}
 
 /* ============ STATE ============ */
 let state = {
@@ -2284,7 +2936,15 @@ let state = {
   messages: [],
   followupTarget: 'auto', // 'auto' | 'all' | personaId
   memo: '',
-  summary: '', // 회의 종합 정리 (LLM 생성)
+  summary: '', // 옛 형식 종합 정리 (v1 세션 복원용)
+  // ---- v2.0 ----
+  mode: localStorage.getItem('vela.boardroom.mode') || MEETING_MODES[0].id,
+  quick: localStorage.getItem('vela.boardroom.quick') === '1',
+  rounds: [],          // 이번 회의의 라운드 시퀀스 (키 배열)
+  roundIndex: 0,       // 다음에 진행할 라운드 위치
+  expert: null,        // { id, name, title, tag, focus, keywords, draws }
+  minutes: '',         // 회의록 원문 (마크다운)
+  actionsDone: [],     // 액션 아이템 체크 상태
   sessionId: null,
   lastSavedAt: null,
   inProgress: false,
@@ -2338,26 +2998,26 @@ function closeModal(id) { $('#'+id).classList.remove('open'); }
 /* ============ 홈 화면 문구 로테이션 ============ */
 // 홈 열 때마다 다음 문구로 순환 (localStorage 인덱스). 유머 20선.
 const HEADLINE_POOL = [
-  { h: '일단 <em>던져</em> 보세요.', k: '욕은 셋이 나눠 먹을게요.' },
-  { h: '어차피 <em>만들</em> 거잖아요.', k: '말리거나, 같이 만들거나 — 셋이 정합니다.' },
-  { h: '또 <em>야근</em>거리 가져오셨네요.', k: '컨셉·공정·단가까지 같이 새워드림.' },
-  { h: '망해도 셋이 같이 <em>망해요</em>.', k: '부담 갖지 말고 올려봐요.' },
-  { h: '사장님, 이거 <em>팔려요</em>?', k: '솔직하게 말해줄게요. 상처는 본인 책임.' },
-  { h: '<em>3대 1</em>입니다.', k: '근데 다 당신 편이에요.' },
-  { h: '정답은 <em>없어요</em>.', k: '대신 셋이 우깁니다.' },
-  { h: '여긴 <em>예스맨</em> 없어요.', k: '셋 다 할 말 하는 타입.' },
-  { h: '칭찬만 듣고 싶으면 <em>뒤로가기</em>.', k: '여긴 솔직한 셋이라.' },
-  { h: '예쁘다 vs <em>안 팔려</em>.', k: '그 사이 어디쯤에서 만나기로 했어요.' },
+  { h: '일단 <em>던져</em> 보세요.', k: '욕은 넷이 나눠 먹을게요.' },
+  { h: '어차피 <em>하실</em> 거잖아요.', k: '말리거나, 같이 하거나 — 넷이 정합니다.' },
+  { h: '또 <em>야근</em>거리 가져오셨네요.', k: '방향·실행·비용까지 같이 새워드림.' },
+  { h: '망해도 넷이 같이 <em>망해요</em>.', k: '부담 갖지 말고 올려봐요.' },
+  { h: '사장님, 이거 <em>됩니까</em>?', k: '솔직하게 말해줄게요. 상처는 본인 책임.' },
+  { h: '<em>4대 1</em>입니다.', k: '근데 다 당신 편이에요.' },
+  { h: '정답은 <em>없어요</em>.', k: '대신 넷이 우깁니다.' },
+  { h: '여긴 <em>예스맨</em> 없어요.', k: '넷 다 할 말 하는 타입.' },
+  { h: '칭찬만 듣고 싶으면 <em>뒤로가기</em>.', k: '여긴 솔직한 넷이라.' },
+  { h: '좋아 보인다 vs <em>안 돌아간다</em>.', k: '그 사이 어디쯤에서 만나기로 했어요.' },
   { h: '안 될 이유 <em>100개</em> 준비됨.', k: '될 이유 1개만 가져오세요.' },
   { h: '머릿속 그거 <em>꺼내요</em>.', k: '안 꺼내면 또 까먹잖아요.' },
-  { h: '출력 버튼은 <em>잠깐</em>.', k: '회의부터 하고 누르시죠.' },
-  { h: '또 <em>필라멘트</em> 태우기 전에.', k: '단가는 정민철이 계산해줘요.' },
-  { h: '창고에 <em>재고탑</em> 쌓기 전에.', k: '셋이 미리 걱정해드림.' },
-  { h: '새벽 3시 아이디어, <em>위험</em>합니다.', k: '셋한테 검수 맡기세요.' },
-  { h: '텀블벅 <em>올리기</em> 전에.', k: '셋이 먼저 까봅니다.' },
-  { h: '전략가 첫마디는 <em>"얼마에 팔 건데요"</em>.', k: '각오하세요.' },
-  { h: '만들고 싶은 거 말고 <em>팔리는</em> 거.', k: '그 얘기 해봅시다.' },
-  { h: '일단 <em>깔아봅시다</em>.', k: '셋이 심사 들어갑니다.' }
+  { h: '결재 올리기 <em>전에</em>.', k: '여기서 먼저 까봅시다.' },
+  { h: '<em>전문가</em> 한 명 더 붙습니다.', k: '주제 보고 알아서 골라와요.' },
+  { h: '혼자 <em>3시간</em> 고민할 거.', k: '넷이 4분에 끝냅시다.' },
+  { h: '새벽 3시 아이디어, <em>위험</em>합니다.', k: '넷한테 검수 맡기세요.' },
+  { h: '회의록까지 <em>써드려요</em>.', k: '액션 아이템 3개는 덤.' },
+  { h: '전략가 첫마디는 <em>"그거 얼마 드는데요"</em>.', k: '각오하세요.' },
+  { h: '하고 싶은 거 말고 <em>되는</em> 거.', k: '그 얘기 해봅시다.' },
+  { h: '일단 <em>깔아봅시다</em>.', k: '넷이 심사 들어갑니다.' }
 ];
 function rotateHeadline() {
   try {
@@ -2376,13 +3036,67 @@ function rotateHeadline() {
   }
 }
 
+/* ---- 회의 모드 선택 UI ---- */
+function renderModeGrid() {
+  const grid = $('#modeGrid');
+  if (!grid) return;
+  grid.innerHTML = MEETING_MODES.map(m => `
+    <button type="button" class="mode-card${m.id === state.mode ? ' active' : ''}" data-mode="${m.id}">
+      <span class="mc-icon">${m.icon}</span>
+      <span class="mc-label">${escapeHtml(m.label)}</span>
+      <span class="mc-desc">${escapeHtml(m.desc)}</span>
+    </button>
+  `).join('');
+  grid.querySelectorAll('.mode-card').forEach(card => {
+    card.addEventListener('click', () => selectMode(card.dataset.mode));
+  });
+}
+
+function selectMode(id, opts = {}) {
+  state.mode = getMode(id).id;
+  localStorage.setItem('vela.boardroom.mode', state.mode);
+  const grid = $('#modeGrid');
+  if (grid) {
+    grid.querySelectorAll('.mode-card').forEach(c => {
+      c.classList.toggle('active', c.dataset.mode === state.mode);
+    });
+  }
+  const mode = getMode(state.mode);
+  const input = $('#agendaInput');
+  if (input) input.placeholder = mode.placeholder;
+  // 사용자가 직접 고른 경우에만 문구를 모드 문구로 교체 (첫 진입은 유머 로테이션 유지)
+  if (!opts.silent) {
+    const hEl = document.querySelector('.agenda-headline');
+    const kEl = document.querySelector('.agenda-kicker');
+    if (hEl) hEl.innerHTML = mode.headline;
+    if (kEl) kEl.textContent = mode.kicker;
+  }
+  updateCostNote();
+}
+
+function updateCostNote() {
+  const el = $('#costNote');
+  if (!el) return;
+  const rounds = getRounds(state.mode, state.quick);
+  const labels = rounds.map(k => (ROUND_DEFS[k] ? ROUND_DEFS[k].label : k)).join(' → ');
+  el.innerHTML = `${labels} · 예상 <b>${formatCost(estimateCalls(state.mode, state.quick))}</b>`;
+  const wrap = $('#quickToggle');
+  if (wrap) wrap.classList.toggle('on', !!state.quick);
+}
+
 window.addEventListener('DOMContentLoaded', () => {
+  const vt = $('#versionTag');
+  if (vt) vt.textContent = 'v' + APP.version;
   refreshApiStatus();
   refreshModelTag();
   bindEvents();
   bindInstallButton();
-  handleUrlAction();
   rotateHeadline();
+  renderModeGrid();
+  const q = $('#inputQuick');
+  if (q) q.checked = !!state.quick;
+  selectMode(state.mode, { silent: true });
+  handleUrlAction();
   restoreLastMeeting();
 });
 
@@ -2429,13 +3143,20 @@ function bindEvents() {
     e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
   });
   $('#btnFollowupMic').addEventListener('click', () => startVoiceInput('#followupInput'));
-  document.querySelectorAll('.routing-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('.routing-chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      state.followupTarget = chip.dataset.target;
+
+  // 빠른 회의 토글
+  const quick = $('#inputQuick');
+  if (quick) {
+    quick.addEventListener('change', (e) => {
+      state.quick = !!e.target.checked;
+      localStorage.setItem('vela.boardroom.quick', state.quick ? '1' : '0');
+      updateCostNote();
     });
-  });
+  }
+
+  // 라운드 진행
+  const btnNext = $('#btnNextRound');
+  if (btnNext) btnNext.addEventListener('click', runNextRound);
 
   // 채팅 헤더 액션 — 상단 ▶
   const btnPlayTop = $('#btnPlayMeetingTop');
@@ -2445,9 +3166,9 @@ function bindEvents() {
   const btnSaveTop = $('#btnSaveMeetingTop');
   if (btnSaveTop) btnSaveTop.addEventListener('click', saveMeetingNow);
 
-  // 종합 정리 생성
-  const btnSummary = $('#btnGenerateSummary');
-  if (btnSummary) btnSummary.addEventListener('click', generateSummary);
+  // 회의록 생성
+  const btnMinutes = $('#btnGenerateMinutes');
+  if (btnMinutes) btnMinutes.addEventListener('click', () => generateMinutes());
 
   $('#btnSettings').addEventListener('click', () => {
     renderSettingsModal();
@@ -2605,11 +3326,9 @@ function renderSettingsModalForProvider(provider) {
 /* ============ FACT CARDS RENDER ============ */
 /* ============ CHAT RENDER ============ */
 
-// 페르소나 이니셜 — 아바타용
+// 페르소나 이니셜 — 아바타용 (이름 첫 글자)
 function personaInitial(p) {
-  // 서다현→서, 이준호→이, 정민철→정
-  const map = { director: '서', maker: '이', strategist: '정' };
-  return map[p.id] || (p.name ? p.name.charAt(0) : '?');
+  return (p && p.name) ? p.name.charAt(0) : '?';
 }
 
 // 메시지 하나 DOM 생성 후 채팅 컨테이너에 추가
@@ -2623,8 +3342,7 @@ function appendMessage(msg) {
     el.className = 'msg-user';
     el.innerHTML = `<div class="msg-user-bubble">${escapeHtml(msg.content)}</div>`;
   } else if (msg.type === 'persona') {
-    const p = PERSONAS.find(x => x.id === msg.personaId);
-    if (!p) return;
+    const p = resolvePersona(msg.personaId);
     el.className = 'msg-persona';
     el.dataset.persona = p.id;
     el.innerHTML = `
@@ -2645,14 +3363,14 @@ function appendMessage(msg) {
     }
   } else if (msg.type === 'typing') {
     // 로딩 인디케이터
-    const p = PERSONAS.find(x => x.id === msg.personaId);
+    const p = resolvePersona(msg.personaId);
     el.className = 'msg-persona msg-typing';
     el.dataset.persona = p.id;
     el.innerHTML = `
       <div class="msg-persona-head">
         <span class="msg-avatar">${personaInitial(p)}</span>
         <span class="msg-name">${p.name}</span>
-        <span class="msg-tag">아이디어 작성 중…</span>
+        <span class="msg-tag">생각하는 중…</span>
       </div>
       <div class="msg-persona-bubble"><span class="typing-dots"><span></span><span></span><span></span></span></div>
     `;
@@ -2690,9 +3408,10 @@ function renderBubbleContent(msg) {
     if (parsed.IDEAS) html += `<div class="msg-text"><p>${escapeHtml(parsed.IDEAS).replace(/\n/g, '<br>')}</p></div>`;
   }
 
-  // 공정 다이어그램 (SVG) — runPersonaTurn에서 이미 sanitizeSvg 거침
+  // 프로세스 다이어그램 (SVG) — runPersonaTurn에서 이미 sanitizeSvg 거침
   if (msg.svg) {
-    html += `<div class="msg-svg">${msg.svg}<span class="msg-svg-cap">공정 다이어그램 · by 이준호</span></div>`;
+    const drawer = resolvePersona(msg.personaId).name || '';
+    html += `<div class="msg-svg">${msg.svg}<span class="msg-svg-cap">프로세스 다이어그램${drawer ? ' · by ' + escapeHtml(drawer) : ''}</span></div>`;
   }
 
   // 출처 링크 (웹 검색 인용)
@@ -2754,13 +3473,77 @@ function clearChat() {
   if (container) container.innerHTML = '';
 }
 
-// 회의 참여자 바 렌더 (헤더 아래 점+이름 3개)
+// 회의 참여자 바 렌더 (헤더 아래 점+이름) + 전문가 석 안내
 function renderParticipants() {
   const el = $('#chatParticipants');
   if (!el) return;
+  ensurePanel();
+  const expert = PERSONAS.find(p => p.id === 'expert');
   el.innerHTML = '<span class="cp-label">PANEL</span>' + PERSONAS.map(p =>
-    `<span class="cp-item"><span class="cp-dot" style="background:${p.color};box-shadow:0 0 7px -1px ${p.color}"></span>${p.name}</span>`
-  ).join('');
+    `<span class="cp-item"><span class="cp-dot" style="background:${p.color};box-shadow:0 0 7px -1px ${p.color}"></span>${escapeHtml(p.name)}</span>`
+  ).join('') + (expert
+    ? `<span class="expert-note">전문가 석 · <b>${escapeHtml(expert.role)}</b></span>` : '');
+  renderRoutingChips();
+}
+
+// 응답 대상 chip — 패널에 맞춰 동적 생성
+function renderRoutingChips() {
+  const el = $('#chatRouting');
+  if (!el) return;
+  ensurePanel();
+  const chips = [
+    { target: 'auto', label: '자동', dot: '' },
+    { target: 'all', label: '전원', dot: '' }
+  ].concat(PERSONAS.map(p => ({ target: p.id, label: p.name, dot: p.color, title: `${p.name} · ${p.role}` })));
+
+  el.innerHTML = chips.map(c => `
+    <button class="routing-chip${state.followupTarget === c.target ? ' active' : ''}" data-target="${c.target}"${c.title ? ` title="${escapeHtml(c.title)}"` : ''}>
+      ${c.dot ? `<span class="dot" style="background:${c.dot}"></span>` : ''}${escapeHtml(c.label)}
+    </button>
+  `).join('');
+
+  el.querySelectorAll('.routing-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      el.querySelectorAll('.routing-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      state.followupTarget = chip.dataset.target;
+    });
+  });
+}
+
+/* ---- 라운드 바 ---- */
+function renderRoundBar() {
+  const bar = $('#roundBar');
+  const steps = $('#roundSteps');
+  const btn = $('#btnNextRound');
+  const cost = $('#roundCost');
+  if (!bar || !steps || !btn) return;
+
+  const rounds = state.rounds && state.rounds.length ? state.rounds : getRounds(state.mode, state.quick);
+  if (!state.agenda) { bar.hidden = true; return; }
+  bar.hidden = false;
+
+  steps.innerHTML = rounds.map((key, i) => {
+    const def = ROUND_DEFS[key] || { label: key };
+    const cls = i < state.roundIndex ? 'done' : (i === state.roundIndex ? 'current' : '');
+    return `<span class="round-step ${cls}"><span class="rs-dot"></span>${def.label}</span>`;
+  }).join('<span class="round-sep">—</span>');
+
+  const done = state.roundIndex >= rounds.length;
+  const nextKey = done ? null : rounds[state.roundIndex];
+  const nextDef = nextKey ? ROUND_DEFS[nextKey] : null;
+
+  if (done) {
+    btn.hidden = true;
+    if (cost) cost.textContent = '회의 종료';
+  } else {
+    btn.hidden = false;
+    btn.disabled = !!state.inProgress;
+    btn.textContent = nextDef && nextDef.synthesize
+      ? '회의록 만들기 →'
+      : `${nextDef ? nextDef.label : ''} 라운드 →`;
+    if (cost) cost.textContent = `남은 ${formatCost(estimateCalls(state.mode, state.quick, state.roundIndex))}`;
+  }
 }
 
 // 채팅 전체 재렌더 (loadSession 등에서 사용)
@@ -2810,13 +3593,12 @@ function parseIdeas(text) {
 function speakMessage(msgId) {
   const msg = state.messages.find(m => m.id === msgId);
   if (!msg || msg.type !== 'persona') return;
-  const persona = PERSONAS.find(p => p.id === msg.personaId);
-  if (!persona) return;
+  const persona = resolvePersona(msg.personaId);
   // content(자연 텍스트) 우선, 없으면 옛 parsed
   let text = msg.content || '';
   if (!text && msg.parsed) text = buildSpeechText(persona, msg.parsed) || '';
-  // 텍스트 없이 다이어그램만 있는 발언 — 음성은 "공정 다이어그램"으로 대체
-  if (!text && msg.svg) text = '공정 다이어그램으로 설명했습니다.';
+  // 텍스트 없이 다이어그램만 있는 발언 — 음성은 "프로세스 다이어그램"으로 대체
+  if (!text && msg.svg) text = '프로세스 다이어그램으로 설명했습니다.';
   // 마크다운 마커·URL 제거하고 발화용 정리
   text = text
     .replace(/!\[[^\]]*\]\([^)]*\)/g, '')           // 이미지 제거
@@ -2924,15 +3706,8 @@ function sanitizeKorean(text) {
   return s;
 }
 
-/* ============ 공정 다이어그램 (SVG) ============ */
-
-// 이준호(메이커)가 SVG 다이어그램을 그릴 만한 "어떻게 만들어" 류 질문 감지
-const PROCESS_KEYWORDS = [
-  '어떻게 만들', '어떻게 제작', '어떻게 뽑', '공정설계', '공정 설계', '제작 공정',
-  '도면', '순서도', '플로차트', '플로우', '워크플로우', '단계별', '만드는 과정',
-  '제조 과정', '제작 과정', '다이어그램', '프로세스', '공정도', '작업 순서',
-  '어떤 순서', '셋업', '셋팅', '세팅', '단계로', '공정 흐름'
-];
+/* ============ 프로세스 다이어그램 (SVG) ============ */
+// 트리거 키워드는 CONFIG 블록의 PROCESS_KEYWORDS 에 있다.
 function isProcessQuestion(q) {
   if (!q) return false;
   const s = q.toLowerCase();
@@ -3005,22 +3780,34 @@ function sanitizeSvg(raw) {
   }
 }
 
-// 메이커가 공정 질문 받을 때 붙는 SVG 작도 지시문
-const SVG_DIRECTIVE = `[공정 다이어그램 — 이번엔 말로 길게 풀지 말고 그림으로]
-Juns가 "어떻게 만드는지"를 물었어. 짧은 한두 문장 설명 뒤에, 제작 공정을 SVG 플로차트로 그려서 보여줘.
+// 프로세스 질문을 받았을 때 붙는 SVG 작도 지시문 (업종 무관 · 입력→처리→검증→산출물)
+function buildDiagramDirective(topic) {
+  return `[프로세스 다이어그램 — 이번엔 말로 길게 풀지 말고 그림으로]
+${APP.chair}가 "어떻게 돌아가는지"를 물었어. 짧은 한두 문장 설명 뒤에, 『${topic}』의 진행 흐름을 SVG 플로차트로 그려서 보여줘.
 - 반드시 [[SVG]] 와 [[/SVG]] 마커 사이에 순수 SVG 코드만 넣어라. 마커 밖에는 SVG를 쓰지 마라.
 - <svg viewBox="0 0 720 460" xmlns="http://www.w3.org/2000/svg"> 로 시작 (높이는 박스 수에 맞게 400~560 조절). width/height 속성은 쓰지 말고 viewBox만.
-- 박스 5~8개. 입력 → 처리(공정) → 출력 흐름. 가능하면 불량·주의 분기(실패 격리)도 한 줄 넣어.
+- 박스 5~8개. 흐름은 [입력·준비] → [처리 단계들] → [검증·분기] → [산출물] 로 잡는다.
+  이 골격은 어떤 업종에도 맞춘다: 제조면 공정, 개발이면 빌드·배포, 서비스면 사용자 동선, 진료면 내원부터 처방까지.
+- 실패·되돌아가는 경로(재작업·반려·이탈)를 반드시 한 줄 넣어라. 그게 이 그림의 핵심이다.
 - 색은 반드시 이 hex 그대로:
   · 캔버스 배경: 칠하지 마라(투명). 기본 글자색 #e8e8e3.
-  · 입력 박스: 외곽선·글자 #888780
-  · 공정(처리) 박스: 외곽선·강조 #5eead4
+  · 입력·준비 박스: 외곽선·글자 #888780
+  · 처리 단계 박스: 외곽선·강조 #5eead4
   · 분기·주의·실패: #e24b4a
-  · 출력(완성) 박스: #a3e635
+  · 산출물(완료) 박스: #a3e635
 - 박스는 <rect rx="9" fill="none" stroke-width="1.6">. 글자는 <text font-size="14" font-family="sans-serif" fill="...">. 화살표는 <line> 또는 <path>에 stroke="#5a5a55" 과 작은 삼각형 머리.
 - 한글 라벨은 짧고 또렷하게(완성형 음절). 두 줄 필요하면 <tspan x="같은값" dy="16">.
 - script·onclick 같은 이벤트·foreignObject·외부 이미지(<image>,<use>) 절대 쓰지 마라.
 그림 뒤에 한 줄로 "이 흐름에서 막히는 데 있으면 말해" 식으로 마무리.`;
+}
+
+// 다이어그램을 그릴 사람 — 기본은 이준호(실행), 전문가가 draws 면 전문가가 그린다
+function diagramDrawerId() {
+  ensurePanel();
+  const expert = PERSONAS.find(p => p.id === 'expert');
+  if (expert && expert.draws) return 'expert';
+  return 'maker';
+}
 
 /* ============ API CALL ============ */
 // callLLM — messages 배열(멀티턴) 지원 + Anthropic 웹 검색 옵션
@@ -3130,10 +3917,9 @@ function buildConversationHistory(forPersonaId) {
   const hist = [];
   state.messages.forEach(m => {
     if (m.type === 'user') {
-      hist.push({ role: 'user', content: `[Juns] ${m.content}` });
+      hist.push({ role: 'user', content: `[${APP.chair}] ${m.content}` });
     } else if (m.type === 'persona') {
-      const p = PERSONAS.find(x => x.id === m.personaId);
-      const name = p ? p.name : m.personaId;
+      const name = resolvePersona(m.personaId).name;
       const txt = m.content || (m.parsed && (m.parsed.FACTS || m.parsed.RAW)) || '';
       if (m.personaId === forPersonaId) {
         hist.push({ role: 'assistant', content: txt });
@@ -3164,11 +3950,11 @@ async function runPersonaTurn(persona, instruction, opts = {}) {
   const typingMsg = { id: 'typing_' + persona.id, type: 'typing', personaId: persona.id };
   appendMessage(typingMsg);
 
-  // SVG 모드 — 메이커가 공정 질문 받을 때만
+  // SVG 모드 — 프로세스 질문을 받은 담당자만
   let instr = instruction;
   let maxTokens = opts.maxTokens || 1200;
   if (opts.svgMode) {
-    instr = instruction + '\n\n' + SVG_DIRECTIVE;
+    instr = instruction + '\n\n' + buildDiagramDirective(state.agenda || '');
     maxTokens = 2000;
   }
 
@@ -3189,8 +3975,12 @@ async function runPersonaTurn(persona, instruction, opts = {}) {
     // SVG 블록을 먼저 분리 — sanitizeKorean이 SVG를 깨뜨리지 않게
     const { text: textPart, svgRaw } = extractSvgBlock(result.text || '');
     let text = sanitizeKorean(textPart);
-    // 모델이 응답 맨 앞에 자기 이름표를 붙이면 제거 ("서다현:", "[이준호]", "정민철 -" 등)
-    text = text.replace(/^\s*\[?(서다현|이준호|정민철)\]?\s*[:：\-—]\s*/, '').trim();
+    // 모델이 응답 맨 앞에 자기 이름표를 붙이면 제거 ("서다현:", "[이준호]", "한서준 -" 등)
+    const names = (PERSONAS || []).map(p => p.name).filter(Boolean)
+      .map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    if (names.length) {
+      text = text.replace(new RegExp(`^\\s*\\[?(${names.join('|')})\\]?\\s*[:：\\-—]\\s*`), '').trim();
+    }
     const svg = svgRaw ? sanitizeSvg(svgRaw) : '';
     removeTypingMessage(persona.id);
     const msg = {
@@ -3222,11 +4012,12 @@ async function runPersonaTurn(persona, instruction, opts = {}) {
   }
 }
 
+/* ---- 회의 시작 — 주제 확정 · 전문가 배정 · 첫 라운드 ---- */
 async function startMeeting() {
   if (state.inProgress) return;
   const agenda = $('#agendaInput').value.trim();
   if (!agenda) {
-    toast('아이디어를 입력해주세요', true);
+    toast('주제를 입력해주세요', true);
     return;
   }
   if (!state.apiKey) {
@@ -3242,56 +4033,144 @@ async function startMeeting() {
   state.followups = [];
   state.memo = '';
   state.summary = '';
+  state.minutes = '';
+  state.actionsDone = [];
+  state.rounds = getRounds(state.mode, state.quick);
+  state.roundIndex = 0;
+  state.followupTarget = 'auto';
   state.sessionId = 'sess_' + Date.now();
   $('#btnStart').disabled = true;
-  $('#btnStart').textContent = '회의 시작 중...';
+  $('#btnStart').textContent = '전문가 배정 중...';
+
+  // 전문가 석 자동 배정 — 키워드 우선, 안 걸리면 짧은 분류 콜 1회
+  const picked = pickExpert(agenda);
+  let expert = {
+    id: picked.expert.id, name: picked.expert.name, title: picked.expert.title,
+    tag: picked.expert.tag, focus: picked.expert.focus,
+    keywords: picked.expert.keywords || [], draws: !!picked.expert.draws
+  };
+  if (picked.score === 0) {
+    const refined = await refineExpertTitle(agenda);
+    if (refined) {
+      expert.title = refined;
+      expert.tag = 'DOMAIN EXPERT';
+      expert.focus = `${refined}로서의 실무 지식 — 이 분야 사람들이 실제로 쓰는 기준·용어·관행·함정.`;
+    }
+  }
+  state.expert = expert;
+  buildPanel({ topic: agenda, modeId: state.mode, quick: state.quick, expert: expert });
 
   // 화면 전환
   $('#startScreen').hidden = true;
   $('#chatScreen').hidden = false;
-  $('#summarySection').hidden = false;
+  $('#minutesSection').hidden = false;
   $('#memoSection').hidden = false;
   $('#chatAgenda').textContent = agenda;
   $('#memoInput').value = '';
-  $('#summaryContent').innerHTML = '<p class="summary-empty">회의가 끝났으면 <b>+ 종합 정리 생성</b>을 눌러 의견을 한 페이지로 정리하세요.</p>';
+  resetMinutesView();
   clearChat();
   renderParticipants();
+  renderRoundBar();
 
-  // 사용자 메시지
+  // 사용자 메시지 (주제)
   const userMsg = { id: 'msg_user_' + Date.now(), type: 'user', content: agenda, ts: Date.now() };
   state.messages.push(userMsg);
   appendMessage(userMsg);
 
-  const director = PERSONAS.find(p => p.id === 'director');
-  const maker = PERSONAS.find(p => p.id === 'maker');
-  const strategist = PERSONAS.find(p => p.id === 'strategist');
+  $('#btnStart').textContent = '회의 진행 중...';
+  toast(`전문가 석: ${expert.name} · ${expert.title}`);
 
+  state.inProgress = false;   // runRound 가 다시 잡는다
   try {
-    // 1. 서다현 — 컨셉·트렌드로 운을 뗌
-    await runPersonaTurn(director,
-      'Juns가 방금 주제를 던졌어. 동료 이준호(메이커)·정민철(전략가)과 함께하는 회의야. 네가 먼저 컨셉·트렌드 관점에서 운을 떼. 지금 이게 왜 흥미로운지, 어떤 방향이 뜨는지 구체적인 사례(실제 브랜드·작가·작품 이름)와 함께. 마지막에 이준호한테 "이거 만들 수 있어?" 같이 공을 넘겨. 3~5문장으로, 대화하듯.');
-
-    if (state.provider === 'groq') await sleep(1000);
-
-    // 2. 이준호 — 서다현 말을 직접 받아 공정·재료 관점
-    await runPersonaTurn(maker,
-      '바로 위에서 서다현이 한 말을 읽고, 그 말에 직접 반응해. "서다현 말처럼 OO은 좋은데", "근데 그거 만들려면..." 식으로 동료 말을 인용하며 공정·재료 관점으로 받아쳐. 동의할 건 동의하되 현실적 제약이나 더 나은 방법을 반드시 하나는 보태. 마지막에 정민철(전략가)이나 Juns에게 공을 넘겨도 좋아. 3~5문장, 대화하듯.');
-
-    if (state.provider === 'groq') await sleep(1000);
-
-    // 3. 정민철 — 사업·수익 관점으로 검증, 마지막에 Juns에게 질문
-    await runPersonaTurn(strategist,
-      '서다현(컨셉)·이준호(공정) 얘기를 다 들었어. 사업 전략가로서 받아쳐. "그래서 이거 누가, 얼마에 사? 마진 남아?"를 구체적인 숫자·타겟·판매 채널로 짚어. 안 팔릴 것 같으면 무조건 까지 말고 "이렇게 비틀면 팔린다"는 길을 같이 제시해. 동료 말을 직접 인용하며 받아치고, 마지막에 Juns에게 다음 방향을 묻는 짧은 질문 하나를 던져 대화가 이어지게 해. 3~5문장.');
-
-    autoSave();
-    toast('회의 시작 — 이어서 대화창에 자유롭게 말 걸어보세요');
+    await runRound(state.rounds[0]);
   } finally {
-    state.inProgress = false;
     $('#btnStart').disabled = false;
     $('#btnStart').textContent = '회의 시작 →';
     $('#btnNewMeetingTop').hidden = false;
-    $('#followupInput').focus();
+    const fi = $('#followupInput');
+    if (fi) fi.focus();
   }
+}
+
+/* ---- 라운드 1회 실행 ---- */
+async function runRound(roundKey) {
+  const def = ROUND_DEFS[roundKey];
+  if (!def) return;
+  if (state.inProgress) { toast('진행 중입니다', true); return; }
+  if (!state.apiKey) {
+    toast('SETTINGS에서 API key를 먼저 입력해주세요', true);
+    openModal('modalSettings');
+    return;
+  }
+  ensurePanel();
+
+  // 결론 라운드 = 회의록 합성
+  if (def.synthesize) {
+    const ok = await generateMinutes({ fromRound: true });
+    if (ok) {
+      state.roundIndex = Math.min(state.roundIndex + 1, state.rounds.length);
+      renderRoundBar();
+      autoSave();
+    }
+    return;
+  }
+
+  const participants = roundParticipants(roundKey);
+  if (participants.length === 0) return;
+
+  state.inProgress = true;
+  renderRoundBar();
+  appendRoundDivider(def.label);
+
+  const mode = getMode(state.mode);
+  try {
+    for (let i = 0; i < participants.length; i++) {
+      const persona = participants[i];
+      const pos = i === 0 ? 'first' : (i === participants.length - 1 ? 'last' : 'mid');
+      const ctx = {
+        topic: state.agenda, mode: mode, persona: persona,
+        panel: PERSONAS, pos: pos, chair: APP.chair
+      };
+      await runPersonaTurn(persona, def.instruction(ctx));
+      if (state.provider === 'groq' && i < participants.length - 1) await sleep(1000);
+    }
+    state.roundIndex = Math.min(state.roundIndex + 1, state.rounds.length);
+    autoSave();
+    const nextKey = state.rounds[state.roundIndex];
+    if (nextKey) {
+      const nextDef = ROUND_DEFS[nextKey];
+      toast(`${def.label} 라운드 끝 — 다음은 ${nextDef ? nextDef.label : ''}. 중간에 자유롭게 말 걸어도 됩니다`);
+    } else {
+      toast(`${def.label} 라운드 끝`);
+    }
+  } finally {
+    state.inProgress = false;
+    renderRoundBar();
+  }
+}
+
+// 라운드 바 "다음 라운드" 버튼
+async function runNextRound() {
+  if (state.inProgress) return;
+  if (!state.rounds || state.rounds.length === 0) {
+    state.rounds = getRounds(state.mode, state.quick);
+  }
+  const key = state.rounds[state.roundIndex];
+  if (!key) { toast('모든 라운드가 끝났습니다'); return; }
+  await runRound(key);
+}
+
+// 채팅 흐름에 라운드 구분선 삽입
+function appendRoundDivider(label) {
+  const container = $('#chatMessages');
+  if (!container) return;
+  const el = document.createElement('div');
+  el.className = 'chat-participants';
+  el.style.margin = '6px 0 2px';
+  el.style.borderBottom = 'none';
+  el.style.padding = '0';
+  el.innerHTML = `<span class="cp-label">ROUND · ${escapeHtml(label)}</span><span class="line" style="flex:1;height:1px;background:var(--line-soft)"></span>`;
+  container.appendChild(el);
 }
 
 /* ============ VOICE INPUT (Web Speech Recognition) ============ */
@@ -3464,21 +4343,22 @@ function _speakUtterance(text, btnSelector, personaId) {
 
 /* ============ FOLLOW-UP MODE ============ */
 
-// 키워드 기반 자동 라우팅 (2명)
-const ROUTING_KEYWORDS = {
-  director: ['컨셉', '트렌드', '디자인', '스타일', '미감', '느낌', '분위기', '캐릭터', '세계관', '브랜드', '아이디어', '컬러', '색', '무드', '레퍼런스', '인기', '유행', '요즘', '감성', '스토리'],
-  maker: ['공정', '제작', '만들', '소재', '재료', '출력', '사출', 'CNC', 'FDM', 'SLA', 'SLS', '프린팅', '실리콘', '캐스팅', 'TPU', 'PLA', 'ABS', 'PETG', 'ASA', '레진', '금형', '후처리', '도색', '몰드', '양산', '품질', '강도', '내구성', '도면', '단계', '순서'],
-  strategist: ['단가', '가격', '마진', '시장', '판매', '수익', '매출', '원가', '비용', '얼마', '타겟', '고객', '수요', '경쟁', '포지셔닝', '사업', '수량', '전략', '채널', '유통', '펀딩', '예약판매', '선주문', '한정판', '객단가', '가성비', '손익', '파는', '팔리', '팔까', '팔아', '돈', '수수료']
-};
-
+// 키워드 기반 자동 라우팅 — 사전은 CONFIG 의 ROUTING_KEYWORDS,
+// 전문가 석 키워드는 배정된 전문가에서 런타임에 합쳐진다.
 function routePersona(question) {
-  const q = question.toLowerCase();
+  const q = String(question || '').toLowerCase();
+  ensurePanel();
+  const table = Object.assign({}, ROUTING_KEYWORDS);
+  const expert = PERSONAS.find(p => p.id === 'expert');
+  if (expert && expert.keywords && expert.keywords.length) {
+    table.expert = expert.keywords;
+  }
   const scores = {};
-  Object.entries(ROUTING_KEYWORDS).forEach(([id, kws]) => {
-    scores[id] = kws.filter(kw => q.includes(kw.toLowerCase())).length;
+  Object.entries(table).forEach(([id, kws]) => {
+    scores[id] = kws.filter(kw => q.includes(String(kw).toLowerCase())).length;
   });
   const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-  return sorted[0][1] > 0 ? sorted[0][0] : null;
+  return (sorted.length && sorted[0][1] > 0) ? sorted[0][0] : null;
 }
 
 async function sendFollowup() {
@@ -3499,29 +4379,29 @@ async function sendFollowup() {
   $('#btnFollowupSend').disabled = true;
   $('#btnFollowupSend').textContent = '...';
 
-  // 라우팅 — 누가 답할지 (3인)
-  const ORDER = ['director', 'maker', 'strategist'];
-  const all3 = () => ORDER.map(id => PERSONAS.find(p => p.id === id));
+  // 라우팅 — 누가 답할지 (패널 전원 기준)
+  ensurePanel();
   let targetPersonas = [];
   if (state.followupTarget === 'auto') {
     const routed = routePersona(question);
-    // 자동: 매칭되면 그 사람 먼저, 나머지 둘이 받아침. 매칭 안 되면 기본 순서 3명.
+    // 자동: 매칭되면 그 사람이 먼저, 나머지가 받아침. 매칭 안 되면 매번 2명만 (콜 절감).
     if (routed) {
       const main = PERSONAS.find(p => p.id === routed);
       const others = PERSONAS.filter(p => p.id !== routed);
-      targetPersonas = [main, ...others];
+      targetPersonas = [main, ...others.slice(0, 1)];
     } else {
-      targetPersonas = all3();
+      targetPersonas = PERSONAS.slice(0, 2);
     }
   } else if (state.followupTarget === 'all') {
-    targetPersonas = all3();
+    targetPersonas = PERSONAS.slice();
   } else {
     targetPersonas = [PERSONAS.find(p => p.id === state.followupTarget)];
   }
   targetPersonas = targetPersonas.filter(Boolean);
 
-  // 메이커가 공정 질문을 받으면 SVG 다이어그램 모드
+  // 프로세스 질문이면 담당자가 다이어그램을 그린다
   const wantSvg = isProcessQuestion(question);
+  const drawerId = diagramDrawerId();
 
   // 사용자 메시지 추가
   const userMsg = { id: 'msg_user_' + Date.now(), type: 'user', content: question, ts: Date.now() };
@@ -3534,15 +4414,15 @@ async function sendFollowup() {
       const isLast = (i === targetPersonas.length - 1);
       let instruction;
       if (i === 0) {
-        instruction = 'Juns가 방금 한 말에 너답게 바로 반응해. 질문이면 답하고, 새 방향이면 같이 발전시켜. 실제 브랜드·작가·기법·가격·사례를 구체적으로. 3~5문장, 대화하듯.';
+        instruction = `${APP.chair}가 방금 한 말에 너답게 바로 반응해. 질문이면 답하고, 새 방향이면 같이 발전시켜. 이 업종의 실제 사례·이름·방법·수치를 구체적으로. 3~5문장, 대화하듯.`;
       } else {
         instruction = '바로 위에서 동료가 한 말을 직접 인용하며 받아쳐. "OO 말처럼", "근데 그건" 식으로 동료 발언에 반응하는 게 핵심. 동의·보완·반박 다 좋되, 네 전문 분야에서 최소 한 가지 다른 각도를 보태. 같은 얘기 반복 금지. 3~5문장.';
       }
-      // 마지막 발언자는 Juns에게 다음을 묻는 질문으로 끝내서 대화가 이어지게
+      // 마지막 발언자는 의장에게 다음을 묻는 질문으로 끝내서 대화가 이어지게
       if (isLast) {
-        instruction += ' 그리고 마지막에 Juns에게 다음 방향을 묻는 짧은 질문 하나를 던져서 대화가 계속 이어지게 해.';
+        instruction += ` 그리고 마지막에 ${APP.chair}에게 다음 방향을 묻는 짧은 질문 하나를 던져서 대화가 계속 이어지게 해.`;
       }
-      const svgMode = (persona.id === 'maker') && wantSvg;
+      const svgMode = (persona.id === drawerId) && wantSvg;
       await runPersonaTurn(persona, instruction, { svgMode });
       if (state.provider === 'groq' && i < targetPersonas.length - 1) await sleep(1000);
     }
@@ -3554,6 +4434,7 @@ async function sendFollowup() {
     $('#btnFollowupSend').disabled = false;
     $('#btnFollowupSend').textContent = '→';
     $('#followupInput').focus();
+    renderRoundBar();
   }
 }
 
@@ -3576,13 +4457,12 @@ function buildMeetingScript() {
 
   state.messages.forEach(m => {
     if (m.type === 'user') {
-      items.push({ text: 'Juns. ' + clean(m.content) });
+      items.push({ text: `${APP.chair}. ` + clean(m.content) });
     } else if (m.type === 'persona') {
-      const p = PERSONAS.find(x => x.id === m.personaId);
-      const name = p ? p.name : m.personaId;
+      const name = resolvePersona(m.personaId).name;
       let txt = m.content || (m.parsed && (m.parsed.FACTS || m.parsed.RAW)) || '';
       txt = clean(txt);
-      if (!txt && m.svg) txt = '공정 다이어그램으로 설명했습니다';
+      if (!txt && m.svg) txt = '프로세스 다이어그램으로 설명했습니다';
       if (txt && !txt.startsWith('⚠')) {
         items.push({ text: `${name}. ${txt}` });
       }
@@ -3590,7 +4470,7 @@ function buildMeetingScript() {
   });
 
   if (state.memo && state.memo.trim()) {
-    items.push({ text: 'Juns의 메모. ' + state.memo.trim() });
+    items.push({ text: `${APP.chair}의 메모. ` + state.memo.trim() });
   }
   return items;
 }
@@ -3679,43 +4559,52 @@ function playMeeting() {
 }
 
 /* ============ EXPORT MARKDOWN ============ */
+// 회의록 + 대화 전문(messages 기준). v1의 facts 형식 세션도 함께 처리한다.
+function buildMeetingMarkdown() {
+  const date = new Date().toISOString().slice(0, 10);
+  const mode = getMode(state.mode);
+  const expert = state.expert;
+  let md = `# Vela Compass 회의록\n\n`;
+  md += `> ${date} · ${mode.label} 회의 · vela-compass v${APP.version}\n\n`;
+  md += `## 주제\n\n${state.agenda}\n\n`;
+  md += `## 패널\n\n`;
+  md += CORE_PERSONAS.map(p => `- ${p.name} — ${p.role}`).join('\n') + '\n';
+  if (expert) md += `- ${expert.name} — ${expert.title} (전문가 석)\n`;
+  md += '\n';
+
+  if (state.minutes && state.minutes.trim()) {
+    md += `---\n\n${state.minutes.trim()}\n\n`;
+  } else if (state.summary && state.summary.trim()) {
+    md += `---\n\n${state.summary.trim()}\n\n`;
+  }
+
+  md += `---\n\n## 대화 전문\n\n`;
+  if (state.messages && state.messages.length) {
+    state.messages.forEach(m => {
+      if (m.type === 'user') {
+        md += `**${APP.chair}**\n\n${m.content}\n\n`;
+      } else if (m.type === 'persona') {
+        const p = resolvePersona(m.personaId);
+        const txt = m.content || (m.parsed && (m.parsed.FACTS || m.parsed.RAW)) || '';
+        if (!txt) return;
+        md += `**${p.name}** _(${p.role || p.tag})_\n\n${txt}\n\n`;
+      }
+    });
+  } else {
+    md += `(대화 없음)\n\n`;
+  }
+
+  md += `---\n\n## ${APP.chair}의 메모\n\n${state.memo || '(작성되지 않음)'}\n`;
+  return md;
+}
+
 function exportMarkdown() {
   if (!state.agenda) {
     toast('내보낼 회의가 없습니다', true);
     return;
   }
   const date = new Date().toISOString().slice(0, 10);
-  let md = `# Vela Compass Factsheet\n\n`;
-  md += `> ${date} · vela-boardroom ${VERSION}\n\n`;
-  md += `## Agenda\n\n${state.agenda}\n\n`;
-  md += `---\n\n## Factsheet\n\n`;
-
-  PERSONAS.forEach(p => {
-    const r = state.facts[p.id];
-    md += `### ${p.tag} · ${p.name}\n_${p.role}_\n\n`;
-    if (!r) { md += `(응답 없음)\n\n`; return; }
-    if (r.FACTS) {
-      md += r.FACTS + '\n\n';
-    } else if (r.RAW) {
-      md += r.RAW + '\n\n';
-    }
-  });
-
-  // 후속 질문/응답
-  if (state.followups && state.followups.length > 0) {
-    md += `---\n\n## Follow-up\n\n`;
-    state.followups.forEach((f, i) => {
-      md += `### Q${i + 1}. ${f.question}\n\n`;
-      (f.answers || []).forEach(a => {
-        const p = PERSONAS.find(x => x.id === a.personaId);
-        const name = p ? `${p.name} (${p.tag})` : a.personaId;
-        md += `**→ ${name}**\n\n${a.text}\n\n`;
-      });
-    });
-  }
-
-  md += `---\n\n## Memo by the Chair (Juns)\n\n${state.memo || '(작성되지 않음)'}\n`;
-
+  const md = buildMeetingMarkdown();
   const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -3784,11 +4673,20 @@ function autoSave() {
     date: idx >= 0 ? sessions[idx].date : now,
     lastUpdated: now,
     agenda: state.agenda,
-    messages: state.messages || [],   // 새 채팅 형식
-    facts: state.facts || {},         // 옛 호환
+    messages: state.messages || [],   // 채팅 형식
+    facts: state.facts || {},         // 옛 호환 (v0.9 이전)
     followups: state.followups || [], // 옛 호환
     memo: state.memo || '',
-    summary: state.summary || ''      // 회의 종합 정리
+    summary: state.summary || '',     // 옛 호환 (v1 종합 정리)
+    // ---- v2.0 ----
+    v: 2,
+    mode: state.mode,
+    quick: !!state.quick,
+    rounds: state.rounds || [],
+    roundIndex: state.roundIndex || 0,
+    expert: state.expert || null,
+    minutes: state.minutes || '',
+    actionsDone: state.actionsDone || []
   };
   if (idx >= 0) sessions[idx] = record;
   else sessions.unshift(record);
@@ -3838,16 +4736,19 @@ function renderSessionsList() {
     list.innerHTML = `
       <div class="sessions-empty">
         <div class="sessions-empty-title">저장된 회의가 없습니다</div>
-        <div class="sessions-empty-sub">회의를 시작하면 자동으로 저장됩니다.<br>안건 입력 + 회의 시작 시점에 첫 저장 발생.</div>
+        <div class="sessions-empty-sub">회의를 시작하면 자동으로 저장됩니다.<br>주제 입력 + 회의 시작 시점에 첫 저장 발생.</div>
       </div>
     `;
     return;
   }
   list.innerHTML = sessions.map(s => {
     const updated = s.lastUpdated || s.date;
-    const factsCount = Object.keys(s.facts || {}).length;
-    const followupsCount = (s.followups || []).length;
+    const msgCount = (s.messages || []).filter(m => m.type === 'persona').length;
+    const isV2 = s.v === 2;
+    const modeLabel = isV2 ? getMode(s.mode).label : '이전 형식';
+    const expertLabel = (isV2 && s.expert) ? s.expert.title : '';
     const hasMemo = !!(s.memo && s.memo.trim());
+    const hasMinutes = !!((s.minutes && s.minutes.trim()) || (s.summary && s.summary.trim()));
     const isCurrent = state.sessionId === s.id;
     return `
       <div class="session-item${isCurrent ? ' current' : ''}" data-id="${s.id}">
@@ -3858,8 +4759,10 @@ function renderSessionsList() {
         </div>
         <div class="session-preview">${escapeHtml(s.agenda)}</div>
         <div class="session-meta">
-          ${factsCount > 0 ? `<span>팩트시트 ${factsCount}/4</span>` : ''}
-          ${followupsCount > 0 ? `<span>· 후속 ${followupsCount}개</span>` : ''}
+          <span>${escapeHtml(modeLabel)}</span>
+          ${expertLabel ? `<span>· ${escapeHtml(expertLabel)}</span>` : ''}
+          ${msgCount > 0 ? `<span>· 발언 ${msgCount}개</span>` : ''}
+          ${hasMinutes ? '<span>· 회의록 ✓</span>' : ''}
           ${hasMemo ? '<span>· 메모 ✓</span>' : ''}
           ${isCurrent ? '<span class="badge-current">· 현재</span>' : ''}
         </div>
@@ -3881,23 +4784,59 @@ function renderSessionsList() {
   });
 }
 
+// v1.x 세션(모드·전문가·라운드 없음)을 v2 구조로 흡수
+function migrateSession(s) {
+  const m = Object.assign({}, s);
+  if (m.v !== 2) {
+    m.v = 1;
+    m.mode = m.mode || MEETING_MODES[0].id;
+    m.quick = false;
+    m.rounds = [];
+    m.roundIndex = 0;
+    m.expert = null;
+    m.minutes = '';
+    m.actionsDone = [];
+  }
+  return m;
+}
+
 function loadSession(id, opts = {}) {
   const sessions = loadSessions();
-  const s = sessions.find(x => x.id === id);
-  if (!s) return;
+  const raw = sessions.find(x => x.id === id);
+  if (!raw) return;
+  const s = migrateSession(raw);
   state.sessionId = s.id;
   state.agenda = s.agenda || '';
-  state.messages = s.messages || []; // 새 형식
+  state.messages = s.messages || []; // 채팅 형식
   state.facts = s.facts || {};
   state.followups = s.followups || [];
   state.memo = s.memo || '';
   state.summary = s.summary || '';
   state.lastSavedAt = s.lastUpdated || s.date;
+  // v2 필드
+  state.mode = s.mode || MEETING_MODES[0].id;
+  state.quick = !!s.quick;
+  state.rounds = (s.rounds && s.rounds.length) ? s.rounds : getRounds(state.mode, state.quick);
+  state.roundIndex = Math.min(s.roundIndex || 0, state.rounds.length);
+  state.expert = s.expert || null;
+  state.minutes = s.minutes || '';
+  state.actionsDone = s.actionsDone || [];
+  state.followupTarget = 'auto';
+
+  // 패널 재조립 — 저장된 전문가로 (없으면 주제로 다시 배정)
+  const expertDef = state.expert || pickExpert(state.agenda).expert;
+  if (!state.expert) {
+    state.expert = {
+      id: expertDef.id, name: expertDef.name, title: expertDef.title, tag: expertDef.tag,
+      focus: expertDef.focus, keywords: expertDef.keywords || [], draws: !!expertDef.draws
+    };
+  }
+  buildPanel({ topic: state.agenda, modeId: state.mode, quick: state.quick, expert: state.expert });
 
   // 화면 전환
   $('#startScreen').hidden = true;
   $('#chatScreen').hidden = false;
-  $('#summarySection').hidden = false;
+  $('#minutesSection').hidden = false;
   $('#memoSection').hidden = false;
   $('#chatAgenda').textContent = state.agenda;
   $('#agendaInput').value = state.agenda;
@@ -3906,6 +4845,7 @@ function loadSession(id, opts = {}) {
   // 채팅 메시지 복원
   clearChat();
   renderParticipants();
+  renderRoundBar();
   if (state.messages && state.messages.length > 0) {
     // 새 형식 (messages 배열)
     state.messages.forEach(msg => {
@@ -3951,11 +4891,13 @@ function loadSession(id, opts = {}) {
     });
   }
 
-  // 요약 복원
-  if (state.summary) {
-    renderSummary(state.summary);
+  // 회의록 복원 (v1 세션은 옛 summary 를 회의록 자리에 렌더)
+  if (state.minutes) {
+    renderMinutes(state.minutes);
+  } else if (state.summary) {
+    renderMinutes(state.summary, { legacy: true });
   } else {
-    $('#summaryContent').innerHTML = '<p class="summary-empty">회의가 끝났으면 <b>+ 종합 정리 생성</b>을 눌러 4명 의견을 한 페이지로 정리하세요.</p>';
+    resetMinutesView();
   }
 
   $('#btnNewMeetingTop').hidden = false;
@@ -3975,6 +4917,13 @@ function newSession() {
   state.followups = [];
   state.memo = '';
   state.summary = '';
+  state.minutes = '';
+  state.actionsDone = [];
+  state.rounds = getRounds(state.mode, state.quick);
+  state.roundIndex = 0;
+  state.expert = null;
+  state.followupTarget = 'auto';
+  PERSONAS = [];
   state.sessionId = null;
   state.lastSavedAt = null;
   $('#agendaInput').value = '';
@@ -3983,125 +4932,266 @@ function newSession() {
   // 화면 전환 — 채팅 → 시작
   $('#startScreen').hidden = false;
   $('#chatScreen').hidden = true;
-  $('#summarySection').hidden = true;
+  $('#minutesSection').hidden = true;
   $('#memoSection').hidden = true;
   $('#btnStart').textContent = '회의 시작 →';
   $('#btnNewMeetingTop').hidden = true;
+  const rb = $('#roundBar');
+  if (rb) rb.hidden = true;
+  renderModeGrid();
+  updateCostNote();
   clearChat();
   updateAutoSaveIndicator();
   window.scrollTo({ top: 0, behavior: 'smooth' });
   $('#agendaInput').focus();
 }
 
-/* ============ 종합 정리 생성 ============ */
-async function generateSummary() {
-  if (state.inProgress) { toast('다른 작업 진행 중', true); return; }
+/* ============ 회의록 (결론 + 액션 아이템 3개 + 공유) ============ */
+
+// 회의록 출력 스키마 — 형식이 고정이라 파싱이 안전하다
+const MINUTES_SCHEMA = `## 결론
+(2~3문장. 회의가 실제로 도달한 지점. 두루뭉술한 요약 금지.)
+
+## 액션 아이템
+1. [담당 관점] 무엇을 한다 — 언제까지
+2. [담당 관점] 무엇을 한다 — 언제까지
+3. [담당 관점] 무엇을 한다 — 언제까지
+
+## 남은 쟁점
+- 합의되지 않은 지점 1~2개 (없으면 "없음")
+
+## 다음 회의 안건
+(한 줄)`;
+
+async function generateMinutes(opts = {}) {
+  if (state.inProgress && !opts.fromRound) { toast('다른 작업 진행 중', true); return false; }
   if (!state.messages || state.messages.length < 2) {
     toast('회의 내용이 충분하지 않습니다', true);
-    return;
+    return false;
   }
   if (!state.apiKey) {
     toast('API key 필요', true);
     openModal('modalSettings');
-    return;
+    return false;
   }
 
+  const wasInProgress = state.inProgress;
   state.inProgress = true;
-  const btn = $('#btnGenerateSummary');
+  renderRoundBar();
+  const btn = $('#btnGenerateMinutes');
   if (btn) { btn.disabled = true; btn.textContent = '생성 중...'; }
-  $('#summaryContent').innerHTML = '<p class="summary-empty">종합 정리 생성 중… <span class="typing-dots"><span></span><span></span><span></span></span></p>';
+  $('#minutesContent').innerHTML = '<p class="summary-empty">회의록 정리 중… <span class="typing-dots"><span></span><span></span><span></span></span></p>';
 
-  // 회의 내용 텍스트로 변환 (대화 그대로)
   const meetingText = state.messages.map(m => {
-    if (m.type === 'user') return `[Juns]\n${m.content}\n`;
+    if (m.type === 'user') return `[${APP.chair}]\n${m.content}\n`;
     if (m.type === 'persona') {
-      const p = PERSONAS.find(x => x.id === m.personaId);
-      const name = p ? p.name : m.personaId;
+      const p = resolvePersona(m.personaId);
       const txt = m.content || (m.parsed && (m.parsed.FACTS || m.parsed.RAW)) || '';
-      return `[${name}]\n${txt}\n`;
+      if (!txt || txt.startsWith('⚠')) return '';
+      return `[${p.name} · ${p.role || p.tag}]\n${txt}\n`;
     }
     return '';
-  }).join('\n');
+  }).filter(Boolean).join('\n');
 
-  const summarySystem = `당신은 창작자·1인 사업자의 회의 대화를 한 페이지로 깔끔히 정리하는 큐레이터입니다.
-서다현(크리에이티브 디렉터)과 이준호(메이커)가 Juns와 나눈 회의 대화를 받아 정리합니다.
-한국어로만, 외국어 단어 금지. Juns가 회의 후 보고 바로 행동할 수 있게 명료하게.
+  const mode = getMode(state.mode);
+  const expert = state.expert;
+  const minutesSystem = `당신은 회의록 담당자입니다. 아래 회의 대화를 읽고 ${APP.chair}가 회의 직후 바로 움직일 수 있는 회의록을 씁니다.
 
-[출력 형식 — 마크다운]
-## 주제
-무엇을 논의했는지 1~2문장
+[회의 정보]
+- 주제: 『${state.agenda}』
+- 형식: ${mode.label} 회의
+- 패널: ${CORE_PERSONAS.map(p => `${p.name}(${p.role})`).join(', ')}${expert ? `, ${expert.name}(${expert.title})` : ''}
 
-## 핵심 결론
-- 회의에서 모인 가장 중요한 방향 3~5개 (bullet)
+[규칙]
+- 한국어로만. 외국어 단어·한자 금지.
+- 회의에서 실제로 나온 내용만 쓴다. 없는 얘기를 지어내지 마라.
+- 액션 아이템은 정확히 3개. 각각 "누가 어떤 관점에서, 무엇을, 언제까지"가 보이게. 실행 가능한 크기로 쪼개라.
+- "검토한다", "고민한다" 같은 모호한 동사 금지. 확인·작성·연락·측정·시제작 같은 구체 동사로.
+- 회의에서 반대가 있었으면 남은 쟁점에 솔직히 적는다. 억지로 합의된 것처럼 쓰지 마라.
 
-## 컨셉·디자인 (서다현)
-- 디렉터가 제안한 컨셉·트렌드·방향 핵심
-
-## 제작·실현 (이준호)
-- 메이커가 제안한 공정·재료·방법 핵심
-
-## 검색해볼 키워드
-실제 언급된 브랜드·작가·트렌드·기법 이름 6~10개 쉼표 구분
-
-## 다음 단계
-- Juns가 바로 할 만한 구체 액션 3~4개
-
-다른 텍스트·인사말 금지. 위 마크다운만 출력.`;
+[출력 형식 — 아래 마크다운만, 다른 텍스트·인사말 금지]
+${MINUTES_SCHEMA}`;
 
   try {
-    const result = await callLLM(summarySystem, `[회의 대화 전체]\n\n${meetingText}\n\n위 대화를 종합 정리하세요.`, { maxTokens: 1500 });
+    const result = await callLLM(minutesSystem,
+      `[회의 대화 전체]\n\n${meetingText}\n\n위 회의의 회의록을 쓰세요.`,
+      { maxTokens: 1500 });
     const cleaned = sanitizeKorean(result.text || '');
-    state.summary = cleaned;
-    renderSummary(cleaned);
+    if (!cleaned) throw new Error('빈 응답');
+    state.minutes = cleaned;
+    state.actionsDone = [];
+    renderMinutes(cleaned);
     autoSave();
-    toast('회의 종합 정리 완성');
+    toast('회의록 완성 — 공유하거나 마크다운으로 내보낼 수 있어요');
+    return true;
   } catch (err) {
     const friendly = err.message.length > 80 ? err.message.slice(0, 80) + '…' : err.message;
-    $('#summaryContent').innerHTML = `<p class="summary-empty" style="color:var(--c-warn)">⚠ ${escapeHtml(friendly)}</p>`;
+    $('#minutesContent').innerHTML = `<p class="summary-empty" style="color:var(--c-warn)">⚠ ${escapeHtml(friendly)}</p>`;
+    return false;
   } finally {
-    state.inProgress = false;
+    state.inProgress = opts.fromRound ? wasInProgress : false;
     if (btn) { btn.disabled = false; btn.textContent = '+ 다시 생성'; }
+    renderRoundBar();
   }
 }
 
-// 마크다운 → HTML 간단 변환 (h1/h2/h3, bold, list)
-function renderSummary(md) {
-  if (!md) {
-    $('#summaryContent').innerHTML = '<p class="summary-empty">아직 생성되지 않음</p>';
-    return;
-  }
-  let html = escapeHtml(md);
-  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  // 리스트 — 라인별
-  const lines = html.split('\n');
-  const out = [];
-  let inUl = false, inOl = false;
-  lines.forEach(line => {
-    if (/^\d+\.\s+/.test(line)) {
-      if (!inOl) { out.push('<ol>'); inOl = true; }
-      if (inUl) { out.push('</ul>'); inUl = false; }
-      out.push('<li>' + line.replace(/^\d+\.\s+/, '') + '</li>');
-    } else if (/^[-•]\s+/.test(line)) {
-      if (!inUl) { out.push('<ul>'); inUl = true; }
-      if (inOl) { out.push('</ol>'); inOl = false; }
-      out.push('<li>' + line.replace(/^[-•]\s+/, '') + '</li>');
-    } else {
-      if (inUl) { out.push('</ul>'); inUl = false; }
-      if (inOl) { out.push('</ol>'); inOl = false; }
-      if (line.trim() && !/^<[hl]/.test(line)) {
-        out.push('<p>' + line + '</p>');
-      } else if (line.trim()) {
-        out.push(line);
-      }
-    }
+/* ---- 회의록 파싱 — ## 섹션 단위 ---- */
+function parseMinutes(md) {
+  const out = { conclusion: '', actions: [], issues: [], next: '' };
+  if (!md) return out;
+  const sections = {};
+  let cur = null;
+  String(md).split('\n').forEach(line => {
+    const h = line.match(/^\s*#{1,3}\s*(.+?)\s*$/);
+    if (h) { cur = h[1].trim(); sections[cur] = []; return; }
+    if (cur) sections[cur].push(line);
   });
-  if (inUl) out.push('</ul>');
-  if (inOl) out.push('</ol>');
-  $('#summaryContent').innerHTML = out.join('\n');
-  $('#btnGenerateSummary').textContent = '+ 다시 생성';
+  const pick = (re) => {
+    const key = Object.keys(sections).find(k => re.test(k));
+    return key ? sections[key].join('\n').trim() : '';
+  };
+  out.conclusion = pick(/결론/);
+  out.next = pick(/다음\s*회의|다음\s*안건/);
+  const actionsRaw = pick(/액션|실행|할\s*일/);
+  out.actions = actionsRaw.split('\n')
+    .map(l => l.trim())
+    .filter(l => /^(\d+[.)]|[-•*])\s+/.test(l))
+    .map(l => l.replace(/^(\d+[.)]|[-•*])\s+/, '').trim())
+    .filter(Boolean)
+    .slice(0, 3);
+  const issuesRaw = pick(/쟁점|이슈|미합의/);
+  out.issues = issuesRaw.split('\n')
+    .map(l => l.trim().replace(/^([-•*]|\d+[.)])\s+/, '').trim())
+    .filter(l => l && !/^없음\.?$/.test(l));
+  // 파싱이 전부 실패하면 원문을 결론 자리에 그대로 둔다 (내용 유실 방지)
+  if (!out.conclusion && out.actions.length === 0) out.conclusion = String(md).trim();
+  return out;
+}
+
+function resetMinutesView() {
+  const el = $('#minutesContent');
+  if (!el) return;
+  el.innerHTML = '<p class="summary-empty">마지막 <b>결론</b> 라운드까지 진행하면 회의록이 자동으로 만들어집니다. 중간에 끊고 <b>+ 회의록 생성</b>을 눌러도 됩니다.</p>';
+  const btn = $('#btnGenerateMinutes');
+  if (btn) btn.textContent = '+ 회의록 생성';
+}
+
+function renderMinutes(md, opts = {}) {
+  const el = $('#minutesContent');
+  if (!el) return;
+  if (!md) { resetMinutesView(); return; }
+  const m = parseMinutes(md);
+  const mode = getMode(state.mode);
+  const date = formatSessionDate(state.lastSavedAt || new Date().toISOString());
+  ensurePanel();
+  const panelNames = PERSONAS.map(p => p.name).join(' · ');
+
+  const actionsHtml = m.actions.length
+    ? m.actions.map((a, i) => `
+        <label class="action-item${state.actionsDone[i] ? ' done' : ''}" data-idx="${i}">
+          <input type="checkbox" ${state.actionsDone[i] ? 'checked' : ''} />
+          <span class="ai-text">${escapeHtml(a)}</span>
+        </label>`).join('')
+    : '<p class="summary-empty">액션 아이템이 정리되지 않았습니다</p>';
+
+  el.innerHTML = `
+    <div class="minutes-card">
+      <div class="minutes-head">
+        <div class="minutes-topic">${escapeHtml(state.agenda)}</div>
+        <div class="minutes-meta">
+          <span>${escapeHtml(opts.legacy ? '이전 형식' : mode.label)}</span>
+          <span>${escapeHtml(date)}</span>
+          <span>${escapeHtml(panelNames)}</span>
+        </div>
+      </div>
+
+      <div class="minutes-block">
+        <div class="minutes-label">결론</div>
+        <div class="minutes-body">${renderChatMarkdown(m.conclusion || '(정리 없음)')}</div>
+      </div>
+
+      <div class="minutes-block">
+        <div class="minutes-label">액션 아이템</div>
+        ${actionsHtml}
+      </div>
+
+      ${m.issues.length ? `
+      <div class="minutes-block">
+        <div class="minutes-label">남은 쟁점</div>
+        <ul class="minutes-issues">${m.issues.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>
+      </div>` : ''}
+
+      ${m.next ? `
+      <div class="minutes-block">
+        <div class="minutes-label">다음 회의 안건</div>
+        <div class="minutes-body">${renderChatMarkdown(m.next)}</div>
+      </div>` : ''}
+
+      <div class="minutes-share">
+        <button type="button" data-share="share">↗ 공유</button>
+        <button type="button" data-share="copy">⧉ 복사</button>
+        <button type="button" data-share="md">↓ 마크다운</button>
+      </div>
+    </div>
+  `;
+
+  // 액션 체크 상태 저장
+  el.querySelectorAll('.action-item').forEach(item => {
+    const cb = item.querySelector('input');
+    cb.addEventListener('change', () => {
+      const idx = parseInt(item.dataset.idx, 10);
+      state.actionsDone[idx] = cb.checked;
+      item.classList.toggle('done', cb.checked);
+      autoSave();
+    });
+  });
+
+  // 공유 버튼
+  el.querySelectorAll('[data-share]').forEach(btn => {
+    btn.addEventListener('click', () => shareMinutes(btn.dataset.share));
+  });
+
+  const gen = $('#btnGenerateMinutes');
+  if (gen) gen.textContent = '+ 다시 생성';
+}
+
+/* ---- 공유 — 네이티브 공유 → 클립보드 → 마크다운 ---- */
+function buildMinutesShareText() {
+  const m = parseMinutes(state.minutes || state.summary || '');
+  const mode = getMode(state.mode);
+  let t = `[Vela Compass 회의록] ${state.agenda}\n`;
+  t += `${mode.label} 회의 · ${formatSessionDate(state.lastSavedAt || new Date().toISOString())}\n\n`;
+  if (m.conclusion) t += `■ 결론\n${m.conclusion}\n\n`;
+  if (m.actions.length) {
+    t += `■ 액션 아이템\n` + m.actions.map((a, i) => `${i + 1}. ${a}`).join('\n') + '\n\n';
+  }
+  if (m.issues.length) t += `■ 남은 쟁점\n` + m.issues.map(i => `- ${i}`).join('\n') + '\n\n';
+  if (m.next) t += `■ 다음 안건\n${m.next}\n`;
+  return t.trim();
+}
+
+async function shareMinutes(kind) {
+  if (!state.minutes && !state.summary) { toast('회의록이 아직 없습니다', true); return; }
+  if (kind === 'md') { exportMarkdown(); return; }
+
+  const text = buildMinutesShareText();
+  if (kind === 'share' && navigator.share) {
+    try {
+      await navigator.share({ title: 'Vela Compass 회의록', text: text });
+      return;
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;  // 사용자가 취소
+      /* 공유 실패 → 아래 복사로 폴백 */
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    toast('회의록이 클립보드에 복사됐습니다');
+  } catch (e) {
+    // 클립보드도 막힌 환경 — 마크다운 파일로
+    exportMarkdown();
+    toast('클립보드를 쓸 수 없어 마크다운으로 내보냈습니다');
+  }
 }
 
 /* ============ PWA INSTALL ============ */

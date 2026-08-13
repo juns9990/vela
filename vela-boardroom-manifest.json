@@ -2,7 +2,7 @@
   "id": "/vela/vela-compass",
   "name": "Vela Compass",
   "short_name": "Compass",
-  "description": "세 베테랑(컨셉·공정·사업)이 실시간으로 토론하며 1인 사업자의 아이디어를 검증하는 관전형 회의실 PWA.",
+  "description": "업종 무관 아이디어 회의실. 베테랑 3인(컨셉·실행·사업)에 주제별 전문가 1인이 붙어 발산·반박·수렴·결론 라운드로 토론하고 회의록까지 만들어주는 PWA.",
   "start_url": "./vela-boardroom-prototype.html",
   "scope": "./vela-boardroom-prototype.html",
   "display": "standalone",
@@ -46,13 +46,13 @@
     {
       "name": "새 회의",
       "short_name": "새 회의",
-      "description": "빈 안건으로 새 회의 시작",
+      "description": "빈 주제로 새 회의 시작",
       "url": "./vela-boardroom-prototype.html?action=new"
     },
     {
       "name": "음성 회의",
       "short_name": "음성 회의",
-      "description": "마이크 자동 활성화 + 안건 음성 입력",
+      "description": "마이크 자동 활성화 + 주제 음성 입력",
       "url": "./vela-boardroom-prototype.html?action=voice"
     },
     {
