@@ -1,6 +1,6 @@
 /* =============================================================
  * Vela Boardroom (Compass) — Service Worker
- * v2.0.0
+ * v2.1.0
  *
  * 전략:
  * - HTML + manifest.json은 network-first (즉시 업데이트 반영)
@@ -15,8 +15,8 @@
  *   (셸 해시가 바뀌면 이 sw.js 자체도 바뀌므로 SW 업데이트 감지도 함께 걸린다)
  * ============================================================= */
 
-const APP_VERSION = '2.0.0';
-const BUILD_ID = /* __BUILD_ID__ */ 'edc45679214c' /* __BUILD_ID_END__ */;
+const APP_VERSION = '2.1.0';
+const BUILD_ID = /* __BUILD_ID__ */ '094d95c84817' /* __BUILD_ID_END__ */;
 
 const CACHE_VERSION = `vela-boardroom-v${APP_VERSION}-${BUILD_ID}`;
 const STATIC_CACHE = `${CACHE_VERSION}-static`;

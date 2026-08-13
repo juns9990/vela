@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v2.0.0 — 아이디어 회의실</title>
-<meta name="description" content="Vela Compass — 어떤 업종이든 주제를 던지면 베테랑 3인 + 주제별 전문가 1인이 라운드제로 토론하고 회의록까지 만들어주는 회의실." />
+<title>Vela Compass v2.1.0 — 아이디어 단톡방</title>
+<meta name="description" content="Vela Compass — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=edc45679214c" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=094d95c84817" />
 <meta name="theme-color" content="#0a0a0b" />
 <meta name="color-scheme" content="dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -58,6 +58,9 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* hidden 속성은 항상 이긴다 — display:flex 를 준 요소가 hidden 을 무시하던 문제 방지 */
+  [hidden] { display: none !important; }
 
   html, body {
     background: var(--bg);
@@ -790,6 +793,7 @@
     border-color: var(--cyan);
   }
   .chat-mic {
+    position: static;   /* .btn-mic 의 absolute 를 되돌린다 — 입력줄 안에 그대로 놓인다 */
     width: 40px;
     height: 40px;
     background: transparent;
@@ -2149,6 +2153,53 @@
   }
   .expert-note b { color: var(--c-expert); font-weight: 500; }
 
+  /* ---- 방 알림 (입장/퇴장) ---- */
+  .msg-system {
+    display: flex;
+    justify-content: center;
+    margin: 4px 0;
+  }
+  .msg-system-chip {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    border-radius: 100px;
+    padding: 5px 14px;
+    text-align: center;
+    word-break: keep-all;
+  }
+  .msg-system-chip b { color: var(--c-expert); font-weight: 600; }
+
+  /* ---- 채팅 전용 레이아웃 (v2.1 단톡방) ---- */
+  body.chat-only main { padding-top: 26px; }
+  body.chat-only .chat-header { padding-top: 0; }
+  .chat-topic-empty { color: var(--text-faint); font-style: italic; font-weight: 400; }
+
+  .chat-empty {
+    text-align: center;
+    padding: 54px 20px 46px;
+    color: var(--text-faint);
+  }
+  .chat-empty-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+  .chat-empty-sub {
+    font-size: 13px;
+    line-height: 1.7;
+    word-break: keep-all;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  .chat-empty-sub b { color: var(--text-dim); font-weight: 500; }
+
   @media (max-width: 720px) {
     .mode-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .mode-card { padding: 12px 11px; }
@@ -2250,15 +2301,16 @@
     <!-- 회의 헤더 (안건 + 액션) -->
     <div class="chat-header">
       <div class="chat-header-text">
-        <span class="chat-label">§ 01 AGENDA</span>
-        <div class="chat-agenda" id="chatAgenda"></div>
+        <span class="chat-label">§ 01 TALK</span>
+        <div class="chat-agenda chat-topic-empty" id="chatAgenda">아무 얘기나 던져보세요</div>
       </div>
       <div class="chat-header-actions">
-        <button id="btnSaveMeetingTop" class="chat-icon-btn" type="button" title="이 회의 저장">💾</button>
-        <button id="btnPlayMeetingTop" class="chat-icon-btn" type="button" title="회의 전체 읽기">
+        <button id="btnSaveMeetingTop" class="chat-icon-btn" type="button" title="이 대화 저장">💾</button>
+        <button id="btnPlayMeetingTop" class="chat-icon-btn" type="button" title="대화 전체 읽기">
           <span class="play-icon">▶</span>
         </button>
-        <button id="btnNewMeetingTop" class="chat-icon-btn" type="button" title="새 회의" hidden>+</button>
+        <button id="btnExportTop" class="chat-icon-btn" type="button" title="마크다운으로 내보내기">↓</button>
+        <button id="btnNewMeetingTop" class="chat-icon-btn" type="button" title="새 대화" hidden>+</button>
       </div>
     </div>
 
@@ -2295,7 +2347,7 @@
       <textarea
         id="followupInput"
         class="chat-input"
-        placeholder="라운드 사이에 자유롭게 끼어드세요. 예) 그 방법 비용부터 다시 따져줘"
+        placeholder="아무 얘기나 편하게. 관련 있는 사람만 답합니다."
         rows="1"
       ></textarea>
       <button id="btnFollowupSend" class="btn-send" type="button" title="전송 (Enter) · 줄바꿈 (Shift+Enter)">→</button>
@@ -2341,7 +2393,7 @@
 </main>
 
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · v2.0.0 · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · <span id="creditVersion">v2.1.0</span> · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -2376,6 +2428,18 @@
 
     <label>Model</label>
     <select id="inputModel"></select>
+
+    <div style="margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line);">
+      <div class="modal-info" style="margin-bottom: 14px; color: var(--cyan); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;">
+        💬 대화 방식
+      </div>
+      <label>메시지당 최대 응답 인원</label>
+      <select id="inputMaxResponders"></select>
+      <div class="modal-info">
+        내 메시지 하나에 최대 몇 명까지 답할지. 관련 있는 사람만 답하므로 실제로는 이보다 적을 때가 많고,
+        가벼운 말엔 아무도 답하지 않기도 합니다. <b>인원이 곧 비용</b>입니다 (1명당 약 20원).
+      </div>
+    </div>
 
     <div style="margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line);">
       <div class="modal-info" style="margin-bottom: 14px; color: var(--cyan); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;">
@@ -2481,21 +2545,75 @@ const LLM_CONFIG = {
 };
 
 /* ═════════════════════════════════════════════════════════════
- *  CONFIG — 회의 모드 · 라운드 · 전문가 목록
+ *  CONFIG — 응답 규칙 · 전문가 목록 · (보존) 회의 모드/라운드
  *
- *  ★ 업종/모드/전문가 추가는 이 블록만 고치면 끝난다.
- *    · 모드 추가        → MEETING_MODES 에 한 줄
- *    · 라운드 순서 변경  → 모드의 rounds 배열
+ *  ★ 동작 조정은 이 블록만 고치면 끝난다.
+ *    · 기능 켜고 끄기    → FEATURES
+ *    · 응답 인원·확률    → CHAT_RULES
+ *    · 메시지 무게별 톤  → MESSAGE_WEIGHTS
  *    · 전문가 추가      → EXPERT_POOL 에 한 줄 (keywords 로 자동 배정됨)
+ *    · 모드/라운드      → MEETING_MODES / ROUND_DEFS (v2.0 자산, 지금은 꺼둠)
  * ═════════════════════════════════════════════════════════════ */
 
 const APP = {
-  version: '2.0.0',
-  chair: 'Juns',              // 의장(사용자) 표기명
-  costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 예상 비용 표기용
+  version: '2.1.0',
+  chair: 'Juns',              // 사용자 표기명
+  costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
 
-/* ---- ① 라운드 정의 ---------------------------------------------
+/* ---- ⓪ 기능 플래그 ----------------------------------------------
+ * v2.1 은 "단톡방" 모드다. 아래를 true 로 바꾸면 v2.0 회의 기능이 그대로 돌아온다.
+ * (코드는 전부 남아 있고, 플래그로만 가려둔 것이다)
+ * ---------------------------------------------------------------- */
+const FEATURES = {
+  startScreen: false,  // 주제 입력 + 회의 모드 선택 시작 화면
+  rounds: false,       // 발산→반박→수렴→결론 라운드 바 · 라운드제 진행
+  minutes: false,      // 회의록 카드 (결론 + 액션 아이템)
+  memo: false          // 하단 메모 섹션
+};
+
+/* ---- ⑦ 단톡방 응답 규칙 -----------------------------------------
+ * 전원이 순서대로 답하지 않는다. 할 말 있는 사람만 답한다.
+ * ---------------------------------------------------------------- */
+const CHAT_RULES = {
+  maxResponders: 2,          // 메시지당 기본 최대 응답 인원 (설정에서 1~3 조절)
+  hardMaxResponders: 3,      // 설정에서도 넘을 수 없는 상한
+  chainChance: 0.30,         // 동료 발언에 다른 동료가 이어 붙을 확률 (한 턴에 1회만)
+  replyDelayMs: [600, 1600], // 응답과 응답 사이 지연 (사람처럼 보이게)
+  chainDelayMs: [900, 2200], // 끼어들기 전 지연
+  recentSpeakerPenalty: 1.6, // 직전에 말한 사람 우선순위 감점 (같은 사람이 매번 먼저 답하지 않게)
+  randomJitter: 1.2,         // 점수에 섞는 무작위 폭 — 순서 고정 방지
+  relevanceWeight: 1.4,      // 키워드 1개당 점수. 감점(1.6)보다 낮게 둬서
+  relevanceCap: 3,           // 약한 관련(1개)은 순서 로테이션에 양보하고, 확실한 관련(2개+)은 이긴다
+  expertJoinScore: 2,        // 전문가가 입장하는 최소 관련도 점수
+  expertSwapMargin: 2,       // 전문가 교체는 현재보다 이만큼 더 관련 있어야
+  topicWindow: 3             // 주제 파악에 쓰는 최근 사용자 메시지 개수
+};
+
+/* ---- ⑧ 메시지 무게 — 몇 명이 어떤 톤으로 답할지 -------------------
+ * responders: [최소, 최대] · silence: 아무도 안 답할 확률
+ * tone: 그 무게일 때 응답자에게 주는 지시문
+ * ---------------------------------------------------------------- */
+const MESSAGE_WEIGHTS = {
+  filler: {
+    label: '리액션', responders: [0, 1], silence: 0.45,
+    tone: '가벼운 리액션이야. 한 줄로 짧게 받아쳐. 분석·조언·정리 절대 하지 마라. "ㅋㅋ 그러게", "ㅇㅇ 콜" 정도면 충분하다.'
+  },
+  casual: {
+    label: '잡담', responders: [1, 1], silence: 0.05,
+    tone: '가벼운 잡담이야. 한두 문장으로 편하게 받아. 갑자기 전문가 모드로 들어가지 마라. 궁금하면 되묻는 것도 좋다.'
+  },
+  normal: {
+    label: '대화', responders: [1, 2], silence: 0,
+    tone: '2~3문장으로 네 관점에서 반응해. 근거가 있으면 하나만 붙여. 목록·소제목 쓰지 마라.'
+  },
+  serious: {
+    label: '안건', responders: [2, 2], silence: 0,
+    tone: '제대로 답할 만한 얘기다. 3~5문장으로 네 전문 관점에서 구체적으로. 실제 사례·수치·방법을 하나는 든다.'
+  }
+};
+
+/* ---- ① 라운드 정의 (v2.0 자산 · FEATURES.rounds 로 켬) -------------
  * order: 'all'  = 패널 전원(고정 3인 + 전문가)
  *        'core' = 고정 3인만
  *        'none' = 페르소나 발언 없음 (회의록 합성 1콜)
@@ -2546,7 +2664,7 @@ const ROUND_DEFS = {
   }
 };
 
-/* ---- ② 회의 모드 4종 -------------------------------------------
+/* ---- ② 회의 모드 4종 (v2.0 자산 · FEATURES.startScreen 로 켬) -----
  * rounds: ROUND_DEFS 의 키 배열 — 이 순서대로 진행된다.
  * quickRounds: "빠른 회의" 체크 시 쓰는 축약 시퀀스 (콜 절감)
  * ---------------------------------------------------------------- */
@@ -2606,11 +2724,12 @@ const CORE_PERSONAS = [
 - 잘된 사례를 뜯어 작동 원리를 뽑아내고, 그걸 이 주제에 맞게 비튼다.
 - 이름·문구·첫인상이 결과를 어떻게 바꾸는지 안다.
 
-[회의에서 당신의 역할]
-- 주제를 듣고 "왜 지금 이게 흥미로운지", "어떤 방향이면 살아남는지"를 짚는다.
-- 이 주제가 속한 업계의 실제 사례·이름·용어를 든다. 다른 업종 예시로 때우지 마라.
-- 이준호(실행)·정민철(사업)·{expertName}({expertTitle})의 말을 받아 컨셉을 다듬는다.
-- {chair}가 막연하면 "어떤 느낌을 원해? A야 B야?" 하고 방향을 좁혀준다.`
+[이 방에서 당신]
+- 얘기가 나오면 "왜 지금 이게 흥미로운지", "어떤 방향이면 살아남는지"를 짚는다.
+- 그 얘기가 속한 업계의 실제 사례·이름·용어를 든다. 다른 업종 예시로 때우지 마라.
+- 동료들 말을 받아 컨셉을 다듬는다.
+- {chair}가 막연하면 "어떤 느낌을 원해? A야 B야?" 하고 방향을 좁혀준다.
+- 잡담일 땐 그냥 잡담으로 받는다. 감각 있는 친구지 강의하는 사람이 아니다.`
   },
   {
     id: 'maker',
@@ -2626,11 +2745,12 @@ const CORE_PERSONAS = [
 - 일정·인력·도구·난이도를 현실적으로 잡는다. 리소스가 적은 1인·소규모 팀 기준으로.
 - 완벽한 계획보다 이번 주에 시작할 수 있는 최소 버전을 먼저 만든다.
 
-[회의에서 당신의 역할]
+[이 방에서 당신]
 - 서다현이 컨셉을 던지면 "그거 하려면 이 순서, 이 준비물" 하고 실현 경로를 즉시 제시.
 - "그건 지금 인력으로는 안 돌아가, 대신 이렇게" 같은 현실적인 제동과 대안.
 - 이 업종에서 실제로 쓰는 도구·절차·기준을 이름으로 든다. 일반론 금지.
-- {chair}가 "이거 어떻게 해?" 물으면 단계별로 짧고 명확하게.`
+- {chair}가 "이거 어떻게 해?" 물으면 단계별로 짧고 명확하게.
+- 가벼운 얘기엔 가볍게. 아무 말에나 공정표를 꺼내지 마라.`
   },
   {
     id: 'strategist',
@@ -2646,11 +2766,11 @@ const CORE_PERSONAS = [
 - 어느 채널·경로로 사람이 들어오고 얼마가 새는지 안다.
 - 안 되는 이유를 대는 사람이 아니라, 되게 만드는 조건을 찾는 사람이다.
 
-[회의에서 당신의 역할]
-- 서다현(컨셉)·이준호(실행)·{expertName}({expertTitle}) 얘기를 듣고 "그래서 누가, 얼마에, 얼마나?"를 짚는다.
+[이 방에서 당신]
+- 동료들 얘기를 듣고 "그래서 누가, 얼마에, 얼마나?"를 짚는다.
 - 무조건 초 치지 않는다. 안 될 것 같으면 반드시 "이렇게 비틀면 된다"는 길을 같이 제시한다.
 - 실제 가격대·비용·채널·수수료를 구체적인 숫자로. 막연한 "수요가 있을 것" 금지.
-- 주제와 무관하게 억지로 돈 얘기를 만들지는 마라. 숫자가 의미 없는 주제면 성과 기준으로 따진다.`
+- 억지로 돈 얘기를 만들지는 마라. 숫자가 의미 없는 얘기면 그냥 사람으로 반응하면 된다.`
   }
 ];
 
@@ -2739,14 +2859,16 @@ const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효]
 - 한글은 반드시 완성된 음절로 쓴다. 자모를 분리하거나(예: ㅇㅏㄴ) 깨진 글자를 만들지 마라. 매끄럽고 또렷한 문장만.
 - 영어 약자(KPI, API, CS 등)와 고유명사(브랜드·기관·제품명)는 허용.
 
-[대화 방식 — 진짜 회의실, 가장 중요]
-- 이건 카톡 같은 실시간 회의실이다. 짧고 자연스럽게. 보고서·목록 나열 절대 금지.
-- 한 번에 3~5문장. 핵심을 친근하게, 근거 한두 개를 곁들여. 너무 한 줄로 끊지도, 장황하게 늘어놓지도 마라.
-- **동료(다른 베테랑)의 직전 발언이 대화에 있으면, 반드시 그 말을 직접 인용하며 시작한다.** 동료 이름을 부르고("이준호 말처럼", "정민철이 짚은 비용은", "{expertName}이 말한 OO은") 그 말에 동의·반박·발전시킨다. 동료 말을 무시하고 혼자 새 얘기만 하면 안 된다.
-- **쉽게 합의하고 끝내지 마라.** 동료 말에 일부 동의해도, 네 전문 분야 관점에서 최소 한 가지는 다른 각도·우려·대안을 반드시 보탠다. 너무 빨리 의견이 모이면 회의가 시시해진다. 각자 입장을 지키며 부딪쳐라.
-- 진짜 토론처럼: "맞아 근데", "오 그거 좋은데 나는", "그건 좀 어려워, 오히려", "동의해. 거기에 더하면" 식으로 받아친다.
-- 사용자({chair})가 말하면 바로 반응. 질문이면 답하고, 막연하면 되묻거나 방향 제시.
-- 구체적으로. "트렌드 반영하세요" 같은 공허한 말 금지. 이 업종의 실제 이름·제품·기관·방법·수치를 든다.
+[대화 방식 — 여긴 회의실이 아니라 단톡방이다. 가장 중요]
+- {chair}와 동료 몇 명이 있는 카카오톡 단톡방이다. 회의체·발표·보고서·목록 나열 절대 금지.
+- **길이는 상대 말에 맞춘다.** 한 줄 던지면 너도 한두 줄. 길고 진지한 얘기일 때만 3~5문장으로 깊이 들어간다.
+- 가벼운 말엔 가볍게. "ㅋㅋ 그건 좀", "오 그거 괜찮은데?", "아 그래?" 같은 리액션 좋다. ㅋㅋ ㅎㅎ 정도는 써도 된다.
+- **매번 정리하거나 조언하려 들지 마라.** 단톡방에서 누가 매번 요약하고 훈수 두면 이상한 사람이다.
+- 진지한 안건·질문일 때만 근거·수치·사례를 들고 제대로 판다. 그때는 확실하게 판다.
+- 동료 발언에 이어 말할 땐 이름을 부르며 받아친다("이준호 말처럼", "그건 좀 아닌 것 같은데"). 매번 그럴 필요는 없다.
+- 동의만 하고 끝내지 마라. 진지한 얘기에서 네 분야 관점의 다른 각도가 있으면 짧게라도 보탠다.
+- 구체적으로. "트렌드 반영하세요" 같은 공허한 말 금지. 실제 이름·제품·기관·방법·수치를 든다.
+- 혼자 여러 사람 몫을 말하지 마라. 너는 한 사람이고, 이번엔 네 말만 한다.
 - 절대 응답 맨 앞에 자기 이름(예: "서다현:")을 쓰지 마라. 화면에 이미 이름이 표시된다. 바로 말 내용으로 시작.
 
 [금액 표기 — 한국식으로만]
@@ -2761,21 +2883,23 @@ const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효]
 - 이미지·링크가 도움 되면 마크다운으로 넣어도 좋다 (![](url) 또는 [텍스트](url)).
 
 [톤]
-- 업계 최고 수준 전문가가 친한 후배에게 솔직하게 조언하듯. 격식 없이, 날카롭게.
-- 영감을 주되 현실적. "이거 진짜 되겠다" 싶은 수준만.`;
+- 업계 최고 수준의 사람이지만, 지금은 친한 사이의 단톡방이다. 격식 없이, 솔직하게.
+- 영감을 주되 현실적. 다만 아무 말에나 인생 조언을 붙이지는 마라.`;
 
-/* ---- 주제 주입 지시문 — 모든 페르소나 프롬프트 뒤에 붙는다 ---- */
+/* ---- 대화방 지시문 — 모든 페르소나 프롬프트 뒤에 붙는다 ---- */
 function buildTopicDirective(ctx) {
-  return `[이번 회의]
-- 주제: 『${ctx.topic}』
-- 형식: ${ctx.mode.label} 회의${ctx.quick ? ' (빠른 회의 · 2라운드)' : ''}
-- 패널: ${ctx.panelLine}
-- 의장: ${ctx.chair}
+  const topicLine = ctx.topic
+    ? `- 지금 흐르는 얘기: 『${ctx.topic}』`
+    : `- 아직 주제가 정해지지 않았다. ${ctx.chair}가 꺼내는 얘기를 따라간다.`;
+  return `[이 대화방]
+- 참여자: ${ctx.panelLine}
+- 사용자: ${ctx.chair}
+${topicLine}
 
 [업종 어휘 — 반드시 지켜라]
-- 이 주제가 속한 분야에서 실제로 쓰는 용어·지표·채널·규정·경쟁자 이름으로 말한다.
-- 이 분야와 무관한 다른 업종의 예시(굿즈·3D 프린팅 등)를 습관적으로 끌어오지 마라. 주제가 그 분야일 때만 쓴다.
-- 이 분야를 잘 모르면 아는 척하지 말고, 대신 무엇을 확인해야 하는지 구체적인 질문으로 던져라.`;
+- 얘기가 어떤 분야로 흐르면, 그 분야에서 실제로 쓰는 용어·지표·채널·규정·경쟁자 이름으로 말한다.
+- 그 분야와 무관한 다른 업종의 예시(굿즈·3D 프린팅 등)를 습관적으로 끌어오지 마라. 그 분야일 때만 쓴다.
+- 잘 모르는 분야면 아는 척하지 말고, 대신 무엇을 확인해야 하는지 구체적인 질문으로 던져라.`;
 }
 
 /* ---- 템플릿 치환 ---- */
@@ -2837,10 +2961,11 @@ async function refineExpertTitle(topic) {
  */
 let PERSONAS = [];
 
+// expert 가 null 이면 고정 3인만 앉는다 (v2.1 — 전문가는 주제가 잡힌 뒤 합류)
 function buildPanel(opts) {
-  const expertDef = opts.expert || {};
-  const expertName = expertDef.name || '전문가';
-  const expertTitle = expertDef.title || '도메인 전문가';
+  const expertDef = opts.expert || null;
+  const expertName = expertDef ? expertDef.name : '';
+  const expertTitle = expertDef ? expertDef.title : '';
   const mode = getMode(opts.modeId);
   const coreLine = CORE_PERSONAS.map(p => `${p.name}(${p.role})`).join(', ');
   const ctx = {
@@ -2848,40 +2973,211 @@ function buildPanel(opts) {
     mode: mode,
     quick: !!opts.quick,
     chair: APP.chair,
-    expertName: expertName,
-    expertTitle: expertTitle,
-    panelLine: `${coreLine}, ${expertName}(${expertTitle})`
+    expertName: expertName || '전문가',
+    expertTitle: expertTitle || '도메인 전문가',
+    panelLine: expertDef ? `${coreLine}, ${expertName}(${expertTitle})` : coreLine
   };
 
   const core = CORE_PERSONAS.map(p => ({
     id: p.id, tag: p.tag, name: p.name, role: p.role, color: p.color,
+    keywords: (ROUTING_KEYWORDS[p.id] || []).slice(),
     system: fillTemplate(p.system, ctx) + '\n\n' + fillTemplate(COMMON_RULES, ctx)
       + '\n\n' + buildTopicDirective(ctx)
   }));
 
-  const expert = {
-    id: 'expert',
-    expertId: expertDef.id || 'generalist',
-    tag: expertDef.tag || 'DOMAIN EXPERT',
-    name: expertName,
-    role: expertTitle,
-    color: '#f06b9b',
-    draws: !!expertDef.draws,
-    keywords: expertDef.keywords || [],
-    system: buildExpertSystem({ name: expertName, title: expertTitle, focus: expertDef.focus || '주제와 직접 닿는 실무 지식 전반.' }, ctx)
-      + '\n\n' + fillTemplate(COMMON_RULES, ctx) + '\n\n' + buildTopicDirective(ctx)
-  };
+  PERSONAS = core;
 
-  PERSONAS = [...core, expert];
+  if (expertDef) {
+    PERSONAS.push({
+      id: 'expert',
+      expertId: expertDef.id || 'generalist',
+      tag: expertDef.tag || 'DOMAIN EXPERT',
+      name: expertName,
+      role: expertTitle,
+      color: '#f06b9b',
+      draws: !!expertDef.draws,
+      keywords: expertDef.keywords || [],
+      system: buildExpertSystem({ name: expertName, title: expertTitle, focus: expertDef.focus || '주제와 직접 닿는 실무 지식 전반.' }, ctx)
+        + '\n\n' + fillTemplate(COMMON_RULES, ctx) + '\n\n' + buildTopicDirective(ctx)
+    });
+  }
   return PERSONAS;
 }
 
-// 아직 패널이 없을 때(빈 화면·구세션)를 위한 안전한 기본 패널
+// 아직 패널이 없을 때(첫 진입·구세션)를 위한 안전한 기본 패널
 function ensurePanel() {
   if (!PERSONAS || PERSONAS.length === 0) {
     buildPanel({ topic: state.agenda || '', modeId: state.mode, quick: state.quick, expert: state.expert });
   }
   return PERSONAS;
+}
+
+// 최근 사용자 발언으로 주제 문맥을 만들어 패널 프롬프트를 갱신한다 (콜 없음 · 문자열 조립)
+function currentTopicContext() {
+  const users = (state.messages || []).filter(m => m.type === 'user').map(m => m.content);
+  if (users.length === 0) return '';
+  const recent = users.slice(-CHAT_RULES.topicWindow).join(' / ');
+  return recent.length > 220 ? recent.slice(0, 220) + '…' : recent;
+}
+
+function refreshPanel() {
+  buildPanel({
+    topic: currentTopicContext(),
+    modeId: state.mode,
+    quick: state.quick,
+    expert: state.expert
+  });
+  return PERSONAS;
+}
+
+/* ═══════════ 단톡방 응답 엔진 (v2.1) ═══════════
+ * 전원이 순서대로 답하지 않는다. 관련도·메시지 무게로 "할 말 있는 사람"만 고른다.
+ * LLM 호출 없이 로컬에서 판단한다 — 응답 인원 자체가 비용이라 라우팅에 콜을 더 쓰지 않는다.
+ * ================================================ */
+
+// 메시지 무게 판정 — filler / casual / normal / serious
+function classifyMessage(text) {
+  const t = String(text || '').trim();
+  if (!t) return 'filler';
+  const stripped = t.replace(/\s+/g, '');
+  const len = stripped.length;
+
+  // 순수 리액션 — ㅋㅋ, ㅇㅇ, 굿, 감사, 이모지만. 여러 개 이어져도 리액션이다("ㅇㅋ 콜")
+  const FILLER_TOKEN = '(?:ㅋ+|ㅎ+|ㅇ+|ㅠ+|ㅜ+|ㄱㅅ|ㄴㄴ|ㅇㅋ|ㅎㅇ|넵?|네+|응+|어+|오+|음+|아+|굿|굳|ok|오케이|콜|감사|고마워|고맙|알겠어|알았어|그래|맞아|좋아|헐|와+|대박|미친|그니까|그러게|하이|안녕)';
+  const fillerRe = new RegExp(`^(?:${FILLER_TOKEN}[.!?~♥♡\\s]*)+$`, 'i');
+  const emojiOnly = /^[\p{Extended_Pictographic}\s]+$/u.test(t);
+  if (emojiOnly || (len <= 10 && fillerRe.test(t))) return 'filler';
+
+  const hasQuestion = /[?？]/.test(t) || /(까\?|나\?|어때|어떻|왜|어디|언제|누가|얼마|방법|가능|될까|할까|해야|알려|추천|의견|어떤)/.test(t);
+  const keywordHits = countKeywordHits(t);
+  const sentences = t.split(/[.!?。\n]+/).filter(s => s.trim().length > 1).length;
+
+  if (len >= 80 || sentences >= 3 || (keywordHits >= 3 && hasQuestion)) return 'serious';
+  if (len <= 25 && !hasQuestion && keywordHits === 0) return 'casual';
+  return 'normal';
+}
+
+// 전체 라우팅 사전에서 몇 개나 걸리는지 (무게 판정용)
+function countKeywordHits(text) {
+  const q = String(text || '').toLowerCase();
+  const table = routingTable();
+  let n = 0;
+  Object.values(table).forEach(kws => {
+    kws.forEach(kw => { if (q.includes(String(kw).toLowerCase())) n++; });
+  });
+  return n;
+}
+
+// 라우팅 사전 + 배정된 전문가 키워드
+function routingTable() {
+  const table = Object.assign({}, ROUTING_KEYWORDS);
+  const expert = (PERSONAS || []).find(p => p.id === 'expert');
+  if (expert && expert.keywords && expert.keywords.length) table.expert = expert.keywords;
+  return table;
+}
+
+// 페르소나별 관련도 점수 (0 = 할 말 없음)
+function relevanceScores(text) {
+  const q = String(text || '').toLowerCase();
+  const table = routingTable();
+  const scores = {};
+  ensurePanel();
+  PERSONAS.forEach(p => {
+    const kws = table[p.id] || [];
+    scores[p.id] = kws.filter(kw => q.includes(String(kw).toLowerCase())).length;
+  });
+  return scores;
+}
+
+// 최근 발언자에게 감점 — 매번 같은 사람이 먼저 답하지 않게
+function recencyPenalty(personaId) {
+  const recent = state.lastSpeakers || [];
+  const idx = recent.indexOf(personaId);   // 0 = 가장 최근
+  if (idx < 0) return 0;
+  return CHAT_RULES.recentSpeakerPenalty / (idx + 1);
+}
+
+function noteSpeaker(personaId) {
+  state.lastSpeakers = [personaId, ...(state.lastSpeakers || []).filter(id => id !== personaId)].slice(0, 3);
+}
+
+function randBetween(range) {
+  return range[0] + Math.random() * (range[1] - range[0]);
+}
+
+/* 이번 메시지에 답할 사람들을 고른다.
+ * 반환: { weight, responders: [persona], reason } — responders 가 비면 아무도 안 답한다. */
+function pickResponders(text, opts = {}) {
+  ensurePanel();
+  const weight = opts.forceWeight || classifyMessage(text);
+  const rule = MESSAGE_WEIGHTS[weight];
+  const scores = relevanceScores(text);
+
+  // 침묵 — 가벼운 리액션에는 아무도 안 답할 수 있다
+  if (!opts.noSilence && rule.silence > 0 && Math.random() < rule.silence) {
+    return { weight, responders: [], scores };
+  }
+
+  const cap = Math.min(state.maxResponders || CHAT_RULES.maxResponders, CHAT_RULES.hardMaxResponders);
+  const min = Math.min(rule.responders[0], cap);
+  const max = Math.min(rule.responders[1], cap);
+
+  // 관련도 + 무작위 흔들기 − 최근 발언 감점
+  // 관련도는 상한을 둔다 — 키워드가 많이 걸렸다고 한 사람이 계속 독점하지 않게
+  const ranked = PERSONAS.map(p => ({
+    persona: p,
+    score: Math.min(scores[p.id] || 0, CHAT_RULES.relevanceCap) * CHAT_RULES.relevanceWeight
+      + Math.random() * CHAT_RULES.randomJitter
+      - recencyPenalty(p.id)
+      + (p.id === 'expert' ? 0.4 : 0)   // 전문가는 초대된 이유가 있으니 살짝 우대
+  })).sort((a, b) => b.score - a.score);
+
+  // 실제 관련 있는 사람 수 (키워드가 걸린 사람)
+  const relevantCount = PERSONAS.filter(p => (scores[p.id] || 0) > 0).length;
+  let count;
+  if (relevantCount === 0) {
+    count = Math.max(min, Math.min(1, max));           // 아무도 관련 없으면 1명(또는 0)
+  } else {
+    count = Math.max(min, Math.min(relevantCount, max));
+  }
+  if (count <= 0) return { weight, responders: [], scores };
+
+  return { weight, responders: ranked.slice(0, count).map(r => r.persona), scores };
+}
+
+/* 연쇄 반응 — 동료 발언에 다른 동료가 끼어들지 결정 (한 턴에 1회) */
+function pickChainResponder(lastPersonaId, alreadySpoke) {
+  if (Math.random() >= CHAT_RULES.chainChance) return null;
+  const pool = PERSONAS.filter(p => p.id !== lastPersonaId && !alreadySpoke.includes(p.id));
+  if (pool.length === 0) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+/* 전문가 석 — 주제가 잡히면 입장, 주제가 바뀌면 교체 */
+function maybeSeatExpert() {
+  const topic = currentTopicContext();
+  if (!topic) return null;
+  const picked = pickExpert(topic);
+  if (picked.score < CHAT_RULES.expertJoinScore) return null;
+
+  const cur = state.expert;
+  if (cur && cur.id === picked.expert.id) return null;
+
+  if (cur) {
+    // 교체는 확실히 더 관련 있을 때만
+    const curScore = (cur.keywords || []).filter(k => topic.toLowerCase().includes(String(k).toLowerCase())).length;
+    if (picked.score < curScore + CHAT_RULES.expertSwapMargin) return null;
+  }
+
+  const e = picked.expert;
+  const next = {
+    id: e.id, name: e.name, title: e.title, tag: e.tag,
+    focus: e.focus, keywords: e.keywords || [], draws: !!e.draws
+  };
+  const prev = cur;
+  state.expert = next;
+  refreshPanel();
+  return { expert: next, replaced: prev };
 }
 
 // 모르는 personaId(아주 옛 세션 등)도 렌더는 되게 — 회색 스텁 반환
@@ -2942,9 +3238,15 @@ let state = {
   quick: localStorage.getItem('vela.boardroom.quick') === '1',
   rounds: [],          // 이번 회의의 라운드 시퀀스 (키 배열)
   roundIndex: 0,       // 다음에 진행할 라운드 위치
-  expert: null,        // { id, name, title, tag, focus, keywords, draws }
+  expert: null,        // { id, name, title, tag, focus, keywords, draws } — 주제가 잡히면 합류
   minutes: '',         // 회의록 원문 (마크다운)
   actionsDone: [],     // 액션 아이템 체크 상태
+  // ---- v2.1 단톡방 ----
+  lastSpeakers: [],        // 최근 발언자 (순서 고정 방지용)
+  agendaProvisional: false, // 방 제목이 잡담에서 임시로 잡힌 상태인지
+  maxResponders: Math.min(
+    parseInt(localStorage.getItem('vela.boardroom.maxResponders') || CHAT_RULES.maxResponders, 10) || CHAT_RULES.maxResponders,
+    CHAT_RULES.hardMaxResponders),
   sessionId: null,
   lastSavedAt: null,
   inProgress: false,
@@ -3084,23 +3386,69 @@ function updateCostNote() {
   if (wrap) wrap.classList.toggle('on', !!state.quick);
 }
 
+/* ---- FEATURES 플래그에 맞춰 화면 구성 (v2.1: 열자마자 채팅방) ---- */
+function applyFeatureFlags() {
+  document.body.classList.toggle('chat-only', !FEATURES.startScreen);
+  const start = $('#startScreen');
+  const chat = $('#chatScreen');
+  if (start) start.hidden = !FEATURES.startScreen;
+  if (chat) chat.hidden = FEATURES.startScreen;
+  const bar = $('#roundBar');
+  if (bar && !FEATURES.rounds) bar.hidden = true;
+  const minutes = $('#minutesSection');
+  if (minutes && !FEATURES.minutes) minutes.hidden = true;
+  const memo = $('#memoSection');
+  if (memo && !FEATURES.memo) memo.hidden = true;
+  // 회의 모드에서만 의미 있는 버튼들
+  const btnNewTop = $('#btnNewMeetingTop');
+  if (btnNewTop && !FEATURES.startScreen) btnNewTop.hidden = false;
+}
+
+// 채팅 헤더의 주제 줄 — 첫 메시지가 주제가 된다
+function updateChatTopic() {
+  const el = $('#chatAgenda');
+  if (!el) return;
+  if (state.agenda) {
+    el.textContent = state.agenda;
+    el.classList.remove('chat-topic-empty');
+  } else {
+    el.textContent = '아무 얘기나 던져보세요';
+    el.classList.add('chat-topic-empty');
+  }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   const vt = $('#versionTag');
   if (vt) vt.textContent = 'v' + APP.version;
+  const cv = $('#creditVersion');
+  if (cv) cv.textContent = 'v' + APP.version;
   refreshApiStatus();
   refreshModelTag();
   bindEvents();
   bindInstallButton();
-  rotateHeadline();
-  renderModeGrid();
-  const q = $('#inputQuick');
-  if (q) q.checked = !!state.quick;
-  selectMode(state.mode, { silent: true });
+  applyFeatureFlags();
+  if (FEATURES.startScreen) {
+    rotateHeadline();
+    renderModeGrid();
+    const q = $('#inputQuick');
+    if (q) q.checked = !!state.quick;
+    selectMode(state.mode, { silent: true });
+  } else {
+    // 단톡방 — 고정 3인이 상주한다
+    ensurePanel();
+    renderParticipants();
+    updateChatTopic();
+    renderChatEmptyState();
+  }
   handleUrlAction();
   restoreLastMeeting();
+  if (!FEATURES.startScreen) {
+    const fi = $('#followupInput');
+    if (fi) fi.focus();
+  }
 });
 
-// 새로고침·재시작 시 마지막 진행 중 회의 자동 복원
+// 새로고침·재시작 시 마지막 대화 자동 복원
 function restoreLastMeeting() {
   try {
     if (location.hash && location.hash.length > 1) return;
@@ -3111,7 +3459,7 @@ function restoreLastMeeting() {
                     || (last.facts && Object.keys(last.facts).length > 0);
     if (!hasContent) return;
     const updated = new Date(last.lastUpdated || last.date).getTime();
-    if (Date.now() - updated > 7 * 24 * 60 * 60 * 1000) return; // 7일 이내 회의만 자동 복원
+    if (Date.now() - updated > 7 * 24 * 60 * 60 * 1000) return; // 7일 이내 대화만 자동 복원
     loadSession(last.id, { silent: true });
   } catch (e) {
     console.warn('[boardroom] restore failed:', e);
@@ -3119,14 +3467,22 @@ function restoreLastMeeting() {
 }
 
 function bindEvents() {
-  $('#btnStart').addEventListener('click', startMeeting);
-  $('#agendaInput').addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-      e.preventDefault();
-      startMeeting();
-    }
-  });
-  $('#btnMic').addEventListener('click', startVoiceInput);
+  // 시작 화면 (FEATURES.startScreen 이 꺼져 있으면 DOM 은 있지만 숨겨져 있다)
+  const btnStart = $('#btnStart');
+  if (btnStart) btnStart.addEventListener('click', startMeeting);
+  const agendaInput = $('#agendaInput');
+  if (agendaInput) {
+    agendaInput.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault();
+        startMeeting();
+      }
+    });
+  }
+  const btnMic = $('#btnMic');
+  if (btnMic) btnMic.addEventListener('click', startVoiceInput);
+  const btnExportTop = $('#btnExportTop');
+  if (btnExportTop) btnExportTop.addEventListener('click', exportMarkdown);
 
   // 채팅 후속 질문
   $('#btnFollowupSend').addEventListener('click', sendFollowup);
@@ -3183,16 +3539,21 @@ function bindEvents() {
     const newModel = $('#inputModel').value;
     const newVoiceURI = $('#inputVoice').value;
     const newVoiceRate = parseFloat($('#inputVoiceRate').value);
+    const newMax = Math.min(
+      parseInt($('#inputMaxResponders').value, 10) || CHAT_RULES.maxResponders,
+      CHAT_RULES.hardMaxResponders);
     localStorage.setItem(apiKeyStorageKey(newProvider), newKey);
     localStorage.setItem(modelStorageKey(newProvider), newModel);
     localStorage.setItem(STORAGE_KEYS.provider, newProvider);
     localStorage.setItem('vela.boardroom.voiceURI', newVoiceURI);
     localStorage.setItem('vela.boardroom.voiceRate', String(newVoiceRate));
+    localStorage.setItem('vela.boardroom.maxResponders', String(newMax));
     state.provider = newProvider;
     state.apiKey = newKey;
     state.model = newModel;
     state.voiceURI = newVoiceURI;
     state.voiceRate = newVoiceRate;
+    state.maxResponders = newMax;
     refreshApiStatus();
     refreshModelTag();
     closeModal('modalSettings');
@@ -3267,6 +3628,18 @@ function renderSettingsModal() {
   populateVoiceOptions();
   $('#inputVoiceRate').value = state.voiceRate || 1.0;
   $('#voiceRateLabel').textContent = (state.voiceRate || 1.0).toFixed(1) + '×';
+  // 메시지당 최대 응답 인원
+  const maxSel = $('#inputMaxResponders');
+  if (maxSel) {
+    maxSel.innerHTML = '';
+    for (let n = 1; n <= CHAT_RULES.hardMaxResponders; n++) {
+      const opt = document.createElement('option');
+      opt.value = String(n);
+      opt.textContent = `${n}명${n === CHAT_RULES.maxResponders ? ' (기본)' : ''}`;
+      if (n === state.maxResponders) opt.selected = true;
+      maxSel.appendChild(opt);
+    }
+  }
 }
 
 function populateVoiceOptions() {
@@ -3335,12 +3708,17 @@ function personaInitial(p) {
 function appendMessage(msg) {
   const container = $('#chatMessages');
   if (!container) return;
+  removeChatEmptyState();
   const el = document.createElement('div');
   el.dataset.msgId = msg.id;
 
   if (msg.type === 'user') {
     el.className = 'msg-user';
     el.innerHTML = `<div class="msg-user-bubble">${escapeHtml(msg.content)}</div>`;
+  } else if (msg.type === 'system') {
+    // "○○○님이 입장했습니다" 같은 방 알림
+    el.className = 'msg-system';
+    el.innerHTML = `<span class="msg-system-chip">${escapeHtml(msg.content)}</span>`;
   } else if (msg.type === 'persona') {
     const p = resolvePersona(msg.personaId);
     el.className = 'msg-persona';
@@ -3467,10 +3845,34 @@ function renderChatMarkdown(text) {
   return out.join('');
 }
 
-// 채팅 컨테이너 비우기
+// 채팅 컨테이너 비우기 (단톡방 모드면 빈 방 안내를 남긴다)
 function clearChat() {
   const container = $('#chatMessages');
-  if (container) container.innerHTML = '';
+  if (!container) return;
+  container.innerHTML = '';
+  if (!FEATURES.startScreen) renderChatEmptyState();
+}
+
+// 빈 방 안내 — 첫 메시지가 들어오면 사라진다
+function renderChatEmptyState() {
+  const container = $('#chatMessages');
+  if (!container || container.querySelector('.chat-empty')) return;
+  ensurePanel();
+  const names = PERSONAS.map(p => p.name).join(' · ');
+  const el = document.createElement('div');
+  el.className = 'chat-empty';
+  el.innerHTML = `
+    <div class="chat-empty-title">${escapeHtml(names)} 대기 중</div>
+    <div class="chat-empty-sub">
+      아무 얘기나 던지면 <b>관련 있는 사람만</b> 답합니다. 가벼운 말엔 가볍게, 진지한 안건이면 제대로.<br>
+      얘기가 한 분야로 흐르면 <b>그 분야 전문가</b>가 알아서 들어옵니다.
+    </div>`;
+  container.appendChild(el);
+}
+
+function removeChatEmptyState() {
+  const el = $('#chatMessages') && $('#chatMessages').querySelector('.chat-empty');
+  if (el) el.remove();
 }
 
 // 회의 참여자 바 렌더 (헤더 아래 점+이름) + 전문가 석 안내
@@ -3518,6 +3920,7 @@ function renderRoundBar() {
   const btn = $('#btnNextRound');
   const cost = $('#roundCost');
   if (!bar || !steps || !btn) return;
+  if (!FEATURES.rounds) { bar.hidden = true; return; }
 
   const rounds = state.rounds && state.rounds.length ? state.rounds : getRounds(state.mode, state.quick);
   if (!state.agenda) { bar.hidden = true; return; }
@@ -4341,24 +4744,48 @@ function _speakUtterance(text, btnSelector, personaId) {
   window.speechSynthesis.speak(u);
 }
 
-/* ============ FOLLOW-UP MODE ============ */
+/* ============ 메시지 전송 (v2.1 단톡방) ============ */
 
 // 키워드 기반 자동 라우팅 — 사전은 CONFIG 의 ROUTING_KEYWORDS,
 // 전문가 석 키워드는 배정된 전문가에서 런타임에 합쳐진다.
 function routePersona(question) {
-  const q = String(question || '').toLowerCase();
-  ensurePanel();
-  const table = Object.assign({}, ROUTING_KEYWORDS);
-  const expert = PERSONAS.find(p => p.id === 'expert');
-  if (expert && expert.keywords && expert.keywords.length) {
-    table.expert = expert.keywords;
-  }
-  const scores = {};
-  Object.entries(table).forEach(([id, kws]) => {
-    scores[id] = kws.filter(kw => q.includes(String(kw).toLowerCase())).length;
-  });
+  const scores = relevanceScores(question);
   const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
   return (sorted.length && sorted[0][1] > 0) ? sorted[0][0] : null;
+}
+
+// 방 알림 메시지 ("○○○님이 입장했습니다")
+function pushSystemMessage(text) {
+  const msg = { id: 'msg_sys_' + Date.now() + '_' + Math.floor(Math.random() * 1000), type: 'system', content: text, ts: Date.now() };
+  state.messages.push(msg);
+  appendMessage(msg);
+  return msg;
+}
+
+// 무게별 톤 + 상황에 맞는 1회 지시문
+function buildChatInstruction(opts) {
+  const rule = MESSAGE_WEIGHTS[opts.weight] || MESSAGE_WEIGHTS.normal;
+  const parts = [];
+
+  if (opts.isChain) {
+    parts.push(`동료 ${opts.targetName}의 방금 말이 걸린다. 거기에 한마디 얹어라. "어 그거 괜찮은데", "근데 그러면" 식으로 짧게 끼어드는 거다.`);
+    parts.push('1~2문장. 새 주제를 꺼내지 말고 그 말에만 반응해라.');
+  } else if (opts.order === 0) {
+    parts.push(`${APP.chair}가 방금 한 말에 너답게 반응해.`);
+    parts.push(rule.tone);
+  } else {
+    parts.push(`${APP.chair}의 말에 방금 ${opts.prevName}가 먼저 답했다. 너도 할 말이 있어서 이어 말한다.`);
+    parts.push('같은 얘기 반복 금지 — 네 관점에서 다른 각도를 보태거나 다르게 본다고 말해라.');
+    parts.push(rule.tone);
+  }
+
+  if (opts.weight === 'filler' || opts.weight === 'casual') {
+    parts.push('길게 쓰면 실패다. 짧게.');
+  }
+  if (opts.isLast && (opts.weight === 'normal' || opts.weight === 'serious') && Math.random() < 0.5) {
+    parts.push(`얘기를 이어가고 싶으면 마지막에 ${APP.chair}에게 짧은 질문 하나를 던져도 좋다. 억지로는 하지 마라.`);
+  }
+  return parts.join('\n');
 }
 
 async function sendFollowup() {
@@ -4370,64 +4797,105 @@ async function sendFollowup() {
     openModal('modalSettings');
     return;
   }
-  if (!state.agenda || state.messages.length === 0) {
-    toast('먼저 새 회의를 시작하세요', true);
-    return;
-  }
 
   state.inProgress = true;
   $('#btnFollowupSend').disabled = true;
   $('#btnFollowupSend').textContent = '...';
 
-  // 라우팅 — 누가 답할지 (패널 전원 기준)
-  ensurePanel();
-  let targetPersonas = [];
-  if (state.followupTarget === 'auto') {
-    const routed = routePersona(question);
-    // 자동: 매칭되면 그 사람이 먼저, 나머지가 받아침. 매칭 안 되면 매번 2명만 (콜 절감).
-    if (routed) {
-      const main = PERSONAS.find(p => p.id === routed);
-      const others = PERSONAS.filter(p => p.id !== routed);
-      targetPersonas = [main, ...others.slice(0, 1)];
-    } else {
-      targetPersonas = PERSONAS.slice(0, 2);
-    }
-  } else if (state.followupTarget === 'all') {
-    targetPersonas = PERSONAS.slice();
-  } else {
-    targetPersonas = [PERSONAS.find(p => p.id === state.followupTarget)];
+  // 방 제목(=세션 제목). 잡담으로 시작했으면 임시로 걸어두고,
+  // 나중에 제대로 된 얘기가 나오면 그걸로 바꾼다.
+  if (!state.sessionId) state.sessionId = 'sess_' + Date.now();
+  const firstWeight = classifyMessage(question);
+  const meaty = (firstWeight === 'normal' || firstWeight === 'serious');
+  if (!state.agenda) {
+    state.agenda = question;
+    state.agendaProvisional = !meaty;
+    updateChatTopic();
+  } else if (state.agendaProvisional && meaty) {
+    state.agenda = question;
+    state.agendaProvisional = false;
+    updateChatTopic();
   }
-  targetPersonas = targetPersonas.filter(Boolean);
+
+  // 사용자 메시지
+  const userMsg = { id: 'msg_user_' + Date.now(), type: 'user', content: question, ts: Date.now() };
+  state.messages.push(userMsg);
+  appendMessage(userMsg);
+  $('#followupInput').value = '';
+  $('#followupInput').style.height = 'auto';
+
+  // 최근 발언으로 프롬프트 문맥 갱신
+  refreshPanel();
+
+  // 전문가 석 — 주제가 잡히면 입장, 크게 바뀌면 교체
+  const seated = maybeSeatExpert();
+  if (seated) {
+    const e = seated.expert;
+    if (seated.replaced) {
+      pushSystemMessage(`${seated.replaced.name} 님이 나가고, ${e.name}(${e.title}) 님이 입장했습니다`);
+    } else {
+      pushSystemMessage(`${e.name}(${e.title}) 님이 입장했습니다`);
+    }
+    renderParticipants();
+  }
+
+  // 누가 답할지
+  let responders = [];
+  let weight = classifyMessage(question);
+  if (state.followupTarget === 'all') {
+    responders = PERSONAS.slice(0, Math.min(PERSONAS.length, CHAT_RULES.hardMaxResponders + 1));
+    weight = weight === 'filler' ? 'casual' : weight;
+  } else if (state.followupTarget !== 'auto') {
+    const one = PERSONAS.find(p => p.id === state.followupTarget);
+    responders = one ? [one] : [];
+    weight = weight === 'filler' ? 'casual' : weight;
+  } else {
+    const picked = pickResponders(question);
+    weight = picked.weight;
+    responders = picked.responders;
+  }
 
   // 프로세스 질문이면 담당자가 다이어그램을 그린다
   const wantSvg = isProcessQuestion(question);
   const drawerId = diagramDrawerId();
 
-  // 사용자 메시지 추가
-  const userMsg = { id: 'msg_user_' + Date.now(), type: 'user', content: question, ts: Date.now() };
-  state.messages.push(userMsg);
-  appendMessage(userMsg);
-
   try {
-    for (let i = 0; i < targetPersonas.length; i++) {
-      const persona = targetPersonas[i];
-      const isLast = (i === targetPersonas.length - 1);
-      let instruction;
-      if (i === 0) {
-        instruction = `${APP.chair}가 방금 한 말에 너답게 바로 반응해. 질문이면 답하고, 새 방향이면 같이 발전시켜. 이 업종의 실제 사례·이름·방법·수치를 구체적으로. 3~5문장, 대화하듯.`;
-      } else {
-        instruction = '바로 위에서 동료가 한 말을 직접 인용하며 받아쳐. "OO 말처럼", "근데 그건" 식으로 동료 발언에 반응하는 게 핵심. 동의·보완·반박 다 좋되, 네 전문 분야에서 최소 한 가지 다른 각도를 보태. 같은 얘기 반복 금지. 3~5문장.';
-      }
-      // 마지막 발언자는 의장에게 다음을 묻는 질문으로 끝내서 대화가 이어지게
-      if (isLast) {
-        instruction += ` 그리고 마지막에 ${APP.chair}에게 다음 방향을 묻는 짧은 질문 하나를 던져서 대화가 계속 이어지게 해.`;
-      }
-      const svgMode = (persona.id === drawerId) && wantSvg;
-      await runPersonaTurn(persona, instruction, { svgMode });
-      if (state.provider === 'groq' && i < targetPersonas.length - 1) await sleep(1000);
+    if (responders.length === 0) {
+      // 아무도 답하지 않는다 — 단톡방에선 흔한 일
+      autoSave();
+      return;
     }
-    $('#followupInput').value = '';
-    $('#followupInput').style.height = 'auto';
+
+    const spoke = [];
+    for (let i = 0; i < responders.length; i++) {
+      const persona = responders[i];
+      if (i > 0) await sleep(randBetween(CHAT_RULES.replyDelayMs));
+      const instruction = buildChatInstruction({
+        weight: weight,
+        order: i,
+        isLast: i === responders.length - 1,
+        prevName: i > 0 ? responders[i - 1].name : ''
+      });
+      const svgMode = (persona.id === drawerId) && wantSvg;
+      await runPersonaTurn(persona, instruction, { svgMode, maxTokens: chatMaxTokens(weight) });
+      noteSpeaker(persona.id);
+      spoke.push(persona.id);
+      if (state.provider === 'groq' && i < responders.length - 1) await sleep(1000);
+    }
+
+    // 연쇄 반응 — 동료 말에 다른 동료가 한 번 끼어든다
+    if (weight !== 'filler' && spoke.length > 0) {
+      const last = responders[responders.length - 1];
+      const chainer = pickChainResponder(last.id, spoke);
+      if (chainer) {
+        await sleep(randBetween(CHAT_RULES.chainDelayMs));
+        await runPersonaTurn(chainer, buildChatInstruction({
+          weight: weight, isChain: true, targetName: last.name
+        }), { maxTokens: 600 });
+        noteSpeaker(chainer.id);
+      }
+    }
+
     autoSave();
   } finally {
     state.inProgress = false;
@@ -4436,6 +4904,14 @@ async function sendFollowup() {
     $('#followupInput').focus();
     renderRoundBar();
   }
+}
+
+// 무게에 따라 응답 길이 상한을 바꾼다 (잡담에 1200토큰은 낭비)
+function chatMaxTokens(weight) {
+  if (weight === 'filler') return 250;
+  if (weight === 'casual') return 500;
+  if (weight === 'serious') return 1200;
+  return 800;
 }
 
 /* ============ 회의 전체 순차 읽기 ============ */
@@ -4583,6 +5059,8 @@ function buildMeetingMarkdown() {
     state.messages.forEach(m => {
       if (m.type === 'user') {
         md += `**${APP.chair}**\n\n${m.content}\n\n`;
+      } else if (m.type === 'system') {
+        md += `_— ${m.content} —_\n\n`;
       } else if (m.type === 'persona') {
         const p = resolvePersona(m.personaId);
         const txt = m.content || (m.parsed && (m.parsed.FACTS || m.parsed.RAW)) || '';
@@ -4686,7 +5164,10 @@ function autoSave() {
     roundIndex: state.roundIndex || 0,
     expert: state.expert || null,
     minutes: state.minutes || '',
-    actionsDone: state.actionsDone || []
+    actionsDone: state.actionsDone || [],
+    // ---- v2.1 ----
+    lastSpeakers: state.lastSpeakers || [],
+    agendaProvisional: !!state.agendaProvisional
   };
   if (idx >= 0) sessions[idx] = record;
   else sessions.unshift(record);
@@ -4822,25 +5303,27 @@ function loadSession(id, opts = {}) {
   state.minutes = s.minutes || '';
   state.actionsDone = s.actionsDone || [];
   state.followupTarget = 'auto';
+  state.lastSpeakers = s.lastSpeakers || [];
+  state.agendaProvisional = !!s.agendaProvisional;
 
-  // 패널 재조립 — 저장된 전문가로 (없으면 주제로 다시 배정)
-  const expertDef = state.expert || pickExpert(state.agenda).expert;
-  if (!state.expert) {
-    state.expert = {
-      id: expertDef.id, name: expertDef.name, title: expertDef.title, tag: expertDef.tag,
-      focus: expertDef.focus, keywords: expertDef.keywords || [], draws: !!expertDef.draws
-    };
+  // 패널 재조립 — 저장된 전문가 그대로 (v2.1: 없으면 전문가 없이 3인만)
+  if (!state.expert && !FEATURES.startScreen) {
+    // 단톡방 모드 — 복원 후 대화가 이어지면 그때 다시 입장한다
+    state.expert = null;
+  } else if (!state.expert) {
+    const e = pickExpert(state.agenda).expert;
+    state.expert = { id: e.id, name: e.name, title: e.title, tag: e.tag, focus: e.focus, keywords: e.keywords || [], draws: !!e.draws };
   }
   buildPanel({ topic: state.agenda, modeId: state.mode, quick: state.quick, expert: state.expert });
 
   // 화면 전환
-  $('#startScreen').hidden = true;
+  if ($('#startScreen')) $('#startScreen').hidden = true;
   $('#chatScreen').hidden = false;
-  $('#minutesSection').hidden = false;
-  $('#memoSection').hidden = false;
-  $('#chatAgenda').textContent = state.agenda;
-  $('#agendaInput').value = state.agenda;
-  $('#memoInput').value = state.memo;
+  if (FEATURES.minutes) $('#minutesSection').hidden = false;
+  if (FEATURES.memo) $('#memoSection').hidden = false;
+  updateChatTopic();
+  if ($('#agendaInput')) $('#agendaInput').value = FEATURES.startScreen ? state.agenda : '';
+  if ($('#memoInput')) $('#memoInput').value = state.memo;
 
   // 채팅 메시지 복원
   clearChat();
@@ -4892,19 +5375,21 @@ function loadSession(id, opts = {}) {
   }
 
   // 회의록 복원 (v1 세션은 옛 summary 를 회의록 자리에 렌더)
-  if (state.minutes) {
-    renderMinutes(state.minutes);
-  } else if (state.summary) {
-    renderMinutes(state.summary, { legacy: true });
-  } else {
-    resetMinutesView();
+  if (FEATURES.minutes) {
+    if (state.minutes) {
+      renderMinutes(state.minutes);
+    } else if (state.summary) {
+      renderMinutes(state.summary, { legacy: true });
+    } else {
+      resetMinutesView();
+    }
   }
 
   $('#btnNewMeetingTop').hidden = false;
   updateAutoSaveIndicator();
   if (!opts.silent) {
     closeModal('modalSessions');
-    toast('회의 불러옴 — 후속 질문/메모 추가하면 자동 저장됨');
+    toast('대화 불러옴 — 이어서 말 걸면 자동 저장됩니다');
   }
 }
 
@@ -4923,27 +5408,41 @@ function newSession() {
   state.roundIndex = 0;
   state.expert = null;
   state.followupTarget = 'auto';
+  state.lastSpeakers = [];
+  state.agendaProvisional = false;
   PERSONAS = [];
   state.sessionId = null;
   state.lastSavedAt = null;
-  $('#agendaInput').value = '';
+  if ($('#agendaInput')) $('#agendaInput').value = '';
   $('#followupInput').value = '';
-  $('#memoInput').value = '';
-  // 화면 전환 — 채팅 → 시작
-  $('#startScreen').hidden = false;
-  $('#chatScreen').hidden = true;
-  $('#minutesSection').hidden = true;
-  $('#memoSection').hidden = true;
-  $('#btnStart').textContent = '회의 시작 →';
-  $('#btnNewMeetingTop').hidden = true;
-  const rb = $('#roundBar');
-  if (rb) rb.hidden = true;
-  renderModeGrid();
-  updateCostNote();
+  if ($('#memoInput')) $('#memoInput').value = '';
   clearChat();
   updateAutoSaveIndicator();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  $('#agendaInput').focus();
+
+  if (FEATURES.startScreen) {
+    // v2.0 회의 모드 — 시작 화면으로 되돌아간다
+    $('#startScreen').hidden = false;
+    $('#chatScreen').hidden = true;
+    $('#minutesSection').hidden = true;
+    $('#memoSection').hidden = true;
+    $('#btnStart').textContent = '회의 시작 →';
+    $('#btnNewMeetingTop').hidden = true;
+    const rb = $('#roundBar');
+    if (rb) rb.hidden = true;
+    renderModeGrid();
+    updateCostNote();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    $('#agendaInput').focus();
+  } else {
+    // v2.1 단톡방 — 방은 그대로, 대화만 비운다 (고정 3인 재입장)
+    ensurePanel();
+    renderParticipants();
+    updateChatTopic();
+    if (FEATURES.minutes) resetMinutesView();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    $('#followupInput').focus();
+    toast('새 대화 — 셋이 다시 앉았습니다');
+  }
 }
 
 /* ============ 회의록 (결론 + 액션 아이템 3개 + 공유) ============ */
@@ -5260,16 +5759,19 @@ function handleUrlAction() {
     }
   }, 200);
 
+  const mainInput = FEATURES.startScreen ? '#agendaInput' : '#followupInput';
+
   if (action === 'new') {
     setTimeout(() => {
       newSession();
-      $('#agendaInput').focus();
+      const el = $(mainInput);
+      if (el) el.focus();
     }, 100);
   } else if (action === 'voice') {
     setTimeout(() => {
       newSession();
       // 마이크 자동 시작
-      setTimeout(() => startVoiceInput('#agendaInput'), 400);
+      setTimeout(() => startVoiceInput(mainInput), 400);
     }, 100);
   } else if (action === 'sessions') {
     setTimeout(() => {
@@ -5280,7 +5782,7 @@ function handleUrlAction() {
     setTimeout(() => {
       const sessions = loadSessions();
       if (sessions.length === 0) {
-        toast('이어갈 회의가 없습니다 — 새 회의를 시작하세요', true);
+        toast('이어갈 대화가 없습니다 — 그냥 말 걸어보세요', true);
         return;
       }
       // 최근 수정순 정렬해서 최상단 로드
