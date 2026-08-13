@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v2.1.0 — 아이디어 단톡방</title>
+<title>Vela Compass v2.2.0 — 아이디어 단톡방</title>
 <meta name="description" content="Vela Compass — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=094d95c84817" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=aec22949b1da" />
 <meta name="theme-color" content="#0a0a0b" />
 <meta name="color-scheme" content="dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -2173,9 +2173,208 @@
   }
   .msg-system-chip b { color: var(--c-expert); font-weight: 600; }
 
-  /* ---- 채팅 전용 레이아웃 (v2.1 단톡방) ---- */
-  body.chat-only main { padding-top: 26px; }
-  body.chat-only .chat-header { padding-top: 0; }
+  /* ═══════════ 채팅 전용 레이아웃 (v2.2 — 입력창 하단 고정) ═══════════
+   * 문서 전체가 스크롤되던 v2.1 구조를 "고정 높이 셸 + 메시지 영역만 스크롤"로 바꾼다.
+   * 대화가 아무리 길어져도 입력창은 항상 화면 하단에 붙어 있다.
+   *   --app-h  : 실제 보이는 높이. 모바일 키보드가 올라오면 그만큼 줄어든다.
+   *   --vv-top : iOS 에서 키보드가 뷰포트를 밀어올릴 때의 오프셋.
+   * 두 값 모두 syncViewport() 가 visualViewport 이벤트로 채운다.
+   * ------------------------------------------------------------------ */
+  html.chat-lock { height: 100%; overflow: hidden; }
+  body.chat-only {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: var(--vv-top, 0px);
+    height: var(--app-h, 100dvh);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  body.chat-only .masthead,
+  body.chat-only .issue-strip { flex: 0 0 auto; }
+  /* 고정 셸에서는 문서 하단이 존재하지 않는다 — 크레딧은 이슈 스트립으로 옮겼다 */
+  body.chat-only .colophon,
+  body.chat-only .btn-to-top { display: none; }
+
+  body.chat-only main {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 28px 0;
+    width: 100%;
+  }
+  body.chat-only .chat-screen {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+  body.chat-only .chat-header {
+    padding-top: 0;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    flex: 0 0 auto;
+  }
+  body.chat-only .chat-participants { flex: 0 0 auto; }
+
+  /* 스크롤은 오직 여기서만 일어난다 */
+  body.chat-only .chat-messages {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-right: 4px;
+  }
+  body.chat-only .chat-dock { flex: 0 0 auto; }
+
+  /* ---- 하단 도크 (라우팅 chip + 첨부 미리보기 + 입력창) ---- */
+  .chat-dock {
+    position: relative;
+    background: var(--bg);
+  }
+  /* 아이폰 하단 안전영역. 키보드가 올라오면 iOS 가 이 값을 0 으로 준다 */
+  body.chat-only .chat-input-bar {
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* ---- "새 메시지 ↓" 배지 — 위로 올려 읽는 중일 때만 뜬다 ---- */
+  .chat-jump {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    z-index: 30;
+    margin-bottom: 10px;
+    transform: translateX(-50%) translateY(6px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 15px;
+    border-radius: 100px;
+    border: 1px solid var(--cyan);
+    background: var(--bg-card);
+    color: var(--cyan);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  }
+  .chat-jump.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+  .chat-jump:hover { background: var(--bg-elev); }
+
+  /* ---- 첨부 사진 미리보기 (전송 전) ---- */
+  .chat-attach-strip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px 0 0;
+    border-top: 1px solid var(--line-soft);
+  }
+  .attach-thumb {
+    position: relative;
+    width: 62px;
+    height: 62px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--bg-elev);
+    flex-shrink: 0;
+  }
+  .attach-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .attach-thumb-del {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .attach-thumb-del:hover { background: var(--c-warn); }
+  .attach-note {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+  }
+  .attach-note.warn { color: var(--c-warn); }
+  .btn-attach {
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    line-height: 1;
+    padding: 0;
+    flex-shrink: 0;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-attach:hover { border-color: var(--cyan); color: var(--cyan); }
+  .btn-attach:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* ---- 메시지에 붙은 사진 ---- */
+  .msg-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .msg-images img {
+    max-width: 210px;
+    max-height: 210px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    display: block;
+    cursor: zoom-in;
+  }
+  .msg-user-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    max-width: 78%;
+  }
+  .msg-user-stack .msg-user-bubble { max-width: 100%; }
+  .msg-img-gone {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+
   .chat-topic-empty { color: var(--text-faint); font-style: italic; font-weight: 400; }
 
   .chat-empty {
@@ -2210,6 +2409,13 @@
     .minutes-topic { font-size: 17px; }
     .minutes-body { font-size: 13.5px; }
     .expert-note { margin-left: 0; width: 100%; }
+    /* v2.2 — 좁은 화면에서 세로 공간을 입력창에 몰아준다 */
+    body.chat-only main { padding: 12px 16px 0; }
+    body.chat-only .chat-header { padding-bottom: 10px; margin-bottom: 8px; }
+    .btn-attach { width: 36px; height: 36px; font-size: 17px; }
+    .attach-thumb { width: 54px; height: 54px; }
+    .msg-images img { max-width: 160px; max-height: 160px; }
+    .chat-jump { font-size: 10.5px; padding: 6px 13px; }
   }
 </style>
 </head>
@@ -2248,7 +2454,7 @@
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
-  <div>2026</div>
+  <div>MADE BY JUNS · 2026</div>
 </div>
 
 <main>
@@ -2331,11 +2537,23 @@
       <!-- 메시지 동적 추가 -->
     </div>
 
-    <!-- 페르소나 선택 chip (응답 대상) — 패널이 정해지면 JS가 렌더 -->
-    <div class="chat-routing" id="chatRouting"></div>
+    <!-- 하단 도크 — 라우팅 chip + 첨부 미리보기 + 입력창.
+         v2.2: 이 블록이 화면 하단에 고정되고, 위의 메시지 영역만 스크롤한다. -->
+    <div class="chat-dock" id="chatDock">
 
-    <!-- 하단 입력창 (카톡 스타일) -->
-    <div class="chat-input-bar">
+      <!-- 위로 올려 읽는 중에 새 메시지가 오면 뜨는 배지 -->
+      <button class="chat-jump" id="btnJumpBottom" type="button" aria-live="polite">새 메시지 ↓</button>
+
+      <!-- 페르소나 선택 chip (응답 대상) — 패널이 정해지면 JS가 렌더 -->
+      <div class="chat-routing" id="chatRouting"></div>
+
+      <!-- 첨부 사진 미리보기 (전송 전) -->
+      <div class="chat-attach-strip" id="attachStrip" hidden></div>
+      <input type="file" id="attachInput" accept="image/*" multiple hidden />
+
+      <!-- 하단 입력창 (카톡 스타일) -->
+      <div class="chat-input-bar">
+      <button id="btnAttach" class="btn-attach" type="button" title="사진 첨부" aria-label="사진 첨부">+</button>
       <button id="btnFollowupMic" class="btn-mic chat-mic" type="button" title="음성으로 질문" aria-label="음성으로 질문">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -2351,6 +2569,7 @@
         rows="1"
       ></textarea>
       <button id="btnFollowupSend" class="btn-send" type="button" title="전송 (Enter) · 줄바꿈 (Shift+Enter)">→</button>
+      </div>
     </div>
   </section>
 
@@ -2519,6 +2738,7 @@ const modelStorageKey  = (p) => `vela.boardroom.model.${p}`;
 const LLM_CONFIG = {
   anthropic: {
     name: 'Anthropic',
+    vision: true,   // 사진 첨부 → 페르소나가 실제로 이미지를 본다
     endpoint: 'https://api.anthropic.com/v1/messages',
     keyPlaceholder: 'sk-ant-...',
     keyHint: 'console.anthropic.com 에서 발급',
@@ -2531,6 +2751,7 @@ const LLM_CONFIG = {
   },
   groq: {
     name: 'Groq',
+    vision: false,  // 여기 실린 모델(GPT-OSS·Llama)은 이미지를 못 본다 → 사진은 방에만 남는다
     endpoint: 'https://api.groq.com/openai/v1/chat/completions',
     keyPlaceholder: 'gsk_...',
     keyHint: 'console.groq.com 에서 발급 (카드 등록 불필요)',
@@ -2556,7 +2777,7 @@ const LLM_CONFIG = {
  * ═════════════════════════════════════════════════════════════ */
 
 const APP = {
-  version: '2.1.0',
+  version: '2.2.0',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -2611,6 +2832,26 @@ const MESSAGE_WEIGHTS = {
     label: '안건', responders: [2, 2], silence: 0,
     tone: '제대로 답할 만한 얘기다. 3~5문장으로 네 전문 관점에서 구체적으로. 실제 사례·수치·방법을 하나는 든다.'
   }
+};
+
+/* ---- ⑨ 사진 첨부 (v2.2) -----------------------------------------
+ * 원본을 그대로 보내면 토큰도 저장 용량도 폭발한다. 전송 전에 무조건 줄인다.
+ * ---------------------------------------------------------------- */
+const IMAGE_RULES = {
+  maxEdge: 1280,          // 긴 변 기준 최대 픽셀 — 넘으면 비율 유지하며 축소
+  quality: 0.82,          // JPEG 품질
+  mime: 'image/jpeg',     // 항상 JPEG 로 통일 (PNG 는 base64 가 3~5배 커진다)
+  maxPerMessage: 4,       // 한 번에 붙일 수 있는 장수
+  maxSourceBytes: 20 * 1024 * 1024, // 이보다 큰 원본은 거절 (디코딩에서 브라우저가 죽는다)
+  historyTurns: 2,        // API 에 이미지를 실어 보낼 "최근 사진 올린 턴" 수 (그 이전은 텍스트 자리표시자로)
+  historyMaxImages: 4     // 그중에서도 총 장수 상한
+};
+
+/* 세션 저장 용량 가드 — localStorage 는 보통 5MB(UTF-16 문자 기준).
+ * 사진 base64 가 들어오면 금방 찬다. 이 선을 넘으면 오래된 사진부터 버린다. */
+const SESSION_STORE = {
+  budgetChars: 3.4 * 1024 * 1024,  // 이 길이를 넘으면 정리 시작
+  keepSessions: 50
 };
 
 /* ---- ① 라운드 정의 (v2.0 자산 · FEATURES.rounds 로 켬) -------------
@@ -2716,6 +2957,9 @@ const CORE_PERSONAS = [
     name: '서다현',
     role: '컨셉 · 방향과 수요',
     color: '#f5b942',
+    humor: `엉뚱한 드립이 특기다. 얘기를 갑자기 이상한 데로 비유해서 웃긴다
+("이거 완전 편의점 신상 같은 느낌인데?", "그럼 이름을 '망한 김에 프로젝트'로 하자ㅋㅋ").
+비유가 과할수록 좋다. 다만 드립 친 다음엔 원래 얘기로 돌아온다.`,
     system: `당신은 서다현. 15년차 크리에이티브 디렉터입니다. 업종을 가리지 않고 "무엇을, 왜 지금, 어떤 얼굴로"를 정의하는 게 전문입니다.
 
 [당신의 강점]
@@ -2737,6 +2981,9 @@ const CORE_PERSONAS = [
     name: '이준호',
     role: '실행 · 만드는 현실',
     color: '#5eead4',
+    humor: `현실 자학개그가 특기다. 자기가 예전에 말아먹은 얘기를 웃으면서 꺼낸다
+("나 예전에 이거 하다가 3주 날렸는데ㅋㅋ", "그거 해봤음. 망함. 그래서 아는 거임").
+망한 경험을 웃음거리로 만들되, 그 안에 진짜 교훈을 하나 심어둔다.`,
     system: `당신은 이준호. 20년차 실행 총괄입니다. 아이디어를 실제로 굴러가게 만드는 일 — 만들고, 세우고, 굴리는 현실을 가장 잘 압니다.
 
 [당신의 강점]
@@ -2758,6 +3005,9 @@ const CORE_PERSONAS = [
     name: '정민철',
     role: '사업 · 숫자와 리스크',
     color: '#a3e635',
+    humor: `건조한 팩트 개그가 특기다. 표정 하나 안 바꾸고 숫자로 팩폭해서 웃긴다
+("그거 월 3개 팔면 12년 뒤에 손익분기입니다", "낭만은 좋은데 통장은 안 웃네요").
+절대 먼저 웃지 않는다. 남들이 웃는 게 포인트다.`,
     system: `당신은 정민철. 사업 전략가입니다. 회의에서 가장 먼저 "그래서 이거 누구에게 어떤 가치이고, 숫자로 남느냐"를 따집니다.
 
 [당신의 강점]
@@ -2854,10 +3104,16 @@ const PROCESS_KEYWORDS = [
 /* ============ PERSONA 조립 ============ */
 
 // 공통 출력 규칙 — 패널 전원에 공통
-const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효]
-- 100% 자연스러운 완성형 한국어로만 쓴다. 한자·일본어·베트남어 등 외국어 단어 절대 금지. 외래어는 가능하면 한국어로 ('런칭'→'출시').
+const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효 · 가장 중요]
+- **오직 한글과 영문자만 쓴다.** 그 외 문자 체계는 단 한 글자도 쓰지 마라.
+- 특히 금지: 아랍 문자(العربية), 히브리 문자, 키릴 문자(Кириллица), 태국 문자, 데바나가리, 그리스 문자,
+  한자·한문(漢字), 일본어 가나(ひらがな·カタカナ), 성조 부호가 붙은 라틴 문자(ă â đ ê ô ơ ư ő ű 등).
+  이 중 하나라도 섞이면 그 응답은 통째로 버려진다.
+- 100% 자연스러운 완성형 한국어로만 쓴다. 외래어는 가능하면 한국어로 ('런칭'→'출시').
 - 한글은 반드시 완성된 음절로 쓴다. 자모를 분리하거나(예: ㅇㅏㄴ) 깨진 글자를 만들지 마라. 매끄럽고 또렷한 문장만.
+- 허용되는 것은 딱 이것뿐이다: 한글 · 영문 알파벳 · 숫자 · 일반 문장부호 · 이모지 · ㅋㅋ/ㅎㅎ/ㅠㅠ 같은 자모 웃음.
 - 영어 약자(KPI, API, CS 등)와 고유명사(브랜드·기관·제품명)는 허용.
+- 확실하지 않은 단어는 쓰지 말고, 아는 한국어로 풀어 써라. 어설픈 외국어보다 쉬운 한국어가 낫다.
 
 [대화 방식 — 여긴 회의실이 아니라 단톡방이다. 가장 중요]
 - {chair}와 동료 몇 명이 있는 카카오톡 단톡방이다. 회의체·발표·보고서·목록 나열 절대 금지.
@@ -2885,6 +3141,31 @@ const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효]
 [톤]
 - 업계 최고 수준의 사람이지만, 지금은 친한 사이의 단톡방이다. 격식 없이, 솔직하게.
 - 영감을 주되 현실적. 다만 아무 말에나 인생 조언을 붙이지는 마라.`;
+
+/* ---- 유머 규칙 (v2.2) — 모든 페르소나 공통. 개인별 스타일은 persona.humor ---- */
+const HUMOR_RULES = `[웃겨도 된다 — 오히려 권장]
+- 여긴 딱딱한 회의실이 아니라 친한 사람들 단톡방이다. **농담·드립·가벼운 개그 마음껏 해라.**
+- 웃긴 상황엔 진짜로 웃어라. ㅋㅋ ㅋㅋㅋ ㅋㅋㅋㅋ ㅎㅎ 자연스럽게 쓴다. 재밌으면 ㅋㅋㅋ 길게 써도 된다.
+- **동료끼리 서로 놀려도 된다.** "또 시작이네ㅋㅋ", "정민철 표정 안 봐도 알겠다", "이준호 그거 또 망한 얘기지?" 같은 티키타카 환영.
+  놀림당하면 발끈하거나 받아치는 것도 좋다. 친한 사이의 장난이다.
+- 다만 **{chair}를 비하하거나 무시하는 농담은 절대 금지.** {chair}의 아이디어·질문·수준을 웃음거리로 삼지 마라.
+  {chair}와 함께 웃는 건 좋고, {chair}를 두고 웃는 건 안 된다.
+- 외모·출신·성별·나이·장애·특정 집단을 소재로 한 농담도 금지. 선은 지킨다.
+- 진지한 안건에서도 딱딱하게만 가지 마라. 한 번 웃기고 본론으로 들어가면 오히려 잘 읽힌다.
+- 억지로 웃기려 들지는 마라. 웃긴 게 안 떠오르면 그냥 평범하게 말하면 된다. 매 발언마다 개그 넣으면 피곤하다.`;
+
+/* ---- 개인별 개그 스타일 (v2.2) — 넷이 다 다르게 웃겨야 방이 산다 ---- */
+const EXPERT_HUMOR = `현장 전문용어로 치는 개그가 특기다. 자기 분야에서만 통하는 농담을 툭 던진다
+("이거 현장에서 하면 반장님한테 맞습니다ㅋㅋ", "도면상으론 완벽하죠. 도면상으론").
+아무도 못 알아들으면 "아 이거 우리 업계 개그인데" 하고 넘어간다.`;
+
+function humorStyleBlock(persona, ctx) {
+  const style = persona.id === 'expert'
+    ? EXPERT_HUMOR
+    : (CORE_PERSONAS.find(p => p.id === persona.id) || {}).humor;
+  if (!style) return '';
+  return `\n\n[너만의 개그 스타일]\n${fillTemplate(style, ctx)}\n동료 셋은 각자 다른 방식으로 웃긴다. 남의 개그 스타일을 따라 하지 마라.`;
+}
 
 /* ---- 대화방 지시문 — 모든 페르소나 프롬프트 뒤에 붙는다 ---- */
 function buildTopicDirective(ctx) {
@@ -2950,7 +3231,7 @@ async function refineExpertTitle(topic) {
       `주제: ${topic}\n필요한 전문가 직함 하나만.`,
       { maxTokens: 60 }
     );
-    const title = sanitizeKorean(res.text || '').split('\n')[0].replace(/["'`.]/g, '').trim();
+    const title = sanitizeKorean(res.text || '', { personaId: 'expert', where: 'expertTitle' }).split('\n')[0].replace(/["'`.]/g, '').trim();
     if (title && title.length <= 20) return title;
   } catch (e) { /* 무시 — 제너럴리스트로 진행 */ }
   return null;
@@ -2982,6 +3263,7 @@ function buildPanel(opts) {
     id: p.id, tag: p.tag, name: p.name, role: p.role, color: p.color,
     keywords: (ROUTING_KEYWORDS[p.id] || []).slice(),
     system: fillTemplate(p.system, ctx) + '\n\n' + fillTemplate(COMMON_RULES, ctx)
+      + '\n\n' + fillTemplate(HUMOR_RULES, ctx) + humorStyleBlock(p, ctx)
       + '\n\n' + buildTopicDirective(ctx)
   }));
 
@@ -2998,7 +3280,9 @@ function buildPanel(opts) {
       draws: !!expertDef.draws,
       keywords: expertDef.keywords || [],
       system: buildExpertSystem({ name: expertName, title: expertTitle, focus: expertDef.focus || '주제와 직접 닿는 실무 지식 전반.' }, ctx)
-        + '\n\n' + fillTemplate(COMMON_RULES, ctx) + '\n\n' + buildTopicDirective(ctx)
+        + '\n\n' + fillTemplate(COMMON_RULES, ctx)
+        + '\n\n' + fillTemplate(HUMOR_RULES, ctx) + humorStyleBlock({ id: 'expert' }, ctx)
+        + '\n\n' + buildTopicDirective(ctx)
     });
   }
   return PERSONAS;
@@ -3244,6 +3528,8 @@ let state = {
   // ---- v2.1 단톡방 ----
   lastSpeakers: [],        // 최근 발언자 (순서 고정 방지용)
   agendaProvisional: false, // 방 제목이 잡담에서 임시로 잡힌 상태인지
+  // ---- v2.2 ----
+  pendingImages: [],       // 전송 대기 중인 첨부 사진 [{ id, dataUrl, w, h, bytes, name }]
   maxResponders: Math.min(
     parseInt(localStorage.getItem('vela.boardroom.maxResponders') || CHAT_RULES.maxResponders, 10) || CHAT_RULES.maxResponders,
     CHAT_RULES.hardMaxResponders),
@@ -3389,6 +3675,8 @@ function updateCostNote() {
 /* ---- FEATURES 플래그에 맞춰 화면 구성 (v2.1: 열자마자 채팅방) ---- */
 function applyFeatureFlags() {
   document.body.classList.toggle('chat-only', !FEATURES.startScreen);
+  // 단톡방 모드에서는 문서 스크롤을 잠근다 — 스크롤은 메시지 영역에서만 일어난다
+  document.documentElement.classList.toggle('chat-lock', !FEATURES.startScreen);
   const start = $('#startScreen');
   const chat = $('#chatScreen');
   if (start) start.hidden = !FEATURES.startScreen;
@@ -3402,6 +3690,132 @@ function applyFeatureFlags() {
   // 회의 모드에서만 의미 있는 버튼들
   const btnNewTop = $('#btnNewMeetingTop');
   if (btnNewTop && !FEATURES.startScreen) btnNewTop.hidden = false;
+}
+
+/* ═══════════ 채팅 셸 — 뷰포트 · 스크롤 (v2.2) ═══════════
+ *
+ * ① 뷰포트: 모바일 키보드가 올라오면 visualViewport.height 가 줄고,
+ *    iOS 는 여기에 더해 offsetTop 으로 화면을 밀어올린다.
+ *    두 값을 CSS 변수로 넘겨 셸 높이를 실시간으로 맞춘다 → 입력창이 항상 키보드 위.
+ * ② 스크롤: 맨 아래에 붙어 있으면 새 메시지마다 따라 내려가고,
+ *    사용자가 위로 올려 읽는 중이면 절대 강제로 끌어내리지 않는다.
+ *    대신 "새 메시지 ↓" 배지를 띄운다.
+ * ══════════════════════════════════════════════════════ */
+
+const STICK_THRESHOLD_PX = 72;   // 이 안쪽이면 "맨 아래에 붙어 있다"로 본다
+let chatStickToBottom = true;    // 지금 따라 내려가는 중인가
+let unseenCount = 0;             // 위에서 읽는 동안 쌓인 새 메시지 수
+let programmaticScrollUntil = 0; // 우리가 스크롤시킨 직후 구간 (사용자 조작과 구분)
+
+function syncViewport() {
+  const vv = window.visualViewport;
+  const h = vv ? vv.height : window.innerHeight;
+  const top = vv ? vv.offsetTop : 0;
+  const root = document.documentElement;
+  root.style.setProperty('--app-h', h + 'px');
+  root.style.setProperty('--vv-top', top + 'px');
+}
+
+function bindViewport() {
+  syncViewport();
+  const vv = window.visualViewport;
+  if (vv) {
+    // 키보드가 올라오는 동안 높이가 연속으로 바뀐다 — 그때마다 셸을 다시 맞춘다
+    vv.addEventListener('resize', () => {
+      syncViewport();
+      // 키보드가 덮으면서 입력창이 가려지지 않게, 붙어 있던 상태면 다시 바닥으로
+      if (chatStickToBottom) scrollChatToBottom(false);
+    });
+    vv.addEventListener('scroll', syncViewport);
+  }
+  window.addEventListener('resize', syncViewport);
+  window.addEventListener('orientationchange', () => setTimeout(syncViewport, 200));
+}
+
+function chatScroller() { return $('#chatMessages'); }
+
+function isChatAtBottom() {
+  const el = chatScroller();
+  if (!el) return true;
+  return (el.scrollHeight - el.scrollTop - el.clientHeight) <= STICK_THRESHOLD_PX;
+}
+
+function scrollChatToBottom(smooth) {
+  const el = chatScroller();
+  if (!el) return;
+  el.scrollTo({ top: el.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
+  chatStickToBottom = true;
+  // 부드러운 스크롤은 애니메이션 동안 scroll 이벤트를 계속 뿜는다.
+  // 그 사이에 메시지가 하나 더 들어오면 "아직 바닥이 아님"으로 읽혀
+  // 따라가던 상태가 풀려버린다 — 이 구간에서는 해제를 무시한다.
+  programmaticScrollUntil = Date.now() + (smooth ? 700 : 250);
+  clearUnseen();
+}
+
+function clearUnseen() {
+  unseenCount = 0;
+  const b = $('#btnJumpBottom');
+  if (b) b.classList.remove('visible');
+}
+
+function showUnseenBadge() {
+  const b = $('#btnJumpBottom');
+  if (!b) return;
+  b.textContent = unseenCount > 1 ? `새 메시지 ${unseenCount} ↓` : '새 메시지 ↓';
+  b.classList.add('visible');
+}
+
+// 새 메시지가 들어왔을 때의 스크롤 정책
+//   force=true  → 내 메시지. 무조건 따라 내려간다.
+//   force=false → 남의 메시지. 붙어 있을 때만 따라가고, 아니면 배지.
+function onNewMessageScroll(opts = {}) {
+  if (opts.force || chatStickToBottom) {
+    scrollChatToBottom(opts.smooth !== false);
+    return;
+  }
+  if (opts.countable !== false) {
+    unseenCount++;
+    showUnseenBadge();
+  }
+}
+
+function bindChatScroll() {
+  const el = chatScroller();
+  if (!el) return;
+  /* 사용자가 직접 스크롤을 만졌다는 신호 (휠·터치·스크롤바 드래그·키보드).
+   * 이 이벤트들은 scroll 이벤트보다 먼저 오므로, 여기서 보호 구간을 풀어두면
+   * 뒤따르는 scroll 이벤트가 "사용자가 위로 올렸다"를 정확히 잡아낸다.
+   * 시간만으로 판단하면 자동 스크롤 직후 사용자가 올린 걸 무시하게 된다. */
+  const markUserScroll = () => { programmaticScrollUntil = 0; };
+  el.addEventListener('wheel', markUserScroll, { passive: true });
+  el.addEventListener('touchstart', markUserScroll, { passive: true });
+  el.addEventListener('touchmove', markUserScroll, { passive: true });
+  el.addEventListener('mousedown', markUserScroll, { passive: true });
+  el.addEventListener('keydown', (e) => {
+    if (['PageUp', 'PageDown', 'ArrowUp', 'ArrowDown', 'Home', 'End', ' '].indexOf(e.key) >= 0) markUserScroll();
+  });
+
+  el.addEventListener('scroll', () => {
+    if (isChatAtBottom()) {
+      // 바닥에 닿았으면 언제나 다시 따라간다
+      chatStickToBottom = true;
+      clearUnseen();
+    } else if (Date.now() > programmaticScrollUntil) {
+      // 바닥에서 떨어졌다 — 단, 우리가 방금 스크롤시킨 직후는 사용자 조작이 아니다
+      chatStickToBottom = false;
+    }
+  }, { passive: true });
+
+  const jump = $('#btnJumpBottom');
+  if (jump) jump.addEventListener('click', () => scrollChatToBottom(true));
+
+  // 탭이 숨겨져 있으면 브라우저가 부드러운 스크롤을 아예 실행하지 않는다.
+  // 그동안 쌓인 메시지가 있으니, 돌아왔을 때 즉시 바닥을 다시 잡아준다.
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && chatStickToBottom) {
+      scrollChatToBottom(false);
+    }
+  });
 }
 
 // 채팅 헤더의 주제 줄 — 첫 메시지가 주제가 된다
@@ -3427,6 +3841,10 @@ window.addEventListener('DOMContentLoaded', () => {
   bindEvents();
   bindInstallButton();
   applyFeatureFlags();
+  // v2.2 — 고정 셸: 뷰포트(모바일 키보드) 추적 + 메시지 영역 스크롤 정책
+  bindViewport();
+  bindChatScroll();
+  renderAttachStrip();
   if (FEATURES.startScreen) {
     rotateHeadline();
     renderModeGrid();
@@ -3500,6 +3918,47 @@ function bindEvents() {
   });
   $('#btnFollowupMic').addEventListener('click', () => startVoiceInput('#followupInput'));
 
+  /* ---- 사진 첨부 (v2.2) ---- */
+  const attachInput = $('#attachInput');
+  const btnAttach = $('#btnAttach');
+  if (btnAttach && attachInput) {
+    btnAttach.addEventListener('click', () => attachInput.click());
+    attachInput.addEventListener('change', async (e) => {
+      await handleAttachFiles(e.target.files);
+      e.target.value = '';   // 같은 파일을 다시 골라도 change 가 뜨게
+    });
+  }
+  // 붙여넣기(⌘/Ctrl+V)로도 사진을 받는다
+  $('#followupInput').addEventListener('paste', (e) => {
+    const items = Array.from((e.clipboardData && e.clipboardData.items) || []);
+    const files = items.filter(it => it.kind === 'file' && /^image\//.test(it.type))
+      .map(it => it.getAsFile()).filter(Boolean);
+    if (files.length) {
+      e.preventDefault();
+      handleAttachFiles(files);
+    }
+  });
+  // 채팅 영역에 사진을 끌어다 놓기
+  const dropZone = $('#chatScreen');
+  if (dropZone) {
+    dropZone.addEventListener('dragover', (e) => {
+      if (e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files')) e.preventDefault();
+    });
+    dropZone.addEventListener('drop', (e) => {
+      const files = Array.from((e.dataTransfer && e.dataTransfer.files) || [])
+        .filter(f => /^image\//.test(f.type));
+      if (files.length) {
+        e.preventDefault();
+        handleAttachFiles(files);
+      }
+    });
+  }
+
+  // 입력창을 누르면(모바일 키보드) 바닥으로 — 입력창이 키보드에 가리지 않게
+  $('#followupInput').addEventListener('focus', () => {
+    setTimeout(() => { if (chatStickToBottom) scrollChatToBottom(false); }, 250);
+  });
+
   // 빠른 회의 토글
   const quick = $('#inputQuick');
   if (quick) {
@@ -3556,6 +4015,7 @@ function bindEvents() {
     state.maxResponders = newMax;
     refreshApiStatus();
     refreshModelTag();
+    renderAttachStrip();   // v2.2 — provider 가 바뀌면 사진 지원 여부 안내도 바뀐다
     closeModal('modalSettings');
     toast('설정 저장됨');
   });
@@ -3697,6 +4157,137 @@ function renderSettingsModalForProvider(provider) {
 }
 
 /* ============ FACT CARDS RENDER ============ */
+/* ═══════════ 사진 첨부 (v2.2) ═══════════
+ * 원본 → 캔버스로 축소(긴 변 1280) → JPEG 압축 → dataURL.
+ * 이 과정을 거쳐야 API 토큰도, localStorage 용량도 감당이 된다.
+ * ══════════════════════════════════════ */
+
+// 지금 provider 가 이미지를 볼 수 있나
+function providerSupportsVision() {
+  const cfg = LLM_CONFIG[state.provider];
+  return !!(cfg && cfg.vision);
+}
+
+function humanBytes(n) {
+  if (!n) return '0KB';
+  if (n < 1024 * 1024) return Math.round(n / 1024) + 'KB';
+  return (n / (1024 * 1024)).toFixed(1) + 'MB';
+}
+
+// dataURL 의 실제 바이트 수 (base64 → 원본 크기)
+function dataUrlBytes(dataUrl) {
+  const i = String(dataUrl || '').indexOf(',');
+  if (i < 0) return 0;
+  return Math.floor((dataUrl.length - i - 1) * 3 / 4);
+}
+
+// 파일 하나를 리사이즈·압축해서 { dataUrl, w, h, bytes } 로
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    if (!/^image\//.test(file.type)) return reject(new Error('이미지 파일이 아닙니다'));
+    if (file.size > IMAGE_RULES.maxSourceBytes) {
+      return reject(new Error(`사진이 너무 큽니다 (${humanBytes(file.size)})`));
+    }
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const scale = Math.min(1, IMAGE_RULES.maxEdge / Math.max(img.width, img.height));
+        const w = Math.max(1, Math.round(img.width * scale));
+        const h = Math.max(1, Math.round(img.height * scale));
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        // 투명 PNG 를 JPEG 로 바꾸면 검게 나온다 — 흰 배경을 먼저 깐다
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL(IMAGE_RULES.mime, IMAGE_RULES.quality);
+        URL.revokeObjectURL(url);
+        resolve({ dataUrl, w, h, bytes: dataUrlBytes(dataUrl), name: file.name || 'photo.jpg' });
+      } catch (e) {
+        URL.revokeObjectURL(url);
+        reject(e);
+      }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('사진을 읽지 못했습니다')); };
+    img.src = url;
+  });
+}
+
+// dataURL → Anthropic 이미지 블록
+function toImageBlock(dataUrl) {
+  const m = String(dataUrl || '').match(/^data:([^;]+);base64,(.+)$/);
+  if (!m) return null;
+  return { type: 'image', source: { type: 'base64', media_type: m[1], data: m[2] } };
+}
+
+async function handleAttachFiles(fileList) {
+  const files = Array.from(fileList || []).filter(f => /^image\//.test(f.type));
+  if (files.length === 0) return;
+
+  const room = IMAGE_RULES.maxPerMessage - state.pendingImages.length;
+  if (room <= 0) {
+    toast(`사진은 한 번에 ${IMAGE_RULES.maxPerMessage}장까지예요`, true);
+    return;
+  }
+  const take = files.slice(0, room);
+  if (files.length > room) toast(`${room}장만 첨부했어요 (최대 ${IMAGE_RULES.maxPerMessage}장)`, true);
+
+  for (const f of take) {
+    try {
+      const img = await compressImage(f);
+      state.pendingImages.push({
+        id: 'img_' + Date.now() + '_' + Math.floor(Math.random() * 10000),
+        ...img
+      });
+    } catch (e) {
+      toast(e.message || '사진 처리 실패', true);
+    }
+  }
+  renderAttachStrip();
+}
+
+function removePendingImage(id) {
+  state.pendingImages = state.pendingImages.filter(im => im.id !== id);
+  renderAttachStrip();
+}
+
+function clearPendingImages() {
+  state.pendingImages = [];
+  renderAttachStrip();
+}
+
+function renderAttachStrip() {
+  const strip = $('#attachStrip');
+  if (!strip) return;
+  const imgs = state.pendingImages || [];
+  if (imgs.length === 0) {
+    strip.hidden = true;
+    strip.innerHTML = '';
+    return;
+  }
+  const total = imgs.reduce((a, im) => a + (im.bytes || 0), 0);
+  const visionOk = providerSupportsVision();
+  strip.hidden = false;
+  strip.innerHTML =
+    imgs.map(im => `
+      <div class="attach-thumb" title="${escapeHtml(im.name)} · ${im.w}×${im.h} · ${humanBytes(im.bytes)}">
+        <img src="${im.dataUrl}" alt="${escapeHtml(im.name)}" />
+        <button class="attach-thumb-del" type="button" data-del="${im.id}" title="삭제" aria-label="사진 삭제">×</button>
+      </div>`).join('') +
+    `<span class="attach-note${visionOk ? '' : ' warn'}">${
+      visionOk
+        ? `${imgs.length}장 · ${humanBytes(total)} · 최대 ${IMAGE_RULES.maxEdge}px 로 줄여서 보냅니다`
+        : `${LLM_CONFIG[state.provider] ? LLM_CONFIG[state.provider].name : '지금 모델'}은 사진을 못 봅니다 — 방에만 남고 답변엔 반영되지 않아요`
+    }</span>`;
+
+  strip.querySelectorAll('[data-del]').forEach(btn => {
+    btn.addEventListener('click', () => removePendingImage(btn.dataset.del));
+  });
+}
+
 /* ============ CHAT RENDER ============ */
 
 // 페르소나 이니셜 — 아바타용 (이름 첫 글자)
@@ -3705,7 +4296,7 @@ function personaInitial(p) {
 }
 
 // 메시지 하나 DOM 생성 후 채팅 컨테이너에 추가
-function appendMessage(msg) {
+function appendMessage(msg, opts = {}) {
   const container = $('#chatMessages');
   if (!container) return;
   removeChatEmptyState();
@@ -3714,7 +4305,13 @@ function appendMessage(msg) {
 
   if (msg.type === 'user') {
     el.className = 'msg-user';
-    el.innerHTML = `<div class="msg-user-bubble">${escapeHtml(msg.content)}</div>`;
+    // v2.2 — 첨부 사진은 버블 위에 붙는다 (사진만 보낸 경우 버블 없음)
+    const imgHtml = renderMessageImages(msg);
+    const bubble = msg.content
+      ? `<div class="msg-user-bubble">${escapeHtml(msg.content)}</div>` : '';
+    el.innerHTML = (imgHtml || bubble)
+      ? `<div class="msg-user-stack">${imgHtml}${bubble}</div>`
+      : '<div class="msg-user-stack"><div class="msg-user-bubble"></div></div>';
   } else if (msg.type === 'system') {
     // "○○○님이 입장했습니다" 같은 방 알림
     el.className = 'msg-system';
@@ -3755,10 +4352,45 @@ function appendMessage(msg) {
   }
 
   container.appendChild(el);
-  // 자동 스크롤 — 가장 새 메시지 보이게
+
+  // 자동 스크롤 (v2.2) — 내가 위로 올려 읽는 중이면 끌어내리지 않고 배지만 띄운다.
+  // opts.restore 는 세션 복원 중 대량 append — 스크롤·배지 모두 건너뛴다.
+  if (opts.restore) return el;
+
+  // 사진은 로드가 끝나야 높이가 확정된다 — 그때 한 번 더 바닥을 잡아준다
+  el.querySelectorAll('img').forEach(img => {
+    if (img.complete) return;
+    img.addEventListener('load', () => {
+      if (chatStickToBottom) scrollChatToBottom(false);
+    }, { once: true });
+  });
+
+  const isMine = msg.type === 'user';
   setTimeout(() => {
-    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 50);
+    onNewMessageScroll({
+      force: isMine,                    // 내 메시지는 언제나 따라 내려간다
+      countable: msg.type !== 'typing'  // "생각하는 중…"은 새 메시지로 세지 않는다
+    });
+  }, 30);
+  return el;
+}
+
+// 메시지에 붙은 사진 렌더 — 용량 가드로 원본이 지워진 건 안내로 대체
+function renderMessageImages(msg) {
+  const imgs = msg.images || [];
+  if (imgs.length === 0) return '';
+  const gone = imgs.filter(im => !im.dataUrl).length;
+  const live = imgs.filter(im => im.dataUrl);
+  let html = '';
+  if (live.length) {
+    html += '<div class="msg-images">' + live.map(im =>
+      `<img src="${im.dataUrl}" alt="${escapeHtml(im.name || '첨부 사진')}" loading="lazy" />`
+    ).join('') + '</div>';
+  }
+  if (gone > 0) {
+    html += `<div class="msg-img-gone">사진 ${gone}장 · 저장 공간 확보를 위해 원본이 정리되었습니다</div>`;
+  }
+  return html;
 }
 
 // 페르소나 메시지 버블 내용 렌더 (INSIGHT + IDEAS + REFERENCES)
@@ -3953,8 +4585,10 @@ function renderRoundBar() {
 function rerenderChat() {
   clearChat();
   state.messages.forEach(msg => {
-    if (msg.type !== 'typing') appendMessage(msg);
+    if (msg.type !== 'typing') appendMessage(msg, { restore: true });
   });
+  // 복원은 한 번에 바닥으로 (메시지마다 스크롤하면 화면이 튄다)
+  requestAnimationFrame(() => scrollChatToBottom(false));
 }
 
 // typing 메시지 제거
@@ -4054,9 +4688,80 @@ const FOREIGN_WORD_MAP = {
   'için': '위해', 'aynı': '같은'
 };
 
-function sanitizeKorean(text) {
+/* ---- 허용 문자 화이트리스트 (v2.2) ------------------------------------
+ * 위의 매핑·제거는 "아는 것만" 지우는 블랙리스트라, 처음 보는 문자권(아랍어 등)이
+ * 새로 튀어나오면 그대로 화면에 뜬다. 그래서 마지막에 반대로 뒤집는다 —
+ * 아래 목록에 없는 문자는 무조건 버린다.
+ *
+ * 허용:
+ *   한글 완성형(가-힣) · 호환 자모(ㅋㅋ ㅎㅎ ㅠㅠ) · ASCII(영문·숫자·문장부호)
+ *   일반 문장부호(— … ‘’ “”) · 통화기호 · 화살표 · 수학기호 · 도형/기호 · 이모지
+ * -------------------------------------------------------------------- */
+const ALIEN_CHAR_RE = new RegExp(
+  '[^' +
+  '\\t\\n\\r\\u0020-\\u007E' +        // 탭·줄바꿈 + ASCII 출력 가능 문자
+  '\\u00A0\\u00A3\\u00A5' +           // nbsp, £, ¥
+  '\\u00B0\\u00B1\\u00B7\\u00D7\\u00F7' + // ° ± · × ÷
+  '\\u20A9\\u20AC' +                  // ₩ €
+  '\\u2010-\\u205E' +                 // 대시·따옴표·말줄임표 등 일반 문장부호
+  '\\u2190-\\u21FF' +                 // 화살표 (→ ← ↔)
+  '\\u2200-\\u22FF' +                 // 수학 기호 (≈ ≠ ≤ ≥)
+  '\\u25A0-\\u25FF' +                 // 도형 (■ ● ▶ ◆)
+  '\\u2600-\\u27BF' +                 // 기타 기호 + 딩뱃 (★ ✓ ✔ ☑)
+  '\\u2B00-\\u2BFF' +                 // 추가 화살표·별
+  '\\u200D\\uFE0E\\uFE0F' +           // ZWJ · 이모지 변형 선택자
+  '\\u3131-\\u3163' +                 // 한글 호환 자모 — ㅋㅋ ㅎㅎ ㅠㅠ 보존용
+  '\\uAC00-\\uD7A3' +                 // 한글 완성형
+  '\\u{1F000}-\\u{1FAFF}' +           // 이모지 본진
+  ']', 'gu');
+
+/* 필터에 걸린 원문을 콘솔에 남긴다 — 어느 provider/모델이 범인인지 추적용.
+ * 브라우저 콘솔에서 window.__compassFilterLog 로 누적 기록을 볼 수 있다. */
+window.__compassFilterLog = [];
+
+/* 진단 기록 — 반드시 "모델이 준 원문" 기준으로 돌려야 한다.
+ * 위의 한자 매핑·문자권 제거 단계가 먼저 지워버리면 무엇이 나왔는지 알 수 없게 되고,
+ * "어느 모델이 아랍어를 뱉는가"라는 질문에 답할 수 없다. */
+function logAlienChars(s, meta) {
+  if (!s) return;
+  const hits = s.match(ALIEN_CHAR_RE);
+  if (!hits) return;
+
+  const uniq = Array.from(new Set(hits));
+  const entry = {
+    at: new Date().toISOString(),
+    provider: (typeof state !== 'undefined' && state.provider) || '?',
+    model: (typeof state !== 'undefined' && state.model) || '?',
+    persona: (meta && meta.personaId) || '?',
+    where: (meta && meta.where) || 'persona',
+    removed: uniq.join(' '),
+    codepoints: uniq.map(c => 'U+' + c.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')),
+    count: hits.length,
+    original: s
+  };
+  window.__compassFilterLog.push(entry);
+  if (window.__compassFilterLog.length > 50) window.__compassFilterLog.shift();
+
+  console.warn(
+    `[compass:필터] 허용 범위 밖 문자 ${hits.length}개 발견 — ` +
+    `${entry.provider}/${entry.model} · ${entry.persona} · 제거: ${entry.removed}`,
+    entry
+  );
+}
+
+// 실제 제거 (기록은 위에서 이미 원문 기준으로 끝났다)
+function filterAlienChars(s) {
+  return s ? s.replace(ALIEN_CHAR_RE, '') : s;
+}
+
+// meta: { personaId, where } — 필터 로그에 "어느 모델의 누구 발언인지" 남기기 위한 것 (선택)
+function sanitizeKorean(text, meta) {
   if (!text) return text;
   let s = text;
+
+  // (v2.2) 원인 추적 — 아래 정화 단계들이 지우기 전에, 모델이 실제로 뭘 뱉었는지 먼저 기록한다.
+  //        브라우저 콘솔 또는 window.__compassFilterLog 에서 provider/모델별로 확인 가능.
+  logAlienChars(s, meta);
 
   // 0. 깨진 문자(replacement character) 제거
   s = s.replace(/\uFFFD/g, '');
@@ -4101,6 +4806,10 @@ function sanitizeKorean(text) {
 
   // 8. 제어문자 제거
   s = s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '');
+
+  // 8.5 (v2.2) 화이트리스트 — 위 단계가 못 걸러낸 미지의 문자권을 마지막에 통째로 쳐낸다.
+  //     (무엇이 걸렸는지는 함수 진입부에서 원문 기준으로 이미 기록해뒀다)
+  s = filterAlienChars(s);
 
   // 9. 연속 공백 정리
   s = s.replace(/[ \t]+/g, ' ').replace(/ +\n/g, '\n').replace(/\n +/g, '\n');
@@ -4213,6 +4922,35 @@ function diagramDrawerId() {
 }
 
 /* ============ API CALL ============ */
+
+// content 를 항상 블록 배열로 (문자열이면 텍스트 블록 하나로 감싼다)
+function toContentBlocks(content) {
+  if (Array.isArray(content)) return content.slice();
+  return [{ type: 'text', text: String(content == null ? '' : content) }];
+}
+
+/* provider 별 메시지 형식 맞추기 (v2.2)
+ *   내부 표준은 Anthropic 블록 형식이다.
+ *   · anthropic → 그대로
+ *   · 이미지 지원 OpenAI 호환 → image_url 형식으로 변환
+ *   · 이미지 미지원(현재 Groq) → 이미지 블록을 버리고 텍스트만 남긴다 */
+function normalizeMessagesForProvider(messages, provider) {
+  const cfg = LLM_CONFIG[provider] || {};
+  return messages.map(m => {
+    if (!Array.isArray(m.content)) return m;
+    if (provider === 'anthropic') return m;
+    if (cfg.vision) {
+      return {
+        role: m.role,
+        content: m.content.map(b => b.type === 'image'
+          ? { type: 'image_url', image_url: { url: `data:${b.source.media_type};base64,${b.source.data}` } }
+          : { type: 'text', text: b.text })
+      };
+    }
+    const text = m.content.filter(b => b.type === 'text').map(b => b.text).join('\n\n');
+    return { role: m.role, content: text || '(사진 첨부 — 이 모델은 볼 수 없음)' };
+  });
+}
 // callLLM — messages 배열(멀티턴) 지원 + Anthropic 웹 검색 옵션
 // systemPrompt: string, messages: [{role, content}] 또는 string(단일 user)
 // opts: { webSearch: bool, maxTokens: int }
@@ -4221,10 +4959,13 @@ async function callLLM(systemPrompt, messagesOrText, opts = {}) {
   const cfg = LLM_CONFIG[state.provider];
   if (!cfg) throw new Error('알 수 없는 provider');
 
-  // 문자열이면 단일 user 메시지로 변환
-  const messages = typeof messagesOrText === 'string'
-    ? [{ role: 'user', content: messagesOrText }]
-    : messagesOrText;
+  // 문자열이면 단일 user 메시지로 변환 → provider 형식으로 정규화 (이미지 포함)
+  const messages = normalizeMessagesForProvider(
+    typeof messagesOrText === 'string'
+      ? [{ role: 'user', content: messagesOrText }]
+      : messagesOrText,
+    state.provider
+  );
   const maxTokens = opts.maxTokens || 1200;
   const useWebSearch = !!opts.webSearch && state.provider === 'anthropic';
   const retryCount = opts.retryCount || 0;
@@ -4318,9 +5059,39 @@ function buildConversationHistory(forPersonaId) {
   // 사용자 메시지 + 모든 페르소나 발언을 시간순으로
   // forPersona 본인 발언은 assistant, 나머지(사용자+다른 페르소나)는 user 역할로 합침
   const hist = [];
-  state.messages.forEach(m => {
+
+  /* v2.2 — 사진은 최근 몇 턴에만 실어 보낸다.
+   * 전부 다 보내면 턴이 쌓일수록 요청이 기하급수로 커지고 비용도 같이 뛴다.
+   * 그 이전 사진은 "(사진 N장 첨부됨)" 텍스트로만 남겨 문맥은 유지한다. */
+  const visionOk = providerSupportsVision();
+  // "최근 사용자 턴"이 아니라 "최근 사진 올린 턴"을 센다.
+  // 사진 하나 올리고 그 얘기를 몇 마디 주고받으면 사진이 바로 밀려나기 때문이다.
+  const photoTurns = [];
+  state.messages.forEach((m, i) => {
+    if (m.type === 'user' && (m.images || []).some(im => im.dataUrl)) photoTurns.push(i);
+  });
+  const imageTurns = new Set(photoTurns.slice(-IMAGE_RULES.historyTurns));
+  let imageBudget = IMAGE_RULES.historyMaxImages;
+
+  state.messages.forEach((m, i) => {
     if (m.type === 'user') {
-      hist.push({ role: 'user', content: `[${APP.chair}] ${m.content}` });
+      const label = `[${APP.chair}] ${m.content || ''}`.trim();
+      const imgs = (m.images || []).filter(im => im.dataUrl);
+      if (imgs.length === 0) {
+        hist.push({ role: 'user', content: label });
+      } else if (visionOk && imageTurns.has(i) && imageBudget > 0) {
+        const use = imgs.slice(0, imageBudget);
+        imageBudget -= use.length;
+        const blocks = use.map(im => toImageBlock(im.dataUrl)).filter(Boolean);
+        blocks.push({
+          type: 'text',
+          text: `${label || '[' + APP.chair + ']'}\n(위 사진 ${use.length}장을 직접 보고 반응해라. 사진에 실제로 보이는 것만 말하고, 안 보이는 걸 지어내지 마라.)`
+        });
+        hist.push({ role: 'user', content: blocks });
+      } else {
+        const why = visionOk ? '이전 대화라 이미지는 생략' : '지금 모델은 사진을 볼 수 없다';
+        hist.push({ role: 'user', content: `${label}\n(사진 ${imgs.length}장 첨부됨 — ${why})` });
+      }
     } else if (m.type === 'persona') {
       const name = resolvePersona(m.personaId).name;
       const txt = m.content || (m.parsed && (m.parsed.FACTS || m.parsed.RAW)) || '';
@@ -4331,14 +5102,19 @@ function buildConversationHistory(forPersonaId) {
       }
     }
   });
-  // 연속된 같은 role 병합 (Anthropic 요구사항)
+  // 연속된 같은 role 병합 (Anthropic 요구사항).
+  // v2.2 — 이미지가 섞이면 content 가 블록 배열이라 문자열 이어붙이기가 안 된다.
   const merged = [];
   hist.forEach(m => {
     const last = merged[merged.length - 1];
     if (last && last.role === m.role) {
-      last.content += '\n\n' + m.content;
+      if (Array.isArray(last.content) || Array.isArray(m.content)) {
+        last.content = toContentBlocks(last.content).concat(toContentBlocks(m.content));
+      } else {
+        last.content += '\n\n' + m.content;
+      }
     } else {
-      merged.push({ ...m });
+      merged.push({ role: m.role, content: Array.isArray(m.content) ? m.content.slice() : m.content });
     }
   });
   // 반드시 user로 시작해야 함
@@ -4365,8 +5141,14 @@ async function runPersonaTurn(persona, instruction, opts = {}) {
   const history = buildConversationHistory(persona.id);
   const messages = [...history];
   // 마지막이 user가 아니면 instruction을 user로, 맞으면 합침
+  // (v2.2 — 사진이 붙은 턴은 content 가 블록 배열이라 분기가 필요하다)
   if (messages.length && messages[messages.length - 1].role === 'user') {
-    messages[messages.length - 1].content += '\n\n' + instr;
+    const last = messages[messages.length - 1];
+    if (Array.isArray(last.content)) {
+      last.content = last.content.concat([{ type: 'text', text: instr }]);
+    } else {
+      last.content += '\n\n' + instr;
+    }
   } else {
     messages.push({ role: 'user', content: instr });
   }
@@ -4377,7 +5159,7 @@ async function runPersonaTurn(persona, instruction, opts = {}) {
     const result = await callLLM(persona.system, messages, { webSearch: useWebSearch, maxTokens });
     // SVG 블록을 먼저 분리 — sanitizeKorean이 SVG를 깨뜨리지 않게
     const { text: textPart, svgRaw } = extractSvgBlock(result.text || '');
-    let text = sanitizeKorean(textPart);
+    let text = sanitizeKorean(textPart, { personaId: persona.id, where: 'chat' });
     // 모델이 응답 맨 앞에 자기 이름표를 붙이면 제거 ("서다현:", "[이준호]", "한서준 -" 등)
     const names = (PERSONAS || []).map(p => p.name).filter(Boolean)
       .map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
@@ -4782,6 +5564,12 @@ function buildChatInstruction(opts) {
   if (opts.weight === 'filler' || opts.weight === 'casual') {
     parts.push('길게 쓰면 실패다. 짧게.');
   }
+  // v2.2 — 사진이 붙은 메시지
+  if (opts.hasImages) {
+    parts.push(opts.visionOk
+      ? `${APP.chair}가 사진을 올렸다. 사진을 직접 보고 네 분야 관점에서 반응해라. 사진에 실제로 보이는 것만 말한다 — 안 보이는 걸 지어내면 바로 들킨다.`
+      : `${APP.chair}가 사진을 올렸지만 너는 그 사진을 볼 수 없다. 본 척하지 말고, 사진에 대해 궁금한 걸 되묻거나 글로 설명해달라고 해라.`);
+  }
   if (opts.isLast && (opts.weight === 'normal' || opts.weight === 'serious') && Math.random() < 0.5) {
     parts.push(`얘기를 이어가고 싶으면 마지막에 ${APP.chair}에게 짧은 질문 하나를 던져도 좋다. 억지로는 하지 마라.`);
   }
@@ -4791,7 +5579,9 @@ function buildChatInstruction(opts) {
 async function sendFollowup() {
   if (state.inProgress) return;
   const question = $('#followupInput').value.trim();
-  if (!question) { toast('할 말을 입력해주세요', true); return; }
+  const attached = (state.pendingImages || []).slice();
+  // v2.2 — 사진만 보내는 것도 허용 (텍스트 없이 "이거 봐줘")
+  if (!question && attached.length === 0) { toast('할 말을 입력해주세요', true); return; }
   if (!state.apiKey) {
     toast('SETTINGS에서 API key를 먼저 입력해주세요', true);
     openModal('modalSettings');
@@ -4805,10 +5595,12 @@ async function sendFollowup() {
   // 방 제목(=세션 제목). 잡담으로 시작했으면 임시로 걸어두고,
   // 나중에 제대로 된 얘기가 나오면 그걸로 바꾼다.
   if (!state.sessionId) state.sessionId = 'sess_' + Date.now();
+  // 사진만 보낸 경우에도 방 제목이 생기게 대체 문구를 쓴다
+  const topicText = question || `사진 ${attached.length}장`;
   const firstWeight = classifyMessage(question);
-  const meaty = (firstWeight === 'normal' || firstWeight === 'serious');
+  const meaty = (firstWeight === 'normal' || firstWeight === 'serious') || attached.length > 0;
   if (!state.agenda) {
-    state.agenda = question;
+    state.agenda = topicText;
     state.agendaProvisional = !meaty;
     updateChatTopic();
   } else if (state.agendaProvisional && meaty) {
@@ -4817,12 +5609,29 @@ async function sendFollowup() {
     updateChatTopic();
   }
 
-  // 사용자 메시지
-  const userMsg = { id: 'msg_user_' + Date.now(), type: 'user', content: question, ts: Date.now() };
+  // 사용자 메시지 (+ 첨부 사진)
+  const userMsg = {
+    id: 'msg_user_' + Date.now(),
+    type: 'user',
+    content: question,
+    ts: Date.now()
+  };
+  if (attached.length) {
+    userMsg.images = attached.map(im => ({
+      id: im.id, dataUrl: im.dataUrl, w: im.w, h: im.h, bytes: im.bytes, name: im.name
+    }));
+  }
   state.messages.push(userMsg);
   appendMessage(userMsg);
   $('#followupInput').value = '';
   $('#followupInput').style.height = 'auto';
+  clearPendingImages();
+
+  // 이미지 미지원 모델 안내 — 사진은 방에 남지만 답변엔 반영되지 않는다
+  if (attached.length && !providerSupportsVision()) {
+    const cfg = LLM_CONFIG[state.provider];
+    pushSystemMessage(`${cfg ? cfg.name : '지금 모델'}은 사진을 볼 수 없습니다 — 사진은 방에만 남고, 답변에는 반영되지 않아요. (설정에서 Anthropic 으로 바꾸면 사진을 보고 답합니다)`);
+  }
 
   // 최근 발언으로 프롬프트 문맥 갱신
   refreshPanel();
@@ -4853,7 +5662,15 @@ async function sendFollowup() {
     const picked = pickResponders(question);
     weight = picked.weight;
     responders = picked.responders;
+    // 사진을 올렸는데 아무도 안 보면 이상하다 — 최소 한 명은 반응하게 한다
+    if (attached.length && responders.length === 0) {
+      const fallback = pickResponders(question, { forceWeight: 'normal', noSilence: true });
+      weight = fallback.weight;
+      responders = fallback.responders.length ? fallback.responders : PERSONAS.slice(0, 1);
+    }
   }
+  // 사진이 붙으면 리액션 한 줄로 넘기지 않는다 (사진은 볼 게 있는 메시지다)
+  if (attached.length && weight === 'filler') weight = 'casual';
 
   // 프로세스 질문이면 담당자가 다이어그램을 그린다
   const wantSvg = isProcessQuestion(question);
@@ -4874,7 +5691,9 @@ async function sendFollowup() {
         weight: weight,
         order: i,
         isLast: i === responders.length - 1,
-        prevName: i > 0 ? responders[i - 1].name : ''
+        prevName: i > 0 ? responders[i - 1].name : '',
+        hasImages: attached.length > 0,
+        visionOk: providerSupportsVision()
       });
       const svgMode = (persona.id === drawerId) && wantSvg;
       await runPersonaTurn(persona, instruction, { svgMode, maxTokens: chatMaxTokens(weight) });
@@ -5058,7 +5877,9 @@ function buildMeetingMarkdown() {
   if (state.messages && state.messages.length) {
     state.messages.forEach(m => {
       if (m.type === 'user') {
-        md += `**${APP.chair}**\n\n${m.content}\n\n`;
+        // v2.2 — 사진은 base64 라 마크다운에 싣지 않고 장수만 표시한다
+        const photo = (m.images && m.images.length) ? `_(사진 ${m.images.length}장 첨부)_\n\n` : '';
+        md += `**${APP.chair}**\n\n${photo}${m.content || ''}\n\n`;
       } else if (m.type === 'system') {
         md += `_— ${m.content} —_\n\n`;
       } else if (m.type === 'persona') {
@@ -5098,8 +5919,76 @@ function loadSessions() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.sessions) || '[]'); }
   catch { return []; }
 }
+/* 저장 용량 가드 (v2.2) ------------------------------------------------
+ * 사진 base64 는 세션 하나를 순식간에 수 MB 로 불린다. localStorage 는 보통 5MB.
+ * 그래서 저장 전에 크기를 재고, 넘치면 "오래된 세션의 사진"부터 버린다.
+ *   ① 가장 오래된 세션의 사진 원본 제거 (대화 내용은 그대로 남는다)
+ *   ② 그래도 넘치면 가장 오래된 세션 자체를 버린다
+ * 사진이 지워진 자리는 화면에 "원본이 정리되었습니다"로 표시된다.
+ * -------------------------------------------------------------------- */
+
+/* 세션 하나에서 사진 원본만 떼어낸 "사본"을 돌려준다.
+ * ★ 반드시 사본이어야 한다 — record.messages 는 화면이 보고 있는 state.messages 와
+ *   같은 객체라, 그대로 지우면 저장하다가 화면의 사진까지 사라진다. */
+function stripSessionImagesCopy(session) {
+  const hasImages = (session.messages || []).some(m => (m.images || []).some(im => im.dataUrl));
+  if (!hasImages) return { session, removed: 0 };
+  const copy = JSON.parse(JSON.stringify(session));
+  let removed = 0;
+  (copy.messages || []).forEach(m => {
+    (m.images || []).forEach(im => {
+      if (im.dataUrl) { delete im.dataUrl; removed++; }
+    });
+  });
+  return { session: copy, removed };
+}
+
 function saveSessions(arr) {
-  localStorage.setItem(STORAGE_KEYS.sessions, JSON.stringify(arr));
+  let list = arr.slice(0, SESSION_STORE.keepSessions);
+  let payload = JSON.stringify(list);
+  let trimmedImages = 0;
+  let droppedSessions = 0;
+
+  // ① 예산 초과 — 오래된 세션(배열 뒤쪽)의 사진부터 버린다.
+  //    지금 보고 있는 대화는 대개 맨 앞이라 가장 마지막에 걸린다.
+  for (let i = list.length - 1; i >= 0 && payload.length > SESSION_STORE.budgetChars; i--) {
+    const r = stripSessionImagesCopy(list[i]);
+    if (r.removed > 0) {
+      list[i] = r.session;
+      trimmedImages += r.removed;
+      payload = JSON.stringify(list);
+    }
+  }
+  // ② 사진을 다 버려도 넘치면 오래된 세션 자체를 잘라낸다
+  while (payload.length > SESSION_STORE.budgetChars && list.length > 1) {
+    list = list.slice(0, list.length - 1);
+    droppedSessions++;
+    payload = JSON.stringify(list);
+  }
+
+  try {
+    localStorage.setItem(STORAGE_KEYS.sessions, payload);
+  } catch (e) {
+    // 예산 계산이 빗나갔거나 다른 키가 용량을 먹은 경우 — 실제 quota 예외에서 한 번 더 회수
+    console.warn('[compass] 세션 저장 실패 — 사진을 정리하고 재시도합니다', e);
+    const noImages = list.map(s => stripSessionImagesCopy(s).session);
+    try {
+      localStorage.setItem(STORAGE_KEYS.sessions, JSON.stringify(noImages));
+      toast('저장 공간이 부족해 이전 사진을 정리했어요', true);
+    } catch (e2) {
+      try {
+        localStorage.setItem(STORAGE_KEYS.sessions, JSON.stringify(noImages.slice(0, 5)));
+        toast('저장 공간이 부족해 오래된 기록을 정리했어요', true);
+      } catch (e3) {
+        toast('저장 공간이 가득 찼습니다 — 기록(SESSIONS)에서 오래된 대화를 지워주세요', true);
+      }
+    }
+    return;
+  }
+
+  if (trimmedImages > 0 || droppedSessions > 0) {
+    console.info(`[compass] 저장 용량 가드 — 사진 ${trimmedImages}장 정리, 세션 ${droppedSessions}개 제외`);
+  }
 }
 
 // 한국어 시간 포맷 — "2026-05-03 14:32"
@@ -5330,9 +6219,9 @@ function loadSession(id, opts = {}) {
   renderParticipants();
   renderRoundBar();
   if (state.messages && state.messages.length > 0) {
-    // 새 형식 (messages 배열)
+    // 새 형식 (messages 배열) — 복원 중엔 메시지마다 스크롤하지 않는다 (화면이 튄다)
     state.messages.forEach(msg => {
-      if (msg.type !== 'typing') appendMessage(msg);
+      if (msg.type !== 'typing') appendMessage(msg, { restore: true });
     });
   } else {
     // 옛 형식 (facts + followups) — 변환
@@ -5387,6 +6276,11 @@ function loadSession(id, opts = {}) {
 
   $('#btnNewMeetingTop').hidden = false;
   updateAutoSaveIndicator();
+  // v2.2 — 불러온 대화는 맨 아래(가장 최근)에서 시작한다
+  state.pendingImages = [];
+  renderAttachStrip();
+  clearUnseen();
+  requestAnimationFrame(() => scrollChatToBottom(false));
   if (!opts.silent) {
     closeModal('modalSessions');
     toast('대화 불러옴 — 이어서 말 걸면 자동 저장됩니다');
@@ -5410,6 +6304,10 @@ function newSession() {
   state.followupTarget = 'auto';
   state.lastSpeakers = [];
   state.agendaProvisional = false;
+  state.pendingImages = [];
+  renderAttachStrip();
+  clearUnseen();
+  chatStickToBottom = true;
   PERSONAS = [];
   state.sessionId = null;
   state.lastSavedAt = null;
@@ -5515,7 +6413,7 @@ ${MINUTES_SCHEMA}`;
     const result = await callLLM(minutesSystem,
       `[회의 대화 전체]\n\n${meetingText}\n\n위 회의의 회의록을 쓰세요.`,
       { maxTokens: 1500 });
-    const cleaned = sanitizeKorean(result.text || '');
+    const cleaned = sanitizeKorean(result.text || '', { personaId: 'minutes', where: 'minutes' });
     if (!cleaned) throw new Error('빈 응답');
     state.minutes = cleaned;
     state.actionsDone = [];
