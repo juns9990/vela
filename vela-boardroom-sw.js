@@ -16,7 +16,7 @@
  * ============================================================= */
 
 const APP_VERSION = '2.4.0';
-const BUILD_ID = /* __BUILD_ID__ */ '7781ff8f0dba' /* __BUILD_ID_END__ */;
+const BUILD_ID = /* __BUILD_ID__ */ '6a696f89ec6c' /* __BUILD_ID_END__ */;
 
 const CACHE_VERSION = `vela-boardroom-v${APP_VERSION}-${BUILD_ID}`;
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
