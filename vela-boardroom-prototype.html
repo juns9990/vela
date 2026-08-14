@@ -7,7 +7,7 @@
 <meta name="description" content="벨챗 — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=6a696f89ec6c" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=1b2520ff93d9" />
 <meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
 <meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -3039,6 +3039,138 @@
     .emoji-grid { grid-template-columns: repeat(6, 1fr); }
     .brand-room { max-width: 90px; }
   }
+
+  /* ══════════════════════════════════════════════════════════════════
+     벨챗 v2.5 — 몰입 모드 · 글자 크기 · 창 너비
+     ══════════════════════════════════════════════════════════════════ */
+
+  :root {
+    --fs-scale: 1;        /* 글자 크기 배율 (0.8 ~ 1.4) */
+    --shell-w: 480px;     /* PC 채팅창 너비 (380 ~ 720) */
+  }
+
+  /* ---- 창 너비 (PC 전용) ---- */
+  .app-shell { max-width: var(--shell-w, 480px); }
+
+  /* ---- 헤더를 토글 버튼으로 ---- */
+  .brand {
+    border: none;
+    background: transparent;
+    padding: 4px 6px 4px 0;
+    margin: -4px 0;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: nowrap;
+    min-width: 0;
+    flex: 1;
+    border-radius: 12px;
+    transition: background 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .brand:hover { background: var(--line-soft); }
+  .brand:active { transform: scale(0.99); }
+  .brand-chev {
+    color: var(--text-faint);
+    flex-shrink: 0;
+    margin-left: 1px;
+    transition: transform 0.22s ease;
+  }
+  body.chrome-collapsed .brand-chev { transform: rotate(-90deg); }
+
+  /* ---- 접힘: 상단 정보를 걷어내고 대화창에 공간을 몰아준다 ---- */
+  body.chrome-collapsed .issue-strip,
+  body.chrome-collapsed .chat-header,
+  body.chrome-collapsed .chat-participants { display: none; }
+  body.chrome-collapsed.chat-only main { padding-top: 8px; }
+
+  /* 펼침 애니메이션 — 접힐 땐 즉시, 펼칠 땐 부드럽게 */
+  @media (prefers-reduced-motion: no-preference) {
+    body:not(.chrome-collapsed) .chat-header,
+    body:not(.chrome-collapsed) .chat-participants {
+      animation: chrome-in 0.2s ease both;
+    }
+  }
+  @keyframes chrome-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* 접혔을 때 방 제목이 헤더의 주인공이 된다 */
+  body.chrome-collapsed .brand-room {
+    max-width: none;
+    flex: 1;
+    font-size: 12.5px;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* ---- 글자 크기 배율 ----
+     말풍선 본문·이름·태그·시스템 칩이 함께 커지고 작아진다.
+     레이아웃 요소(버튼·입력창)는 건드리지 않는다 — 커지면 화면이 깨진다. */
+  .msg-persona-bubble { font-size: calc(14.5px * var(--fs-scale)); }
+  .msg-user-bubble    { font-size: calc(14.5px * var(--fs-scale)); }
+  .msg-name           { font-size: calc(13px * var(--fs-scale)); }
+  .msg-tag            { font-size: calc(9px * var(--fs-scale)); }
+  .msg-system-chip    { font-size: calc(11px * var(--fs-scale)); }
+  .msg-img-gone       { font-size: calc(10.5px * var(--fs-scale)); }
+  .msg-action-btn     { font-size: calc(10.5px * var(--fs-scale)); }
+  .msg-link, .msg-inline-link { font-size: calc(11.5px * var(--fs-scale)); }
+  .msg-avatar         { font-size: calc(16px * var(--fs-scale)); }
+  .chat-empty-sub     { font-size: calc(13px * var(--fs-scale)); }
+  /* 글자가 커지면 아바타도 같이 커져야 균형이 맞는다 */
+  .msg-avatar { width: calc(32px * var(--fs-scale)); height: calc(32px * var(--fs-scale)); }
+
+  /* ---- 설정: 슬라이더 행 ---- */
+  .setting-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .setting-value {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--cyan);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  input[type="range"].vc-range {
+    width: 100%;
+    accent-color: var(--cyan);
+    margin: 6px 0 2px;
+  }
+  .fs-preview {
+    margin-top: 10px;
+    padding: 11px 14px;
+    border-radius: 5px var(--radius-lg) var(--radius-lg) var(--radius-lg);
+    background: var(--bubble);
+    box-shadow: 0 2px 10px var(--shadow);
+    color: var(--bubble-text);
+    font-size: calc(14.5px * var(--fs-scale));
+    line-height: 1.6;
+    word-break: keep-all;
+  }
+  .fs-preview-name {
+    display: block;
+    font-size: calc(13px * var(--fs-scale));
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 5px;
+  }
+  .width-hint {
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-top: 6px;
+  }
+  /* 모바일에선 창 너비 조절이 의미 없다 — 항상 화면 폭을 쓴다 */
+  @media (max-width: 559px) {
+    .pc-only { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -3052,15 +3184,21 @@
   <div class="orb orb-3"></div>
 
 <header class="masthead">
-  <div class="brand">
-    <a href="./vela-boardroom-prototype.html" class="brand-mark" aria-label="벨챗">
+  <!-- v2.5 — 이 줄 전체가 몰입 모드 토글이다 (탭하면 상단 정보가 접히고 펼쳐진다) -->
+  <button class="brand" id="brandToggle" type="button" aria-expanded="true"
+          title="탭하면 상단 정보를 접거나 펼칩니다" aria-label="상단 정보 접기/펼치기">
+    <span class="brand-mark" aria-hidden="true">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
         <path d="M12 3.2c-4.8 0-8.7 3.2-8.7 7.2 0 2.3 1.3 4.4 3.4 5.7l-.8 3.4c-.1.4.3.7.7.5l3.9-2.1c.5.1 1 .1 1.5.1 4.8 0 8.7-3.2 8.7-7.2S16.8 3.2 12 3.2z"/>
       </svg>
-    </a>
+    </span>
     <span class="brand-name">벨챗</span>
     <span class="brand-room" id="brandRoom"></span>
-  </div>
+    <svg class="brand-chev" width="13" height="13" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </button>
   <div class="masthead-meta">
     <span id="modelTag">—</span>
     <button id="btnInstall" class="btn-install" hidden>
@@ -3285,6 +3423,29 @@
       <label>테마</label>
       <div class="theme-grid" id="themeGrid"></div>
 
+      <!-- v2.5 — 글자 크기 -->
+      <div style="margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line);">
+        <div class="setting-row">
+          <label style="margin:0">글자 크기</label>
+          <span class="setting-value" id="fontScaleLabel">100%</span>
+        </div>
+        <input type="range" class="vc-range" id="inputFontScale" min="80" max="140" step="5" value="100" />
+        <div class="fs-preview" id="fsPreview">
+          <span class="fs-preview-name">서다현</span>
+          오!! 이거 완전 물건인데요?? 👀 이름이 좀 더 뻔뻔해야 눈에 박혀요.
+        </div>
+      </div>
+
+      <!-- v2.5 — PC 채팅창 너비 -->
+      <div class="pc-only" style="margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line);">
+        <div class="setting-row">
+          <label style="margin:0">채팅창 너비</label>
+          <span class="setting-value" id="shellWidthLabel">480px</span>
+        </div>
+        <input type="range" class="vc-range" id="inputShellWidth" min="380" max="720" step="10" value="480" />
+        <div class="width-hint">넓은 화면에서 대화창 폭을 조절합니다. 모바일에서는 항상 화면 전체를 씁니다.</div>
+      </div>
+
       <div style="margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line);">
         <label>배경 사진 (선택)</label>
         <div class="modal-info" style="margin-bottom: 12px;">
@@ -3463,7 +3624,7 @@ const LLM_CONFIG = {
 
 const APP = {
   name: '벨챗',                // v2.4 — 앱 이름
-  version: '2.4.0',
+  version: '2.5.0',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -4516,6 +4677,10 @@ let state = {
     try { return JSON.parse(localStorage.getItem('vela.boardroom.avatars') || '{}'); }
     catch (e) { return {}; }
   })(),
+  // ---- v2.5 ----
+  chromeCollapsed: localStorage.getItem('vela.boardroom.chromeCollapsed') === '1',
+  fontScale: parseInt(localStorage.getItem('vela.boardroom.fontScale') || '100', 10) || 100,
+  shellWidth: parseInt(localStorage.getItem('vela.boardroom.shellWidth') || '480', 10) || 480,
   maxResponders: Math.min(
     parseInt(localStorage.getItem('vela.boardroom.maxResponders') || CHAT_RULES.maxResponders, 10) || CHAT_RULES.maxResponders,
     CHAT_RULES.hardMaxResponders),
@@ -4929,6 +5094,74 @@ function switchSettingsTab(name) {
   if (name === 'avatar') renderAvatarEditor();
 }
 
+/* ═══════════ 몰입 모드 · 크기 조절 (v2.5) ═══════════
+ * 상단 정보(버전 스트립 · 방 제목 줄 · 멤버 목록)를 접어 대화창에 공간을 몰아준다.
+ * 접힘/펼침은 오직 헤더 탭으로만 바뀐다 — 스크롤은 절대 건드리지 않는다.
+ * ══════════════════════════════════════════════════ */
+
+const CHROME_KEYS = {
+  collapsed: 'vela.boardroom.chromeCollapsed',
+  fontScale: 'vela.boardroom.fontScale',
+  shellWidth: 'vela.boardroom.shellWidth'
+};
+
+const SIZE_RULES = {
+  fontMin: 80, fontMax: 140, fontStep: 5,
+  widthMin: 380, widthMax: 720, widthStep: 10
+};
+
+const clampNum = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+function applyChrome(collapsed, opts = {}) {
+  const wasAtBottom = isChatAtBottom();
+  state.chromeCollapsed = !!collapsed;
+  document.body.classList.toggle('chrome-collapsed', state.chromeCollapsed);
+  const btn = $('#brandToggle');
+  if (btn) btn.setAttribute('aria-expanded', state.chromeCollapsed ? 'false' : 'true');
+  if (opts.persist !== false) {
+    try { localStorage.setItem(CHROME_KEYS.collapsed, state.chromeCollapsed ? '1' : '0'); } catch (e) {}
+  }
+  // 접거나 펼치면 대화창 높이가 바뀐다 — 바닥에 있던 사람은 계속 바닥에 있게
+  if (wasAtBottom) requestAnimationFrame(() => scrollChatToBottom(false));
+}
+
+function toggleChrome() { applyChrome(!state.chromeCollapsed); }
+
+/* 대화가 시작되면 한 번 자동으로 접는다.
+ * 방이 비어 있다가 첫 메시지가 들어간 순간에만 동작하고, 그 뒤로는 사용자 선택이 이긴다. */
+function autoCollapseOnFirstMessage() {
+  if (state.chromeCollapsed) return;
+  const real = (state.messages || []).filter(m => m.type !== 'typing');
+  if (real.length !== 1) return;
+  applyChrome(true);
+}
+
+function applyFontScale(pct, opts = {}) {
+  const v = clampNum(parseInt(pct, 10) || 100, SIZE_RULES.fontMin, SIZE_RULES.fontMax);
+  state.fontScale = v;
+  document.documentElement.style.setProperty('--fs-scale', String(v / 100));
+  const lb = $('#fontScaleLabel');
+  if (lb) lb.textContent = v + '%';
+  const sl = $('#inputFontScale');
+  if (sl && String(sl.value) !== String(v)) sl.value = String(v);
+  if (opts.persist !== false) {
+    try { localStorage.setItem(CHROME_KEYS.fontScale, String(v)); } catch (e) {}
+  }
+}
+
+function applyShellWidth(px, opts = {}) {
+  const v = clampNum(parseInt(px, 10) || 480, SIZE_RULES.widthMin, SIZE_RULES.widthMax);
+  state.shellWidth = v;
+  document.documentElement.style.setProperty('--shell-w', v + 'px');
+  const lb = $('#shellWidthLabel');
+  if (lb) lb.textContent = v + 'px';
+  const sl = $('#inputShellWidth');
+  if (sl && String(sl.value) !== String(v)) sl.value = String(v);
+  if (opts.persist !== false) {
+    try { localStorage.setItem(CHROME_KEYS.shellWidth, String(v)); } catch (e) {}
+  }
+}
+
 /* ---- 헤더의 방 이름 ---- */
 function updateBrandRoom() {
   const el = $('#brandRoom');
@@ -5086,6 +5319,10 @@ window.addEventListener('DOMContentLoaded', () => {
   // v2.4 — 테마·배경을 먼저 적용해야 첫 화면부터 제 색으로 그려진다
   applyTheme(state.theme, { silent: false });
   applyBgPhoto();
+  // v2.5 — 저장된 크기·접힘 상태 복원
+  applyFontScale(state.fontScale, { persist: false });
+  applyShellWidth(state.shellWidth, { persist: false });
+  applyChrome(state.chromeCollapsed, { persist: false });
   bindEvents();
   bindInstallButton();
   applyFeatureFlags();
@@ -5206,6 +5443,16 @@ function bindEvents() {
   $('#followupInput').addEventListener('focus', () => {
     setTimeout(() => { if (chatStickToBottom) scrollChatToBottom(false); }, 250);
   });
+
+  /* ---- 몰입 모드 · 크기 조절 (v2.5) ---- */
+  const brandToggle = $('#brandToggle');
+  if (brandToggle) brandToggle.addEventListener('click', toggleChrome);
+
+  const fsInput = $('#inputFontScale');
+  if (fsInput) fsInput.addEventListener('input', (e) => applyFontScale(e.target.value));
+
+  const swInput = $('#inputShellWidth');
+  if (swInput) swInput.addEventListener('input', (e) => applyShellWidth(e.target.value));
 
   /* ---- 설정 탭 · 테마 · 배경 · 아바타 (v2.4) ---- */
   document.querySelectorAll('.settings-tab').forEach(tab => {
@@ -5386,6 +5633,9 @@ function renderSettingsModal() {
     if (_lb) _lb.textContent = (state.bgOpacity || 45) + '%';
   }
   applyBgPhoto();
+  // v2.5 — 크기 슬라이더를 현재 값으로 맞춘다
+  applyFontScale(state.fontScale, { persist: false });
+  applyShellWidth(state.shellWidth, { persist: false });
   $('#inputProvider').value = state.provider;
   renderSettingsModalForProvider(state.provider);
   // 음성 옵션 채우기
@@ -7134,6 +7384,8 @@ async function sendFollowup() {
   }
   state.messages.push(userMsg);
   appendMessage(userMsg);
+  // v2.5 — 대화가 시작되면 상단 정보를 한 번 접어 대화창을 넓힌다
+  autoCollapseOnFirstMessage();
   $('#followupInput').value = '';
   $('#followupInput').style.height = 'auto';
   clearPendingImages();
