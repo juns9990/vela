@@ -1,14 +1,14 @@
 {
   "id": "/vela/vela-compass",
-  "name": "Vela Compass",
-  "short_name": "Compass",
-  "description": "업종 무관 아이디어 회의실. 베테랑 3인(컨셉·실행·사업)에 주제별 전문가 1인이 붙어 발산·반박·수렴·결론 라운드로 토론하고 회의록까지 만들어주는 PWA.",
+  "name": "벨챗",
+  "short_name": "벨챗",
+  "description": "벨챗 — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다.",
   "start_url": "./vela-boardroom-prototype.html",
   "scope": "./vela-boardroom-prototype.html",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#0a0a0b",
-  "theme_color": "#0a0a0b",
+  "background_color": "#eaf2fb",
+  "theme_color": "#dbeafe",
   "lang": "ko",
   "dir": "ltr",
   "categories": [
@@ -18,25 +18,19 @@
   ],
   "icons": [
     {
-      "src": "vela-boardroom-icon-192.png",
+      "src": "velchat-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "vela-boardroom-icon-512.png",
+      "src": "velchat-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "vela-boardroom-icon-192-maskable.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "vela-boardroom-icon-512-maskable.png",
+      "src": "velchat-icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -44,27 +38,27 @@
   ],
   "shortcuts": [
     {
-      "name": "새 회의",
-      "short_name": "새 회의",
-      "description": "빈 주제로 새 회의 시작",
+      "name": "새 대화",
+      "short_name": "새 대화",
+      "description": "빈 방으로 새 대화 시작",
       "url": "./vela-boardroom-prototype.html?action=new"
     },
     {
-      "name": "음성 회의",
-      "short_name": "음성 회의",
-      "description": "마이크 자동 활성화 + 주제 음성 입력",
+      "name": "음성으로 말하기",
+      "short_name": "음성",
+      "description": "마이크 자동 활성화 + 음성 입력",
       "url": "./vela-boardroom-prototype.html?action=voice"
     },
     {
-      "name": "회의 기록",
-      "short_name": "기록",
-      "description": "저장된 회의 목록 열기",
+      "name": "대화방 목록",
+      "short_name": "목록",
+      "description": "저장된 대화방 목록 열기",
       "url": "./vela-boardroom-prototype.html?action=sessions"
     },
     {
-      "name": "회의 이어가기",
+      "name": "이어서 대화",
       "short_name": "이어가기",
-      "description": "가장 최근 회의 자동 복원",
+      "description": "가장 최근 대화 자동 복원",
       "url": "./vela-boardroom-prototype.html?action=resume"
     }
   ]

@@ -15,8 +15,8 @@
  *   (셸 해시가 바뀌면 이 sw.js 자체도 바뀌므로 SW 업데이트 감지도 함께 걸린다)
  * ============================================================= */
 
-const APP_VERSION = '2.1.0';
-const BUILD_ID = /* __BUILD_ID__ */ 'aca77bf8d5ad' /* __BUILD_ID_END__ */;
+const APP_VERSION = '2.4.0';
+const BUILD_ID = /* __BUILD_ID__ */ '7781ff8f0dba' /* __BUILD_ID_END__ */;
 
 const CACHE_VERSION = `vela-boardroom-v${APP_VERSION}-${BUILD_ID}`;
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
@@ -26,17 +26,17 @@ const FONT_CACHE = `${CACHE_VERSION}-fonts`;
 const BOARDROOM_ASSETS = [
   './vela-boardroom-prototype.html',
   './vela-boardroom-manifest.json',
-  './vela-boardroom-icon-192.png',
-  './vela-boardroom-icon-512.png',
-  './vela-boardroom-icon-192-maskable.png',
-  './vela-boardroom-icon-512-maskable.png',
-  './vela-boardroom-icon-180.png'
+  './velchat-icon-192.png',
+  './velchat-icon-512.png',
+  './velchat-icon-maskable-512.png',
+  './velchat-icon-180.png'
 ];
 
 // 보드룸 자산 식별 — 다른 vela-* 파일은 건드리지 않음
 function isBoardroomAsset(url) {
   const path = new URL(url).pathname;
-  return path.includes('vela-boardroom');
+  // v2.4 — 아이콘이 velchat-* 로 바뀌었다. 둘 다 앱 셸로 취급한다.
+  return path.includes('vela-boardroom') || path.includes('velchat-icon');
 }
 
 // HTML 또는 manifest인지 — network-first 대상

@@ -32,11 +32,10 @@ const ROOT = __dirname;
 const SHELL_FOR_HASH = [
   'vela-boardroom-prototype.html',
   'vela-boardroom-manifest.json',
-  'vela-boardroom-icon-192.png',
-  'vela-boardroom-icon-512.png',
-  'vela-boardroom-icon-192-maskable.png',
-  'vela-boardroom-icon-512-maskable.png',
-  'vela-boardroom-icon-180.png'
+  'velchat-icon-192.png',
+  'velchat-icon-512.png',
+  'velchat-icon-maskable-512.png',
+  'velchat-icon-180.png'
 ];
 
 const SW_FILE = 'vela-boardroom-sw.js';

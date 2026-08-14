@@ -3,22 +3,22 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v2.3.1 — 아이디어 단톡방</title>
-<meta name="description" content="Vela Compass — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
+<title>벨챗 — 아이디어 단톡방</title>
+<meta name="description" content="벨챗 — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=aca77bf8d5ad" />
-<meta name="theme-color" content="#0a0a0b" />
-<meta name="color-scheme" content="dark" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=7781ff8f0dba" />
+<meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
+<meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
 <meta name="mobile-web-app-capable" content="yes" />
 <!-- iOS Safari 호환 meta (apple- prefix) -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Compass" />
-<link rel="apple-touch-icon" href="vela-boardroom-icon-180.png" />
-<link rel="icon" type="image/png" sizes="192x192" href="vela-boardroom-icon-192.png" />
-<link rel="icon" type="image/png" sizes="512x512" href="vela-boardroom-icon-512.png" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="벨챗" />
+<link rel="apple-touch-icon" href="velchat-icon-180.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="velchat-icon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="velchat-icon-512.png" />
 
 <!-- Fonts (비동기 로딩, fallback 강함) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,6 +28,25 @@
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600;1,9..144,800;1,9..144,900&family=JetBrains+Mono:wght@400;500;700&display=swap" /></noscript>
 <link rel="preload" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" onload="this.onload=null;this.rel='stylesheet'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" /></noscript>
+
+<!-- v2.4 — 테마 선반영. 메인 스크립트는 문서 맨 끝에 있어서 그때 칠하면 기본 테마가 한 번 번쩍인다.
+     applyTheme() 이 해석해둔 변수 묶음을 여기서 먼저 꽂아 깜빡임을 없앤다. -->
+<script>
+(function () {
+  try {
+    var boot = localStorage.getItem('vela.boardroom.themeBoot');
+    if (!boot) return;
+    var vars = JSON.parse(boot);
+    var st = document.documentElement.style;
+    for (var k in vars) if (Object.prototype.hasOwnProperty.call(vars, k)) st.setProperty(k, vars[k]);
+    var photo = localStorage.getItem('vela.boardroom.bgPhoto');
+    if (photo) {
+      st.setProperty('--bg-photo', 'url("' + photo + '")');
+      st.setProperty('--bg-photo-opacity', String((parseInt(localStorage.getItem('vela.boardroom.bgOpacity') || '45', 10) || 45) / 100));
+    }
+  } catch (e) { /* 무시 — 스크립트가 나중에 제대로 칠한다 */ }
+})();
+</script>
 
 <style>
   :root {
@@ -2417,16 +2436,630 @@
     .msg-images img { max-width: 160px; max-height: 160px; }
     .chat-jump { font-size: 10.5px; padding: 6px 13px; }
   }
+
+  /* ══════════════════════════════════════════════════════════════════
+     벨챗 v2.4 — 밝은 UI
+     아래 블록이 위 다크 스타일을 덮어쓴다 (소스 순서 우선).
+     색은 전부 CSS 변수라 applyTheme() 이 :root 에 값만 바꿔 끼우면
+     이 규칙들이 통째로 다시 칠해진다.
+     ══════════════════════════════════════════════════════════════════ */
+
+  :root {
+    /* 기본값 = 스카이 브리즈. applyTheme() 이 실제 값을 덮어쓴다. */
+    --bg-far: #d7e5f4;
+    --orb-1: rgba(147,197,253,0.55);
+    --orb-2: rgba(165,243,252,0.50);
+    --orb-3: rgba(196,181,253,0.38);
+    --glass: rgba(255,255,255,0.70);
+    --glass-line: rgba(255,255,255,0.85);
+    --bubble: #ffffff;
+    --bubble-text: #1e293b;
+    --shadow: rgba(30,58,95,0.10);
+    /* 내 말풍선 — 앱 아이콘과 같은 코랄. 전 테마 공통 정체성이라 테마별로 바꾸지 않는다 */
+    --mine-grad: linear-gradient(135deg, #fb7185 0%, #f97316 100%);
+    --radius-lg: 20px;
+    --radius-md: 14px;
+  }
+
+  /* ---- 무대(배경) + 중앙 카드 ---- */
+  body.chat-only {
+    background:
+      radial-gradient(900px 560px at 12% -12%, var(--orb-1), transparent 62%),
+      radial-gradient(760px 520px at 96% 8%, var(--orb-2), transparent 60%),
+      var(--bg-far);
+    display: flex;
+    /* 위쪽 규칙의 flex-direction: column 을 되돌린다 — 셸을 가로 중앙에 놓아야 한다 */
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+  }
+
+  .app-shell {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  /* 셸 안의 실제 콘텐츠는 빛망울 위에 */
+  .app-shell > *:not(.orb) { position: relative; z-index: 1; }
+
+  /* 블러 빛망울 */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(58px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.95;
+  }
+  .orb-1 { width: 320px; height: 320px; background: var(--orb-1); top: -110px; left: -90px; }
+  .orb-2 { width: 280px; height: 280px; background: var(--orb-2); top: 34%; right: -120px; }
+  .orb-3 { width: 300px; height: 300px; background: var(--orb-3); bottom: -120px; left: -70px; }
+
+  /* 배경 사진 (선택) — 설정에서 올리면 셸 바탕에 깔린다 */
+  .app-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: var(--bg-photo, none);
+    background-size: cover;
+    background-position: center;
+    opacity: var(--bg-photo-opacity, 0);
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  body.has-bg-photo .orb { opacity: 0.35; }
+
+  /* PC — 중앙 카드형, 좌우로 배경이 보인다 */
+  @media (min-width: 560px) {
+    body.chat-only { padding: 22px 0; }
+    .app-shell {
+      border-radius: 24px;
+      box-shadow: 0 24px 64px var(--shadow), 0 3px 12px var(--shadow);
+    }
+  }
+
+  /* ---- 유리 헤더 ---- */
+  body.chat-only .masthead {
+    padding: 10px 14px;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    background: var(--glass);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border-bottom: 1px solid var(--glass-line);
+    padding-top: calc(10px + env(safe-area-inset-top, 0px));
+  }
+  .brand { align-items: center; gap: 9px; flex-wrap: nowrap; min-width: 0; }
+  .brand-sub { display: none; }
+
+  /* 브랜드 마크 — 아이콘과 같은 코랄 라운드 사각형 */
+  .brand-mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: var(--mine-grad);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(249,115,22,0.32);
+  }
+  .brand-mark svg { display: block; }
+  .brand-name {
+    font-family: var(--sans);
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .brand-room {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    max-width: 150px;
+  }
+  .masthead-meta { gap: 6px; align-items: center; flex-shrink: 0; }
+  .masthead-meta #modelTag { display: none; }
+  body.chat-only .masthead-meta button {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border-radius: 11px;
+    border: 1px solid var(--line);
+    background: var(--bubble);
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    letter-spacing: 0;
+  }
+  body.chat-only .masthead-meta button:hover {
+    color: var(--cyan);
+    border-color: var(--cyan);
+  }
+  body.chat-only .masthead-meta button .label-full,
+  body.chat-only .masthead-meta button .label-short { display: none; }
+  body.chat-only .btn-install {
+    width: auto !important;
+    padding: 0 10px !important;
+    gap: 5px;
+  }
+  body.chat-only .btn-install .label-short { display: inline !important; font-size: 11px; }
+
+  /* ---- 상태 줄 (얇게) ---- */
+  body.chat-only .issue-strip {
+    padding: 5px 16px;
+    font-size: 9.5px;
+    letter-spacing: 0.10em;
+    background: transparent;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--text-faint);
+  }
+
+  /* ---- 대화 헤더 (안건 + 액션) ---- */
+  body.chat-only main { padding: 12px 14px 0; }
+  body.chat-only .chat-header {
+    padding: 0 0 10px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--line-soft);
+    align-items: center;
+  }
+  .chat-label { display: none; }
+  .chat-agenda { font-size: 13.5px; font-weight: 600; color: var(--text-dim); }
+  .chat-icon-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--bubble);
+    color: var(--text-dim);
+  }
+
+  /* ---- 참여자 바 ---- */
+  body.chat-only .chat-participants {
+    gap: 10px;
+    padding: 2px 0 10px;
+    border-bottom: none;
+  }
+  .cp-label { display: none; }
+
+  /* ---- 말풍선 ---- */
+  .chat-messages { gap: 14px; }
+
+  /* 상대 — 흰 말풍선 */
+  .msg-persona-bubble {
+    background: var(--bubble);
+    color: var(--bubble-text);
+    border: none;
+    border-left: none;
+    border-radius: 5px var(--radius-lg) var(--radius-lg) var(--radius-lg);
+    padding: 11px 14px 12px;
+    box-shadow: 0 2px 10px var(--shadow);
+    font-size: 14.5px;
+    line-height: 1.6;
+  }
+  .msg-persona-bubble > *,
+  .msg-persona-bubble .msg-insight { color: var(--bubble-text); }
+  .msg-persona-head { gap: 7px; align-items: center; }
+  .msg-name { font-family: var(--sans); font-style: normal; font-weight: 700; font-size: 13px; }
+  .msg-tag { font-size: 9px; opacity: 0.75; }
+
+  /* 아바타 — 파스텔 원형 (배경·글자색은 JS 가 인라인으로 준다) */
+  .msg-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: 700;
+    overflow: hidden;
+    box-shadow: 0 1px 4px var(--shadow);
+    background: var(--bubble);
+    color: var(--text);
+  }
+  .msg-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* 내 말풍선 — 코랄 그라데이션 */
+  .msg-user-bubble {
+    background: var(--mine-grad);
+    color: #ffffff;
+    border-radius: var(--radius-lg) var(--radius-lg) 5px var(--radius-lg);
+    padding: 11px 15px;
+    font-size: 14.5px;
+    line-height: 1.55;
+    box-shadow: 0 3px 12px rgba(249,115,22,0.28);
+  }
+
+  /* 시스템 칩 */
+  .msg-system-chip {
+    background: var(--glass);
+    border: 1px solid var(--glass-line);
+    color: var(--text-dim);
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0;
+    border-radius: 100px;
+    padding: 6px 14px;
+  }
+
+  /* ---- 하단 유리 입력독 ---- */
+  body.chat-only .chat-dock {
+    background: var(--glass);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border-top: 1px solid var(--glass-line);
+    padding: 0 14px;
+  }
+  .chat-routing { border-top: none; padding: 8px 0 2px; gap: 6px; }
+  body.chat-only .chat-input-bar {
+    border-top: none;
+    padding: 6px 0 calc(10px + env(safe-area-inset-bottom, 0px));
+    gap: 7px;
+  }
+  .chat-input {
+    background: var(--bubble);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    color: var(--text);
+    box-shadow: 0 1px 5px var(--shadow);
+    min-height: 44px;
+    padding: 11px 16px;
+    font-size: 14.5px;
+    overflow-y: auto;
+  }
+  .chat-input::placeholder {
+    font-style: normal;
+    /* 한 줄에 안 들어가면 잘라낸다 — 입력창이 세로로 부풀지 않게 */
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  /* 설치 버튼 — 헤더 톤에 맞춘다 (예전 시안 배경을 되돌린다) */
+  body.chat-only .btn-install {
+    background: var(--mine-grad);
+    border: none;
+    color: #fff;
+    height: 34px;
+    border-radius: 11px;
+    box-shadow: 0 2px 8px rgba(249,115,22,0.28);
+  }
+  body.chat-only .btn-install:hover { filter: brightness(1.06); }
+  body.chat-only .btn-install,
+  body.chat-only .btn-install * { color: #fff; }
+  .btn-attach, .chat-mic {
+    background: var(--bubble);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--text-dim);
+    box-shadow: 0 1px 5px var(--shadow);
+  }
+  .btn-send {
+    background: var(--mine-grad);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(249,115,22,0.35);
+  }
+  .btn-send:hover { filter: brightness(1.06); background: var(--mine-grad); }
+
+  /* 라우팅 chip */
+  .route-chip, .chat-routing button {
+    border-radius: 100px !important;
+    border: 1px solid var(--line) !important;
+    background: var(--bubble) !important;
+    color: var(--text-dim) !important;
+  }
+  .route-chip.active, .chat-routing button.active {
+    background: var(--mine-grad) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+  }
+
+  /* 새 메시지 배지 */
+  .chat-jump {
+    background: var(--mine-grad);
+    border: none;
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0;
+    box-shadow: 0 6px 20px rgba(249,115,22,0.38);
+  }
+  .chat-jump:hover { background: var(--mine-grad); filter: brightness(1.05); }
+
+  /* 빈 방 안내 */
+  .chat-empty-title { font-family: var(--sans); font-style: normal; font-weight: 700; color: var(--text); }
+
+  /* ---- 모달 ---- */
+  .modal {
+    border-radius: 22px;
+    background: var(--elev, var(--bg-elev));
+    border: 1px solid var(--line);
+    box-shadow: 0 22px 60px var(--shadow);
+  }
+  .modal-title { font-family: var(--sans); font-style: normal; font-weight: 800; letter-spacing: -0.02em; }
+  .modal input, .modal select, .modal textarea {
+    border-radius: 12px;
+    background: var(--bubble);
+    border: 1px solid var(--line);
+    color: var(--text);
+  }
+  .btn-primary {
+    background: var(--mine-grad);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+  }
+  .btn-primary:hover:not(:disabled) { filter: brightness(1.06); background: var(--mine-grad); }
+  .btn-ghost { border-radius: 12px; }
+
+  /* ---- 설정 탭 ---- */
+  .settings-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 18px;
+    padding: 4px;
+    background: var(--line-soft);
+    border-radius: 12px;
+  }
+  .settings-tab {
+    flex: 1;
+    padding: 8px 6px;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    border-radius: 9px;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .settings-tab.active { background: var(--bubble); color: var(--text); box-shadow: 0 1px 4px var(--shadow); }
+  .settings-pane[hidden] { display: none; }
+
+  /* ---- 테마 선택 ---- */
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+  }
+  .theme-card {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 11px 12px;
+    border-radius: 14px;
+    border: 1.5px solid var(--line);
+    background: var(--bubble);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s, transform 0.1s;
+  }
+  .theme-card:hover { transform: translateY(-1px); }
+  .theme-card.active { border-color: var(--cyan); }
+  .theme-swatch {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    flex-shrink: 0;
+    border: 1px solid var(--line-soft);
+  }
+  .theme-card-text { min-width: 0; display: block; }
+  .theme-card-name { display: block; font-size: 12.5px; font-weight: 700; color: var(--text); white-space: nowrap; }
+  .theme-card-sub { display: block; font-size: 10.5px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ---- 아바타 편집 ---- */
+  .avatar-persona {
+    padding: 13px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .avatar-persona:last-child { border-bottom: none; }
+  .avatar-persona-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .avatar-preview {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    font-weight: 700;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 1px 5px var(--shadow);
+  }
+  .avatar-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .avatar-persona-name { font-size: 13.5px; font-weight: 700; color: var(--text); }
+  .avatar-persona-role { font-size: 11px; color: var(--text-faint); }
+  .avatar-actions { margin-left: auto; display: flex; gap: 5px; }
+  .avatar-mini-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+    border-radius: 9px;
+    border: 1px solid var(--line);
+    background: var(--bubble);
+    color: var(--text-dim);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .avatar-mini-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+  }
+  .emoji-btn {
+    aspect-ratio: 1;
+    border: 1px solid transparent;
+    background: var(--line-soft);
+    border-radius: 9px;
+    font-size: 17px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  .emoji-btn:hover { background: var(--bubble); border-color: var(--line); }
+  .emoji-btn.active { border-color: var(--cyan); background: var(--bubble); }
+
+  /* ---- 대화방 목록 (카톡식) ---- */
+  .modal-rooms { padding: 0; overflow: hidden; }
+  .modal-rooms .modal-head { padding: 20px 20px 12px; margin-bottom: 0; }
+  .rooms-list {
+    padding: 0;
+    max-height: min(62vh, 520px);
+    overflow-y: auto;
+  }
+  .room-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--line-soft);
+    position: relative;
+    transition: background 0.12s;
+  }
+  .room-item:hover { background: var(--line-soft); }
+  .room-item.current { background: color-mix(in srgb, var(--cyan) 10%, transparent); }
+  .room-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--mine-grad);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(249,115,22,0.26);
+  }
+  .room-body { flex: 1; min-width: 0; }
+  .room-top {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 3px;
+  }
+  .room-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+  }
+  .room-date {
+    font-size: 10.5px;
+    color: var(--text-faint);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .room-last {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+  }
+  .room-legacy {
+    display: inline-block;
+    font-size: 9.5px;
+    padding: 1px 6px;
+    border-radius: 100px;
+    background: var(--line-soft);
+    color: var(--text-faint);
+    margin-right: 5px;
+    vertical-align: 1px;
+  }
+  .room-delete {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--text-faint);
+    font-size: 17px;
+    cursor: pointer;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.15s, color 0.15s;
+  }
+  .room-item:hover .room-delete { opacity: 1; }
+  .room-delete:hover { color: var(--c-warn); background: var(--line-soft); }
+  @media (hover: none) { .room-delete { opacity: 1; } }
+  .rooms-empty {
+    text-align: center;
+    padding: 52px 24px;
+    color: var(--text-faint);
+  }
+  .rooms-empty-title { font-size: 14px; font-weight: 700; color: var(--text-dim); margin-bottom: 7px; }
+  .rooms-empty-sub { font-size: 12.5px; line-height: 1.65; }
+
+  /* ---- 첨부 미리보기 ---- */
+  .attach-thumb { border-radius: 12px; border-color: var(--line); }
+  .chat-attach-strip { border-top: 1px solid var(--line-soft); }
+
+  /* ---- 스크롤바 (밝은 테마에서 다크 스크롤바가 튄다) ---- */
+  body.chat-only .chat-messages::-webkit-scrollbar,
+  .rooms-list::-webkit-scrollbar,
+  .modal::-webkit-scrollbar { width: 8px; }
+  body.chat-only .chat-messages::-webkit-scrollbar-thumb,
+  .rooms-list::-webkit-scrollbar-thumb,
+  .modal::-webkit-scrollbar-thumb {
+    background: var(--line);
+    border-radius: 100px;
+  }
+  body.chat-only .chat-messages::-webkit-scrollbar-track { background: transparent; }
+
+  @media (max-width: 400px) {
+    .theme-grid { grid-template-columns: 1fr; }
+    .emoji-grid { grid-template-columns: repeat(6, 1fr); }
+    .brand-room { max-width: 90px; }
+  }
 </style>
 </head>
 <body>
 
+<!-- v2.4 — 셸. 모바일은 풀폭, PC 는 max-width 480px 중앙 카드형 -->
+<div class="app-shell" id="appShell">
+
+  <!-- 블러 빛망울 (배경 장식) -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
 <header class="masthead">
   <div class="brand">
-    <a href="./vela-boardroom-prototype.html" class="brand-logo-link" aria-label="Vela Compass">
-      <span class="vela-mark brand-logo">Ve<span class="accent">l</span>a</span>
+    <a href="./vela-boardroom-prototype.html" class="brand-mark" aria-label="벨챗">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+        <path d="M12 3.2c-4.8 0-8.7 3.2-8.7 7.2 0 2.3 1.3 4.4 3.4 5.7l-.8 3.4c-.1.4.3.7.7.5l3.9-2.1c.5.1 1 .1 1.5.1 4.8 0 8.7-3.2 8.7-7.2S16.8 3.2 12 3.2z"/>
+      </svg>
     </a>
-    <div class="brand-sub">Compass · Vela Prime 인텔리전스</div>
+    <span class="brand-name">벨챗</span>
+    <span class="brand-room" id="brandRoom"></span>
   </div>
   <div class="masthead-meta">
     <span id="modelTag">—</span>
@@ -2438,10 +3071,17 @@
       </svg>
       <span class="label-full">앱 설치</span><span class="label-short">설치</span>
     </button>
-    <button id="btnSessions">
+    <button id="btnSessions" title="대화방 목록" aria-label="대화방 목록">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/>
+      </svg>
       <span class="label-full">SESSIONS</span><span class="label-short">기록</span>
     </button>
-    <button id="btnSettings">
+    <button id="btnSettings" title="설정" aria-label="설정">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10.6 3.09V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 16.11 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
       <span class="label-full">SETTINGS</span><span class="label-short">설정</span>
     </button>
   </div>
@@ -2449,12 +3089,11 @@
 
 <div class="issue-strip">
   <div class="left">
-    <span>VOL. 0 · ISSUE 1</span>
-    <span id="versionTag">v2.0.0</span>
+    <span id="versionTag">v2.4.0</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
-  <div>MADE BY JUNS · 2026</div>
+  <div>MADE BY JUNS</div>
 </div>
 
 <main>
@@ -2565,7 +3204,7 @@
       <textarea
         id="followupInput"
         class="chat-input"
-        placeholder="아무 얘기나 편하게. 관련 있는 사람만 답합니다."
+        placeholder="아무 얘기나 편하게"
         rows="1"
       ></textarea>
       <button id="btnFollowupSend" class="btn-send" type="button" title="전송 (Enter) · 줄바꿈 (Shift+Enter)">→</button>
@@ -2611,8 +3250,10 @@
 
 </main>
 
+</div><!-- /.app-shell -->
+
 <footer class="colophon">
-  <div class="credit">MADE BY <b>JUNS</b> · vela-compass · <span id="creditVersion">v2.1.0</span> · part of Vela Prime AI</div>
+  <div class="credit">MADE BY <b>JUNS</b> · 벨챗 · <span id="creditVersion">v2.4.0</span> · part of Vela Prime AI</div>
   <div>Local-First · BYOK · Voice-Ready</div>
 </footer>
 
@@ -2628,9 +3269,51 @@
 <div class="modal-backdrop" id="modalSettings">
   <div class="modal">
     <div class="modal-head">
-      <h3 class="modal-title">Settings</h3>
+      <h3 class="modal-title">설정</h3>
       <button class="modal-close" data-close>닫기 ✕</button>
     </div>
+
+    <!-- v2.4 — 탭 -->
+    <div class="settings-tabs">
+      <button class="settings-tab active" data-tab="general" type="button">일반</button>
+      <button class="settings-tab" data-tab="theme" type="button">테마</button>
+      <button class="settings-tab" data-tab="avatar" type="button">아바타</button>
+    </div>
+
+    <!-- ===== 테마 탭 ===== -->
+    <div class="settings-pane" data-pane="theme" hidden>
+      <label>테마</label>
+      <div class="theme-grid" id="themeGrid"></div>
+
+      <div style="margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line);">
+        <label>배경 사진 (선택)</label>
+        <div class="modal-info" style="margin-bottom: 12px;">
+          방 배경에 사진을 깔 수 있어요. 올리면 자동으로 줄여서 저장합니다 (최대 1280px).
+        </div>
+        <div id="bgPhotoPreviewWrap" style="margin-bottom: 12px;" hidden>
+          <div id="bgPhotoPreview" style="width: 100%; height: 110px; border-radius: 14px; background-size: cover; background-position: center; border: 1px solid var(--line);"></div>
+        </div>
+        <label style="margin-top: 4px;">밝기 <span id="bgOpacityLabel" style="color: var(--cyan);">45%</span></label>
+        <input type="range" id="inputBgOpacity" min="10" max="100" step="5" value="45" style="width: 100%; accent-color: var(--cyan);" />
+        <div style="display: flex; gap: 8px; margin-top: 12px;">
+          <button class="btn-ghost" id="btnBgPhotoPick" type="button">사진 올리기</button>
+          <button class="btn-ghost" id="btnBgPhotoClear" type="button">배경 지우기</button>
+        </div>
+        <input type="file" id="bgPhotoInput" accept="image/*" hidden />
+      </div>
+    </div>
+
+    <!-- ===== 아바타 탭 ===== -->
+    <div class="settings-pane" data-pane="avatar" hidden>
+      <div class="modal-info" style="margin-bottom: 14px;">
+        페르소나마다 이모지를 고르거나 사진을 올릴 수 있어요. 사진은 정사각으로 잘라 원형으로 보여줍니다.
+      </div>
+      <div id="avatarEditor"></div>
+      <input type="file" id="avatarPhotoInput" accept="image/*" hidden />
+    </div>
+
+    <!-- ===== 일반 탭 ===== -->
+    <div class="settings-pane" data-pane="general">
 
     <label>Provider</label>
     <select id="inputProvider">
@@ -2678,6 +3361,8 @@
              style="width: 100%; accent-color: var(--cyan);" />
     </div>
 
+    </div><!-- /일반 탭 -->
+
     <div class="modal-actions">
       <button class="btn-ghost" data-close>취소</button>
       <button class="btn-primary" id="btnSaveSettings">저장</button>
@@ -2707,12 +3392,12 @@
 
 <!-- ============ SESSIONS MODAL ============ -->
 <div class="modal-backdrop" id="modalSessions">
-  <div class="modal modal-large">
+  <div class="modal modal-rooms">
     <div class="modal-head">
-      <h3 class="modal-title">Past Sessions</h3>
+      <h3 class="modal-title">대화방</h3>
       <button class="modal-close" data-close>닫기 ✕</button>
     </div>
-    <div class="sessions-list" id="sessionsList"></div>
+    <div class="rooms-list" id="sessionsList"></div>
   </div>
 </div>
 
@@ -2777,9 +3462,132 @@ const LLM_CONFIG = {
  * ═════════════════════════════════════════════════════════════ */
 
 const APP = {
-  version: '2.3.1',
+  name: '벨챗',                // v2.4 — 앱 이름
+  version: '2.4.0',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
+};
+
+/* ---- ⑪ 테마 (v2.4) ----------------------------------------------
+ * 각 테마는 CSS 변수 묶음일 뿐이다. applyTheme() 이 :root 에 그대로 꽂는다.
+ * 테마 추가 = 아래 배열에 항목 하나. vars 키는 전부 같아야 한다.
+ *
+ * ★ 내 말풍선(mineGrad)은 일부러 테마마다 바꾸지 않는다 —
+ *   앱 아이콘과 같은 코랄 그라데이션이 전 테마 공통 정체성이다.
+ * ---------------------------------------------------------------- */
+const MINE_GRADIENT = 'linear-gradient(135deg, #fb7185 0%, #f97316 100%)';
+
+const THEMES = [
+  {
+    id: 'sky', emoji: '☁️', label: '스카이 브리즈', sub: '맑고 시원한 기본',
+    vars: {
+      bg: '#eaf2fb', bgFar: '#d7e5f4', themeColor: '#dbeafe',
+      orb1: 'rgba(147,197,253,0.55)', orb2: 'rgba(165,243,252,0.50)', orb3: 'rgba(196,181,253,0.38)',
+      glass: 'rgba(255,255,255,0.70)', glassLine: 'rgba(255,255,255,0.85)',
+      elev: '#ffffff', card: 'rgba(255,255,255,0.82)',
+      line: 'rgba(15,23,42,0.10)', lineSoft: 'rgba(15,23,42,0.06)',
+      text: '#1e293b', textDim: '#64748b', textFaint: '#94a3b8',
+      accent: '#0ea5e9', bubble: '#ffffff', bubbleText: '#1e293b',
+      shadow: 'rgba(30,58,95,0.10)'
+    }
+  },
+  {
+    id: 'peach', emoji: '🍑', label: '피치 크림', sub: '따뜻하고 부드러운',
+    vars: {
+      bg: '#fff2e9', bgFar: '#ffe1cf', themeColor: '#ffe4d3',
+      orb1: 'rgba(253,186,116,0.52)', orb2: 'rgba(251,146,120,0.42)', orb3: 'rgba(254,215,170,0.50)',
+      glass: 'rgba(255,255,255,0.70)', glassLine: 'rgba(255,255,255,0.85)',
+      elev: '#ffffff', card: 'rgba(255,255,255,0.84)',
+      line: 'rgba(67,48,43,0.10)', lineSoft: 'rgba(67,48,43,0.06)',
+      text: '#43302b', textDim: '#8a6a5c', textFaint: '#b89b8d',
+      accent: '#f97316', bubble: '#ffffff', bubbleText: '#43302b',
+      shadow: 'rgba(120,70,45,0.12)'
+    }
+  },
+  {
+    id: 'mint', emoji: '🌿', label: '민트 소다', sub: '산뜻하고 깨끗한',
+    vars: {
+      bg: '#e9faf3', bgFar: '#d2f2e5', themeColor: '#d6f5e8',
+      orb1: 'rgba(110,231,183,0.50)', orb2: 'rgba(153,246,228,0.48)', orb3: 'rgba(187,247,208,0.42)',
+      glass: 'rgba(255,255,255,0.70)', glassLine: 'rgba(255,255,255,0.85)',
+      elev: '#ffffff', card: 'rgba(255,255,255,0.84)',
+      line: 'rgba(18,51,42,0.10)', lineSoft: 'rgba(18,51,42,0.06)',
+      text: '#12332a', textDim: '#4d7c6a', textFaint: '#8fb3a4',
+      accent: '#10b981', bubble: '#ffffff', bubbleText: '#12332a',
+      shadow: 'rgba(16,80,60,0.11)'
+    }
+  },
+  {
+    id: 'lavender', emoji: '💜', label: '라벤더', sub: '차분하고 몽환적인',
+    vars: {
+      bg: '#f2edfd', bgFar: '#e3d9fa', themeColor: '#e7defc',
+      orb1: 'rgba(196,181,253,0.55)', orb2: 'rgba(216,180,254,0.46)', orb3: 'rgba(199,210,254,0.44)',
+      glass: 'rgba(255,255,255,0.70)', glassLine: 'rgba(255,255,255,0.85)',
+      elev: '#ffffff', card: 'rgba(255,255,255,0.84)',
+      line: 'rgba(46,37,69,0.10)', lineSoft: 'rgba(46,37,69,0.06)',
+      text: '#2e2545', textDim: '#6b5f8c', textFaint: '#a397c0',
+      accent: '#8b5cf6', bubble: '#ffffff', bubbleText: '#2e2545',
+      shadow: 'rgba(70,50,120,0.12)'
+    }
+  },
+  {
+    id: 'sakura', emoji: '🌸', label: '벚꽃', sub: '설레는 봄 분위기',
+    vars: {
+      bg: '#fdeff5', bgFar: '#fbdde9', themeColor: '#fce0ec',
+      orb1: 'rgba(251,207,232,0.60)', orb2: 'rgba(249,168,212,0.46)', orb3: 'rgba(254,205,211,0.50)',
+      glass: 'rgba(255,255,255,0.72)', glassLine: 'rgba(255,255,255,0.86)',
+      elev: '#ffffff', card: 'rgba(255,255,255,0.84)',
+      line: 'rgba(67,31,51,0.10)', lineSoft: 'rgba(67,31,51,0.06)',
+      text: '#431f33', textDim: '#8d5f78', textFaint: '#bb92a8',
+      accent: '#ec4899', bubble: '#ffffff', bubbleText: '#431f33',
+      shadow: 'rgba(130,50,90,0.12)'
+    }
+  },
+  {
+    id: 'lemon', emoji: '🍋', label: '레몬 크림', sub: '밝고 상큼한',
+    vars: {
+      bg: '#fdf8e6', bgFar: '#faeec8', themeColor: '#fcf2d5',
+      orb1: 'rgba(253,224,71,0.46)', orb2: 'rgba(254,240,138,0.58)', orb3: 'rgba(251,207,232,0.32)',
+      glass: 'rgba(255,255,255,0.72)', glassLine: 'rgba(255,255,255,0.86)',
+      elev: '#ffffff', card: 'rgba(255,255,255,0.86)',
+      line: 'rgba(63,52,19,0.10)', lineSoft: 'rgba(63,52,19,0.06)',
+      text: '#3f3413', textDim: '#857537', textFaint: '#b3a370',
+      accent: '#ca8a04', bubble: '#ffffff', bubbleText: '#3f3413',
+      shadow: 'rgba(110,90,20,0.12)'
+    }
+  },
+  {
+    id: 'midnight', emoji: '🌙', label: '미드나잇', sub: '기존 벨라 다크',
+    dark: true,
+    vars: {
+      bg: '#0a0a0b', bgFar: '#050506', themeColor: '#0a0a0b',
+      orb1: 'rgba(94,234,212,0.16)', orb2: 'rgba(240,107,155,0.13)', orb3: 'rgba(163,230,53,0.10)',
+      glass: 'rgba(22,22,25,0.72)', glassLine: 'rgba(255,255,255,0.08)',
+      elev: '#131316', card: 'rgba(22,22,25,0.88)',
+      line: '#2a2a2f', lineSoft: '#1d1d21',
+      text: '#e8e8e3', textDim: '#9a9a93', textFaint: '#5a5a55',
+      accent: '#5eead4', bubble: '#1c1c20', bubbleText: '#e8e8e3',
+      shadow: 'rgba(0,0,0,0.55)'
+    }
+  }
+];
+const DEFAULT_THEME = 'sky';
+
+/* ---- ⑫ 아바타 (v2.4) --------------------------------------------
+ * 페르소나별로 내장 이모지 24종 중 하나를 고르거나 사진을 올릴 수 있다.
+ * 저장 형태: { personaId: { type: 'emoji'|'photo', value } }
+ * ---------------------------------------------------------------- */
+const AVATAR_EMOJIS = [
+  '🎨', '✏️', '💡', '🔥', '✨', '🌈',
+  '🛠️', '⚙️', '🔧', '📐', '🧱', '🚀',
+  '📊', '💰', '📈', '🧮', '🎯', '⚖️',
+  '🧑‍🍳', '🧑‍🔬', '🧑‍💻', '🦊', '🐻', '🐼'
+];
+
+const AVATAR_RULES = {
+  size: 128,            // 정사각 크롭 후 저장 크기 (원형은 CSS 로 잘라 보여준다)
+  quality: 0.82,
+  maxSourceBytes: 20 * 1024 * 1024
 };
 
 /* ---- ⓪ 기능 플래그 ----------------------------------------------
@@ -3700,6 +4508,14 @@ let state = {
   agendaProvisional: false, // 방 제목이 잡담에서 임시로 잡힌 상태인지
   // ---- v2.2 ----
   pendingImages: [],       // 전송 대기 중인 첨부 사진 [{ id, dataUrl, w, h, bytes, name }]
+  // ---- v2.4 ----
+  theme: localStorage.getItem('vela.boardroom.theme') || 'sky',
+  bgPhoto: localStorage.getItem('vela.boardroom.bgPhoto') || '',
+  bgOpacity: parseInt(localStorage.getItem('vela.boardroom.bgOpacity') || '45', 10) || 45,
+  avatars: (function () {
+    try { return JSON.parse(localStorage.getItem('vela.boardroom.avatars') || '{}'); }
+    catch (e) { return {}; }
+  })(),
   maxResponders: Math.min(
     parseInt(localStorage.getItem('vela.boardroom.maxResponders') || CHAT_RULES.maxResponders, 10) || CHAT_RULES.maxResponders,
     CHAT_RULES.hardMaxResponders),
@@ -3862,6 +4678,264 @@ function applyFeatureFlags() {
   if (btnNewTop && !FEATURES.startScreen) btnNewTop.hidden = false;
 }
 
+/* ═══════════ 테마 · 꾸미기 (v2.4) ═══════════
+ * 테마는 CSS 변수 묶음일 뿐이다. 기존 변수 이름(--bg, --text, --cyan …)을
+ * 그대로 덮어쓰기 때문에, 예전에 작성된 CSS 규칙까지 한 번에 다시 칠해진다.
+ * ══════════════════════════════════════════ */
+
+const UI_KEYS = {
+  theme: 'vela.boardroom.theme',
+  themeBoot: 'vela.boardroom.themeBoot',   // 첫 페인트 전에 <head> 스크립트가 읽는 값
+  bgPhoto: 'vela.boardroom.bgPhoto',
+  bgOpacity: 'vela.boardroom.bgOpacity',
+  avatars: 'vela.boardroom.avatars'
+};
+
+function getTheme(id) {
+  return THEMES.find(t => t.id === id) || THEMES.find(t => t.id === DEFAULT_THEME) || THEMES[0];
+}
+
+function applyTheme(id, opts = {}) {
+  const t = getTheme(id);
+  const v = t.vars;
+  // 새 이름 ← → 기존 이름을 함께 세팅한다 (기존 CSS 가 전부 살아 있으므로)
+  const map = {
+    '--bg': v.bg, '--bg-far': v.bgFar, '--bg-elev': v.elev, '--elev': v.elev, '--bg-card': v.card,
+    '--line': v.line, '--line-soft': v.lineSoft,
+    '--text': v.text, '--text-dim': v.textDim, '--text-faint': v.textFaint,
+    '--cyan': v.accent,
+    '--orb-1': v.orb1, '--orb-2': v.orb2, '--orb-3': v.orb3,
+    '--glass': v.glass, '--glass-line': v.glassLine,
+    '--bubble': v.bubble, '--bubble-text': v.bubbleText, '--shadow': v.shadow
+  };
+  const r = document.documentElement.style;
+  Object.keys(map).forEach(k => r.setProperty(k, map[k]));
+  document.documentElement.dataset.theme = t.id;
+  document.documentElement.style.colorScheme = t.dark ? 'dark' : 'light';
+
+  const meta = $('#metaThemeColor');
+  if (meta) meta.setAttribute('content', v.themeColor);
+
+  state.theme = t.id;
+  if (!opts.silent) {
+    try {
+      localStorage.setItem(UI_KEYS.theme, t.id);
+      // 다음 실행 때 깜빡임 없이 바로 칠하도록 해석된 값을 저장해둔다
+      localStorage.setItem(UI_KEYS.themeBoot, JSON.stringify(map));
+    } catch (e) { /* 용량 초과 — 테마는 다음에 다시 저장된다 */ }
+  }
+}
+
+/* ---- 배경 사진 ---- */
+function applyBgPhoto() {
+  const r = document.documentElement.style;
+  if (state.bgPhoto) {
+    r.setProperty('--bg-photo', `url("${state.bgPhoto}")`);
+    r.setProperty('--bg-photo-opacity', String((state.bgOpacity || 45) / 100));
+    document.body.classList.add('has-bg-photo');
+  } else {
+    r.setProperty('--bg-photo', 'none');
+    r.setProperty('--bg-photo-opacity', '0');
+    document.body.classList.remove('has-bg-photo');
+  }
+  const wrap = $('#bgPhotoPreviewWrap');
+  const prev = $('#bgPhotoPreview');
+  if (wrap && prev) {
+    wrap.hidden = !state.bgPhoto;
+    prev.style.backgroundImage = state.bgPhoto ? `url("${state.bgPhoto}")` : 'none';
+  }
+}
+
+// 사진 첨부와 같은 압축 경로를 그대로 쓴다 (최대 1280px · JPEG)
+async function setBgPhotoFromFile(file) {
+  try {
+    const img = await compressImage(file);
+    try {
+      localStorage.setItem(UI_KEYS.bgPhoto, img.dataUrl);
+    } catch (e) {
+      toast('배경 사진 저장 실패 — 저장 공간이 부족합니다. 기록에서 오래된 대화를 지워보세요', true);
+      return;
+    }
+    state.bgPhoto = img.dataUrl;
+    applyBgPhoto();
+    toast(`배경 사진 적용 — ${img.w}×${img.h} · ${humanBytes(img.bytes)}`);
+  } catch (e) {
+    toast(e.message || '사진 처리 실패', true);
+  }
+}
+
+function clearBgPhoto() {
+  state.bgPhoto = '';
+  try { localStorage.removeItem(UI_KEYS.bgPhoto); } catch (e) {}
+  applyBgPhoto();
+}
+
+/* ---- 아바타 ---- */
+function loadAvatars() {
+  try { return JSON.parse(localStorage.getItem(UI_KEYS.avatars) || '{}'); }
+  catch (e) { return {}; }
+}
+function saveAvatars() {
+  try {
+    localStorage.setItem(UI_KEYS.avatars, JSON.stringify(state.avatars || {}));
+    return true;
+  } catch (e) {
+    toast('아바타 저장 실패 — 저장 공간이 부족합니다', true);
+    return false;
+  }
+}
+
+function hexToRgba(hex, a) {
+  const h = String(hex || '#888888').replace('#', '');
+  const n = h.length === 3 ? h.split('').map(c => c + c).join('') : h;
+  const r = parseInt(n.slice(0, 2), 16) || 0;
+  const g = parseInt(n.slice(2, 4), 16) || 0;
+  const b = parseInt(n.slice(4, 6), 16) || 0;
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+}
+
+// 파스텔 원형 — 페르소나 색을 옅게 깔고 글자는 원색으로
+function avatarStyle(p) {
+  const c = p.color || '#94a3b8';
+  const tint = hexToRgba(c, 0.22);
+  return `background: linear-gradient(${tint}, ${tint}), var(--bubble); color: ${c}; `
+       + `box-shadow: inset 0 0 0 1.5px ${hexToRgba(c, 0.34)}, 0 1px 4px var(--shadow);`;
+}
+
+function avatarInner(p) {
+  const a = (state.avatars || {})[p.id];
+  if (a && a.type === 'photo' && a.value) return `<img src="${a.value}" alt="" />`;
+  if (a && a.type === 'emoji' && a.value) return escapeHtml(a.value);
+  return escapeHtml(personaInitial(p));
+}
+
+function avatarHtml(p, cls) {
+  const a = (state.avatars || {})[p.id];
+  const isPhoto = !!(a && a.type === 'photo' && a.value);
+  return `<span class="${cls || 'msg-avatar'}"${isPhoto ? '' : ` style="${avatarStyle(p)}"`}>${avatarInner(p)}</span>`;
+}
+
+// 아바타 사진 — 가운데 정사각으로 잘라 128px JPEG 로
+function compressAvatar(file) {
+  return new Promise((resolve, reject) => {
+    if (!/^image\//.test(file.type)) return reject(new Error('이미지 파일이 아닙니다'));
+    if (file.size > AVATAR_RULES.maxSourceBytes) return reject(new Error('사진이 너무 큽니다'));
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const S = AVATAR_RULES.size;
+        const side = Math.min(img.width, img.height);
+        const sx = (img.width - side) / 2;
+        const sy = (img.height - side) / 2;
+        const c = document.createElement('canvas');
+        c.width = S; c.height = S;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, S, S);
+        ctx.drawImage(img, sx, sy, side, side, 0, 0, S, S);
+        URL.revokeObjectURL(url);
+        resolve(c.toDataURL('image/jpeg', AVATAR_RULES.quality));
+      } catch (e) { URL.revokeObjectURL(url); reject(e); }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('사진을 읽지 못했습니다')); };
+    img.src = url;
+  });
+}
+
+function setAvatar(personaId, entry) {
+  state.avatars = state.avatars || {};
+  if (entry) state.avatars[personaId] = entry;
+  else delete state.avatars[personaId];
+  if (saveAvatars()) {
+    renderAvatarEditor();
+    renderParticipants();
+    rerenderChat();
+  }
+}
+
+/* ---- 설정 모달: 테마 그리드 ---- */
+function renderThemeGrid() {
+  const el = $('#themeGrid');
+  if (!el) return;
+  el.innerHTML = THEMES.map(t => `
+    <button class="theme-card${t.id === state.theme ? ' active' : ''}" data-theme="${t.id}" type="button">
+      <span class="theme-swatch" style="background: linear-gradient(135deg, ${t.vars.orb1}, ${t.vars.orb2}), ${t.vars.bg}"></span>
+      <span class="theme-card-text">
+        <span class="theme-card-name">${t.emoji} ${escapeHtml(t.label)}</span>
+        <span class="theme-card-sub">${escapeHtml(t.sub)}</span>
+      </span>
+    </button>`).join('');
+  el.querySelectorAll('[data-theme]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyTheme(btn.dataset.theme);
+      renderThemeGrid();
+    });
+  });
+}
+
+/* ---- 설정 모달: 아바타 편집 ---- */
+let avatarPhotoTarget = null;
+
+function renderAvatarEditor() {
+  const el = $('#avatarEditor');
+  if (!el) return;
+  ensurePanel();
+  el.innerHTML = PERSONAS.map(p => {
+    const cur = (state.avatars || {})[p.id];
+    return `
+      <div class="avatar-persona" data-persona="${p.id}">
+        <div class="avatar-persona-head">
+          ${avatarHtml(p, 'avatar-preview')}
+          <div style="min-width:0">
+            <div class="avatar-persona-name">${escapeHtml(p.name)}</div>
+            <div class="avatar-persona-role">${escapeHtml(p.role || '')}</div>
+          </div>
+          <div class="avatar-actions">
+            <button class="avatar-mini-btn" data-photo="${p.id}" type="button">사진</button>
+            <button class="avatar-mini-btn" data-reset="${p.id}" type="button">초기화</button>
+          </div>
+        </div>
+        <div class="emoji-grid">
+          ${AVATAR_EMOJIS.map(e => `<button class="emoji-btn${(cur && cur.type === 'emoji' && cur.value === e) ? ' active' : ''}" data-emoji="${e}" data-for="${p.id}" type="button">${e}</button>`).join('')}
+        </div>
+      </div>`;
+  }).join('');
+
+  el.querySelectorAll('[data-emoji]').forEach(b => {
+    b.addEventListener('click', () => setAvatar(b.dataset.for, { type: 'emoji', value: b.dataset.emoji }));
+  });
+  el.querySelectorAll('[data-reset]').forEach(b => {
+    b.addEventListener('click', () => setAvatar(b.dataset.reset, null));
+  });
+  el.querySelectorAll('[data-photo]').forEach(b => {
+    b.addEventListener('click', () => {
+      avatarPhotoTarget = b.dataset.photo;
+      const inp = $('#avatarPhotoInput');
+      if (inp) inp.click();
+    });
+  });
+}
+
+/* ---- 설정 모달: 탭 ---- */
+function switchSettingsTab(name) {
+  document.querySelectorAll('.settings-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === name);
+  });
+  document.querySelectorAll('.settings-pane').forEach(p => {
+    p.hidden = p.dataset.pane !== name;
+  });
+  if (name === 'theme') renderThemeGrid();
+  if (name === 'avatar') renderAvatarEditor();
+}
+
+/* ---- 헤더의 방 이름 ---- */
+function updateBrandRoom() {
+  const el = $('#brandRoom');
+  if (!el) return;
+  el.textContent = state.agenda ? '· ' + state.agenda : '';
+}
+
 /* ═══════════ 채팅 셸 — 뷰포트 · 스크롤 (v2.2) ═══════════
  *
  * ① 뷰포트: 모바일 키보드가 올라오면 visualViewport.height 가 줄고,
@@ -3990,6 +5064,7 @@ function bindChatScroll() {
 
 // 채팅 헤더의 주제 줄 — 첫 메시지가 주제가 된다
 function updateChatTopic() {
+  updateBrandRoom();
   const el = $('#chatAgenda');
   if (!el) return;
   if (state.agenda) {
@@ -4008,6 +5083,9 @@ window.addEventListener('DOMContentLoaded', () => {
   if (cv) cv.textContent = 'v' + APP.version;
   refreshApiStatus();
   refreshModelTag();
+  // v2.4 — 테마·배경을 먼저 적용해야 첫 화면부터 제 색으로 그려진다
+  applyTheme(state.theme, { silent: false });
+  applyBgPhoto();
   bindEvents();
   bindInstallButton();
   applyFeatureFlags();
@@ -4084,7 +5162,7 @@ function bindEvents() {
   // textarea 자동 높이
   $('#followupInput').addEventListener('input', (e) => {
     e.target.style.height = 'auto';
-    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+    e.target.style.height = Math.max(44, Math.min(e.target.scrollHeight, 120)) + 'px';
   });
   $('#btnFollowupMic').addEventListener('click', () => startVoiceInput('#followupInput'));
 
@@ -4128,6 +5206,52 @@ function bindEvents() {
   $('#followupInput').addEventListener('focus', () => {
     setTimeout(() => { if (chatStickToBottom) scrollChatToBottom(false); }, 250);
   });
+
+  /* ---- 설정 탭 · 테마 · 배경 · 아바타 (v2.4) ---- */
+  document.querySelectorAll('.settings-tab').forEach(tab => {
+    tab.addEventListener('click', () => switchSettingsTab(tab.dataset.tab));
+  });
+
+  const bgPick = $('#btnBgPhotoPick');
+  const bgInput = $('#bgPhotoInput');
+  if (bgPick && bgInput) {
+    bgPick.addEventListener('click', () => bgInput.click());
+    bgInput.addEventListener('change', async (e) => {
+      const f = e.target.files && e.target.files[0];
+      e.target.value = '';
+      if (f) await setBgPhotoFromFile(f);
+    });
+  }
+  const bgClear = $('#btnBgPhotoClear');
+  if (bgClear) bgClear.addEventListener('click', () => { clearBgPhoto(); toast('배경 사진을 지웠어요'); });
+
+  const bgOp = $('#inputBgOpacity');
+  if (bgOp) {
+    bgOp.addEventListener('input', (e) => {
+      state.bgOpacity = parseInt(e.target.value, 10) || 45;
+      const lb = $('#bgOpacityLabel');
+      if (lb) lb.textContent = state.bgOpacity + '%';
+      try { localStorage.setItem(UI_KEYS.bgOpacity, String(state.bgOpacity)); } catch (err) {}
+      applyBgPhoto();
+    });
+  }
+
+  const avInput = $('#avatarPhotoInput');
+  if (avInput) {
+    avInput.addEventListener('change', async (e) => {
+      const f = e.target.files && e.target.files[0];
+      e.target.value = '';
+      if (!f || !avatarPhotoTarget) return;
+      try {
+        const dataUrl = await compressAvatar(f);
+        setAvatar(avatarPhotoTarget, { type: 'photo', value: dataUrl });
+        toast('아바타 사진 적용됨');
+      } catch (err) {
+        toast(err.message || '사진 처리 실패', true);
+      }
+      avatarPhotoTarget = null;
+    });
+  }
 
   // 빠른 회의 토글
   const quick = $('#inputQuick');
@@ -4252,6 +5376,16 @@ function refreshModelTag() {
 
 /* ============ SETTINGS MODAL ============ */
 function renderSettingsModal() {
+  // v2.4 — 항상 '일반' 탭에서 시작 + 테마/배경 상태 반영
+  switchSettingsTab('general');
+  renderThemeGrid();
+  const _op = $('#inputBgOpacity');
+  if (_op) {
+    _op.value = String(state.bgOpacity || 45);
+    const _lb = $('#bgOpacityLabel');
+    if (_lb) _lb.textContent = (state.bgOpacity || 45) + '%';
+  }
+  applyBgPhoto();
   $('#inputProvider').value = state.provider;
   renderSettingsModalForProvider(state.provider);
   // 음성 옵션 채우기
@@ -4492,7 +5626,7 @@ function appendMessage(msg, opts = {}) {
     el.dataset.persona = p.id;
     el.innerHTML = `
       <div class="msg-persona-head">
-        <span class="msg-avatar">${personaInitial(p)}</span>
+        ${avatarHtml(p)}
         <span class="msg-name">${p.name}</span>
         <span class="msg-tag">${p.tag}</span>
       </div>
@@ -4513,7 +5647,7 @@ function appendMessage(msg, opts = {}) {
     el.dataset.persona = p.id;
     el.innerHTML = `
       <div class="msg-persona-head">
-        <span class="msg-avatar">${personaInitial(p)}</span>
+        ${avatarHtml(p)}
         <span class="msg-name">${p.name}</span>
         <span class="msg-tag">생각하는 중…</span>
       </div>
@@ -6457,7 +7591,7 @@ function updateAutoSaveIndicator() {
 }
 
 function deleteSession(id) {
-  if (!confirm('이 회의를 삭제하시겠습니까? 되돌릴 수 없습니다.')) return;
+  if (!confirm('이 대화방을 삭제하시겠습니까? 되돌릴 수 없습니다.')) return;
   const sessions = loadSessions().filter(s => s.id !== id);
   saveSessions(sessions);
   // 현재 보고 있는 게 그거면 새 세션으로
@@ -6467,63 +7601,121 @@ function deleteSession(id) {
     updateAutoSaveIndicator();
   }
   renderSessionsList();
-  toast('회의 삭제됨');
+  toast('대화방 삭제됨');
+}
+
+/* ---- 대화방 목록 (v2.4) — 카톡식 [방 이름 · 마지막 메시지 · 날짜] ----
+ * v1.x / v2.0 형식 세션도 그대로 읽어서 표시한다 (마지막 메시지를 형식별로 캐낸다).
+ * ------------------------------------------------------------------ */
+
+// 세션 안에서 그 페르소나의 이름 (옛 세션은 전문가가 지금과 다를 수 있다)
+function sessionPersonaName(personaId, s) {
+  if (personaId === 'expert') return (s.expert && s.expert.name) || '전문가';
+  const core = CORE_PERSONAS.find(p => p.id === personaId);
+  if (core) return core.name;
+  const cur = (PERSONAS || []).find(p => p.id === personaId);
+  return (cur && cur.name) || '';
+}
+
+// 마지막 메시지 한 줄 — 새 형식(messages) 우선, 없으면 옛 형식에서 캐낸다
+function sessionPreview(s) {
+  const msgs = s.messages || [];
+  for (let i = msgs.length - 1; i >= 0; i--) {
+    const m = msgs[i];
+    if (m.type === 'user') {
+      const txt = m.content || ((m.images && m.images.length) ? `사진 ${m.images.length}장` : '');
+      if (txt) return { who: '나', text: txt };
+    } else if (m.type === 'persona') {
+      const txt = m.content || (m.parsed && (m.parsed.FACTS || m.parsed.RAW)) || '';
+      if (txt) return { who: sessionPersonaName(m.personaId, s), text: txt };
+    }
+  }
+  // ---- 옛 형식 fallback ----
+  const fups = s.followups || [];
+  if (fups.length) {
+    const f = fups[fups.length - 1];
+    const answers = f.answers || [];
+    const a = answers[answers.length - 1];
+    if (a && a.text) return { who: sessionPersonaName(a.personaId, s), text: a.text };
+    if (f.question) return { who: '나', text: f.question };
+  }
+  if (s.minutes && s.minutes.trim()) return { who: '', text: s.minutes.replace(/[#>*_`-]/g, ' ') };
+  if (s.summary && s.summary.trim()) return { who: '', text: s.summary.replace(/[#>*_`-]/g, ' ') };
+  const facts = s.facts || {};
+  const fk = Object.keys(facts)[0];
+  if (fk && facts[fk]) {
+    const t = facts[fk].FACTS || facts[fk].RAW || facts[fk].INSIGHT || facts[fk].PERSPECTIVE;
+    if (t) return { who: sessionPersonaName(fk, s), text: t };
+  }
+  return { who: '', text: '(아직 대화 없음)' };
+}
+
+// 카톡식 날짜 — 오늘이면 시각, 어제면 "어제", 올해면 "8월 3일", 그 전이면 연도까지
+function roomDate(iso) {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  const now = new Date();
+  const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  if (sameDay(d, now)) {
+    const h = d.getHours();
+    const ampm = h < 12 ? '오전' : '오후';
+    const h12 = h % 12 === 0 ? 12 : h % 12;
+    return `${ampm} ${h12}:${String(d.getMinutes()).padStart(2, '0')}`;
+  }
+  const yst = new Date(now);
+  yst.setDate(now.getDate() - 1);
+  if (sameDay(d, yst)) return '어제';
+  if (d.getFullYear() === now.getFullYear()) return `${d.getMonth() + 1}월 ${d.getDate()}일`;
+  return `${d.getFullYear()}. ${d.getMonth() + 1}. ${d.getDate()}.`;
 }
 
 function renderSessionsList() {
   const list = $('#sessionsList');
+  if (!list) return;
   const sessions = loadSessions();
-  // 최근 수정순 정렬
   sessions.sort((a, b) => {
     const ta = new Date(a.lastUpdated || a.date).getTime();
     const tb = new Date(b.lastUpdated || b.date).getTime();
     return tb - ta;
   });
+
   if (sessions.length === 0) {
     list.innerHTML = `
-      <div class="sessions-empty">
-        <div class="sessions-empty-title">저장된 회의가 없습니다</div>
-        <div class="sessions-empty-sub">회의를 시작하면 자동으로 저장됩니다.<br>주제 입력 + 회의 시작 시점에 첫 저장 발생.</div>
-      </div>
-    `;
+      <div class="rooms-empty">
+        <div class="rooms-empty-title">아직 대화방이 없어요</div>
+        <div class="rooms-empty-sub">아무 얘기나 던지면 방이 자동으로 만들어지고<br>여기에 쌓입니다.</div>
+      </div>`;
     return;
   }
+
   list.innerHTML = sessions.map(s => {
     const updated = s.lastUpdated || s.date;
-    const msgCount = (s.messages || []).filter(m => m.type === 'persona').length;
-    const isV2 = s.v === 2;
-    const modeLabel = isV2 ? getMode(s.mode).label : '이전 형식';
-    const expertLabel = (isV2 && s.expert) ? s.expert.title : '';
-    const hasMemo = !!(s.memo && s.memo.trim());
-    const hasMinutes = !!((s.minutes && s.minutes.trim()) || (s.summary && s.summary.trim()));
+    const name = (s.agenda && s.agenda.trim()) || '이름 없는 방';
+    const pv = sessionPreview(s);
+    const lastLine = (pv.who ? `${pv.who}: ` : '') + String(pv.text).replace(/\s+/g, ' ').trim();
     const isCurrent = state.sessionId === s.id;
+    const isLegacy = s.v !== 2;
     return `
-      <div class="session-item${isCurrent ? ' current' : ''}" data-id="${s.id}">
-        <button class="session-delete" data-delete="${s.id}" type="button" title="삭제" aria-label="삭제">×</button>
-        <div class="session-time">
-          <span class="session-time-abs">${formatSessionDate(updated)}</span>
-          <span class="session-time-rel">${formatRelative(updated)}</span>
+      <div class="room-item${isCurrent ? ' current' : ''}" data-id="${escapeHtml(s.id)}">
+        <div class="room-avatar">${escapeHtml(name.trim().charAt(0) || '방')}</div>
+        <div class="room-body">
+          <div class="room-top">
+            <span class="room-name">${escapeHtml(name)}</span>
+            <span class="room-date">${escapeHtml(roomDate(updated))}</span>
+          </div>
+          <div class="room-last">${isLegacy ? '<span class="room-legacy">이전 형식</span>' : ''}${escapeHtml(lastLine).slice(0, 200)}</div>
         </div>
-        <div class="session-preview">${escapeHtml(s.agenda)}</div>
-        <div class="session-meta">
-          <span>${escapeHtml(modeLabel)}</span>
-          ${expertLabel ? `<span>· ${escapeHtml(expertLabel)}</span>` : ''}
-          ${msgCount > 0 ? `<span>· 발언 ${msgCount}개</span>` : ''}
-          ${hasMinutes ? '<span>· 회의록 ✓</span>' : ''}
-          ${hasMemo ? '<span>· 메모 ✓</span>' : ''}
-          ${isCurrent ? '<span class="badge-current">· 현재</span>' : ''}
-        </div>
-      </div>
-    `;
+        <button class="room-delete" data-delete="${escapeHtml(s.id)}" type="button" title="삭제" aria-label="대화방 삭제">×</button>
+      </div>`;
   }).join('');
-  list.querySelectorAll('.session-item').forEach(el => {
+
+  list.querySelectorAll('.room-item').forEach(el => {
     el.addEventListener('click', (e) => {
-      // 삭제 버튼 클릭은 별도 처리
-      if (e.target.closest('.session-delete')) return;
+      if (e.target.closest('.room-delete')) return;   // 삭제는 별도 처리
       loadSession(el.dataset.id);
     });
   });
-  list.querySelectorAll('.session-delete').forEach(btn => {
+  list.querySelectorAll('.room-delete').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       deleteSession(btn.dataset.delete);
