@@ -7,7 +7,7 @@
 <meta name="description" content="벨챗 — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=d71855878c30" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=bd0d06f64eef" />
 <meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
 <meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -3256,6 +3256,101 @@
   }
   .voice-slider-label b { font-family: var(--mono); color: var(--cyan); font-weight: 700; }
   @media (max-width: 400px) { .voice-sliders { grid-template-columns: 1fr; } }
+
+  /* ══════════════════════════════════════════════════════════════════
+     벨챗 v2.7 — API 키 등록 편의
+     ══════════════════════════════════════════════════════════════════ */
+  .key-row { display: flex; gap: 6px; align-items: stretch; }
+  .key-row input { flex: 1; min-width: 0; margin-bottom: 0 !important; }
+  .key-btn {
+    width: 42px;
+    flex-shrink: 0;
+    border: 1px solid var(--line);
+    background: var(--bubble);
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+  }
+  .key-btn:hover { border-color: var(--cyan); }
+  .key-btn.on { border-color: var(--cyan); background: var(--line-soft); }
+
+  .key-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+  .key-action {
+    padding: 7px 11px;
+    font-size: 11.5px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--bubble);
+    color: var(--text-dim);
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: var(--sans);
+  }
+  .key-action:hover { border-color: var(--cyan); color: var(--cyan); }
+  .key-action:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .key-status {
+    margin-top: 10px;
+    padding: 9px 12px;
+    border-radius: 11px;
+    font-size: 12px;
+    line-height: 1.5;
+    border: 1px solid var(--line);
+    background: var(--bubble);
+    color: var(--text-dim);
+    word-break: keep-all;
+  }
+  .key-status.ok      { border-color: #16a34a; color: #16a34a; }
+  .key-status.fail    { border-color: var(--c-warn); color: var(--c-warn); }
+  .key-status.testing { border-color: var(--cyan); color: var(--cyan); }
+
+  /* ---- QR ---- */
+  .qr-warn {
+    padding: 11px 13px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--c-warn) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-warn) 35%, transparent);
+    color: var(--text);
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    word-break: keep-all;
+  }
+  .qr-canvas-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 14px;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+  }
+  .qr-canvas-wrap canvas { display: block; max-width: 100%; height: auto; image-rendering: pixelated; }
+  .qr-timer {
+    margin-top: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    text-align: center;
+  }
+  .qr-video-wrap {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #000;
+    aspect-ratio: 1;
+    max-height: 62vh;
+  }
+  .qr-video-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .qr-video-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 16%;
+    border: 3px solid rgba(255,255,255,0.85);
+    border-radius: 18px;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
@@ -3569,7 +3664,18 @@
     <div class="modal-info" id="providerInfo">1콜당 약 20원 (Sonnet 4.6 기준).</div>
 
     <label id="labelApiKey">API Key</label>
-    <input type="password" id="inputApiKey" placeholder="sk-ant-..." autocomplete="off" />
+    <!-- v2.7 — 붙여넣기 · 보기 토글 -->
+    <div class="key-row">
+      <input type="password" id="inputApiKey" placeholder="sk-ant-..." autocomplete="off" spellcheck="false" />
+      <button id="btnPasteKey" class="key-btn" type="button" title="클립보드에서 붙여넣기" aria-label="붙여넣기">📋</button>
+      <button id="btnRevealKey" class="key-btn" type="button" title="키 보기/숨기기" aria-label="키 보기">👁</button>
+    </div>
+    <div class="key-actions">
+      <button class="key-action" id="btnTestKey" type="button">🔌 연결 테스트</button>
+      <button class="key-action" id="btnShowKeyQr" type="button">📱 키를 QR로 표시</button>
+      <button class="key-action" id="btnScanKeyQr" type="button">📷 QR 스캔</button>
+    </div>
+    <div class="key-status" id="keyStatus" hidden></div>
     <div class="modal-info" id="apiKeyHint">
       이 키는 <code>localStorage</code>에만 저장됩니다.
     </div>
@@ -3651,6 +3757,39 @@
   </div>
 </div>
 
+<!-- ============ KEY QR MODAL (v2.7) ============ -->
+<div class="modal-backdrop" id="modalQr">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 class="modal-title" id="qrTitle">키를 QR로 전송</h3>
+      <button class="modal-close" data-close>닫기 ✕</button>
+    </div>
+
+    <!-- 표시 (PC) -->
+    <div id="qrShowPane" hidden>
+      <div class="qr-warn">
+        이 QR에는 <b>API 키가 그대로</b> 담겨 있습니다. 주변에 화면이 보이지 않는 곳에서 스캔하세요.<br>
+        키는 이 기기 화면에만 그려집니다 — 주소창이나 서버를 거치지 않습니다.
+      </div>
+      <div class="qr-canvas-wrap" id="qrCanvasWrap"></div>
+      <div class="modal-info" id="qrMeta"></div>
+      <div class="qr-timer" id="qrTimer"></div>
+      <div class="modal-info" style="margin-top:10px">
+        폰 벨챗에서 <b>설정 → 📷 QR 스캔</b>을 눌러 이 화면을 비추세요.
+        iOS라 스캔이 안 되면 기본 카메라 앱으로 찍어 텍스트를 복사한 뒤 <b>📋 붙여넣기</b>를 누르면 됩니다.
+      </div>
+    </div>
+
+    <!-- 스캔 (폰) -->
+    <div id="qrScanPane" hidden>
+      <div class="qr-video-wrap"><video id="qrVideo" playsinline muted></video></div>
+      <div class="modal-info" id="qrScanHint">카메라를 QR에 비춰주세요.</div>
+    </div>
+
+    <div class="modal-actions"><button class="btn-primary" data-close>닫기</button></div>
+  </div>
+</div>
+
 <!-- ============ SESSIONS MODAL ============ -->
 <div class="modal-backdrop" id="modalSessions">
   <div class="modal modal-rooms">
@@ -3724,7 +3863,7 @@ const LLM_CONFIG = {
 
 const APP = {
   name: '벨챗',                // v2.4 — 앱 이름
-  version: '2.6.0',
+  version: '2.7.0',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -5027,6 +5166,502 @@ function applyFeatureFlags() {
   if (btnNewTop && !FEATURES.startScreen) btnNewTop.hidden = false;
 }
 
+/* ═══════════ QR 인코더 (v2.7) ═══════════
+ * 외부 라이브러리 없이 QR 코드를 직접 만든다 (단일 파일 앱 · 오프라인 동작).
+ * byte 모드, 버전 1~10, 오류정정 레벨 M. API 키(최대 ~120바이트)면 충분하다.
+ *
+ * ★ 키는 화면에만 그려진다 — 주소창·서버·네트워크를 거치지 않는다.
+ * ══════════════════════════════════════ */
+
+// 버전별 총 코드워드 / 데이터 코드워드(레벨 M) / 블록당 EC 코드워드
+const QR_TOTAL_CW    = [26, 44, 70, 100, 134, 172, 196, 242, 292, 346];
+const QR_M_DATA_CW   = [16, 28, 44, 64, 86, 108, 124, 154, 182, 216];
+const QR_M_EC_PER_BL = [10, 16, 26, 18, 24, 16, 18, 22, 22, 26];
+// 블록 구성: [[블록수, 블록당 데이터 코드워드], ...]
+const QR_M_BLOCKS = [
+  [[1, 16]], [[1, 28]], [[1, 44]], [[2, 32]], [[2, 43]],
+  [[4, 27]], [[4, 31]], [[2, 38], [2, 39]], [[3, 36], [2, 37]], [[4, 43], [1, 44]]
+];
+// 정렬 패턴 중심 좌표
+const QR_ALIGN = [[], [6,18], [6,22], [6,26], [6,30], [6,34], [6,22,38], [6,24,42], [6,26,46], [6,28,50]];
+// 버전별 나머지 비트
+const QR_REMAINDER = [0, 7, 7, 7, 7, 7, 0, 0, 0, 0];
+
+/* ---- GF(256) 산술 ---- */
+const GF_EXP = new Uint8Array(512);
+const GF_LOG = new Uint8Array(256);
+(function () {
+  let x = 1;
+  for (let i = 0; i < 255; i++) { GF_EXP[i] = x; GF_LOG[x] = i; x <<= 1; if (x & 0x100) x ^= 0x11d; }
+  for (let i = 255; i < 512; i++) GF_EXP[i] = GF_EXP[i - 255];
+})();
+const gfMul = (a, b) => (a === 0 || b === 0) ? 0 : GF_EXP[GF_LOG[a] + GF_LOG[b]];
+
+// 리드-솔로몬 생성 다항식
+function rsGenPoly(n) {
+  let p = [1];
+  for (let i = 0; i < n; i++) {
+    const next = new Array(p.length + 1).fill(0);
+    for (let j = 0; j < p.length; j++) {
+      next[j] ^= gfMul(p[j], 1);
+      next[j + 1] ^= gfMul(p[j], GF_EXP[i]);
+    }
+    p = next;
+  }
+  return p;
+}
+function rsEncode(data, ecLen) {
+  const gen = rsGenPoly(ecLen);
+  const res = new Array(ecLen).fill(0);
+  for (let i = 0; i < data.length; i++) {
+    const factor = data[i] ^ res[0];
+    res.shift();
+    res.push(0);
+    if (factor !== 0) for (let j = 0; j < ecLen; j++) res[j] ^= gfMul(gen[j + 1], factor);
+  }
+  return res;
+}
+
+/* ---- 데이터 → 코드워드 ---- */
+function qrBuildCodewords(text) {
+  const bytes = Array.from(new TextEncoder().encode(text));
+  let ver = -1;
+  for (let v = 1; v <= 10; v++) {
+    const cci = v < 10 ? 8 : 16;                 // byte 모드 문자수 지시자 비트
+    if (4 + cci + bytes.length * 8 <= QR_M_DATA_CW[v - 1] * 8) { ver = v; break; }
+  }
+  if (ver < 0) throw new Error('QR 용량 초과 — 키가 너무 깁니다');
+
+  const bits = [];
+  const push = (val, len) => { for (let i = len - 1; i >= 0; i--) bits.push((val >> i) & 1); };
+  push(0b0100, 4);                                // byte 모드
+  push(bytes.length, ver < 10 ? 8 : 16);
+  bytes.forEach(b => push(b, 8));
+
+  const cap = QR_M_DATA_CW[ver - 1] * 8;
+  for (let i = 0; i < 4 && bits.length < cap; i++) bits.push(0);   // 종단자
+  while (bits.length % 8 !== 0) bits.push(0);
+  const data = [];
+  for (let i = 0; i < bits.length; i += 8) {
+    let b = 0; for (let j = 0; j < 8; j++) b = (b << 1) | bits[i + j];
+    data.push(b);
+  }
+  const padBytes = [0xEC, 0x11];
+  let pi = 0;
+  while (data.length < QR_M_DATA_CW[ver - 1]) data.push(padBytes[pi++ % 2]);
+
+  // 블록 분할 → EC 계산 → 인터리브
+  const ecLen = QR_M_EC_PER_BL[ver - 1];
+  const dataBlocks = [], ecBlocks = [];
+  let off = 0;
+  QR_M_BLOCKS[ver - 1].forEach(([count, size]) => {
+    for (let i = 0; i < count; i++) {
+      const blk = data.slice(off, off + size);
+      off += size;
+      dataBlocks.push(blk);
+      ecBlocks.push(rsEncode(blk, ecLen));
+    }
+  });
+  const out = [];
+  const maxData = Math.max(...dataBlocks.map(b => b.length));
+  for (let i = 0; i < maxData; i++) dataBlocks.forEach(b => { if (i < b.length) out.push(b[i]); });
+  for (let i = 0; i < ecLen; i++) ecBlocks.forEach(b => out.push(b[i]));
+  return { version: ver, codewords: out };
+}
+
+/* ---- 매트릭스 ---- */
+function qrBuildMatrix(text) {
+  const { version, codewords } = qrBuildCodewords(text);
+  const size = 17 + 4 * version;
+  const m = Array.from({ length: size }, () => new Array(size).fill(null));   // null = 미배치
+  const fixed = Array.from({ length: size }, () => new Array(size).fill(false));
+  const set = (r, c, v) => { if (r >= 0 && c >= 0 && r < size && c < size) { m[r][c] = v; fixed[r][c] = true; } };
+
+  // 파인더 + 분리자
+  const finder = (r0, c0) => {
+    for (let r = -1; r <= 7; r++) for (let c = -1; c <= 7; c++) {
+      const inBox = r >= 0 && r <= 6 && c >= 0 && c <= 6;
+      const on = inBox && (r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4));
+      set(r0 + r, c0 + c, on ? 1 : 0);
+    }
+  };
+  finder(0, 0); finder(0, size - 7); finder(size - 7, 0);
+
+  // 타이밍 패턴
+  for (let i = 8; i < size - 8; i++) { set(6, i, i % 2 === 0 ? 1 : 0); set(i, 6, i % 2 === 0 ? 1 : 0); }
+
+  // 정렬 패턴
+  const align = QR_ALIGN[version - 1];
+  align.forEach(r => align.forEach(c => {
+    if ((r <= 8 && c <= 8) || (r <= 8 && c >= size - 9) || (r >= size - 9 && c <= 8)) return;  // 파인더와 겹침
+    for (let dr = -2; dr <= 2; dr++) for (let dc = -2; dc <= 2; dc++) {
+      const on = Math.max(Math.abs(dr), Math.abs(dc)) !== 1;
+      set(r + dr, c + dc, on ? 1 : 0);
+    }
+  }));
+
+  // 다크 모듈 + 포맷 정보 자리 예약
+  set(size - 8, 8, 1);
+  for (let i = 0; i <= 8; i++) { if (i !== 6) { set(8, i, 0); set(i, 8, 0); } }
+  for (let i = 0; i < 8; i++) { set(8, size - 1 - i, 0); set(size - 1 - i, 8, 0); }
+
+  // 버전 정보 (v7 이상)
+  if (version >= 7) {
+    // BCH(18,6) — 데이터 6비트만큼만 나눈다. 12번 돌리면 (5-i) 가 음수가 되어
+    // JS 의 << 가 31비트 시프트로 해석돼 나머지를 망가뜨린다.
+    let d = version << 12;
+    for (let i = 0; i < 6; i++) { if ((d >> (17 - i)) & 1) d ^= 0x1F25 << (5 - i); }
+    const vinfo = (version << 12) | d;
+    for (let i = 0; i < 18; i++) {
+      const bit = (vinfo >> i) & 1;
+      set(Math.floor(i / 3), size - 11 + (i % 3), bit);
+      set(size - 11 + (i % 3), Math.floor(i / 3), bit);
+    }
+  }
+
+  // 데이터 배치 (지그재그, 우하단 → 좌상단)
+  let bitIdx = 0;
+  const totalBits = codewords.length * 8 + QR_REMAINDER[version - 1];
+  const nextBit = () => {
+    if (bitIdx >= codewords.length * 8) { bitIdx++; return 0; }   // 나머지 비트는 0
+    const b = (codewords[bitIdx >> 3] >> (7 - (bitIdx & 7))) & 1;
+    bitIdx++;
+    return b;
+  };
+  let up = true;
+  for (let col = size - 1; col > 0; col -= 2) {
+    if (col === 6) col--;                        // 타이밍 열 건너뛰기
+    for (let i = 0; i < size; i++) {
+      const row = up ? size - 1 - i : i;
+      for (let k = 0; k < 2; k++) {
+        const c = col - k;
+        if (fixed[row][c]) continue;
+        if (bitIdx < totalBits) m[row][c] = nextBit();
+        else m[row][c] = 0;
+      }
+    }
+    up = !up;
+  }
+
+  return { m, size, fixed, version };
+}
+
+/* ---- 마스킹 + 포맷 정보 ---- */
+const QR_MASKS = [
+  (r, c) => (r + c) % 2 === 0,
+  (r) => r % 2 === 0,
+  (r, c) => c % 3 === 0,
+  (r, c) => (r + c) % 3 === 0,
+  (r, c) => (Math.floor(r / 2) + Math.floor(c / 3)) % 2 === 0,
+  (r, c) => ((r * c) % 2) + ((r * c) % 3) === 0,
+  (r, c) => (((r * c) % 2) + ((r * c) % 3)) % 2 === 0,
+  (r, c) => (((r + c) % 2) + ((r * c) % 3)) % 2 === 0
+];
+
+function qrPenalty(g, size) {
+  let p = 0;
+  // 규칙 1 — 같은 색 연속 5개 이상
+  for (let i = 0; i < size; i++) {
+    for (const dir of [0, 1]) {
+      let run = 1;
+      for (let j = 1; j < size; j++) {
+        const cur = dir ? g[j][i] : g[i][j];
+        const prev = dir ? g[j - 1][i] : g[i][j - 1];
+        if (cur === prev) { run++; if (run === 5) p += 3; else if (run > 5) p += 1; }
+        else run = 1;
+      }
+    }
+  }
+  // 규칙 2 — 2×2 같은 색
+  for (let r = 0; r < size - 1; r++) for (let c = 0; c < size - 1; c++) {
+    const v = g[r][c];
+    if (v === g[r][c + 1] && v === g[r + 1][c] && v === g[r + 1][c + 1]) p += 3;
+  }
+  // 규칙 3 — 1:1:3:1:1 패턴
+  const pat1 = [1,0,1,1,1,0,1,0,0,0,0], pat2 = [0,0,0,0,1,0,1,1,1,0,1];
+  for (let r = 0; r < size; r++) for (let c = 0; c <= size - 11; c++) {
+    let ok1 = true, ok2 = true;
+    for (let k = 0; k < 11; k++) { if (g[r][c + k] !== pat1[k]) ok1 = false; if (g[r][c + k] !== pat2[k]) ok2 = false; }
+    if (ok1 || ok2) p += 40;
+  }
+  for (let c = 0; c < size; c++) for (let r = 0; r <= size - 11; r++) {
+    let ok1 = true, ok2 = true;
+    for (let k = 0; k < 11; k++) { if (g[r + k][c] !== pat1[k]) ok1 = false; if (g[r + k][c] !== pat2[k]) ok2 = false; }
+    if (ok1 || ok2) p += 40;
+  }
+  // 규칙 4 — 어두운 모듈 비율
+  let dark = 0;
+  for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) dark += g[r][c];
+  const pct = dark * 100 / (size * size);
+  p += Math.floor(Math.abs(pct - 50) / 5) * 10;
+  return p;
+}
+
+function qrFormatBits(mask) {
+  const ecBits = 0b00;                            // 레벨 M
+  let d = ((ecBits << 3) | mask) << 10;
+  const data = ((ecBits << 3) | mask) << 10;
+  for (let i = 0; i < 5; i++) { if ((d >> (14 - i)) & 1) d ^= 0x537 << (4 - i); }
+  return ((data | d) ^ 0x5412);
+}
+
+function qrGenerate(text) {
+  const { m, size, fixed, version } = qrBuildMatrix(text);
+  let best = null;
+  for (let mask = 0; mask < 8; mask++) {
+    const g = m.map((row, r) => row.map((v, c) => fixed[r][c] ? v : (QR_MASKS[mask](r, c) ? v ^ 1 : v)));
+    // 포맷 정보 기록
+    const fmt = qrFormatBits(mask);
+    for (let i = 0; i < 15; i++) {
+      const bit = (fmt >> i) & 1;
+      // 사본 ① — 좌상단 파인더 둘레
+      if (i < 6) g[8][i] = bit;
+      else if (i < 8) g[8][i + 1] = bit;
+      else if (i === 8) g[7][8] = bit;
+      else g[14 - i][8] = bit;
+      // 사본 ② — 비트 0~6 은 좌하단 세로, 7~14 는 우상단 가로.
+      // i<8 로 두면 비트 7 이 다크 모듈 자리(size-8,8)를 덮고 (8,size-8)은 비게 된다.
+      if (i < 7) g[size - 1 - i][8] = bit;
+      else g[8][size - 15 + i] = bit;
+    }
+    g[size - 8][8] = 1;                           // 다크 모듈
+    const p = qrPenalty(g, size);
+    if (!best || p < best.p) best = { g, p, mask };
+  }
+  return { modules: best.g, size, version, mask: best.mask };
+}
+
+// QR 을 캔버스에 그린다 (여백 4모듈)
+function qrToCanvas(text, pxPerModule) {
+  const { modules, size } = qrGenerate(text);
+  const quiet = 4;
+  const scale = pxPerModule || 6;
+  const total = (size + quiet * 2) * scale;
+  const cv = document.createElement('canvas');
+  cv.width = total; cv.height = total;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, total, total);
+  ctx.fillStyle = '#000000';
+  for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+    if (modules[r][c]) ctx.fillRect((c + quiet) * scale, (r + quiet) * scale, scale, scale);
+  }
+  return cv;
+}
+
+/* ═══════════ API 키 등록 편의 (v2.7) ═══════════ */
+
+/* 복붙 실패의 최다 원인은 눈에 안 보이는 공백·줄바꿈이다.
+ * API 키에는 공백이 들어갈 수 없으므로 전부 걷어낸다 (중간 줄바꿈 포함).
+ * 메일·메신저에서 복사할 때 딸려오는 따옴표·Bearer·꼬리 문장부호도 정리한다. */
+function cleanApiKey(raw) {
+  let s = String(raw == null ? '' : raw);
+  s = s.replace(/[\s ​-‍﻿]+/g, '');   // 모든 공백·제로폭 문자
+  s = s.replace(/^(Bearer|bearer|Authorization:|authorization:)/, '');
+  s = s.replace(/^["'`“‘]+|["'`”’]+$/g, '');
+  s = s.replace(/[,;]+$/, '');
+  return s;
+}
+
+function setKeyStatus(msg, kind) {
+  const el = $('#keyStatus');
+  if (!el) return;
+  if (!msg) { el.hidden = true; el.textContent = ''; el.className = 'key-status'; return; }
+  el.hidden = false;
+  el.className = 'key-status' + (kind ? ' ' + kind : '');
+  el.innerHTML = msg;
+}
+
+/* 연결 테스트 — 최소 비용으로 키가 살아 있는지만 본다 (max_tokens 1).
+ * 한도 초과·잔액 부족은 "키는 유효"로 구분해준다. 오타와 다른 문제이기 때문이다. */
+async function testApiKey(provider, key, model) {
+  const cfg = LLM_CONFIG[provider];
+  if (!cfg) return { ok: false, msg: '알 수 없는 provider' };
+  if (!key) return { ok: false, msg: '키가 비어 있습니다' };
+
+  const body = provider === 'anthropic'
+    ? { model: model, max_tokens: 1, messages: [{ role: 'user', content: '.' }] }
+    : { model: model, max_tokens: 1, messages: [{ role: 'user', content: '.' }] };
+  const headers = provider === 'anthropic'
+    ? {
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+        'content-type': 'application/json'
+      }
+    : { 'Authorization': 'Bearer ' + key, 'content-type': 'application/json' };
+
+  let res;
+  try {
+    res = await fetch(cfg.endpoint, { method: 'POST', headers: headers, body: JSON.stringify(body) });
+  } catch (e) {
+    return { ok: false, msg: '네트워크에 닿지 못했습니다 — 인터넷 연결을 확인해주세요' };
+  }
+  if (res.ok) return { ok: true, msg: '연결 성공' };
+
+  let raw = '';
+  try { const d = await res.json(); raw = (d && d.error && d.error.message) || ''; } catch (e) {}
+
+  if (res.status === 401) return { ok: false, msg: '키가 올바르지 않습니다 — 오타이거나 만료된 키입니다' };
+  if (res.status === 403) return { ok: false, msg: '이 키에 권한이 없습니다' };
+  if (res.status === 429) return { ok: true, warn: true, msg: '키는 유효합니다. 다만 지금 <b>사용 한도를 넘었습니다</b>' };
+  if (/credit balance|insufficient/i.test(raw)) return { ok: true, warn: true, msg: '키는 유효합니다. 다만 <b>잔액이 부족합니다</b>' };
+  if (res.status === 404 || /model/i.test(raw)) return { ok: false, msg: '모델 이름을 확인해주세요 — ' + escapeHtml(raw.slice(0, 80)) };
+  return { ok: false, msg: `오류 ${res.status}` + (raw ? ' — ' + escapeHtml(raw.slice(0, 80)) : '') };
+}
+
+async function runKeyTest() {
+  const provider = $('#inputProvider').value;
+  const key = cleanApiKey($('#inputApiKey').value);
+  const model = $('#inputModel').value;
+  $('#inputApiKey').value = key;
+  if (!key) { setKeyStatus('키를 먼저 입력해주세요', 'fail'); return { ok: false }; }
+
+  const btn = $('#btnTestKey');
+  if (btn) btn.disabled = true;
+  setKeyStatus('연결 확인 중…', 'testing');
+  const r = await testApiKey(provider, key, model);
+  if (btn) btn.disabled = false;
+  setKeyStatus((r.ok ? '✓ ' : '✕ ') + r.msg, r.ok ? (r.warn ? 'testing' : 'ok') : 'fail');
+  return r;
+}
+
+/* ---- QR 전송 ---- */
+const KEY_QR_PREFIX = 'VC1';
+let qrHideTimer = null;
+let qrScanStream = null;
+let qrScanLoop = null;
+
+function buildKeyPayload(provider, key) {
+  return `${KEY_QR_PREFIX}|${provider}|${key}`;
+}
+function parseKeyPayload(text) {
+  const t = String(text || '').trim();
+  if (t.indexOf(KEY_QR_PREFIX + '|') === 0) {
+    const parts = t.split('|');
+    if (parts.length >= 3 && parts[1] && parts[2]) {
+      return { provider: parts[1], key: cleanApiKey(parts.slice(2).join('|')) };
+    }
+  }
+  if (/^sk-ant-/.test(t)) return { provider: 'anthropic', key: cleanApiKey(t) };
+  if (/^gsk_/.test(t)) return { provider: 'groq', key: cleanApiKey(t) };
+  return null;
+}
+
+function closeQrModal() {
+  stopQrScan();
+  if (qrHideTimer) { clearInterval(qrHideTimer); qrHideTimer = null; }
+  const wrap = $('#qrCanvasWrap');
+  if (wrap) wrap.innerHTML = '';        // 키가 화면에 남지 않게 지운다
+  closeModal('modalQr');
+}
+
+function showKeyQr() {
+  const provider = $('#inputProvider').value;
+  const key = cleanApiKey($('#inputApiKey').value);
+  $('#inputApiKey').value = key;
+  if (!key) { setKeyStatus('QR로 보낼 키가 없습니다', 'fail'); return; }
+
+  const payload = buildKeyPayload(provider, key);
+  let cv;
+  try {
+    cv = qrToCanvas(payload, 6);
+  } catch (e) {
+    setKeyStatus('QR 생성 실패 — ' + escapeHtml(e.message), 'fail');
+    return;
+  }
+  $('#qrTitle').textContent = '키를 QR로 전송';
+  $('#qrShowPane').hidden = false;
+  $('#qrScanPane').hidden = true;
+  const wrap = $('#qrCanvasWrap');
+  wrap.innerHTML = '';
+  wrap.appendChild(cv);
+  const cfg = LLM_CONFIG[provider];
+  $('#qrMeta').innerHTML = `${cfg ? escapeHtml(cfg.name) : provider} · 키 ${key.length}자`;
+  openModal('modalQr');
+
+  // 어깨너머로 오래 노출되지 않게 자동으로 닫는다
+  let left = 60;
+  const tick = () => {
+    const t = $('#qrTimer');
+    if (t) t.textContent = `${left}초 뒤 자동으로 닫힙니다`;
+    if (left-- <= 0) { closeQrModal(); toast('보안을 위해 QR을 닫았습니다'); }
+  };
+  if (qrHideTimer) clearInterval(qrHideTimer);
+  tick();
+  qrHideTimer = setInterval(tick, 1000);
+}
+
+function stopQrScan() {
+  if (qrScanLoop) { cancelAnimationFrame(qrScanLoop); qrScanLoop = null; }
+  if (qrScanStream) { qrScanStream.getTracks().forEach(t => t.stop()); qrScanStream = null; }
+  const v = $('#qrVideo');
+  if (v) v.srcObject = null;
+}
+
+async function startQrScan() {
+  $('#qrTitle').textContent = 'QR 스캔';
+  $('#qrShowPane').hidden = true;
+  $('#qrScanPane').hidden = false;
+  const hint = $('#qrScanHint');
+  openModal('modalQr');
+
+  // iOS Safari 등 BarcodeDetector 미지원 환경 안내
+  let detector = null;
+  if ('BarcodeDetector' in window) {
+    try {
+      const formats = await window.BarcodeDetector.getSupportedFormats();
+      if (formats.indexOf('qr_code') >= 0) detector = new window.BarcodeDetector({ formats: ['qr_code'] });
+    } catch (e) { detector = null; }
+  }
+  if (!detector) {
+    hint.innerHTML = '이 브라우저는 QR 자동 인식을 지원하지 않습니다 (아이폰 사파리 등).<br>'
+      + '<b>기본 카메라 앱</b>으로 QR을 비추면 텍스트가 뜹니다. 그걸 복사한 뒤 설정에서 <b>📋 붙여넣기</b>를 눌러주세요.';
+    return;
+  }
+
+  try {
+    qrScanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } } });
+  } catch (e) {
+    hint.innerHTML = '카메라를 열지 못했습니다 — 브라우저의 카메라 권한을 확인해주세요.';
+    return;
+  }
+  const video = $('#qrVideo');
+  video.srcObject = qrScanStream;
+  try { await video.play(); } catch (e) {}
+  hint.textContent = '카메라를 QR에 비춰주세요.';
+
+  const scan = async () => {
+    if (!qrScanStream) return;
+    try {
+      const found = await detector.detect(video);
+      if (found && found.length) {
+        const parsed = parseKeyPayload(found[0].rawValue);
+        if (parsed) {
+          stopQrScan();
+          applyScannedKey(parsed);
+          return;
+        }
+        hint.textContent = 'QR을 읽었지만 벨챗 키 형식이 아닙니다.';
+      }
+    } catch (e) { /* 프레임 하나 실패는 무시하고 계속 */ }
+    qrScanLoop = requestAnimationFrame(scan);
+  };
+  qrScanLoop = requestAnimationFrame(scan);
+}
+
+function applyScannedKey(parsed) {
+  const sel = $('#inputProvider');
+  if (parsed.provider && LLM_CONFIG[parsed.provider] && sel) {
+    sel.value = parsed.provider;
+    renderSettingsModalForProvider(parsed.provider);
+  }
+  $('#inputApiKey').value = parsed.key;
+  closeQrModal();
+  toast('QR에서 키를 읽었습니다 — 연결을 확인합니다');
+  runKeyTest();
+}
+
 /* ═══════════ 테마 · 꾸미기 (v2.4) ═══════════
  * 테마는 CSS 변수 묶음일 뿐이다. 기존 변수 이름(--bg, --text, --cyan …)을
  * 그대로 덮어쓰기 때문에, 예전에 작성된 CSS 규칙까지 한 번에 다시 칠해진다.
@@ -5735,6 +6370,69 @@ function bindEvents() {
     setTimeout(() => { if (chatStickToBottom) scrollChatToBottom(false); }, 250);
   });
 
+  /* ---- API 키 등록 편의 (v2.7) ---- */
+  const keyInput = $('#inputApiKey');
+  if (keyInput) {
+    // 입력·붙여넣기 즉시 공백·줄바꿈 제거 (커서 위치 보존)
+    const scrub = () => {
+      const before = keyInput.value;
+      const after = cleanApiKey(before);
+      if (before !== after) {
+        const pos = keyInput.selectionStart;
+        keyInput.value = after;
+        const drop = before.length - after.length;
+        try { keyInput.setSelectionRange(Math.max(0, pos - drop), Math.max(0, pos - drop)); } catch (e) {}
+      }
+      setKeyStatus('');
+    };
+    keyInput.addEventListener('input', scrub);
+    keyInput.addEventListener('paste', () => setTimeout(scrub, 0));
+  }
+
+  const btnPaste = $('#btnPasteKey');
+  if (btnPaste) btnPaste.addEventListener('click', async () => {
+    try {
+      const txt = await navigator.clipboard.readText();
+      const parsed = parseKeyPayload(txt);
+      const key = parsed ? parsed.key : cleanApiKey(txt);
+      if (!key) { setKeyStatus('클립보드가 비어 있습니다', 'fail'); return; }
+      if (parsed && parsed.provider && LLM_CONFIG[parsed.provider]) {
+        $('#inputProvider').value = parsed.provider;
+        renderSettingsModalForProvider(parsed.provider);
+      }
+      $('#inputApiKey').value = key;
+      setKeyStatus(`붙여넣었습니다 (${key.length}자). 연결 테스트로 확인해보세요.`);
+    } catch (e) {
+      setKeyStatus('클립보드를 읽지 못했습니다 — 입력란을 길게 눌러 직접 붙여넣어 주세요', 'fail');
+    }
+  });
+
+  const btnReveal = $('#btnRevealKey');
+  if (btnReveal) btnReveal.addEventListener('click', () => {
+    const inp = $('#inputApiKey');
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    btnReveal.classList.toggle('on', show);
+    btnReveal.textContent = show ? '🙈' : '👁';
+  });
+
+  const btnTest = $('#btnTestKey');
+  if (btnTest) btnTest.addEventListener('click', () => runKeyTest());
+
+  const btnShowQr = $('#btnShowKeyQr');
+  if (btnShowQr) btnShowQr.addEventListener('click', showKeyQr);
+
+  const btnScanQr = $('#btnScanKeyQr');
+  if (btnScanQr) btnScanQr.addEventListener('click', startQrScan);
+
+  // QR 모달은 닫힐 때 카메라를 끄고 화면에서 키를 지운다
+  const qrModal = $('#modalQr');
+  if (qrModal) {
+    qrModal.addEventListener('click', (e) => {
+      if (e.target === qrModal || e.target.closest('[data-close]')) closeQrModal();
+    });
+  }
+
   /* ---- 페르소나별 목소리 (v2.6) ---- */
   const btnResetVoices = $('#btnResetPersonaVoices');
   if (btnResetVoices) btnResetVoices.addEventListener('click', resetPersonaVoices);
@@ -5834,9 +6532,10 @@ function bindEvents() {
   $('#inputProvider').addEventListener('change', (e) => {
     renderSettingsModalForProvider(e.target.value);
   });
-  $('#btnSaveSettings').addEventListener('click', () => {
+  $('#btnSaveSettings').addEventListener('click', async () => {
     const newProvider = $('#inputProvider').value;
-    const newKey = $('#inputApiKey').value.trim();
+    const newKey = cleanApiKey($('#inputApiKey').value);   // v2.7 — 공백·줄바꿈 제거
+    $('#inputApiKey').value = newKey;
     const newModel = $('#inputModel').value;
     const newVoiceURI = $('#inputVoice').value;
     const newVoiceRate = parseFloat($('#inputVoiceRate').value);
@@ -5858,8 +6557,30 @@ function bindEvents() {
     refreshApiStatus();
     refreshModelTag();
     renderAttachStrip();   // v2.2 — provider 가 바뀌면 사진 지원 여부 안내도 바뀐다
-    closeModal('modalSettings');
-    toast('설정 저장됨');
+
+    /* v2.7 — 저장하면서 바로 연결을 확인한다.
+     * 성공하면 닫고, 실패하면 모달을 열어둬 그 자리에서 고칠 수 있게 한다. */
+    if (!newKey) {
+      closeModal('modalSettings');
+      toast('설정 저장됨');
+      return;
+    }
+    const btn = $('#btnSaveSettings');
+    const label = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '확인 중…';
+    const r = await runKeyTest();
+    btn.disabled = false;
+    btn.textContent = label;
+    if (r.ok) {
+      setTimeout(() => {
+        closeModal('modalSettings');
+        setKeyStatus('');
+      }, r.warn ? 1400 : 550);
+      toast(r.warn ? '저장됨 — ' + r.msg.replace(/<[^>]+>/g, '') : '저장됨 · 연결 확인 완료');
+    } else {
+      toast('저장은 됐지만 연결에 실패했습니다 — 키를 확인해주세요', true);
+    }
   });
 
   // 음성 속도 슬라이더 — 실시간 라벨 갱신
