@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Vela Compass v2.3.0 — 아이디어 단톡방</title>
+<title>Vela Compass v2.3.1 — 아이디어 단톡방</title>
 <meta name="description" content="Vela Compass — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=dba72a6fc436" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=aca77bf8d5ad" />
 <meta name="theme-color" content="#0a0a0b" />
 <meta name="color-scheme" content="dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -2777,7 +2777,7 @@ const LLM_CONFIG = {
  * ═════════════════════════════════════════════════════════════ */
 
 const APP = {
-  version: '2.3.0',
+  version: '2.3.1',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -2843,11 +2843,69 @@ const MESSAGE_WEIGHTS = {
  * "이 답변이 한국어인가"를 비율로 재서, 아니면 다시 쓰게 시킨다.
  * ---------------------------------------------------------------- */
 const LANG_GUARD = {
+  // ① 문장 수준 — 답변 전체가 영어로 기울었는지 (v2.3)
   minLength: 20,        // 이보다 짧은 답변은 검사하지 않는다 ("ㅇㅇ 콜", "API 확인" 같은 것)
   minLetters: 10,       // 판정에 쓸 글자(한글+영문)가 이보다 적으면 통과
   minHangulRatio: 0.5,  // 한글 / (한글+영문) 이 값 미만이면 영어 혼입으로 본다
-  retries: 1            // 재생성 횟수
+  // ② 단어 수준 — 문장은 한국어인데 단어 하나가 외국어인 경우 (v2.3.1)
+  //    "단어 kombin해서" 처럼 한 개씩 섞이면 비율 검사(문장 단위)로는 절대 안 걸린다.
+  maxForeignWords: 0,   // 의심 단어가 이 개수를 넘으면 재생성 (0 = 하나라도 나오면)
+  minWordLength: 2,     // 이보다 짧은 라틴 단어는 검사하지 않는다 (A안, B급, e-메일의 e)
+  retries: 1            // 재생성 횟수 (문장·단어 공용)
 };
+
+/* ---- ⑩-1 라틴 표기 허용 사전 (v2.3.1) ---------------------------
+ * 단어 수준 검사에서 "이건 외국어가 아니다"로 통과시킬 단어들.
+ * 검사 순서상 아래 셋 중 하나면 이미 통과하므로 여기 넣을 필요가 없다:
+ *   · 전부 대문자 약어 (API, MES, KPI, ERP …)
+ *   · 한 글자 (A안, B급)
+ *   · URL·코드·마크다운 링크·이메일 주소 안 (본문에서 통째로 제외됨)
+ * 그래서 여기 담는 건 "대소문자 섞인 고유명사"와 "소문자 관용어"뿐이다.
+ *
+ * ★ 오탐이 나오면 이 목록에 한 줄 추가하면 끝난다. (소문자로 적는다 — 비교는 소문자 기준)
+ * ---------------------------------------------------------------- */
+const LATIN_WORD_ALLOW = new Set([
+  // 관용어 — 한국어 대화에 그대로 섞여 쓰이는 말
+  'ok', 'okay', 'wifi', 'email', 'mail', 'ppt', 'excel', 'word', 'tv', 'dm',
+  'vs', 'diy', 'faq', 'as', 'qna', 'no', 'ver', 'etc', 'pro', 'plus', 'lite', 'max', 'mini',
+
+  // 플랫폼·서비스 브랜드
+  'naver', 'kakao', 'kakaotalk', 'coupang', 'baemin', 'toss', 'wadiz', 'tumblbug',
+  'smartstore', 'musinsa', 'ohouse', 'gmarket', 'ssg', 'lotte', 'shinhan',
+  'google', 'youtube', 'instagram', 'facebook', 'meta', 'tiktok', 'threads', 'twitter',
+  'pinterest', 'reddit', 'linkedin', 'discord', 'slack', 'notion', 'zoom', 'trello', 'jira',
+  'amazon', 'apple', 'samsung', 'microsoft', 'netflix', 'spotify', 'shopify', 'wordpress',
+  'etsy', 'alibaba', 'aliexpress', 'taobao', 'temu', 'shein', 'ebay',
+
+  // 제작·디자인 도구
+  'figma', 'canva', 'adobe', 'photoshop', 'illustrator', 'indesign', 'premiere', 'aftereffects',
+  'blender', 'unity', 'unreal', 'autocad', 'solidworks', 'fusion', 'rhino', 'sketchup',
+  'cura', 'slicer', 'zbrush', 'procreate', 'lightroom', 'capcut',
+
+  // 개발·데이터
+  'github', 'gitlab', 'git', 'python', 'java', 'javascript', 'node', 'react', 'vue',
+  'docker', 'kubernetes', 'aws', 'azure', 'firebase', 'supabase', 'vercel', 'netlify',
+  'json', 'csv', 'html', 'css', 'sql', 'api', 'sdk', 'url', 'http', 'https',
+
+  // AI
+  'chatgpt', 'gpt', 'claude', 'anthropic', 'openai', 'gemini', 'llama', 'midjourney',
+  'stablediffusion', 'copilot', 'llm', 'ai',
+
+  // 파일·포맷
+  'pdf', 'png', 'jpg', 'jpeg', 'svg', 'gif', 'webp', 'mp4', 'mp3', 'zip', 'psd', 'stl',
+  'obj', 'dxf', 'dwg', 'step', 'iges', 'gcode', 'eps', 'tiff',
+
+  // 소재·기술 용어 (소문자로도 자주 쓰인다)
+  'pla', 'abs', 'petg', 'tpu', 'resin', 'sla', 'fdm', 'cnc', 'mdf', 'pvc', 'pet', 'pp', 'ps',
+  'led', 'lcd', 'oled', 'usb', 'rfid', 'nfc', 'qr', 'iot', 'rgb', 'cmyk', 'pantone',
+
+  // 단위
+  'cm', 'mm', 'km', 'kg', 'ml', 'hz', 'fps', 'dpi', 'ppi', 'mah', 'inch', 'oz', 'lb',
+
+  // 사업 용어 (소문자 표기)
+  'saas', 'b2b', 'b2c', 'd2c', 'o2o', 'mvp', 'poc', 'roi', 'roas', 'kpi', 'crm', 'erp',
+  'mes', 'wms', 'scm', 'sku', 'seo', 'sem', 'cpc', 'ctr', 'cta', 'ux', 'ui', 'cs', 'qc', 'qa'
+]);
 
 /* ---- ⑨ 사진 첨부 (v2.2) -----------------------------------------
  * 원본을 그대로 보내면 토큰도 저장 용량도 폭발한다. 전송 전에 무조건 줄인다.
@@ -3178,6 +3236,10 @@ const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효 · 가장 �
   → "그 방식은 위험이 너무 큽니다."
 - 소제목·목록 머리말도 한국어로. "Pros / Cons", "Summary", "Next steps" 금지 → "장점 / 단점", "정리", "다음 할 일".
 - 한 문장이라도 영어로 쓰면 그 답변은 다시 쓰게 된다. 처음부터 한국어로 생각해서 한국어로 써라.
+- **단어 하나도 마찬가지다.** 문장이 한국어여도 그 안에 라틴 문자로 쓴 외국어 단어가 하나라도 섞이면 위반이다.
+  "단어 kombin해서", "그 mesele는", "biraz 애매한데" 같은 식으로 한국어 문장에 외국어 단어를 끼워 넣지 마라.
+  영어가 아닌 언어(터키어·인도네시아어·프랑스어 등)를 라틴 문자로 적는 것도 똑같이 금지다.
+  → 각각 "단어를 조합해서", "그 문제는", "좀 애매한데" 로 쓴다.
 
 [대화 방식 — 여긴 회의실이 아니라 단톡방이다. 가장 중요]
 - {chair}와 동료 몇 명이 있는 카카오톡 단톡방이다. 회의체·발표·보고서·목록 나열 절대 금지.
@@ -4837,20 +4899,37 @@ window.__compassFilterLog = [];
 // 어느 모델이 영어를 섞는지 추적하는 로그 (콘솔에서 window.__compassLangLog)
 window.__compassLangLog = [];
 
-// 한글 비율 — 분모는 "글자"만 센다. 숫자·기호·이모지·공백은 언어 판정과 무관하고,
-// URL 과 마크다운 링크는 영문일 수밖에 없어서 빼고 잰다 (오탐 방지).
+/* 언어 판정에서 빼야 할 부분을 걷어낸다 — 영문일 수밖에 없는 구간들.
+ * 문장 수준·단어 수준 검사가 이 함수를 함께 쓴다 (제외 규칙이 어긋나면 안 된다). */
+function stripNonProse(text) {
+  return String(text || '')
+    .replace(/```[\s\S]*?```/g, ' ')            // 코드 블록
+    .replace(/!?\[[^\]]*\]\([^)]*\)/g, ' ')     // 마크다운 이미지·링크 (텍스트+URL 통째로)
+    .replace(/https?:\/\/\S+/g, ' ')            // 맨 URL
+    .replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, ' ')   // 이메일 주소
+    .replace(/`[^`]*`/g, ' ');                  // 인라인 코드
+}
+
+// 라틴 단어 하나가 "허용된 것"인가 — 대문자 약어 · 사전 등록어 · 한 글자
+// 문장 수준과 단어 수준이 같은 기준을 써야 판정이 어긋나지 않는다.
+function isAllowedLatinWord(w) {
+  return w.length < LANG_GUARD.minWordLength      // A안, B급
+    || w === w.toUpperCase()                       // API, MES, KPI
+    || LATIN_WORD_ALLOW.has(w.toLowerCase());      // Figma, ok, wifi …
+}
+
+// 한글 비율 — 분모는 "글자"만 센다. 숫자·기호·이모지·공백은 언어 판정과 무관하다.
+// 허용된 라틴 단어도 분모에서 뺀다 — "Figma에서 Adobe Illustrator로 넘기면" 같은
+// 정상 한국어가 브랜드명 길이 때문에 영어 문장으로 오판되면 안 된다.
 function hangulRatio(text) {
-  const s = String(text || '')
-    .replace(/!?\[[^\]]*\]\([^)]*\)/g, ' ')   // 마크다운 이미지·링크
-    .replace(/https?:\/\/\S+/g, ' ')          // 맨 URL
-    .replace(/`[^`]*`/g, ' ');                // 인라인 코드
+  const s = stripNonProse(text).replace(/[A-Za-z]+/g, (w) => isAllowedLatinWord(w) ? ' ' : w);
   const hangul = (s.match(/[가-힣ㄱ-ㅎㅏ-ㅣ]/g) || []).length;
   const latin = (s.match(/[A-Za-z]/g) || []).length;
   const letters = hangul + latin;
   return { ratio: letters === 0 ? 1 : hangul / letters, hangul, latin, letters };
 }
 
-// 영어가 과하게 섞였나 — 짧은 답변("ㅇㅇ 콜", "API 확인해볼게요")은 검사하지 않는다
+// ① 문장 수준 — 영어가 과하게 섞였나. 짧은 답변("ㅇㅇ 콜")은 검사하지 않는다.
 function isTooMuchEnglish(text) {
   const t = String(text || '').trim();
   if (t.length < LANG_GUARD.minLength) return false;
@@ -4859,24 +4938,99 @@ function isTooMuchEnglish(text) {
   return r.ratio < LANG_GUARD.minHangulRatio;
 }
 
-// 재생성 지시문 — 같은 내용을 한국어로 다시 쓰게 한다
-const KOREAN_REWRITE_DIRECTIVE = `[다시 써라 — 규칙 위반]
-방금 네 답변에 영어 문장이 섞였다. 이 방의 가장 중요한 규칙을 어겼다.
+/* ② 단어 수준 (v2.3.1) — 문장은 한국어인데 라틴 표기 외국어 단어가 한 개씩 섞이는 경우.
+ * "단어 kombin해서" 같은 건 비율이 90%를 넘으므로 문장 수준 검사로는 절대 안 걸린다.
+ *
+ * 통과 조건 (셋 중 하나면 정상으로 본다):
+ *   · 전부 대문자 약어 — API, MES, KPI
+ *   · LATIN_WORD_ALLOW 사전 등록 — 브랜드·기술 용어·ok/wifi 같은 관용어
+ *   · minWordLength 미만 — A안, B급
+ * URL·코드·링크·이메일 안은 stripNonProse 가 이미 걷어냈다.
+ *
+ * 하이픈·따옴표는 구분자로 본다 ("e-mail" → "e" + "mail", "Here's" → "Here" + "s").
+ */
+function findForeignWords(text) {
+  const s = stripNonProse(text);
+  const found = [];
+  const seen = new Set();
+  const re = /[A-Za-z]+/g;
+  let m;
+  while ((m = re.exec(s)) !== null) {
+    const w = m[0];
+    if (isAllowedLatinWord(w)) continue;   // 대문자 약어 · 허용 사전 · 한 글자
+    const key = w.toLowerCase();
+    if (seen.has(key)) continue;           // 같은 단어는 한 번만
+    seen.add(key);
+    found.push(w);
+  }
+  return found;
+}
 
-같은 내용을 **처음부터 다시**, 100% 한국어 문장으로 써라.
+/* 문장 수준 + 단어 수준을 한 번에 판정한다.
+ * 재생성 파이프라인은 하나뿐이고, 이 결과가 그 방아쇠다. */
+function checkKorean(text) {
+  const ratioBad = isTooMuchEnglish(text);
+  const words = findForeignWords(text);
+  const wordsBad = words.length > LANG_GUARD.maxForeignWords;
+  const reason = (ratioBad && wordsBad) ? 'ratio+words' : ratioBad ? 'ratio' : wordsBad ? 'words' : '';
+  return {
+    needsRewrite: ratioBad || wordsBad,
+    reason: reason,
+    words: words,
+    ratio: hangulRatio(text).ratio
+  };
+}
+
+// 재생성 결과가 더 나은가 — 의심 단어 수를 먼저 보고, 같으면 한글 비율로 판단
+function isBetterKorean(nextText, prevText) {
+  const a = checkKorean(nextText);
+  const b = checkKorean(prevText);
+  if (a.words.length !== b.words.length) return a.words.length < b.words.length;
+  return a.ratio > b.ratio;
+}
+
+// 로그 stage 이름 — 단어 때문에 걸린 건지 문장 때문인지 구분되게
+function langStage(base, reason) {
+  return reason === 'words' ? 'word_' + base : base;
+}
+
+/* 재생성 지시문 — 같은 내용을 한국어로 다시 쓰게 한다.
+ * 단어 때문에 걸린 경우에는 어떤 단어가 문제인지 그대로 짚어준다
+ * ("영어 쓰지 마라"보다 "이 단어를 바꿔라"가 훨씬 잘 먹힌다). */
+function buildKoreanRewriteDirective(check) {
+  const wordsOnly = check && check.reason === 'words';
+  let d = `[다시 써라 — 규칙 위반]\n`
+    + (wordsOnly
+        ? `방금 네 답변에 한국어가 아닌 외국어 단어가 섞였다. 이 방의 가장 중요한 규칙을 어겼다.`
+        : `방금 네 답변에 영어 문장이 섞였다. 이 방의 가장 중요한 규칙을 어겼다.`)
+    + `\n\n같은 내용을 **처음부터 다시**, 100% 한국어 문장으로 써라.
 - 영어는 기술 약어와 고유명사(API, MES, KPI, 브랜드명 등)만 남기고, 나머지 영어 단어·구절·문장은 전부 한국어로 바꾼다.
 - 번역투로 쓰지 마라. 처음부터 한국어로 생각한 것처럼 자연스럽게.
 - 네 말투와 길이는 그대로 유지한다.
 - 사과하거나 설명하지 마라. 고쳐 쓴 답변 본문만 출력한다.`;
 
-function logKoreanRatio(personaId, text, stage) {
+  if (check && check.words && check.words.length) {
+    d += `\n\n[특히 이 단어들이 문제다 — 반드시 고쳐라]\n`
+      + check.words.slice(0, 12).map(w => `- "${w}"`).join('\n')
+      + `\n이 단어들은 한국어에 없는 외국어 표기이거나, 한국어로 충분히 쓸 수 있는 말이다.`
+      + `\n브랜드·제품·기관의 실제 이름이라면 그대로 둬도 된다. 그 외에는 전부 한국어로 옮겨라.`;
+  }
+  return d;
+}
+
+// extra: checkKorean() 결과 — 의심 단어와 판정 사유를 로그에 함께 남긴다
+function logKoreanRatio(personaId, text, stage, extra) {
   const r = hangulRatio(text);
+  const words = (extra && extra.words) || [];
   const entry = {
     at: new Date().toISOString(),
     provider: state.provider || '?',
     model: state.model || '?',
     persona: personaId || '?',
-    stage: stage,                                  // 'detected' | 'recovered' | 'gaveup'
+    // 'detected' | 'recovered' | 'gaveup' (+ 단어 때문이면 'word_' 접두)
+    stage: stage,
+    reason: (extra && extra.reason) || '',        // 'ratio' | 'words' | 'ratio+words'
+    foreignWords: words,                          // 의심 단어 목록
     hangulRatio: +r.ratio.toFixed(3),
     hangul: r.hangul,
     latin: r.latin,
@@ -4885,12 +5039,15 @@ function logKoreanRatio(personaId, text, stage) {
   window.__compassLangLog.push(entry);
   if (window.__compassLangLog.length > 50) window.__compassLangLog.shift();
 
-  const label = stage === 'recovered' ? '재생성으로 해결'
-    : stage === 'gaveup' ? '재생성해도 실패 — 그대로 표시'
-    : '영어 혼입 감지 — 재생성 시도';
+  const base = stage.replace(/^word_/, '');
+  const label = base === 'recovered' ? '재생성으로 해결'
+    : base === 'gaveup' ? '재생성해도 실패 — 그대로 표시'
+    : (stage.startsWith('word_') ? '외국어 단어 감지 — 재생성 시도' : '영어 혼입 감지 — 재생성 시도');
   console.warn(
     `[compass:한국어] ${label} · 한글비율 ${(r.ratio * 100).toFixed(0)}% ` +
-    `(한글 ${r.hangul} / 영문 ${r.latin}) — ${entry.provider}/${entry.model} · ${entry.persona}`,
+    `(한글 ${r.hangul} / 영문 ${r.latin})` +
+    (words.length ? ` · 의심 단어: ${words.join(', ')}` : '') +
+    ` — ${entry.provider}/${entry.model} · ${entry.persona}`,
     entry
   );
 }
@@ -5349,15 +5506,20 @@ async function runPersonaTurn(persona, instruction, opts = {}) {
   try {
     let result = await askOnce(messages);
 
-    /* v2.3 — 영어 혼입 방어.
-     * 문자 필터로는 못 잡는다(영문자는 허용 문자다). 한글 비율로 재서
-     * 기준 미달이면 같은 내용을 한국어로 다시 쓰게 시킨다. */
-    if (isTooMuchEnglish(result.text)) {
-      logKoreanRatio(persona.id, result.text, 'detected');
+    /* v2.3 — 영어 혼입 방어. 문자 필터로는 못 잡는다(영문자는 허용 문자다).
+     * v2.3.1 — 방아쇠가 둘로 늘었다. 파이프라인은 그대로 하나다.
+     *   ① 문장 수준: 한글 비율이 기준 미달 ("Let me break this down.")
+     *   ② 단어 수준: 라틴 표기 외국어 단어가 섞임 ("단어 kombin해서")
+     * 둘 중 하나라도 걸리면 같은 내용을 한국어로 다시 쓰게 시킨다. */
+    let check = checkKorean(result.text);
+    if (check.needsRewrite) {
+      const trigger = check.reason;   // 로그 stage 는 최초 방아쇠 기준으로 붙인다
+      logKoreanRatio(persona.id, result.text, langStage('detected', trigger), check);
+
       for (let attempt = 0; attempt < LANG_GUARD.retries; attempt++) {
         const retryMsgs = messages.concat([
           { role: 'assistant', content: result.text },
-          { role: 'user', content: KOREAN_REWRITE_DIRECTIVE }
+          { role: 'user', content: buildKoreanRewriteDirective(check) }
         ]);
         let retried;
         try {
@@ -5367,14 +5529,17 @@ async function runPersonaTurn(persona, instruction, opts = {}) {
           break;
         }
         // 재생성이 더 나을 때만 채택한다 (더 나빠지는 경우도 있다)
-        if (hangulRatio(retried.text).ratio > hangulRatio(result.text).ratio && retried.text) {
+        if (retried.text && isBetterKorean(retried.text, result.text)) {
           result = retried;
         }
-        if (!isTooMuchEnglish(result.text)) break;
+        check = checkKorean(result.text);
+        if (!check.needsRewrite) break;
       }
+
       // 재생성해도 기준 미달이면 그대로 표시하되 반드시 기록을 남긴다
+      const final = checkKorean(result.text);
       logKoreanRatio(persona.id, result.text,
-        isTooMuchEnglish(result.text) ? 'gaveup' : 'recovered');
+        langStage(final.needsRewrite ? 'gaveup' : 'recovered', trigger), final);
     }
 
     const text = result.text;
