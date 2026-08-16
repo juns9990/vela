@@ -2,12 +2,17 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<!-- v2.7.2 — interactive-widget=resizes-content
+     안드로이드 크롬 기본값(resizes-visual)은 키보드가 떠도 레이아웃 뷰포트를 그대로 둔다.
+     그래서 100vh / position:fixed 가 키보드를 "없는 것"으로 계산해 입력독을 뒤로 밀어넣는다.
+     resizes-content 는 키보드만큼 레이아웃 뷰포트 자체를 줄이라는 표준 지시다.
+     iOS Safari 는 이 키를 무시하므로 JS 의 visualViewport 보정이 그쪽을 맡는다. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
 <title>벨챗 — 아이디어 단톡방</title>
 <meta name="description" content="벨챗 — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=e4b812f4f96d" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=1ad9e58ddc42" />
 <meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
 <meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -2195,9 +2200,16 @@
   /* ═══════════ 채팅 전용 레이아웃 (v2.2 — 입력창 하단 고정) ═══════════
    * 문서 전체가 스크롤되던 v2.1 구조를 "고정 높이 셸 + 메시지 영역만 스크롤"로 바꾼다.
    * 대화가 아무리 길어져도 입력창은 항상 화면 하단에 붙어 있다.
-   *   --app-h  : 실제 보이는 높이. 모바일 키보드가 올라오면 그만큼 줄어든다.
-   *   --vv-top : iOS 에서 키보드가 뷰포트를 밀어올릴 때의 오프셋.
-   * 두 값 모두 syncViewport() 가 visualViewport 이벤트로 채운다.
+   *   --app-h   : 실제 보이는 높이. 모바일 키보드가 올라오면 그만큼 줄어든다.
+   *   --vv-top  : iOS 에서 키보드가 뷰포트를 밀어올릴 때의 오프셋.
+   *   --kb-lift : 그래도 독이 가려질 때의 마지막 보정치 (v2.7.2)
+   * 세 값 모두 syncViewport() / ensureDockVisible() 이 visualViewport 로 채운다.
+   *
+   * ★ v2.7.2 — min-height: 0 이 이 블록의 핵심이다.
+   *   위쪽 `body { min-height: 100vh }` (매거진 시절 규칙) 가 살아 있으면
+   *   사용 높이는 max(100vh, --app-h) = 100vh 로 고정된다.
+   *   즉 키보드가 올라와 --app-h 가 줄어도 셸은 그대로 100vh 라서
+   *   하단 입력독이 키보드 뒤로 밀려 들어간다. v2.2 부터 여기서 새고 있었다.
    * ------------------------------------------------------------------ */
   html.chat-lock { height: 100%; overflow: hidden; }
   body.chat-only {
@@ -2205,7 +2217,9 @@
     left: 0;
     right: 0;
     top: var(--vv-top, 0px);
-    height: var(--app-h, 100dvh);
+    /* min-height 를 반드시 먼저 풀어야 height 가 실제로 먹는다 */
+    min-height: 0;
+    height: calc(var(--app-h, 100dvh) - var(--kb-lift, 0px));
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -3460,6 +3474,37 @@
   @media (max-width: 330px) {
     body.chat-only:not(.chrome-collapsed) .brand-room { display: none; }
   }
+
+  /* ══════════════════════════════════════════════════════════════════
+     벨챗 v2.7.2 — 모바일 키보드가 입력독을 가리던 문제
+
+     진짜 수정은 위쪽 `body.chat-only { min-height: 0 }` 한 줄이다.
+     (매거진 시절 `body { min-height: 100vh }` 가 --app-h 를 덮어써서
+      v2.2 의 visualViewport 대응이 통째로 죽어 있었다)
+     여기는 그 위에 얹는 마감 — 키보드가 떠 있는 동안의 여백 정리다.
+     ══════════════════════════════════════════════════════════════════ */
+
+  :root { --kb-lift: 0px; }   /* 실측 보정치. syncViewport 가 필요할 때만 채운다 */
+
+  /* 키보드가 덮고 있는 동안 하단 안전영역은 의미가 없다.
+     iOS 는 이때 인셋을 0 으로 주지만 안드로이드는 제스처바 값을 계속 보고해서
+     입력창 아래에 죽은 띠가 생기고, 그만큼 글자 줄이 위로 밀린다. */
+  body.chat-only.kb-open .chat-input-bar { padding-bottom: 8px; }
+
+  /* 태블릿·가로모드(≥560px) — 키보드가 뜨면 카드형 무대 여백은 낭비다 */
+  @media (min-width: 560px) {
+    body.chat-only.kb-open { padding: 0; }
+    body.chat-only.kb-open .app-shell { border-radius: 0; }
+  }
+
+  /* 모달도 보이는 영역 안에 둔다.
+     inset:0 은 레이아웃 뷰포트 기준이라, iOS 에서 키보드가 뜨면
+     설정 모달의 API 키 입력칸이 키보드 뒤로 들어간다. */
+  body.chat-only .modal-backdrop {
+    top: var(--vv-top, 0px);
+    bottom: auto;
+    height: var(--app-h, 100dvh);
+  }
 </style>
 </head>
 <body>
@@ -3516,7 +3561,7 @@
 
 <div class="issue-strip">
   <div class="left">
-    <span id="versionTag">v2.7.1</span>
+    <span id="versionTag">v2.7.2</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -3980,7 +4025,7 @@ const LLM_CONFIG = {
 
 const APP = {
   name: '벨챗',                // v2.4 — 앱 이름
-  version: '2.7.1',
+  version: '2.7.2',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -6259,6 +6304,46 @@ let chatStickToBottom = true;    // 지금 따라 내려가는 중인가
 let unseenCount = 0;             // 위에서 읽는 동안 쌓인 새 메시지 수
 let programmaticScrollUntil = 0; // 우리가 스크롤시킨 직후 구간 (사용자 조작과 구분)
 
+/* ---- 모바일 키보드 (v2.7.2) --------------------------------------------
+ * 증상: 키보드가 올라오면 입력독이 키보드 뒤로 들어가 입력 중인 글자가 안 보였다.
+ *
+ * 원인은 두 겹이었다.
+ *   ① CSS — body 의 `min-height: 100vh` (매거진 시절 규칙) 가 살아 있어
+ *      사용 높이가 max(100vh, --app-h) 로 계산됐다. --app-h 를 아무리 줄여도
+ *      셸은 100vh 그대로. v2.2 의 visualViewport 대응이 통째로 무력화돼 있었다.
+ *      → body.chat-only 에 min-height: 0 (CSS 쪽 수정)
+ *   ② 안드로이드 크롬 기본값 resizes-visual — 키보드가 레이아웃 뷰포트를 안 줄인다.
+ *      → meta viewport 에 interactive-widget=resizes-content
+ *
+ * 아래 JS 는 그 위에 얹는 세 가지다.
+ *   · resize + scroll 을 rAF 로 묶어 키보드 애니메이션 내내 셸 높이를 추적
+ *   · 키보드 열림 여부를 body.kb-open 으로 노출 (안전영역 여백 정리용)
+ *   · 그래도 독이 가려지면 실측해서 --kb-lift 로 마지막 보정
+ * ---------------------------------------------------------------------- */
+
+const KB_MIN_DROP_PX = 120;   // 이만큼 줄면 키보드로 본다 (주소창 축소와 구분)
+let kbOpen = false;
+let restingViewportH = 0;     // 키보드가 없을 때의 높이 — 계속 갱신되는 기준선
+let vvSyncRaf = 0;
+
+/* 소프트 키보드가 있는 기기인가.
+ * 이 가드가 없으면 데스크탑에서 오탐이 난다 — 입력창에 커서를 둔 채 창을 세로로
+ * 줄이면 "높이가 120px 넘게 줄었다"가 그대로 키보드로 읽혀 카드 여백이 사라진다.
+ * 키보드 보정은 애초에 터치 기기에서만 의미가 있다. */
+let softKbMq = null;
+function hasSoftKeyboard() {
+  try {
+    if (!softKbMq) softKbMq = window.matchMedia('(hover: none) and (pointer: coarse)');
+    return softKbMq.matches;
+  } catch (e) { return false; }
+}
+
+function isTypingTarget(el) {
+  if (!el) return false;
+  const tag = el.tagName;
+  return tag === 'TEXTAREA' || tag === 'INPUT' || el.isContentEditable === true;
+}
+
 function syncViewport() {
   const vv = window.visualViewport;
   const h = vv ? vv.height : window.innerHeight;
@@ -6266,22 +6351,143 @@ function syncViewport() {
   const root = document.documentElement;
   root.style.setProperty('--app-h', h + 'px');
   root.style.setProperty('--vv-top', top + 'px');
+
+  /* 키보드 판정 — "높이가 줄었다"만으로는 부족하다.
+   * 데스크탑에서 창을 줄여도 높이는 준다. 입력 요소에 포커스가 있을 때만 키보드로 본다.
+   * 포커스가 없는 동안은 지금 높이를 계속 기준선으로 삼는다
+   * → 화면 회전·주소창 접힘·데스크탑 리사이즈가 저절로 반영된다. */
+  const typing = isTypingTarget(document.activeElement);
+  if (!typing) restingViewportH = h;
+  const open = typing && hasSoftKeyboard() && (restingViewportH - h) > KB_MIN_DROP_PX;
+  if (open !== kbOpen) {
+    kbOpen = open;
+    document.body.classList.toggle('kb-open', open);
+    if (!open) root.style.setProperty('--kb-lift', '0px');   // 내려가면 원래 레이아웃
+  }
+
+  /* 셸이 position:fixed 라 문서는 스크롤될 일이 없다.
+   * iOS 가 포커스된 입력을 보이려고 문서를 통째로 밀어올린 경우만 되돌린다.
+   * (고정 셸일 때만 — 매거진 레이아웃의 정상 스크롤을 건드리면 안 된다) */
+  if (root.classList.contains('chat-lock')) {
+    const se = document.scrollingElement || root;
+    if (se && se.scrollTop !== 0) se.scrollTop = 0;
+  }
+}
+
+/* 마지막 안전망 — 위 두 겹이 다 통해도 독이 가려지는 기기가 있다(일부 안드로이드 IME).
+ * 독의 아래끝과 "보이는 영역의 아래끝"을 실측해 그 차이만큼 셸을 줄인다.
+ * 셸 높이가 이미 --kb-lift 를 빼고 있으므로, 현재 보정치에 초과분을 더하면 한 번에 수렴한다. */
+function ensureDockVisible() {
+  const root = document.documentElement;
+  // 모달이 떠 있으면 지금 타이핑 중인 건 독이 아니다 — 보정하면 뒤 배경만 흔들린다
+  if (!kbOpen || document.querySelector('.modal-backdrop.open')) {
+    root.style.setProperty('--kb-lift', '0px');
+    return;
+  }
+  const dock = $('#chatDock');
+  const vv = window.visualViewport;
+  if (!dock || !vv || dock.hidden) return;
+  const cur = parseFloat(root.style.getPropertyValue('--kb-lift')) || 0;
+  const overflow = dock.getBoundingClientRect().bottom - (vv.offsetTop + vv.height);
+  let next = cur + overflow;
+  if (next < 0) next = 0;
+  const cap = vv.height * 0.6;               // 폭주 방지 — 셸을 40% 아래로는 못 줄인다
+  if (next > cap) next = cap;
+  if (Math.abs(next - cur) > 1) root.style.setProperty('--kb-lift', Math.ceil(next) + 'px');
+}
+
+/* 키보드 애니메이션 동안 resize/scroll 이 초당 수십 번 온다 — rAF 로 한 프레임에 하나만 */
+function scheduleViewportSync() {
+  if (vvSyncRaf) return;
+  vvSyncRaf = requestAnimationFrame(() => {
+    vvSyncRaf = 0;
+    syncViewport();
+    ensureDockVisible();
+    // 키보드가 덮으면서 마지막 말풍선이 가려지지 않게, 붙어 있던 상태면 다시 바닥으로
+    if (chatStickToBottom) scrollChatToBottom(false);
+  });
+}
+
+/* 포커스 직후 — iOS 는 키보드가 다 올라온 뒤에야, 그것도 한 번만 resize 를 준다.
+ * 애니메이션 구간에 몇 번 더 찍어 독이 확실히 자리를 잡게 한다. */
+const KB_SETTLE_MS = [0, 60, 160, 320, 550];
+function onTypingFocus(e) {
+  if (!isTypingTarget(e.target)) return;
+  KB_SETTLE_MS.forEach(ms => setTimeout(() => {
+    syncViewport();
+    ensureDockVisible();
+    if (chatStickToBottom) scrollChatToBottom(false);
+  }, ms));
+}
+
+function onTypingBlur(e) {
+  if (!isTypingTarget(e.target)) return;
+  // 키보드가 내려가는 동안에도 몇 번 찍어야 원래 높이로 정확히 복원된다
+  KB_SETTLE_MS.forEach(ms => setTimeout(syncViewport, ms));
 }
 
 function bindViewport() {
   syncViewport();
   const vv = window.visualViewport;
   if (vv) {
-    // 키보드가 올라오는 동안 높이가 연속으로 바뀐다 — 그때마다 셸을 다시 맞춘다
-    vv.addEventListener('resize', () => {
-      syncViewport();
-      // 키보드가 덮으면서 입력창이 가려지지 않게, 붙어 있던 상태면 다시 바닥으로
-      if (chatStickToBottom) scrollChatToBottom(false);
-    });
-    vv.addEventListener('scroll', syncViewport);
+    vv.addEventListener('resize', scheduleViewportSync);
+    vv.addEventListener('scroll', scheduleViewportSync);
   }
-  window.addEventListener('resize', syncViewport);
-  window.addEventListener('orientationchange', () => setTimeout(syncViewport, 200));
+  window.addEventListener('resize', scheduleViewportSync);
+  window.addEventListener('orientationchange', () => {
+    restingViewportH = 0;                    // 회전하면 기준선을 다시 잡는다
+    setTimeout(syncViewport, 200);
+    setTimeout(syncViewport, 500);
+  });
+  // 입력창은 여러 개다 (본문 입력·설정 모달 등) — 문서 단위로 한 번만 건다
+  document.addEventListener('focusin', onTypingFocus);
+  document.addEventListener('focusout', onTypingBlur);
+  bindKbDebug();
+}
+
+/* ---- 실기기 진단 오버레이 (v2.7.2) ------------------------------------
+ * ?debug=kb 로 열면 우상단에 숫자가 뜬다.
+ * 설치형 PWA 는 DevTools 를 붙이기가 번거로워서, 폰에서 눈으로 확인할
+ * 유일한 방법이 필요하다. 파라미터가 없으면 아무 것도 하지 않는다.
+ *
+ * 읽는 법 — 정상이면 `over` 가 항상 0 이하다.
+ *   over = 독의 아래끝 − 보이는 영역의 아래끝. 양수면 그만큼 키보드에 가려진 것.
+ * ---------------------------------------------------------------------- */
+function bindKbDebug() {
+  let on = false;
+  try { on = new URLSearchParams(location.search).get('debug') === 'kb'; } catch (e) { return; }
+  if (!on) return;
+
+  const box = document.createElement('div');
+  box.style.cssText = 'position:fixed;top:0;right:0;z-index:9999;background:rgba(0,0,0,.82);' +
+    'color:#5eead4;font:11px/1.45 ui-monospace,monospace;padding:7px 9px;' +
+    'border-bottom-left-radius:10px;white-space:pre;pointer-events:none;max-width:62vw';
+  document.body.appendChild(box);
+
+  const paint = () => {
+    const vv = window.visualViewport;
+    const dock = $('#chatDock');
+    const visBottom = vv ? (vv.offsetTop + vv.height) : window.innerHeight;
+    const dockBottom = dock ? Math.round(dock.getBoundingClientRect().bottom) : -1;
+    const over = dockBottom - Math.round(visBottom);
+    box.textContent =
+      'mode  ' + (document.body.classList.contains('pwa-window') ? 'window' : 'tab') + '\n' +
+      'vv.h  ' + (vv ? Math.round(vv.height) : '-') + '  top ' + (vv ? Math.round(vv.offsetTop) : '-') + '\n' +
+      'inner ' + window.innerHeight + '  rest ' + Math.round(restingViewportH) + '\n' +
+      'body  ' + Math.round(document.body.getBoundingClientRect().height) + '\n' +
+      'lift  ' + (document.documentElement.style.getPropertyValue('--kb-lift') || '0px') + '\n' +
+      'kb    ' + (kbOpen ? 'OPEN' : 'closed') + '\n' +
+      'over  ' + over + (over > 0 ? '  ✗ 가려짐' : '  ✓');
+    box.style.color = over > 0 ? '#fca5a5' : '#5eead4';
+  };
+
+  paint();
+  const vv = window.visualViewport;
+  if (vv) { vv.addEventListener('resize', paint); vv.addEventListener('scroll', paint); }
+  window.addEventListener('resize', paint);
+  document.addEventListener('focusin', () => KB_SETTLE_MS.forEach(ms => setTimeout(paint, ms)));
+  document.addEventListener('focusout', () => KB_SETTLE_MS.forEach(ms => setTimeout(paint, ms)));
+  setInterval(paint, 500);
 }
 
 function chatScroller() { return $('#chatMessages'); }
