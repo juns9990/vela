@@ -12,7 +12,7 @@
 <meta name="description" content="벨챗 — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=1ad9e58ddc42" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=ed8999e59145" />
 <meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
 <meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -3497,6 +3497,30 @@
     body.chat-only.kb-open .app-shell { border-radius: 0; }
   }
 
+  /* ══════════════════════════════════════════════════════════════════
+     벨챗 v2.8 — 스트리밍 말풍선
+     글자가 도착하는 대로 흘리고, 끝에 커서를 하나 깜빡인다.
+     ══════════════════════════════════════════════════════════════════ */
+  .msg-streaming .msg-persona-bubble .stream-text {
+    white-space: pre-wrap;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+  .stream-caret {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    margin-left: 2px;
+    vertical-align: -0.15em;
+    background: var(--cyan);
+    border-radius: 1px;
+    animation: stream-blink 1s steps(2, start) infinite;
+  }
+  @keyframes stream-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .stream-caret { animation: none; opacity: 0.85; }
+  }
+
   /* 모달도 보이는 영역 안에 둔다.
      inset:0 은 레이아웃 뷰포트 기준이라, iOS 에서 키보드가 뜨면
      설정 모달의 API 키 입력칸이 키보드 뒤로 들어간다. */
@@ -3561,7 +3585,7 @@
 
 <div class="issue-strip">
   <div class="left">
-    <span id="versionTag">v2.7.2</span>
+    <span id="versionTag">v2.8.0</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -3821,6 +3845,7 @@
     <label>Provider</label>
     <select id="inputProvider">
       <option value="anthropic">Anthropic Claude (유료, 최고 품질)</option>
+      <option value="gemini">Google Gemini (무료 티어 · 빠름 · 사진 인식)</option>
       <option value="groq">Groq + Llama (무료)</option>
     </select>
     <div class="modal-info" id="providerInfo">1콜당 약 20원 (Sonnet 4.6 기준).</div>
@@ -3855,6 +3880,16 @@
         내 메시지 하나에 최대 몇 명까지 답할지. 관련 있는 사람만 답하므로 실제로는 이보다 적을 때가 많고,
         가벼운 말엔 아무도 답하지 않기도 합니다. <b>인원이 곧 비용</b>입니다 (1명당 약 20원).
       </div>
+
+      <!-- v2.8 — 2단 모델 -->
+      <label style="margin-top: 18px;" id="twoTierLabel">
+        <input type="checkbox" id="inputTwoTier" style="margin-right: 7px;" />
+        잡담은 빠른 모델로 (2단 구성)
+      </label>
+      <div class="modal-info" id="twoTierInfo"></div>
+
+      <!-- v2.8 — 한국어 재생성 발생률 -->
+      <div class="modal-info" id="langGuardStat" style="margin-top: 14px;"></div>
     </div>
 
     <div style="margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line);">
@@ -3989,6 +4024,9 @@ const LLM_CONFIG = {
     endpoint: 'https://api.anthropic.com/v1/messages',
     keyPlaceholder: 'sk-ant-...',
     keyHint: 'console.anthropic.com 에서 발급',
+    keyPattern: /^sk-ant-/,
+    stream: true,
+    fastModel: 'claude-haiku-4-5-20251001',   // v2.8 — 잡담·리액션용 소형 모델
     pricingNote: '1콜당 약 20원 (Sonnet 4.6). 4라운드 정식 회의 12콜 ≈ 240원, 빠른 회의 5콜 ≈ 100원. ✓ 한국어 품질 최고 — 권장.',
     models: [
       { id: 'claude-sonnet-4-6',           label: 'Sonnet 4.6 (권장)',          tag: 'SONNET 4.6' },
@@ -4002,15 +4040,68 @@ const LLM_CONFIG = {
     endpoint: 'https://api.groq.com/openai/v1/chat/completions',
     keyPlaceholder: 'gsk_...',
     keyHint: 'console.groq.com 에서 발급 (카드 등록 불필요)',
-    pricingNote: '무료. GPT-OSS가 한국어 가장 안정적. Llama는 토큰 깨짐 가능. 웹 검색·이미지는 Anthropic만.',
+    keyPattern: /^gsk_/,
+    stream: true,
+    fastModel: 'openai/gpt-oss-20b',   // v2.8 — 잡담·리액션용 소형 모델
+    pricingNote: '무료. GPT-OSS가 한국어 가장 안정적. Llama는 토큰 깨짐 가능. 사진 인식은 Anthropic·Gemini, 웹 검색은 Anthropic만.',
     models: [
       { id: 'openai/gpt-oss-120b',      label: 'GPT-OSS 120B (한국어 안정, 권장)', tag: 'GPT-OSS 120B' },
       { id: 'openai/gpt-oss-20b',       label: 'GPT-OSS 20B (빠름)',               tag: 'GPT-OSS 20B' },
       { id: 'llama-3.3-70b-versatile',  label: 'Llama 3.3 70B',                    tag: 'LLAMA 70B' },
       { id: 'llama-3.1-8b-instant',     label: 'Llama 3.1 8B (빠르지만 깨짐 잦음)', tag: 'LLAMA 8B' }
     ]
+  },
+  /* v2.8 — Google Gemini.
+   * 무료 티어가 있고, 이미지를 보고, Flash 계열은 체감상 가장 빠르다.
+   * 다른 둘과 달리 모델 이름이 URL 경로에 들어간다 → endpointFor() 로 만든다.
+   * 키는 URL 쿼리(?key=)로도 받지만 x-goog-api-key 헤더를 쓴다 —
+   * 쿼리에 실으면 키가 히스토리·로그·리퍼러에 남는다. */
+  gemini: {
+    name: 'Google Gemini',
+    vision: true,
+    endpoint: 'https://generativelanguage.googleapis.com/v1beta/models',
+    endpointFor: function (model, opts) {
+      const m = encodeURIComponent(model || 'gemini-2.5-flash');
+      const verb = (opts && opts.stream) ? 'streamGenerateContent?alt=sse' : 'generateContent';
+      return `https://generativelanguage.googleapis.com/v1beta/models/${m}:${verb}`;
+    },
+    keyPlaceholder: 'AIza...',
+    keyHint: 'aistudio.google.com/apikey 에서 발급 (무료 티어 있음)',
+    keyPattern: /^AIza[0-9A-Za-z_-]{10,}$/,
+    stream: true,
+    fastModel: 'gemini-2.5-flash-lite',
+    pricingNote: '무료 티어 있음 (분당·일당 요청 제한). Flash 계열이 가장 빠르고 사진도 봅니다. 웹 검색은 Anthropic만.',
+    models: [
+      { id: 'gemini-2.5-flash',      label: 'Gemini 2.5 Flash (권장 · 빠름+사진)', tag: 'GEMINI 2.5 FLASH' },
+      { id: 'gemini-2.5-flash-lite', label: 'Gemini 2.5 Flash-Lite (가장 빠름)',    tag: 'FLASH LITE' },
+      { id: 'gemini-2.5-pro',        label: 'Gemini 2.5 Pro (품질, 느림)',          tag: 'GEMINI 2.5 PRO' },
+      { id: 'gemini-2.0-flash',      label: 'Gemini 2.0 Flash (구세대)',            tag: 'GEMINI 2.0' }
+    ]
   }
 };
+
+/* provider 별 엔드포인트 — Gemini 만 모델·스트리밍 여부에 따라 URL 이 달라진다 */
+function providerEndpoint(provider, model, opts) {
+  const cfg = LLM_CONFIG[provider];
+  if (!cfg) return '';
+  return typeof cfg.endpointFor === 'function' ? cfg.endpointFor(model, opts || {}) : cfg.endpoint;
+}
+
+/* provider 별 인증 헤더 — 세 곳(본 호출·스트림·연결 테스트)이 같은 걸 써야 한다 */
+function providerHeaders(provider, key) {
+  if (provider === 'anthropic') {
+    return {
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+      'content-type': 'application/json'
+    };
+  }
+  if (provider === 'gemini') {
+    return { 'x-goog-api-key': key, 'content-type': 'application/json' };
+  }
+  return { 'Authorization': 'Bearer ' + key, 'content-type': 'application/json' };
+}
 
 /* ═════════════════════════════════════════════════════════════
  *  CONFIG — 응답 규칙 · 전문가 목록 · (보존) 회의 모드/라운드
@@ -4025,7 +4116,7 @@ const LLM_CONFIG = {
 
 const APP = {
   name: '벨챗',                // v2.4 — 앱 이름
-  version: '2.7.2',
+  version: '2.8.0',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -4248,8 +4339,12 @@ const CHAT_RULES = {
   maxResponders: 2,          // 메시지당 기본 최대 응답 인원 (설정에서 1~3 조절)
   hardMaxResponders: 3,      // 설정에서도 넘을 수 없는 상한
   chainChance: 0.30,         // 동료 발언에 다른 동료가 이어 붙을 확률 (한 턴에 1회만)
-  replyDelayMs: [600, 1600], // 응답과 응답 사이 지연 (사람처럼 보이게)
-  chainDelayMs: [900, 2200], // 끼어들기 전 지연
+  /* v2.8 — 지연을 절반으로 줄였다.
+   * 원래 이 지연은 "API 응답을 기다리는 시간"을 사람처럼 보이게 덮는 용도였다.
+   * 이제 두 번째 사람 호출을 미리 걸어두므로(SPEED_RULES.prefetch) 기다릴 게 없다.
+   * 순수하게 "연출"만 남았으니 짧아도 어색하지 않다. */
+  replyDelayMs: [300, 800],  // 응답과 응답 사이 지연 (사람처럼 보이게)
+  chainDelayMs: [450, 1100], // 끼어들기 전 지연
   recentSpeakerPenalty: 1.6, // 직전에 말한 사람 우선순위 감점 (같은 사람이 매번 먼저 답하지 않게)
   randomJitter: 1.2,         // 점수에 섞는 무작위 폭 — 순서 고정 방지
   relevanceWeight: 1.4,      // 키워드 1개당 점수. 감점(1.6)보다 낮게 둬서
@@ -4257,6 +4352,32 @@ const CHAT_RULES = {
   expertJoinScore: 2,        // 전문가가 입장하는 최소 관련도 점수
   expertSwapMargin: 2,       // 전문가 교체는 현재보다 이만큼 더 관련 있어야
   topicWindow: 3             // 주제 파악에 쓰는 최근 사용자 메시지 개수
+};
+
+/* ---- ⑧-1 응답 속도 (v2.8) ----------------------------------------
+ * 세 가지를 각각 켜고 끌 수 있다. 문제가 생기면 여기만 false 로 바꾸면
+ * v2.7 의 동작(순차·완성 후 표시·단일 모델)으로 그대로 돌아간다.
+ * ---------------------------------------------------------------- */
+const SPEED_RULES = {
+  stream: true,        // 글자가 생기는 대로 말풍선에 흘린다
+  prefetch: true,      // 2번째 이후 응답자의 API 호출을 첫 사람과 동시에 시작
+  twoTier: true,       // 잡담·리액션은 소형 모델, 안건은 큰 모델
+  /* 무게별로 어느 모델을 쓸지. 'fast' 는 LLM_CONFIG[provider].fastModel,
+   * 'main' 은 사용자가 설정에서 고른 모델. fastModel 이 없는 provider 는 전부 main. */
+  tierByWeight: { filler: 'fast', casual: 'fast', normal: 'main', serious: 'main' },
+  streamFlushMs: 45    // 스트림 조각을 화면에 반영하는 최소 간격 (rAF 와 함께 씀)
+};
+
+/* ---- ⑧-2 대화 중 입력 (v2.8) --------------------------------------
+ * 카톡처럼 아무 때나 보낼 수 있어야 한다. 응답 도중에 새 메시지가 오면:
+ *   · 아직 시작 안 한 대기 턴 → 전부 취소
+ *   · 이미 글자가 나오기 시작한 턴 → 그 문장은 끝까지 (사람이 말하다 마는 건 이상하다)
+ *   · 아직 한 글자도 안 나온 턴 → 조용히 중단 (화면에 잃을 게 없다)
+ * ---------------------------------------------------------------- */
+const INTERRUPT_RULES = {
+  abortSilentTurns: true,   // 아직 글자가 안 나온 진행 턴은 중단한다
+  keepSpokenTurns: true,    // 이미 말하기 시작한 턴은 끝까지 둔다
+  noticeOnInterrupt: false  // 취소를 시스템 칩으로 알릴지 (기본: 조용히)
 };
 
 /* ---- ⑧ 메시지 무게 — 몇 명이 어떤 톤으로 답할지 -------------------
@@ -4280,7 +4401,8 @@ const MESSAGE_WEIGHTS = {
   },
   serious: {
     label: '안건', responders: [2, 2], silence: 0,
-    tone: '제대로 답할 만한 얘기다. 3~5문장으로 네 전문 관점에서 구체적으로. 실제 사례·수치·방법을 하나는 든다. '
+    tone: '제대로 답할 만한 얘기다. 3~5문장으로 네 전문 관점에서 구체적으로. 실제 사례·방법을 하나는 든다. '
+        + '수치는 확실히 아는 것만 — 모르면 숫자를 빼고 네 경험·판단으로 말해라. 평점·통계를 지어내면 안 된다. '
         + '여기선 유머를 절제해라 — 한마디 툭 던지는 정도는 좋지만, 본론이 개그에 묻히면 안 된다.'
   }
 };
@@ -4695,10 +4817,12 @@ const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효 · 가장 �
   3문장이 넘어가는 순간 "이 사람 왜 이렇게 길게 쓰지?" 소리를 듣는다. 길고 진지한 안건일 때만 3~5문장으로 깊이 들어간다.
 - 가벼운 말엔 가볍게. "ㅋㅋ 그건 좀", "오 그거 괜찮은데?", "아 그래?" 같은 리액션 좋다. ㅋㅋ ㅎㅎ 정도는 써도 된다.
 - **매번 정리하거나 조언하려 들지 마라.** 단톡방에서 누가 매번 요약하고 훈수 두면 이상한 사람이다.
-- 진지한 안건·질문일 때만 근거·수치·사례를 들고 제대로 판다. 그때는 확실하게 판다.
+- 진지한 안건·질문일 때만 근거·사례를 들고 제대로 판다. 그때는 확실하게 판다.
+  단, 근거는 **네가 확실히 아는 것만** 든다 — 아래 [출처·수치] 규칙이 이것보다 우선한다.
 - 동료 발언에 이어 말할 땐 이름을 부르며 받아친다("이준호 말처럼", "그건 좀 아닌 것 같은데"). 매번 그럴 필요는 없다.
 - 동의만 하고 끝내지 마라. 진지한 얘기에서 네 분야 관점의 다른 각도가 있으면 짧게라도 보탠다.
-- 구체적으로. "트렌드 반영하세요" 같은 공허한 말 금지. 실제 이름·제품·기관·방법·수치를 든다.
+- 구체적으로. "트렌드 반영하세요" 같은 공허한 말 금지. 아는 범위에서 실제 이름·제품·기관·방법을 든다.
+  구체적으로 말하라는 건 **지어내라는 뜻이 아니다.** 모르면 네 경험과 판단으로 구체적으로 말해라.
 - 혼자 여러 사람 몫을 말하지 마라. 너는 한 사람이고, 이번엔 네 말만 한다.
 - 절대 응답 맨 앞에 자기 이름(예: "서다현:")을 쓰지 마라. 화면에 이미 이름이 표시된다. 바로 말 내용으로 시작.
 
@@ -4707,6 +4831,25 @@ const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효 · 가장 �
 - **'0.1천원', '0.2천원', '0.5천원', '0.18천원' 같은 소수점 '천원' 표기는 절대 금지.** 각각 100원, 200원, 500원, 180원으로 적는다.
 - '천원'이라는 단위 자체를 쓰지 마라. 1,000원 이상은 콤마로(예: 1,000원, 10,200원), 만 단위는 '만원'(예: 1.5만원, 12만원)으로.
 - 금액을 말할 때 단위를 일관되게. 같은 발언 안에서 원과 천원을 섞지 마라. 주제와 무관한데 억지로 금액을 만들지는 마라.
+
+[출처·수치 — 지어내면 그 답변은 무효다 · 매우 중요]
+- **확실하지 않은 출처·평점·통계·구체 수치는 아예 말하지 마라.** 하나라도 지어내면 방 전체의 신뢰가 무너진다.
+- 특히 금지 (실제로 사고가 났던 것들):
+  · "네이버 평점 4.5점", "구글 리뷰 4.2점" 같은 **확인하지 않은 평점**
+  · "재방문율 70%", "매출 30% 상승", "업계 평균 15%" 같은 **출처 없는 통계·비율**
+  · "○○ 보고서에 따르면", "△△ 조사 결과" 같은 **존재를 확신할 수 없는 자료 인용**
+  · 실제로 본 적 없는 기사·논문·기관 이름, 그럴듯하게 지어낸 URL
+- 숫자를 말하고 싶은데 확실하지 않다면 **숫자를 빼고 말해라.** 숫자가 없어도 좋은 조언은 얼마든지 된다.
+  "재방문율이 70%예요" (X) → "단골이 꽤 붙는 편이에요" (O)
+  "네이버 평점 4.5점이던데" (X) → "리뷰 반응은 괜찮아 보이던데" (O)
+- 모르면 **출처를 대지 말고 네 의견·경험 톤으로만** 말한다.
+  "제가 해보니까", "제 경험엔", "현장에서 보면", "제 생각엔", "확실친 않은데 감으로는"
+- **사족으로 빠져나가는 것도 금지.** "출처가 정확하진 않지만", "정확한 수치는 아니지만",
+  "어디서 봤는데" 같은 말을 붙여서 지어낸 수치를 말하지 마라.
+  그런 단서를 달아야 할 정도면 **그냥 말하지 않는 게 맞다.** 단서 + 지어낸 수치 = 그래도 거짓말이다.
+- 확실한 것은 당당하게 말해라. 이 규칙은 "겁먹고 얼버무려라"가 아니라
+  **"모르는 걸 아는 척하지 마라"**는 뜻이다. 아는 건 구체적으로, 모르는 건 의견으로.
+- {chair}가 준 정보(사진·앞선 대화에 나온 수치)는 마음껏 인용해도 된다. 그건 지어낸 게 아니다.
 
 [웹 검색 — 가능하면 적극적으로]
 - 최신 동향·실제 사례·가격·규정을 다룰 때 웹 검색해서 진짜 정보를 가져온다 (가능한 경우).
@@ -5169,6 +5312,10 @@ let state = {
   maxResponders: Math.min(
     parseInt(localStorage.getItem('vela.boardroom.maxResponders') || CHAT_RULES.maxResponders, 10) || CHAT_RULES.maxResponders,
     CHAT_RULES.hardMaxResponders),
+  // ---- v2.8 ----
+  twoTier: localStorage.getItem('vela.boardroom.twoTier') !== '0',  // 잡담=소형 모델 (기본 켬)
+  turnSeq: 0,          // 사용자 메시지마다 +1. 이전 세대의 대기 턴은 이 값으로 걸러 취소한다
+  liveTurns: [],       // 지금 살아 있는 페르소나 턴 [{ seq, personaId, ctrl, spoke }]
   sessionId: null,
   lastSavedAt: null,
   inProgress: false,
@@ -5673,34 +5820,60 @@ async function testApiKey(provider, key, model) {
   if (!cfg) return { ok: false, msg: '알 수 없는 provider' };
   if (!key) return { ok: false, msg: '키가 비어 있습니다' };
 
-  const body = provider === 'anthropic'
-    ? { model: model, max_tokens: 1, messages: [{ role: 'user', content: '.' }] }
+  // 키 형태를 먼저 본다 — 네트워크를 쓰기 전에 잡을 수 있는 오타가 제일 많다
+  if (cfg.keyPattern && !cfg.keyPattern.test(key)) {
+    return { ok: false, msg: `${cfg.name} 키 형태가 아닙니다 — <b>${escapeHtml(cfg.keyPlaceholder)}</b> 으로 시작해야 합니다` };
+  }
+
+  // 최소 비용 호출. Gemini 는 max_tokens 대신 generationConfig 를 쓴다.
+  const body = provider === 'gemini'
+    ? { contents: [{ role: 'user', parts: [{ text: '.' }] }], generationConfig: { maxOutputTokens: 1 } }
     : { model: model, max_tokens: 1, messages: [{ role: 'user', content: '.' }] };
-  const headers = provider === 'anthropic'
-    ? {
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-        'content-type': 'application/json'
-      }
-    : { 'Authorization': 'Bearer ' + key, 'content-type': 'application/json' };
 
   let res;
   try {
-    res = await fetch(cfg.endpoint, { method: 'POST', headers: headers, body: JSON.stringify(body) });
+    res = await fetch(providerEndpoint(provider, model, { stream: false }), {
+      method: 'POST',
+      headers: providerHeaders(provider, key),
+      body: JSON.stringify(body)
+    });
   } catch (e) {
     return { ok: false, msg: '네트워크에 닿지 못했습니다 — 인터넷 연결을 확인해주세요' };
   }
   if (res.ok) return { ok: true, msg: '연결 성공' };
 
   let raw = '';
-  try { const d = await res.json(); raw = (d && d.error && d.error.message) || ''; } catch (e) {}
+  let status2 = '';
+  try {
+    const d = await res.json();
+    raw = (d && d.error && d.error.message) || '';
+    status2 = (d && d.error && d.error.status) || '';   // Gemini 는 여기에 분류가 들어온다
+  } catch (e) {}
+  const hay = raw + ' ' + status2;
+
+  /* Gemini 는 HTTP 코드가 뭉툭하다 — 키 오타도 400 이라, 본문 status 로 갈라야 한다.
+   * 순서가 중요하다: 400 을 "모델 이름 문제"로 먼저 잡아버리면 키 오타를 영영 못 만난다. */
+  if (provider === 'gemini') {
+    if (/API_KEY_INVALID|API key not valid|INVALID_ARGUMENT.*key/i.test(hay)) {
+      return { ok: false, msg: '키가 올바르지 않습니다 — aistudio.google.com/apikey 에서 다시 확인해주세요' };
+    }
+    if (res.status === 403 || /PERMISSION_DENIED/i.test(hay)) {
+      return { ok: false, msg: '이 키에 권한이 없습니다 — Google AI Studio에서 API 사용 설정을 확인해주세요' };
+    }
+    if (res.status === 429 || /RESOURCE_EXHAUSTED|quota/i.test(hay)) {
+      return { ok: true, warn: true, msg: '키는 유효합니다. 다만 <b>무료 티어 한도를 넘었습니다</b> (분당/일당 제한)' };
+    }
+    if (res.status === 404 || /NOT_FOUND|is not found for API version/i.test(hay)) {
+      return { ok: false, msg: '모델 이름을 확인해주세요 — <b>' + escapeHtml(model) + '</b> 을(를) 찾을 수 없습니다' };
+    }
+    if (res.status === 503) return { ok: true, warn: true, msg: '키는 유효합니다. 다만 지금 <b>Gemini 서버가 혼잡</b>합니다' };
+  }
 
   if (res.status === 401) return { ok: false, msg: '키가 올바르지 않습니다 — 오타이거나 만료된 키입니다' };
   if (res.status === 403) return { ok: false, msg: '이 키에 권한이 없습니다' };
   if (res.status === 429) return { ok: true, warn: true, msg: '키는 유효합니다. 다만 지금 <b>사용 한도를 넘었습니다</b>' };
-  if (/credit balance|insufficient/i.test(raw)) return { ok: true, warn: true, msg: '키는 유효합니다. 다만 <b>잔액이 부족합니다</b>' };
-  if (res.status === 404 || /model/i.test(raw)) return { ok: false, msg: '모델 이름을 확인해주세요 — ' + escapeHtml(raw.slice(0, 80)) };
+  if (/credit balance|insufficient/i.test(hay)) return { ok: true, warn: true, msg: '키는 유효합니다. 다만 <b>잔액이 부족합니다</b>' };
+  if (res.status === 404 || /model/i.test(hay)) return { ok: false, msg: '모델 이름을 확인해주세요 — ' + escapeHtml(raw.slice(0, 80)) };
   return { ok: false, msg: `오류 ${res.status}` + (raw ? ' — ' + escapeHtml(raw.slice(0, 80)) : '') };
 }
 
@@ -5737,8 +5910,13 @@ function parseKeyPayload(text) {
       return { provider: parts[1], key: cleanApiKey(parts.slice(2).join('|')) };
     }
   }
-  if (/^sk-ant-/.test(t)) return { provider: 'anthropic', key: cleanApiKey(t) };
-  if (/^gsk_/.test(t)) return { provider: 'groq', key: cleanApiKey(t) };
+  // 접두어만 보고도 어느 provider 인지 알 수 있다 — LLM_CONFIG 의 keyPattern 을 그대로 쓴다
+  const clean = cleanApiKey(t);
+  const hit = Object.keys(LLM_CONFIG).find(id => {
+    const pat = LLM_CONFIG[id].keyPattern;
+    return pat && pat.test(clean);
+  });
+  if (hit) return { provider: hit, key: clean };
   return null;
 }
 
@@ -6904,12 +7082,15 @@ function bindEvents() {
     localStorage.setItem('vela.boardroom.voiceURI', newVoiceURI);
     localStorage.setItem('vela.boardroom.voiceRate', String(newVoiceRate));
     localStorage.setItem('vela.boardroom.maxResponders', String(newMax));
+    const newTwoTier = !!($('#inputTwoTier') && $('#inputTwoTier').checked);
+    localStorage.setItem('vela.boardroom.twoTier', newTwoTier ? '1' : '0');
     state.provider = newProvider;
     state.apiKey = newKey;
     state.model = newModel;
     state.voiceURI = newVoiceURI;
     state.voiceRate = newVoiceRate;
     state.maxResponders = newMax;
+    state.twoTier = newTwoTier;   // v2.8
     refreshApiStatus();
     refreshModelTag();
     renderAttachStrip();   // v2.2 — provider 가 바뀌면 사진 지원 여부 안내도 바뀐다
@@ -7033,6 +7214,37 @@ function renderSettingsModal() {
       maxSel.appendChild(opt);
     }
   }
+  // v2.8 — 2단 모델 · 한국어 재생성 발생률
+  const tt = $('#inputTwoTier');
+  if (tt) tt.checked = !!state.twoTier;
+  refreshTwoTierInfo();
+  refreshLangStat();
+}
+
+/* 2단 모델 안내 — provider 마다 "빠른 모델"이 다르고, 없는 provider 도 있다 */
+function refreshTwoTierInfo() {
+  const el = $('#twoTierInfo');
+  if (!el) return;
+  const cfg = LLM_CONFIG[state.provider] || {};
+  const wrap = $('#twoTierLabel');
+  if (!cfg.fastModel) {
+    if (wrap) wrap.style.opacity = '0.45';
+    const tt = $('#inputTwoTier');
+    if (tt) tt.disabled = true;
+    el.textContent = `${cfg.name || state.provider} 에는 따로 쓸 소형 모델이 없어 항상 선택한 모델을 씁니다.`;
+    return;
+  }
+  if (wrap) wrap.style.opacity = '';
+  const tt = $('#inputTwoTier');
+  if (tt) tt.disabled = false;
+  const fast = (cfg.models || []).find(m => m.id === cfg.fastModel);
+  el.innerHTML = `리액션·잡담은 <b>${escapeHtml(fast ? fast.label : cfg.fastModel)}</b> 로, `
+    + `대화·안건은 위에서 고른 모델로 답합니다. 첫 글자가 나오기까지가 눈에 띄게 짧아집니다.`;
+}
+
+function refreshLangStat() {
+  const el = $('#langGuardStat');
+  if (el) el.textContent = '🈯 ' + langStatsSummary();
 }
 
 function populateVoiceOptions() {
@@ -7087,6 +7299,13 @@ function renderSettingsModalForProvider(provider) {
     if (m.id === storedModel) opt.selected = true;
     modelSelect.appendChild(opt);
   });
+  /* v2.8 — 2단 모델 안내는 provider 를 따라간다.
+   * 여기서는 state.provider 가 아직 안 바뀌었을 수 있어(저장 전 미리보기)
+   * 잠깐 바꿔서 그린 뒤 되돌린다. */
+  const keep = state.provider;
+  state.provider = provider;
+  refreshTwoTierInfo();
+  state.provider = keep;
 }
 
 /* ============ FACT CARDS RENDER ============ */
@@ -7581,6 +7800,90 @@ function parseIdeas(text) {
   return ideas;
 }
 
+/* ═══════════ 스트리밍 말풍선 (v2.8) ═══════════
+ * "생각하는 중…" 점 세 개를 지우고 새 요소를 만드는 대신,
+ * 첫 글자가 도착하는 순간 그 요소를 제자리에서 말풍선으로 바꾼다.
+ * 요소가 유지되므로 스크롤 위치가 튀지 않는다.
+ *
+ * 스트림 중에는 escapeHtml 한 평문만 넣는다 — 마크다운·SVG·인용은
+ * 스트림이 끝난 뒤 renderBubbleContent() 가 한 번에 제대로 그린다.
+ * 반쯤 온 마크다운을 그리면 화면이 깜빡이고, 반쪽짜리 태그가 남는다.
+ * ══════════════════════════════════════════════ */
+function createStreamBubble(persona) {
+  const container = $('#chatMessages');
+  let el = container ? container.querySelector(`.msg-typing[data-persona="${persona.id}"]`) : null;
+  if (!el) return null;
+
+  let textEl = null;
+  let target = '';      // 지금까지 도착한 전체 텍스트
+  let shown = 0;        // 화면에 그린 글자 수
+  let raf = 0;
+  let started = false;
+
+  /* 화면 갱신은 "따라잡기" 방식이다.
+   * 프레임마다 남은 만큼의 1/12씩(최소 2자) 밀어 올린다.
+   *   · 라이브 스트림 → 남은 게 늘 적어 최소 속도(약 120자/초)로 자연히 따라간다
+   *   · 미리 받아둔 답변 → 남은 게 크니 처음엔 빠르게, 끝에선 부드럽게 수렴한다
+   * 덕분에 "실시간"과 "미리 받아둔 것 재생"을 같은 코드로 처리한다. */
+  const step = () => {
+    raf = 0;
+    if (!textEl) return;
+    if (shown < target.length) {
+      shown = Math.min(target.length, shown + Math.max(2, Math.ceil((target.length - shown) / 12)));
+      textEl.textContent = target.slice(0, shown);
+      if (chatStickToBottom) scrollChatToBottom(false);
+      raf = requestAnimationFrame(step);
+    }
+  };
+
+  return {
+    get spoke() { return started; },
+    /* 첫 조각이 오면 점 세 개를 말풍선으로 승격시킨다 */
+    push(full) {
+      target = full;
+      if (!started) {
+        started = true;
+        el.classList.remove('msg-typing');
+        el.classList.add('msg-streaming');
+        const tag = el.querySelector('.msg-tag');
+        if (tag) tag.textContent = persona.tag;
+        const bubble = el.querySelector('.msg-persona-bubble');
+        if (bubble) {
+          bubble.innerHTML = '<span class="stream-text"></span><span class="stream-caret" aria-hidden="true"></span>';
+          textEl = bubble.querySelector('.stream-text');
+        }
+      }
+      if (!raf) raf = requestAnimationFrame(step);
+    },
+    /* 최종 렌더로 교체. el 을 그대로 쓰므로 스크롤이 튀지 않는다 */
+    finish(msg) {
+      if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      el.classList.remove('msg-typing', 'msg-streaming');
+      el.className = 'msg-persona';
+      el.dataset.persona = persona.id;
+      el.innerHTML = `
+      <div class="msg-persona-head">
+        ${avatarHtml(persona)}
+        <span class="msg-name">${persona.name}</span>
+        <span class="msg-tag">${persona.tag}</span>
+      </div>
+      <div class="msg-persona-bubble">${renderBubbleContent(msg)}</div>
+    `;
+      const speakBtn = el.querySelector('.msg-action-btn[data-speak]');
+      if (speakBtn) {
+        speakBtn.addEventListener('click', (e) => { e.stopPropagation(); speakMessage(msg.id); });
+      }
+      if (chatStickToBottom) scrollChatToBottom(false);
+      return el;
+    },
+    /* 중단 — 아직 한 글자도 안 나왔을 때만 부른다. 흔적 없이 지운다 */
+    discard() {
+      if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+    }
+  };
+}
+
 // 메시지 음성 재생
 function speakMessage(msgId) {
   const msg = state.messages.find(m => m.id === msgId);
@@ -8054,6 +8357,9 @@ function toContentBlocks(content) {
  *   · 이미지 미지원(현재 Groq) → 이미지 블록을 버리고 텍스트만 남긴다 */
 function normalizeMessagesForProvider(messages, provider) {
   const cfg = LLM_CONFIG[provider] || {};
+  // Gemini 는 형식이 아예 달라서(contents/parts) 여기서 건드리지 않고
+  // 호출 직전에 toGeminiContents() 가 통째로 바꾼다. 내부 표준 그대로 넘긴다.
+  if (provider === 'gemini') return messages;
   return messages.map(m => {
     if (!Array.isArray(m.content)) return m;
     if (provider === 'anthropic') return m;
@@ -8069,12 +8375,147 @@ function normalizeMessagesForProvider(messages, provider) {
     return { role: m.role, content: text || '(사진 첨부 — 이 모델은 볼 수 없음)' };
   });
 }
+/* Gemini 형식 변환 (v2.8)
+ *   내부 표준(Anthropic 블록) → Gemini contents/parts
+ *   · role: assistant → model
+ *   · 문자열 content → parts: [{text}]
+ *   · image 블록 → {inline_data: {mime_type, data}}
+ * Gemini 는 연속된 같은 role 을 싫어하지 않지만, 첫 메시지는 user 여야 한다. */
+function toGeminiContents(messages) {
+  const out = [];
+  messages.forEach(m => {
+    const role = m.role === 'assistant' ? 'model' : 'user';
+    let parts;
+    if (Array.isArray(m.content)) {
+      parts = m.content.map(b => {
+        if (b.type === 'image' && b.source) {
+          return { inline_data: { mime_type: b.source.media_type, data: b.source.data } };
+        }
+        return { text: b.text || '' };
+      }).filter(p => p.inline_data || (p.text && p.text.length));
+    } else {
+      // 빈 문자열을 그대로 넘기면 Gemini 가 INVALID_ARGUMENT 로 거절한다.
+      // (Anthropic·Groq 은 조용히 넘어가서 여기서만 터진다)
+      const t = String(m.content == null ? '' : m.content);
+      parts = t.length ? [{ text: t }] : [];
+    }
+    if (!parts.length) return;
+    out.push({ role: role, parts: parts });
+  });
+  // 첫 메시지가 model 이면 Gemini 가 거부한다 — 앞에 빈 user 턴을 세운다
+  if (out.length && out[0].role === 'model') out.unshift({ role: 'user', parts: [{ text: '(대화 시작)' }] });
+  return out;
+}
+
+/* SSE 리더 (v2.8) — 세 provider 가 전부 text/event-stream 을 쓴다.
+ * 프레임은 빈 줄로 구분되고, 한 프레임 안의 data: 줄을 이어 붙이면 JSON 하나다.
+ * onEvent(name, json) — name 은 Anthropic 만 의미가 있다(event: 줄). */
+async function readSseStream(res, onEvent) {
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = '';
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    let sep;
+    // \n\n 이 프레임 구분자. \r\n\r\n 을 주는 서버도 있어 함께 본다.
+    while ((sep = buf.search(/\r?\n\r?\n/)) >= 0) {
+      const frame = buf.slice(0, sep);
+      buf = buf.slice(sep + buf.slice(sep).match(/^\r?\n\r?\n/)[0].length);
+      let name = '';
+      const dataLines = [];
+      frame.split(/\r?\n/).forEach(line => {
+        if (line.indexOf('event:') === 0) name = line.slice(6).trim();
+        else if (line.indexOf('data:') === 0) dataLines.push(line.slice(5).trim());
+      });
+      if (!dataLines.length) continue;
+      const payload = dataLines.join('\n');
+      if (payload === '[DONE]') return;
+      let json;
+      try { json = JSON.parse(payload); } catch (e) { continue; }
+      onEvent(name, json);
+    }
+  }
+}
+
+/* provider 별 오류 메시지 정리 — 연결 테스트와 본 호출이 같은 분류를 쓴다 */
+function describeApiError(provider, status, raw) {
+  const r = String(raw || '');
+  if (provider === 'anthropic') {
+    if (status === 401) return 'Anthropic API key가 올바르지 않습니다.';
+    if (status === 429) return 'Anthropic 한도 초과 — 잔액 확인 필요';
+    if (/credit balance/i.test(r)) return 'Anthropic 잔액 부족 — Billing에서 충전';
+  }
+  if (provider === 'groq') {
+    if (status === 401) return 'Groq API key가 올바르지 않습니다.';
+    if (status === 429) return 'Groq 한도 초과 — 잠시 후 재시도';
+  }
+  if (provider === 'gemini') {
+    // Gemini 는 키 오류도 400 으로 준다 — 본문의 status 문자열로 갈라야 한다
+    if (status === 400 && /API_KEY_INVALID|API key not valid/i.test(r)) {
+      return 'Gemini API key가 올바르지 않습니다 — aistudio.google.com/apikey 에서 확인';
+    }
+    if (status === 403) return 'Gemini 키에 권한이 없습니다 (API 사용 설정을 확인해주세요)';
+    if (status === 429) return 'Gemini 무료 티어 한도 초과 — 잠시 후 다시 시도하세요';
+    if (status === 404) return 'Gemini 모델 이름을 확인해주세요';
+    if (status === 503) return 'Gemini 서버가 혼잡합니다 — 잠시 후 다시';
+  }
+  return r || `${LLM_CONFIG[provider] ? LLM_CONFIG[provider].name : provider} API error ${status}`;
+}
+
+/* 무게별 모델 선택 (v2.8 — 2단 구성)
+ * 잡담·리액션은 소형 모델로 넘겨 첫 글자까지의 시간을 줄인다.
+ * fastModel 이 없는 provider 이거나 twoTier 를 끄면 항상 사용자가 고른 모델. */
+function pickModelForWeight(weight) {
+  if (!SPEED_RULES.twoTier || !state.twoTier) return state.model;
+  const cfg = LLM_CONFIG[state.provider] || {};
+  if (!cfg.fastModel) return state.model;
+  const tier = SPEED_RULES.tierByWeight[weight] || 'main';
+  if (tier !== 'fast') return state.model;
+  // 이미 그 소형 모델을 쓰고 있으면 바꿀 게 없다
+  return cfg.fastModel === state.model ? state.model : cfg.fastModel;
+}
+
+/* 요청 본문 만들기 — 스트리밍/논스트리밍이 같은 걸 쓴다 */
+function buildRequestBody(provider, systemPrompt, messages, o) {
+  if (provider === 'anthropic') {
+    const body = {
+      model: o.model,
+      max_tokens: o.maxTokens,
+      system: systemPrompt,
+      messages: messages
+    };
+    if (o.webSearch) body.tools = [{ type: 'web_search_20250305', name: 'web_search', max_uses: 4 }];
+    if (o.stream) body.stream = true;
+    return body;
+  }
+  if (provider === 'gemini') {
+    const body = {
+      system_instruction: { parts: [{ text: systemPrompt }] },
+      contents: toGeminiContents(messages),
+      generationConfig: { maxOutputTokens: o.maxTokens }
+    };
+    return body;   // 스트리밍은 URL(:streamGenerateContent)로 가른다
+  }
+  // OpenAI 호환 (Groq)
+  const body = {
+    model: o.model,
+    max_tokens: o.maxTokens,
+    messages: [{ role: 'system', content: systemPrompt }, ...messages]
+  };
+  if (o.stream) body.stream = true;
+  return body;
+}
+
 // callLLM — messages 배열(멀티턴) 지원 + Anthropic 웹 검색 옵션
 // systemPrompt: string, messages: [{role, content}] 또는 string(단일 user)
-// opts: { webSearch: bool, maxTokens: int }
+// opts: { webSearch, maxTokens, model, signal, onDelta }
+//   onDelta 가 있고 provider 가 스트리밍을 지원하면 조각이 오는 대로 흘려준다 (v2.8).
 async function callLLM(systemPrompt, messagesOrText, opts = {}) {
   if (!state.apiKey) throw new Error('API key가 설정되지 않았습니다');
-  const cfg = LLM_CONFIG[state.provider];
+  const provider = state.provider;
+  const cfg = LLM_CONFIG[provider];
   if (!cfg) throw new Error('알 수 없는 provider');
 
   // 문자열이면 단일 user 메시지로 변환 → provider 형식으로 정규화 (이미지 포함)
@@ -8082,45 +8523,102 @@ async function callLLM(systemPrompt, messagesOrText, opts = {}) {
     typeof messagesOrText === 'string'
       ? [{ role: 'user', content: messagesOrText }]
       : messagesOrText,
-    state.provider
+    provider
   );
-  const maxTokens = opts.maxTokens || 1200;
-  const useWebSearch = !!opts.webSearch && state.provider === 'anthropic';
+  const o = {
+    model: opts.model || state.model,
+    maxTokens: opts.maxTokens || 1200,
+    webSearch: !!opts.webSearch && provider === 'anthropic',
+    stream: !!opts.onDelta && SPEED_RULES.stream && cfg.stream !== false
+  };
   const retryCount = opts.retryCount || 0;
 
-  if (state.provider === 'anthropic') {
-    const body = {
-      model: state.model,
-      max_tokens: maxTokens,
-      system: systemPrompt,
-      messages: messages
-    };
-    if (useWebSearch) {
-      body.tools = [{ type: 'web_search_20250305', name: 'web_search', max_uses: 4 }];
-    }
-    const res = await fetch(cfg.endpoint, {
+  const url = providerEndpoint(provider, o.model, { stream: o.stream });
+  let res;
+  try {
+    res = await fetch(url, {
       method: 'POST',
-      headers: {
-        'x-api-key': state.apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(body)
+      headers: providerHeaders(provider, state.apiKey),
+      body: JSON.stringify(buildRequestBody(provider, systemPrompt, messages, o)),
+      signal: opts.signal
     });
-    const data = await res.json();
-    if (!res.ok) {
-      const raw = data?.error?.message || `Anthropic API error ${res.status}`;
-      if (res.status === 401) throw new Error('Anthropic API key가 올바르지 않습니다.');
-      if (res.status === 429) throw new Error('Anthropic 한도 초과 — 잔액 확인 필요');
-      if (/credit balance/i.test(raw)) throw new Error('Anthropic 잔액 부족 — Billing에서 충전');
-      throw new Error(raw);
+  } catch (e) {
+    if (e && e.name === 'AbortError') throw e;
+    throw new Error('네트워크에 닿지 못했습니다 — 인터넷 연결을 확인해주세요');
+  }
+
+  if (!res.ok) {
+    let raw = '';
+    let data = null;
+    try { data = await res.json(); raw = (data && data.error && data.error.message) || ''; } catch (e) {}
+    // Groq 는 429 에 "try again in Ns" 를 준다 — 한 번은 그만큼 기다렸다 재시도
+    if (provider === 'groq' && res.status === 429 && retryCount < 1) {
+      const m = raw.match(/try again in ([\d.]+)s/i);
+      await sleep(((m ? Math.ceil(parseFloat(m[1])) : 30) + 1) * 1000);
+      return callLLM(systemPrompt, messagesOrText, { ...opts, retryCount: retryCount + 1 });
     }
-    // 텍스트 블록만 추출 (web_search 결과/citation 블록은 텍스트에 자연 통합됨)
-    const textBlocks = (data.content || [])
-      .filter(b => b.type === 'text')
-      .map(b => b.text);
-    // 인용 URL 수집 (web_search_tool_result 안의 citations)
+    throw new Error(describeApiError(provider, res.status, raw));
+  }
+
+  if (o.stream && res.body && res.body.getReader) {
+    try {
+      return await consumeStream(provider, res, opts.onDelta);
+    } catch (e) {
+      if (e && e.name === 'AbortError') throw e;
+      // 스트림이 중간에 깨졌다 — 조용히 논스트리밍으로 한 번 더 간다
+      console.warn('[벨챗:stream] 스트림 실패 → 일반 호출로 대체', e);
+      return callLLM(systemPrompt, messagesOrText, { ...opts, onDelta: null });
+    }
+  }
+
+  const data = await res.json();
+  return extractNonStreamResult(provider, data);
+}
+
+/* 스트림 소비 — provider 별 델타 위치만 다르다 */
+async function consumeStream(provider, res, onDelta) {
+  let text = '';
+  const citations = [];
+  const push = (chunk) => {
+    if (!chunk) return;
+    text += chunk;
+    try { onDelta(chunk, text); } catch (e) {}
+  };
+  const addCitation = (c) => {
+    if (c && c.url && !citations.find(x => x.url === c.url)) {
+      citations.push({ url: c.url, title: c.title || c.url });
+    }
+  };
+
+  await readSseStream(res, (name, j) => {
+    if (provider === 'anthropic') {
+      if (name === 'content_block_delta' || j.type === 'content_block_delta') {
+        const d = j.delta || {};
+        if (d.type === 'text_delta') push(d.text || '');
+        else if (d.type === 'citations_delta') addCitation(d.citation);
+      } else if (j.type === 'error') {
+        throw new Error((j.error && j.error.message) || 'Anthropic 스트림 오류');
+      }
+      return;
+    }
+    if (provider === 'gemini') {
+      const cand = (j.candidates || [])[0];
+      const parts = (cand && cand.content && cand.content.parts) || [];
+      parts.forEach(pt => { if (typeof pt.text === 'string') push(pt.text); });
+      return;
+    }
+    // OpenAI 호환 (Groq)
+    const ch = (j.choices || [])[0];
+    if (ch && ch.delta && typeof ch.delta.content === 'string') push(ch.delta.content);
+  });
+
+  return { text: text, citations: citations };
+}
+
+/* 논스트리밍 응답에서 텍스트·인용 뽑기 */
+function extractNonStreamResult(provider, data) {
+  if (provider === 'anthropic') {
+    const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text);
     const citations = [];
     (data.content || []).forEach(b => {
       if (b.type === 'text' && Array.isArray(b.citations)) {
@@ -8133,42 +8631,17 @@ async function callLLM(systemPrompt, messagesOrText, opts = {}) {
     });
     return { text: textBlocks.join('\n'), citations };
   }
-
-  if (state.provider === 'groq') {
-    const res = await fetch(cfg.endpoint, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${state.apiKey}`,
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: state.model,
-        max_tokens: maxTokens,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...messages
-        ]
-      })
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      const raw = data?.error?.message || `Groq API error ${res.status}`;
-      if (res.status === 429) {
-        const m = raw.match(/try again in ([\d.]+)s/i);
-        const wait = m ? Math.ceil(parseFloat(m[1])) : 30;
-        if (retryCount < 1) {
-          await sleep((wait + 1) * 1000);
-          return callLLM(systemPrompt, messagesOrText, { ...opts, retryCount: retryCount + 1 });
-        }
-        throw new Error('Groq 한도 초과 — 잠시 후 재시도');
-      }
-      if (res.status === 401) throw new Error('Groq API key가 올바르지 않습니다.');
-      throw new Error(raw);
+  if (provider === 'gemini') {
+    const cand = (data.candidates || [])[0];
+    const parts = (cand && cand.content && cand.content.parts) || [];
+    const text = parts.map(p => p.text || '').join('');
+    // 안전 필터에 걸려 본문이 비면 이유를 그대로 알려준다 (빈 말풍선보다 낫다)
+    if (!text && cand && cand.finishReason && cand.finishReason !== 'STOP') {
+      throw new Error('Gemini 응답이 차단되었습니다 (' + cand.finishReason + ')');
     }
-    return { text: data?.choices?.[0]?.message?.content || '', citations: [] };
+    return { text: text, citations: [] };
   }
-
-  throw new Error('지원되지 않는 provider');
+  return { text: (((data.choices || [])[0] || {}).message || {}).content || '', citations: [] };
 }
 
 /* ============ MEETING FLOW ============ */
@@ -8242,11 +8715,60 @@ function buildConversationHistory(forPersonaId) {
   return merged;
 }
 
-// 페르소나 한 명의 발언 턴 — typing 표시 → LLM 호출 → 메시지 추가
-async function runPersonaTurn(persona, instruction, opts = {}) {
-  const typingMsg = { id: 'typing_' + persona.id, type: 'typing', personaId: persona.id };
-  appendMessage(typingMsg);
+/* ═══════════ 발언 턴 (v2.8 재구성) ═══════════
+ * v2.7 까지는 "요청 → 완성 → 표시"가 한 함수였다. 그래서
+ *   ① 완성될 때까지 화면이 비어 있고 (느리게 느껴진다)
+ *   ② 다음 사람 요청을 미리 걸 수 없고 (직렬로 쌓인다)
+ *   ③ 중간에 취소할 방법이 없었다.
+ * 이제 셋을 분리한다.
+ *   startTurnRequest() — 요청만 건다. 조각은 버퍼에 쌓인다. 화면은 안 건드린다.
+ *   presentTurn()      — 버퍼를 화면에 흘리고, 끝나면 언어 가드를 걸어 확정한다.
+ * 두 번째 사람의 요청을 첫 사람이 말하는 동안 미리 걸어두는 게 이 구조의 목적이다.
+ * ══════════════════════════════════════════════ */
 
+function startTurnRequest(persona, instruction, opts = {}) {
+  const rec = {
+    persona: persona,
+    seq: (opts.seq === undefined ? state.turnSeq : opts.seq),
+    ctrl: (typeof AbortController !== 'undefined') ? new AbortController() : null,
+    buffer: '',
+    sink: null,        // presentTurn 이 붙으면 그때부터 화면으로 흘러간다
+    spoke: false,      // 화면에 한 글자라도 나갔나 (취소 판단 기준)
+    cancelled: false,
+    citations: []
+  };
+  rec.cancel = function () {
+    if (rec.cancelled) return;
+    rec.cancelled = true;
+    try { if (rec.ctrl) rec.ctrl.abort(); } catch (e) {}
+  };
+
+  rec.promise = runTurnFetch(persona, instruction, opts, rec);
+  state.liveTurns.push(rec);
+  return rec;
+}
+
+/* 살아 있는 턴 정리 — 새 메시지가 들어왔을 때 부른다.
+ * 이미 말하기 시작한 턴은 끝까지 둔다(사람이 말하다 마는 건 이상하다).
+ * 아직 한 글자도 안 나온 턴은 조용히 중단한다(화면에 잃을 게 없다). */
+function cancelStaleTurns(newSeq) {
+  let killed = 0;
+  state.liveTurns.forEach(rec => {
+    if (rec.cancelled || rec.seq >= newSeq) return;
+    if (rec.spoke && INTERRUPT_RULES.keepSpokenTurns) return;
+    if (!INTERRUPT_RULES.abortSilentTurns) return;
+    rec.cancel();
+    killed++;
+  });
+  state.liveTurns = state.liveTurns.filter(r => !r.done && !r.cancelled);
+  if (killed && INTERRUPT_RULES.noticeOnInterrupt) {
+    pushSystemMessage(`새 메시지가 들어와 대기 중이던 답변 ${killed}건을 취소했습니다`);
+  }
+  return killed;
+}
+
+// 페르소나 한 명의 발언 턴 — 요청 → (스트림) 버퍼 → 언어 가드
+async function runTurnFetch(persona, instruction, opts, rec) {
   // SVG 모드 — 프로세스 질문을 받은 담당자만
   let instr = instruction;
   let maxTokens = opts.maxTokens || 1200;
@@ -8272,10 +8794,22 @@ async function runPersonaTurn(persona, instruction, opts = {}) {
   }
 
   const useWebSearch = state.provider === 'anthropic';
+  const model = opts.model || state.model;
 
-  // 한 번 호출 → SVG 분리 → 문자 정화 → 이름표 제거
-  const askOnce = async (msgs) => {
-    const result = await callLLM(persona.system, msgs, { webSearch: useWebSearch, maxTokens });
+  /* 한 번 호출 → SVG 분리 → 문자 정화 → 이름표 제거
+   * live=true 인 첫 호출만 조각을 흘려보낸다. 언어 가드 재생성 호출은
+   * 화면에 흘리면 안 된다 — 같은 말이 두 번 타이핑되는 것처럼 보인다. */
+  const askOnce = async (msgs, live) => {
+    const result = await callLLM(persona.system, msgs, {
+      webSearch: useWebSearch,
+      maxTokens: maxTokens,
+      model: model,
+      signal: rec.ctrl ? rec.ctrl.signal : undefined,
+      onDelta: live ? function (chunk, full) {
+        rec.buffer = full;
+        if (rec.sink) { rec.spoke = true; rec.sink(full); }
+      } : null
+    });
     // SVG 블록을 먼저 분리 — sanitizeKorean이 SVG를 깨뜨리지 않게
     const { text: textPart, svgRaw } = extractSvgBlock(result.text || '');
     let t = sanitizeKorean(textPart, { personaId: persona.id, where: 'chat' });
@@ -8289,7 +8823,8 @@ async function runPersonaTurn(persona, instruction, opts = {}) {
   };
 
   try {
-    let result = await askOnce(messages);
+    langStats.turns++;
+    let result = await askOnce(messages, true);
 
     /* v2.3 — 영어 혼입 방어. 문자 필터로는 못 잡는다(영문자는 허용 문자다).
      * v2.3.1 — 방아쇠가 둘로 늘었다. 파이프라인은 그대로 하나다.
@@ -8299,6 +8834,9 @@ async function runPersonaTurn(persona, instruction, opts = {}) {
     let check = checkKorean(result.text);
     if (check.needsRewrite) {
       const trigger = check.reason;   // 로그 stage 는 최초 방아쇠 기준으로 붙인다
+      langStats.rewrites++;
+      langStats.byTrigger[trigger] = (langStats.byTrigger[trigger] || 0) + 1;
+      const guardT0 = Date.now();
       logKoreanRatio(persona.id, result.text, langStage('detected', trigger), check);
 
       for (let attempt = 0; attempt < LANG_GUARD.retries; attempt++) {
@@ -8308,8 +8846,9 @@ async function runPersonaTurn(persona, instruction, opts = {}) {
         ]);
         let retried;
         try {
-          retried = await askOnce(retryMsgs);
+          retried = await askOnce(retryMsgs, false);
         } catch (e) {
+          if (e && e.name === 'AbortError') throw e;
           console.warn('[compass:한국어] 재생성 호출 실패 — 원본을 그대로 쓴다', e);
           break;
         }
@@ -8323,41 +8862,94 @@ async function runPersonaTurn(persona, instruction, opts = {}) {
 
       // 재생성해도 기준 미달이면 그대로 표시하되 반드시 기록을 남긴다
       const final = checkKorean(result.text);
+      langStats.guardMs += Date.now() - guardT0;
+      if (final.needsRewrite) langStats.gaveup++; else langStats.recovered++;
       logKoreanRatio(persona.id, result.text,
         langStage(final.needsRewrite ? 'gaveup' : 'recovered', trigger), final);
     }
 
-    const text = result.text;
-    const svg = result.svgRaw ? sanitizeSvg(result.svgRaw) : '';
-    removeTypingMessage(persona.id);
-    const msg = {
-      id: 'msg_' + persona.id + '_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
-      type: 'persona',
-      personaId: persona.id,
-      content: text,
-      svg: svg,
-      citations: result.citations || [],
-      ts: Date.now()
+    rec.done = true;
+    return {
+      ok: true,
+      text: result.text,
+      svg: result.svgRaw ? sanitizeSvg(result.svgRaw) : '',
+      citations: result.citations || []
     };
-    state.messages.push(msg);
-    appendMessage(msg);
-    return msg;
   } catch (err) {
-    removeTypingMessage(persona.id);
-    const friendly = err.message.length > 90 ? err.message.slice(0, 90) + '…' : err.message;
-    const errMsg = {
-      id: 'msg_err_' + persona.id + '_' + Date.now(),
-      type: 'persona',
-      personaId: persona.id,
-      content: '⚠ ' + friendly,
-      parsed: { RAW: '⚠ ' + friendly },
-      ts: Date.now()
-    };
-    state.messages.push(errMsg);
-    appendMessage(errMsg);
-    return errMsg;
+    rec.done = true;
+    if (err && err.name === 'AbortError') return { ok: false, aborted: true };
+    const raw = String((err && err.message) || err);
+    return { ok: false, error: raw.length > 90 ? raw.slice(0, 90) + '…' : raw };
   }
 }
+
+/* 화면에 흘리고 확정한다.
+ * rec 은 이미 요청이 걸려 있는 상태다 — 여기서는 "언제 보여줄지"만 정한다.
+ * 미리 받아둔 답변이면 버퍼가 이미 차 있어 타자기처럼 빠르게 따라잡고,
+ * 아직 오는 중이면 도착하는 대로 실시간으로 흐른다. 같은 코드가 둘 다 처리한다. */
+async function presentTurn(rec) {
+  const persona = rec.persona;
+  appendMessage({ id: 'typing_' + persona.id, type: 'typing', personaId: persona.id });
+  const bubble = createStreamBubble(persona);
+
+  if (bubble) {
+    rec.sink = (full) => bubble.push(full);
+    if (rec.buffer) { rec.spoke = true; bubble.push(rec.buffer); }   // 미리 받아둔 몫부터
+  }
+
+  const out = await rec.promise;
+  rec.sink = null;
+  state.liveTurns = state.liveTurns.filter(r => r !== rec);
+
+  if (!out || out.aborted) {
+    if (bubble) bubble.discard(); else removeTypingMessage(persona.id);
+    return null;
+  }
+
+  const msg = out.ok
+    ? {
+        id: 'msg_' + persona.id + '_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+        type: 'persona', personaId: persona.id,
+        content: out.text, svg: out.svg, citations: out.citations, ts: Date.now()
+      }
+    : {
+        id: 'msg_err_' + persona.id + '_' + Date.now(),
+        type: 'persona', personaId: persona.id,
+        content: '⚠ ' + out.error, parsed: { RAW: '⚠ ' + out.error }, ts: Date.now()
+      };
+
+  state.messages.push(msg);
+  if (bubble) bubble.finish(msg);
+  else { removeTypingMessage(persona.id); appendMessage(msg); }
+  return msg;
+}
+
+/* v2.7 까지의 호출부 호환 — 회의 모드(startMeeting)가 아직 이 이름을 쓴다.
+ * 요청과 표시를 한 번에 하는 옛 동작 그대로다. */
+async function runPersonaTurn(persona, instruction, opts = {}) {
+  const rec = startTurnRequest(persona, instruction, opts);
+  return presentTurn(rec);
+}
+
+/* ---- 한국어 재생성 발생률 (v2.8) ----------------------------------
+ * 재생성 한 번은 API 호출 한 번이다 — 잦으면 그 자체가 느림의 원인이다.
+ * 그래서 "얼마나 자주 걸리는지"를 눈에 보이게 센다. 설정 하단에 표시된다.
+ * ---------------------------------------------------------------- */
+const langStats = {
+  turns: 0, rewrites: 0, recovered: 0, gaveup: 0, guardMs: 0, byTrigger: {}
+};
+function langStatsSummary() {
+  if (!langStats.turns) return '아직 집계된 발언이 없습니다.';
+  const pct = Math.round((langStats.rewrites / langStats.turns) * 100);
+  const avg = langStats.rewrites ? Math.round(langStats.guardMs / langStats.rewrites) : 0;
+  let s = `한국어 재생성 ${langStats.rewrites}/${langStats.turns}회 (${pct}%)`;
+  if (langStats.rewrites) {
+    s += ` · 회복 ${langStats.recovered} · 실패 ${langStats.gaveup} · 평균 +${avg}ms`;
+  }
+  if (pct >= 20) s += ' — 재생성이 잦습니다. 모델을 바꾸면 더 빨라집니다.';
+  return s;
+}
+window.__velchatLangStats = function () { console.log(langStatsSummary(), langStats); return langStats; };
 
 /* ---- 회의 시작 — 주제 확정 · 전문가 배정 · 첫 라운드 ---- */
 async function startMeeting() {
@@ -8761,6 +9353,13 @@ function buildChatInstruction(opts) {
   } else if (opts.order === 0) {
     parts.push(`${APP.chair}가 방금 한 말에 너답게 반응해.`);
     parts.push(rule.tone);
+  } else if (opts.concurrent) {
+    /* v2.8 — 미리 걸어둔 호출이라 동료가 뭐라 답했는지 아직 모른다.
+     * 안 본 말을 본 척하면 대화가 어긋나므로, 아예 "동시에 쓰는 중"으로 알려준다.
+     * 단톡방에서 두 사람이 동시에 타이핑하는 것과 같은 상황이다. */
+    parts.push(`${APP.chair}의 말에 너도 답한다. 동료 ${opts.prevName}도 지금 동시에 쓰고 있어서 그 사람 말은 아직 못 봤다.`);
+    parts.push(`동료 말을 인용하거나 "${opts.prevName} 말처럼" 같은 식으로 받아치지 마라 — 아직 못 봤으니까. ${APP.chair}의 말에만 네 관점으로 답해라.`);
+    parts.push(rule.tone);
   } else {
     parts.push(`${APP.chair}의 말에 방금 ${opts.prevName}가 먼저 답했다. 너도 할 말이 있어서 이어 말한다.`);
     parts.push('같은 얘기 반복 금지 — 네 관점에서 다른 각도를 보태거나 다르게 본다고 말해라.');
@@ -8783,7 +9382,9 @@ function buildChatInstruction(opts) {
 }
 
 async function sendFollowup() {
-  if (state.inProgress) return;
+  /* v2.8 — 응답 중이어도 막지 않는다. 카톡에서 상대가 타이핑 중이라고
+   * 내 입력창이 잠기지는 않는다. 대신 세대 번호(turnSeq)를 올려
+   * 이전 세대의 "아직 시작 안 한 턴"을 취소하고, 라우팅을 다시 계산한다. */
   const question = $('#followupInput').value.trim();
   const attached = (state.pendingImages || []).slice();
   // v2.2 — 사진만 보내는 것도 허용 (텍스트 없이 "이거 봐줘")
@@ -8794,9 +9395,12 @@ async function sendFollowup() {
     return;
   }
 
+  /* 이 전송의 세대 번호. 이후 모든 대기·표시 단계가 이 값을 확인한다.
+   * 내가 최신이 아니면 그 자리에서 멈춘다 → 연속으로 여러 개 보내도
+   * 항상 "마지막 메시지" 기준으로만 답이 나간다. */
+  const seq = ++state.turnSeq;
+  cancelStaleTurns(seq);
   state.inProgress = true;
-  $('#btnFollowupSend').disabled = true;
-  $('#btnFollowupSend').textContent = '...';
 
   // 방 제목(=세션 제목). 잡담으로 시작했으면 임시로 걸어두고,
   // 나중에 제대로 된 얘기가 나오면 그걸로 바꾼다.
@@ -8838,7 +9442,7 @@ async function sendFollowup() {
   // 이미지 미지원 모델 안내 — 사진은 방에 남지만 답변엔 반영되지 않는다
   if (attached.length && !providerSupportsVision()) {
     const cfg = LLM_CONFIG[state.provider];
-    pushSystemMessage(`${cfg ? cfg.name : '지금 모델'}은 사진을 볼 수 없습니다 — 사진은 방에만 남고, 답변에는 반영되지 않아요. (설정에서 Anthropic 으로 바꾸면 사진을 보고 답합니다)`);
+    pushSystemMessage(`${cfg ? cfg.name : '지금 모델'}은 사진을 볼 수 없습니다 — 사진은 방에만 남고, 답변에는 반영되지 않아요. (설정에서 Anthropic 또는 Google Gemini 로 바꾸면 사진을 보고 답합니다)`);
   }
 
   // 최근 발언으로 프롬프트 문맥 갱신
@@ -8891,45 +9495,77 @@ async function sendFollowup() {
       return;
     }
 
-    const spoke = [];
-    for (let i = 0; i < responders.length; i++) {
-      const persona = responders[i];
-      if (i > 0) await sleep(randBetween(CHAT_RULES.replyDelayMs));
-      const instruction = buildChatInstruction({
-        weight: weight,
-        order: i,
-        isLast: i === responders.length - 1,
-        prevName: i > 0 ? responders[i - 1].name : '',
-        hasImages: attached.length > 0,
-        visionOk: providerSupportsVision()
-      });
-      const svgMode = (persona.id === drawerId) && wantSvg;
-      await runPersonaTurn(persona, instruction, { svgMode, maxTokens: chatMaxTokens(weight) });
-      noteSpeaker(persona.id);
-      spoke.push(persona.id);
-      if (state.provider === 'groq' && i < responders.length - 1) await sleep(1000);
+    const model = pickModelForWeight(weight);
+    const turnOpts = (i) => ({
+      seq: seq,
+      model: model,
+      maxTokens: chatMaxTokens(weight),
+      svgMode: (responders[i].id === drawerId) && wantSvg
+    });
+    const instructionFor = (i, concurrent) => buildChatInstruction({
+      weight: weight,
+      order: i,
+      concurrent: concurrent,
+      isLast: i === responders.length - 1,
+      prevName: i > 0 ? responders[i - 1].name : '',
+      hasImages: attached.length > 0,
+      visionOk: providerSupportsVision()
+    });
+
+    /* v2.8 — 미리 걸기.
+     * 첫 사람이 말하는 동안(스트림 + 연출 지연) 두 번째 이후 호출을 이미 진행시킨다.
+     * 표시 순서는 그대로 유지되므로 화면상 달라지는 건 "기다림이 없다"는 것뿐이다.
+     * Groq 는 분당 요청 제한이 빡빡해서 동시에 쏘면 429 가 난다 — 거기선 순차로 둔다. */
+    const canPrefetch = SPEED_RULES.prefetch && state.provider !== 'groq';
+    const recs = new Array(responders.length).fill(null);
+    recs[0] = startTurnRequest(responders[0], instructionFor(0, false), turnOpts(0));
+    if (canPrefetch) {
+      for (let i = 1; i < responders.length; i++) {
+        recs[i] = startTurnRequest(responders[i], instructionFor(i, true), turnOpts(i));
+      }
     }
 
-    // 연쇄 반응 — 동료 말에 다른 동료가 한 번 끼어든다
-    if (weight !== 'filler' && spoke.length > 0) {
-      const last = responders[responders.length - 1];
+    const spoke = [];
+    for (let i = 0; i < responders.length; i++) {
+      if (seq !== state.turnSeq) break;                    // 새 메시지가 들어왔다 — 여기서 끊는다
+      if (i > 0) await sleep(randBetween(CHAT_RULES.replyDelayMs));
+      if (seq !== state.turnSeq) break;
+      // 미리 안 걸어뒀으면 지금 건다 (prefetch 를 끈 경우 = v2.7 동작)
+      if (!recs[i]) recs[i] = startTurnRequest(responders[i], instructionFor(i, false), turnOpts(i));
+      const msg = await presentTurn(recs[i]);
+      if (!msg) break;                                     // 취소됨
+      noteSpeaker(responders[i].id);
+      spoke.push(responders[i].id);
+      if (state.provider === 'groq' && i < responders.length - 1) await sleep(1000);
+    }
+    // 표시하지 못한 나머지는 정리한다 (미리 걸어둔 호출이 떠돌지 않게)
+    recs.forEach(r => { if (r && !r.done && spoke.indexOf(r.persona.id) < 0) r.cancel(); });
+
+    /* 연쇄 반응 — 동료 말에 다른 동료가 끼어든다.
+     * 이건 미리 걸 수 없다. 반응할 대상(동료의 말)이 아직 없기 때문이다.
+     * 속도보다 대화의 앞뒤가 중요한 유일한 자리라서 여기만 순차로 남긴다. */
+    if (weight !== 'filler' && spoke.length > 0 && seq === state.turnSeq) {
+      const last = resolvePersona(spoke[spoke.length - 1]);
       const chainer = pickChainResponder(last.id, spoke);
       if (chainer) {
         await sleep(randBetween(CHAT_RULES.chainDelayMs));
-        await runPersonaTurn(chainer, buildChatInstruction({
-          weight: weight, isChain: true, targetName: last.name
-        }), { maxTokens: 600 });
-        noteSpeaker(chainer.id);
+        if (seq === state.turnSeq) {
+          const cRec = startTurnRequest(chainer, buildChatInstruction({
+            weight: weight, isChain: true, targetName: last.name
+          }), { seq: seq, model: model, maxTokens: 600 });
+          if (await presentTurn(cRec)) noteSpeaker(chainer.id);
+        }
       }
     }
 
     autoSave();
   } finally {
-    state.inProgress = false;
-    $('#btnFollowupSend').disabled = false;
-    $('#btnFollowupSend').textContent = '→';
-    $('#followupInput').focus();
-    renderRoundBar();
+    // 최신 세대만 잠금을 푼다 — 옛 세대가 늦게 끝나며 상태를 되돌리면 안 된다
+    if (seq === state.turnSeq) {
+      state.inProgress = false;
+      renderRoundBar();
+      refreshLangStat();
+    }
   }
 }
 
