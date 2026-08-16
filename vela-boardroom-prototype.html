@@ -12,7 +12,7 @@
 <meta name="description" content="벨챗 — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=924c51ef170c" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=079847062639" />
 <meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
 <meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -3625,7 +3625,7 @@
 
 <div class="issue-strip">
   <div class="left">
-    <span id="versionTag">v2.8.3</span>
+    <span id="versionTag">v2.8.4</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -4299,15 +4299,33 @@ function noteRoute(entry) {
   if (routeLog.length > ROUTING_RULES.historyMax) routeLog.length = ROUTING_RULES.historyMax;
 }
 
+/* ═══════════ 'auto' 해석 일원화 (v2.8.4) ═══════════
+ * 'auto' 는 UI 의 개념이지 회사 이름이 아니다.
+ * LLM_CONFIG 에 'auto' 항목은 없으므로, API 계층에 그대로 도달하면
+ * "알 수 없는 provider" 로 죽는다 — v2.8.3 에서 실제로 그 사고가 났다.
+ *
+ * 규칙: **provider 를 인자로 받는 함수는 실제 회사만 받는다.**
+ * 그걸 보장하는 문이 여기다. 호출부에서 이미 실제 회사로 바꿔 넘기는 게 원칙이고,
+ * 이 함수는 한 군데라도 빠뜨렸을 때를 위한 안전망이다.
+ * (에러 대신 그 자리에서 해석한다 — 사용자는 아무 잘못이 없다)
+ * ══════════════════════════════════════════════════ */
+function realProvider(p) {
+  if (p && p !== AUTO_PROVIDER && LLM_CONFIG[p]) return p;
+  const r = resolveRoute({});
+  if (r) return r.provider;
+  return configuredProviders()[0] || REAL_PROVIDERS[0];
+}
+
 /* provider 별 엔드포인트 — Gemini 만 모델·스트리밍 여부에 따라 URL 이 달라진다 */
 function providerEndpoint(provider, model, opts) {
-  const cfg = LLM_CONFIG[provider];
+  const cfg = LLM_CONFIG[realProvider(provider)];   // v2.8.4 — 'auto' 안전망
   if (!cfg) return '';
   return typeof cfg.endpointFor === 'function' ? cfg.endpointFor(model, opts || {}) : cfg.endpoint;
 }
 
 /* provider 별 인증 헤더 — 세 곳(본 호출·스트림·연결 테스트)이 같은 걸 써야 한다 */
-function providerHeaders(provider, key) {
+function providerHeaders(providerIn, key) {
+  const provider = realProvider(providerIn);        // v2.8.4 — 'auto' 안전망
   if (provider === 'anthropic') {
     return {
       'x-api-key': key,
@@ -4335,7 +4353,7 @@ function providerHeaders(provider, key) {
 
 const APP = {
   name: '벨챗',                // v2.4 — 앱 이름
-  version: '2.8.3',
+  version: '2.8.4',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -5618,7 +5636,8 @@ let state = {
 /* provider 의 기본 모델. 목록 첫 항목이 아니라 defaultModel 이 기준이다
  * (목록 순서를 바꿨다고 기본값이 따라 바뀌면 안 된다) */
 function defaultModelFor(provider) {
-  const cfg = LLM_CONFIG[provider] || {};
+  // v2.8.4 — 'auto' 로는 기본 모델을 정할 수 없다. 실제 회사로 풀어서 답한다
+  const cfg = LLM_CONFIG[provider] || LLM_CONFIG[realProvider(provider)] || {};
   return cfg.defaultModel || (cfg.models && cfg.models[0] && cfg.models[0].id) || '';
 }
 
@@ -6139,7 +6158,8 @@ function setKeyStatus(msg, kind) {
 
 /* 연결 테스트 — 최소 비용으로 키가 살아 있는지만 본다 (max_tokens 1).
  * 한도 초과·잔액 부족은 "키는 유효"로 구분해준다. 오타와 다른 문제이기 때문이다. */
-async function testApiKey(provider, key, model) {
+async function testApiKey(providerIn, key, model) {
+  const provider = realProvider(providerIn);   // v2.8.4 — 'auto' 가 와도 실제 회사로 푼다
   const cfg = LLM_CONFIG[provider];
   if (!cfg) return { ok: false, msg: '알 수 없는 provider' };
   if (!key) return { ok: false, msg: '키가 비어 있습니다' };
@@ -6219,7 +6239,11 @@ async function testApiKey(provider, key, model) {
 }
 
 async function runKeyTest() {
-  const provider = $('#inputProvider').value;
+  /* v2.8.4 — #inputProvider 는 'auto' 일 수 있다. 그건 회사 이름이 아니다.
+   * 연결 테스트는 "이 키가 이 회사에서 통하나"를 묻는 것이므로
+   * 키가 실제로 묶여 있는 회사(settingsKeyTarget)를 물어야 한다.
+   * ← 이 한 줄이 v2.8.3 의 "✕ 알 수 없는 provider" 였다. */
+  const provider = settingsKeyTarget();
   const key = cleanApiKey($('#inputApiKey').value);
   const model = chosenModelValue(provider);   // v2.8.2 — 직접 입력한 이름도 포함
   $('#inputApiKey').value = key;
@@ -6256,7 +6280,8 @@ let qrScanStream = null;
 let qrScanLoop = null;
 
 function buildKeyPayload(provider, key) {
-  return `${KEY_QR_PREFIX}|${provider}|${key}`;
+  // v2.8.4 — 'auto' 를 QR 에 담으면 받는 쪽이 어느 회사 키인지 알 수 없다
+  return `${KEY_QR_PREFIX}|${realProvider(provider)}|${key}`;
 }
 function parseKeyPayload(text) {
   const t = String(text || '').trim();
@@ -6286,7 +6311,8 @@ function closeQrModal() {
 }
 
 function showKeyQr() {
-  const provider = $('#inputProvider').value;
+  // v2.8.4 — QR 에는 실제 회사명을 담는다. 'auto' 를 담으면 받는 쪽이 해석할 수 없다
+  const provider = settingsKeyTarget();
   const key = cleanApiKey($('#inputApiKey').value);
   $('#inputApiKey').value = key;
   if (!key) { setKeyStatus('QR로 보낼 키가 없습니다', 'fail'); return; }
@@ -6379,12 +6405,25 @@ async function startQrScan() {
   qrScanLoop = requestAnimationFrame(scan);
 }
 
-function applyScannedKey(parsed) {
+/* QR·붙여넣기로 알아낸 회사에 키 편집칸을 맞춘다 (v2.8.4).
+ * 자동 모드일 때 #inputProvider 를 건드리면 사용자를 자동 모드에서 끌어내리게 된다 —
+ * 키 하나 넣었다고 라우팅 설정이 바뀌면 안 된다. 그때는 키 대상만 옮긴다. */
+function focusKeyEditorOn(provider) {
+  if (!provider || !LLM_CONFIG[provider] || provider === AUTO_PROVIDER) return;
   const sel = $('#inputProvider');
-  if (parsed.provider && LLM_CONFIG[parsed.provider] && sel) {
-    sel.value = parsed.provider;
-    renderSettingsModalForProvider(parsed.provider);
+  if (sel && sel.value === AUTO_PROVIDER) {
+    const target = $('#inputKeyTarget');
+    if (target) target.value = provider;
+    syncKeyTargetRow();
+  } else if (sel) {
+    sel.value = provider;
+    syncKeyTargetRow();
   }
+  renderSettingsModalForProvider(settingsKeyTarget());
+}
+
+function applyScannedKey(parsed) {
+  focusKeyEditorOn(parsed.provider);
   $('#inputApiKey').value = parsed.key;
   closeQrModal();
   toast('QR에서 키를 읽었습니다 — 연결을 확인합니다');
@@ -7287,10 +7326,7 @@ function bindEvents() {
       const parsed = parseKeyPayload(txt);
       const key = parsed ? parsed.key : cleanApiKey(txt);
       if (!key) { setKeyStatus('클립보드가 비어 있습니다', 'fail'); return; }
-      if (parsed && parsed.provider && LLM_CONFIG[parsed.provider]) {
-        $('#inputProvider').value = parsed.provider;
-        renderSettingsModalForProvider(parsed.provider);
-      }
+      if (parsed) focusKeyEditorOn(parsed.provider);
       $('#inputApiKey').value = key;
       setKeyStatus(`붙여넣었습니다 (${key.length}자). 연결 테스트로 확인해보세요.`);
     } catch (e) {
@@ -7324,7 +7360,7 @@ function bindEvents() {
   const btnModelReset = $('#btnModelReset');
   if (btnModelReset) {
     btnModelReset.addEventListener('click', () => {
-      pickModelName(defaultModelFor($('#inputProvider').value));
+      pickModelName(defaultModelFor(settingsKeyTarget()));   // v2.8.4 — 'auto' 아닌 실제 회사
     });
   }
   const btnList = $('#btnListModels');
@@ -7895,7 +7931,8 @@ function refreshModelHint(provider) {
  * 그런데 "무슨 이름을 넣어야 하는지"를 앱이 안 알려주면 고칠 수가 없다.
  * 그래서 키로 발급처에 직접 물어본다.
  * ------------------------------------------------------------------ */
-async function fetchModelList(provider, key) {
+async function fetchModelList(providerIn, key) {
+  const provider = realProvider(providerIn);   // v2.8.4 — 'auto' 안전망
   const cfg = LLM_CONFIG[provider];
   if (!cfg || !cfg.modelsUrl || !key) return null;
   let res;
@@ -7932,7 +7969,8 @@ function rankModelNames(provider, names) {
 }
 
 async function runModelList() {
-  const provider = $('#inputProvider').value;
+  // v2.8.4 — 모델 목록은 회사별이다. 'auto' 로는 물어볼 곳이 없다
+  const provider = settingsKeyTarget();
   const key = cleanApiKey($('#inputApiKey').value);
   const btn = $('#btnListModels');
   if (!key) { setKeyStatus('키를 먼저 입력해주세요', 'fail'); return; }
@@ -9685,7 +9723,7 @@ async function runTurnFetch(persona, instruction, opts, rec) {
     rec.done = true;
     if (err && err.name === 'AbortError') return { ok: false, aborted: true };
     // v2.8.2 — 모델이 은퇴했으면 말풍선 하나 띄우고 끝내지 않는다. 쓸 수 있는 이름을 찾아온다
-    if (err && err.modelUnknown) rescueUnknownModel(err.modelTried);
+    if (err && err.modelUnknown) rescueUnknownModel(err.modelTried, err.provider);
     const raw = String((err && err.message) || err);
     /* v2.8.3 — 한도·혼잡·네트워크는 "앱의 사정"이지 페르소나의 말이 아니다.
      * quiet 로 표시해 말풍선 대신 시스템 칩 한 번으로 나가게 한다. */
@@ -9706,11 +9744,13 @@ async function runTurnFetch(persona, instruction, opts, rec) {
  * 키로 목록을 물어다 시스템 칩 하나로 알려준다. 한 번만.
  * ------------------------------------------------------------------ */
 let modelRescueDone = false;
-async function rescueUnknownModel(tried) {
+async function rescueUnknownModel(tried, failedProvider) {
   if (modelRescueDone) return;
   modelRescueDone = true;
-  const provider = state.provider;
-  const names = await fetchModelList(provider, state.apiKey);
+  /* v2.8.4 — 자동 모드에서는 state.provider 가 'auto' 라 물어볼 곳이 없다.
+   * 실제로 404 를 낸 회사를 그대로 물어본다 (그 회사의 모델 목록이 필요한 거니까). */
+  const provider = realProvider(failedProvider || state.provider);
+  const names = await fetchModelList(provider, providerKeyOf(provider) || state.apiKey);
   if (!names || !names.length) {
     pushSystemMessage(
       `모델 "${tried || state.model}" 을(를) 쓸 수 없습니다 — 설정에서 모델 이름을 바꿔주세요.`);
