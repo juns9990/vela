@@ -12,7 +12,7 @@
 <meta name="description" content="벨챗 — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=ed8999e59145" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=619c845cb53f" />
 <meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
 <meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -3385,6 +3385,7 @@
 
   :root {
     --stage-pad: 22px;                      /* 무대 위아래 여백 (카드형) */
+    --stage-pad-x: 0px;                     /* 카드형은 좌우 여백을 중앙정렬이 만든다 */
     --shell-max: var(--shell-w, 480px);     /* 셸 최대 폭 */
     --shell-radius: 24px;
     --shell-shadow: 0 24px 64px var(--shadow), 0 3px 12px var(--shadow);
@@ -3393,16 +3394,33 @@
     --d-window: none;                       /* 설치 창에서만 보이는 것 */
   }
 
+  /* ══════════════════════════════════════════════════════════════════
+     v2.8.1 — 설치 창은 "각진 풀블리드"가 아니라 "둥근 채팅방"이다.
+
+     v2.7.1 은 창을 꽉 채우는 데 집중해 여백·라운드·그림자를 0 으로 밀었다.
+     맞는 방향이었지만 지나쳤다 — 창 가장자리에 픽셀이 딱 붙으니
+     앱이 아니라 웹페이지를 전체화면으로 띄운 것처럼 보인다.
+     카톡 PC 도 창을 꽉 쓰지만 대화 영역은 얇은 여백 안에 둥글게 떠 있다.
+
+     그래서 0 대신 "얇게" 로 바꾼다. 여백에 body 그라데이션이 비쳐
+     셸이 배경 위에 놓인 물건처럼 보인다.
+
+     값은 JS CONFIG(WINDOW_STYLE)가 --win-* 로 덮어쓴다.
+     아래 기본값은 JS 가 안 돌아도 같은 모습이 나오게 하는 안전판이다.
+     CONFIG 를 0 으로 두면 v2.7.1 의 풀블리드로 그대로 돌아간다.
+     ══════════════════════════════════════════════════════════════════ */
+
   /* ① 설치 창 — 표준 경로. fullscreen/WCO/minimal-ui 도 "창 = 앱"이다 */
   @media (display-mode: standalone),
          (display-mode: window-controls-overlay),
          (display-mode: minimal-ui),
          (display-mode: fullscreen) {
     :root {
-      --stage-pad: 0px;
+      --stage-pad:   var(--win-pad, 8px);
+      --stage-pad-x: var(--win-pad, 8px);
       --shell-max: none;
-      --shell-radius: 0px;
-      --shell-shadow: none;
+      --shell-radius: var(--win-radius, 18px);
+      --shell-shadow: var(--win-shadow, 0 8px 28px rgba(15,23,42,0.16), 0 2px 8px rgba(15,23,42,0.10));
       --main-max: none;
       --d-browser: none;
       --d-window: block;
@@ -3410,24 +3428,27 @@
   }
   /* ② JS 보강 — iOS Safari 는 display-mode 를 안 주고 navigator.standalone 만 준다 */
   body.pwa-window {
-    --stage-pad: 0px;
+    --stage-pad:   var(--win-pad, 8px);
+    --stage-pad-x: var(--win-pad, 8px);
     --shell-max: none;
-    --shell-radius: 0px;
-    --shell-shadow: none;
+    --shell-radius: var(--win-radius, 18px);
+    --shell-shadow: var(--win-shadow, 0 8px 28px rgba(15,23,42,0.16), 0 2px 8px rgba(15,23,42,0.10));
     --main-max: none;
     --d-browser: none;
     --d-window: block;
   }
 
-  /* ---- 위 변수를 받아쓰는 레이아웃 (이 세 줄이 모드 전환의 전부다) ---- */
+  /* ---- 위 변수를 받아쓰는 레이아웃 (이 몇 줄이 모드 전환의 전부다) ---- */
   .app-shell { max-width: var(--shell-max); }
   @media (min-width: 560px) {
-    body.chat-only { padding: var(--stage-pad) 0; }
+    body.chat-only { padding: var(--stage-pad) var(--stage-pad-x); }
     .app-shell {
       border-radius: var(--shell-radius);
       box-shadow: var(--shell-shadow);
     }
   }
+  /* 좁은 창(<560px)은 폰과 같다 — 여백을 주면 아까운 가로폭만 깎아먹는다.
+     설치 창이라도 이 폭에서는 풀블리드가 맞다. */
   /* 매거진 시절 main 의 max-width:1280px 가 넓은 창에서 좌우 여백을 만든다 */
   body.chat-only main { max-width: var(--main-max); margin: 0 auto; }
 
@@ -3585,7 +3606,7 @@
 
 <div class="issue-strip">
   <div class="left">
-    <span id="versionTag">v2.8.0</span>
+    <span id="versionTag">v2.8.1</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -4024,7 +4045,8 @@ const LLM_CONFIG = {
     endpoint: 'https://api.anthropic.com/v1/messages',
     keyPlaceholder: 'sk-ant-...',
     keyHint: 'console.anthropic.com 에서 발급',
-    keyPattern: /^sk-ant-/,
+    keyGuess: /^sk-ant-/,     // QR·붙여넣기 자동 판별용 (확실할 때만 맞아야 한다)
+    keyShape: /^sk-ant-/,     // 참고용 형태 — 어긋나도 저장·테스트를 막지 않는다
     stream: true,
     fastModel: 'claude-haiku-4-5-20251001',   // v2.8 — 잡담·리액션용 소형 모델
     pricingNote: '1콜당 약 20원 (Sonnet 4.6). 4라운드 정식 회의 12콜 ≈ 240원, 빠른 회의 5콜 ≈ 100원. ✓ 한국어 품질 최고 — 권장.',
@@ -4040,7 +4062,8 @@ const LLM_CONFIG = {
     endpoint: 'https://api.groq.com/openai/v1/chat/completions',
     keyPlaceholder: 'gsk_...',
     keyHint: 'console.groq.com 에서 발급 (카드 등록 불필요)',
-    keyPattern: /^gsk_/,
+    keyGuess: /^gsk_/,
+    keyShape: /^gsk_/,
     stream: true,
     fastModel: 'openai/gpt-oss-20b',   // v2.8 — 잡담·리액션용 소형 모델
     pricingNote: '무료. GPT-OSS가 한국어 가장 안정적. Llama는 토큰 깨짐 가능. 사진 인식은 Anthropic·Gemini, 웹 검색은 Anthropic만.',
@@ -4065,9 +4088,16 @@ const LLM_CONFIG = {
       const verb = (opts && opts.stream) ? 'streamGenerateContent?alt=sse' : 'generateContent';
       return `https://generativelanguage.googleapis.com/v1beta/models/${m}:${verb}`;
     },
-    keyPlaceholder: 'AIza...',
-    keyHint: 'aistudio.google.com/apikey 에서 발급 (무료 티어 있음)',
-    keyPattern: /^AIza[0-9A-Za-z_-]{10,}$/,
+    keyPlaceholder: 'AIza... (또는 새 형식 키)',
+    keyHint: 'aistudio.google.com/apikey 에서 발급 (무료 티어 있음). 형식이 달라도 그대로 붙여넣으면 됩니다',
+    /* v2.8.1 — 구글이 키 형식을 바꿨다. AIza 접두어가 없는 신형 키가 나온다.
+     * 그래서 둘을 갈랐다:
+     *   keyGuess — QR·붙여넣기에서 "이건 Gemini 키다"를 단정할 때만. 좁게 유지.
+     *   keyShape — 참고용. 어긋나도 저장·테스트를 막지 않는다.
+     * 접두어를 열거하려 들면 구글이 또 바꿀 때마다 앱이 멀쩡한 키를 거부한다.
+     * 최종 판정은 연결 테스트(=서버)에 맡기는 게 맞다. */
+    keyGuess: /^AIza[0-9A-Za-z_-]{20,}$/,
+    keyShape: /^[A-Za-z0-9._-]{20,}$/,
     stream: true,
     fastModel: 'gemini-2.5-flash-lite',
     pricingNote: '무료 티어 있음 (분당·일당 요청 제한). Flash 계열이 가장 빠르고 사진도 봅니다. 웹 검색은 Anthropic만.',
@@ -4116,7 +4146,7 @@ function providerHeaders(provider, key) {
 
 const APP = {
   name: '벨챗',                // v2.4 — 앱 이름
-  version: '2.8.0',
+  version: '2.8.1',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -4302,6 +4332,23 @@ const VOICE_RULES = {
   pitchMin: 0.5, pitchMax: 2.0, pitchStep: 0.05,
   rateMin: 0.6, rateMax: 1.6, rateStep: 0.05,
   preview: '안녕하세요, 목소리 미리듣기입니다.'
+};
+
+/* ---- ⑮ PC 설치 창 스타일 (v2.8.1) ---------------------------------
+ * 설치한 앱 창에서 셸을 창 가장자리에서 얼마나 띄우고, 얼마나 둥글게 할지.
+ * 여백에는 body 그라데이션이 비쳐 "배경 위에 놓인 채팅방"처럼 보인다.
+ *
+ *   padPx    0  → 풀블리드 (v2.7.1 동작으로 복귀)
+ *   radiusPx 0  → 각진 모서리
+ *   둘 다 0     → 그림자까지 자동으로 꺼진다 (완전한 풀블리드)
+ *
+ * 폭이 560px 미만인 창에서는 이 값들이 무시된다 — 그 폭에서는 폰과 같아서
+ * 여백이 아까운 가로폭만 깎아먹기 때문이다. (CSS 의 @media 가 담당)
+ * ---------------------------------------------------------------- */
+const WINDOW_STYLE = {
+  padPx: 8,        // 창 가장자리와 셸 사이 여백 (권장 6~10)
+  radiusPx: 18,    // 셸 모서리 반경
+  shadow: '0 8px 28px rgba(15,23,42,0.16), 0 2px 8px rgba(15,23,42,0.10)'
 };
 
 /* ---- ⑫ 아바타 (v2.4) --------------------------------------------
@@ -5476,7 +5523,23 @@ function applyWindowMode() {
   document.body.classList.toggle('pwa-window', isWindowMode());
 }
 
+/* v2.8.1 — CONFIG 의 창 스타일을 CSS 변수로 내린다.
+ * CSS 쪽에 var(--win-pad, 8px) 처럼 기본값이 박혀 있으므로
+ * 이 함수가 안 돌아도 모습은 같다. 여기는 "CONFIG 로 조절 가능"을 위한 통로다. */
+function applyWindowStyle() {
+  const root = document.documentElement;
+  const num = (v, d) => (typeof v === 'number' && isFinite(v) && v >= 0) ? Math.round(v) : d;
+  const pad = num(WINDOW_STYLE.padPx, 8);
+  const radius = num(WINDOW_STYLE.radiusPx, 18);
+  root.style.setProperty('--win-pad', pad + 'px');
+  root.style.setProperty('--win-radius', radius + 'px');
+  // 여백도 라운드도 없는 완전한 풀블리드에서는 그림자가 보일 자리가 없다
+  root.style.setProperty('--win-shadow',
+    (pad === 0 && radius === 0) ? 'none' : (WINDOW_STYLE.shadow || 'none'));
+}
+
 function bindWindowMode() {
+  applyWindowStyle();
   applyWindowMode();
   // 창 모드는 도중에 바뀔 수 있다 (전체화면 토글, 탭에서 앱으로 열기 등)
   WINDOW_MODES.forEach(m => {
@@ -5820,10 +5883,12 @@ async function testApiKey(provider, key, model) {
   if (!cfg) return { ok: false, msg: '알 수 없는 provider' };
   if (!key) return { ok: false, msg: '키가 비어 있습니다' };
 
-  // 키 형태를 먼저 본다 — 네트워크를 쓰기 전에 잡을 수 있는 오타가 제일 많다
-  if (cfg.keyPattern && !cfg.keyPattern.test(key)) {
-    return { ok: false, msg: `${cfg.name} 키 형태가 아닙니다 — <b>${escapeHtml(cfg.keyPlaceholder)}</b> 으로 시작해야 합니다` };
-  }
+  /* v2.8.1 — 키 형태는 "참고"다. 막지 않는다.
+   * 예전에는 형태가 어긋나면 그 자리에서 실패로 돌려보냈는데,
+   * 구글이 Gemini 키 형식을 바꾸자 멀쩡한 키가 거부당했다.
+   * 형식은 발급처가 언제든 바꿀 수 있고, 우리는 그걸 따라갈 방법이 없다.
+   * 그러니 형태는 힌트로만 쓰고 최종 판정은 서버에 맡긴다. */
+  const shapeOdd = !!(cfg.keyShape && !cfg.keyShape.test(key));
 
   // 최소 비용 호출. Gemini 는 max_tokens 대신 generationConfig 를 쓴다.
   const body = provider === 'gemini'
@@ -5840,6 +5905,7 @@ async function testApiKey(provider, key, model) {
   } catch (e) {
     return { ok: false, msg: '네트워크에 닿지 못했습니다 — 인터넷 연결을 확인해주세요' };
   }
+  /* 서버가 받아줬으면 형태가 어떻든 그 키는 옳다 — 형태 경고는 여기서 조용히 버린다 */
   if (res.ok) return { ok: true, msg: '연결 성공' };
 
   let raw = '';
@@ -5851,30 +5917,41 @@ async function testApiKey(provider, key, model) {
   } catch (e) {}
   const hay = raw + ' ' + status2;
 
-  /* Gemini 는 HTTP 코드가 뭉툭하다 — 키 오타도 400 이라, 본문 status 로 갈라야 한다.
-   * 순서가 중요하다: 400 을 "모델 이름 문제"로 먼저 잡아버리면 키 오타를 영영 못 만난다. */
-  if (provider === 'gemini') {
-    if (/API_KEY_INVALID|API key not valid|INVALID_ARGUMENT.*key/i.test(hay)) {
-      return { ok: false, msg: '키가 올바르지 않습니다 — aistudio.google.com/apikey 에서 다시 확인해주세요' };
+  const classify = () => {
+    /* Gemini 는 HTTP 코드가 뭉툭하다 — 키 오타도 400 이라, 본문 status 로 갈라야 한다.
+     * 순서가 중요하다: 400 을 "모델 이름 문제"로 먼저 잡아버리면 키 오타를 영영 못 만난다. */
+    if (provider === 'gemini') {
+      if (/API_KEY_INVALID|API key not valid|INVALID_ARGUMENT.*key/i.test(hay)) {
+        return { ok: false, msg: '키가 올바르지 않습니다 — aistudio.google.com/apikey 에서 다시 확인해주세요' };
+      }
+      if (res.status === 403 || /PERMISSION_DENIED/i.test(hay)) {
+        return { ok: false, msg: '이 키에 권한이 없습니다 — Google AI Studio에서 API 사용 설정을 확인해주세요' };
+      }
+      if (res.status === 429 || /RESOURCE_EXHAUSTED|quota/i.test(hay)) {
+        return { ok: true, warn: true, msg: '키는 유효합니다. 다만 <b>무료 티어 한도를 넘었습니다</b> (분당/일당 제한)' };
+      }
+      if (res.status === 404 || /NOT_FOUND|is not found for API version/i.test(hay)) {
+        return { ok: false, msg: '모델 이름을 확인해주세요 — <b>' + escapeHtml(model) + '</b> 을(를) 찾을 수 없습니다' };
+      }
+      if (res.status === 503) return { ok: true, warn: true, msg: '키는 유효합니다. 다만 지금 <b>Gemini 서버가 혼잡</b>합니다' };
     }
-    if (res.status === 403 || /PERMISSION_DENIED/i.test(hay)) {
-      return { ok: false, msg: '이 키에 권한이 없습니다 — Google AI Studio에서 API 사용 설정을 확인해주세요' };
-    }
-    if (res.status === 429 || /RESOURCE_EXHAUSTED|quota/i.test(hay)) {
-      return { ok: true, warn: true, msg: '키는 유효합니다. 다만 <b>무료 티어 한도를 넘었습니다</b> (분당/일당 제한)' };
-    }
-    if (res.status === 404 || /NOT_FOUND|is not found for API version/i.test(hay)) {
-      return { ok: false, msg: '모델 이름을 확인해주세요 — <b>' + escapeHtml(model) + '</b> 을(를) 찾을 수 없습니다' };
-    }
-    if (res.status === 503) return { ok: true, warn: true, msg: '키는 유효합니다. 다만 지금 <b>Gemini 서버가 혼잡</b>합니다' };
-  }
 
-  if (res.status === 401) return { ok: false, msg: '키가 올바르지 않습니다 — 오타이거나 만료된 키입니다' };
-  if (res.status === 403) return { ok: false, msg: '이 키에 권한이 없습니다' };
-  if (res.status === 429) return { ok: true, warn: true, msg: '키는 유효합니다. 다만 지금 <b>사용 한도를 넘었습니다</b>' };
-  if (/credit balance|insufficient/i.test(hay)) return { ok: true, warn: true, msg: '키는 유효합니다. 다만 <b>잔액이 부족합니다</b>' };
-  if (res.status === 404 || /model/i.test(hay)) return { ok: false, msg: '모델 이름을 확인해주세요 — ' + escapeHtml(raw.slice(0, 80)) };
-  return { ok: false, msg: `오류 ${res.status}` + (raw ? ' — ' + escapeHtml(raw.slice(0, 80)) : '') };
+    if (res.status === 401) return { ok: false, msg: '키가 올바르지 않습니다 — 오타이거나 만료된 키입니다' };
+    if (res.status === 403) return { ok: false, msg: '이 키에 권한이 없습니다' };
+    if (res.status === 429) return { ok: true, warn: true, msg: '키는 유효합니다. 다만 지금 <b>사용 한도를 넘었습니다</b>' };
+    if (/credit balance|insufficient/i.test(hay)) return { ok: true, warn: true, msg: '키는 유효합니다. 다만 <b>잔액이 부족합니다</b>' };
+    if (res.status === 404 || /model/i.test(hay)) return { ok: false, msg: '모델 이름을 확인해주세요 — ' + escapeHtml(raw.slice(0, 80)) };
+    return { ok: false, msg: `오류 ${res.status}` + (raw ? ' — ' + escapeHtml(raw.slice(0, 80)) : '') };
+  };
+
+  const out = classify();
+  /* 실패했을 때만 형태 얘기를 꺼낸다.
+   * "형태가 이상하다"는 그 자체로는 판정이 아니라, 실패 원인을 좁히는 힌트일 뿐이다.
+   * (예: Groq 키를 Gemini 칸에 붙여넣은 경우 — 이 한 줄이 바로 알려준다) */
+  if (!out.ok && shapeOdd) {
+    out.msg += `<br/><span style="opacity:.8">참고: 키 형태가 <b>${escapeHtml(cfg.keyPlaceholder)}</b> 와 달라 보입니다 — 다른 서비스의 키를 붙여넣지 않았는지 확인해보세요.</span>`;
+  }
+  return out;
 }
 
 async function runKeyTest() {
@@ -5910,10 +5987,11 @@ function parseKeyPayload(text) {
       return { provider: parts[1], key: cleanApiKey(parts.slice(2).join('|')) };
     }
   }
-  // 접두어만 보고도 어느 provider 인지 알 수 있다 — LLM_CONFIG 의 keyPattern 을 그대로 쓴다
+  /* 접두어만 보고 provider 를 단정하는 자리다 — 여기서는 keyGuess(좁은 쪽)를 쓴다.
+   * keyShape(넓은 쪽)를 쓰면 아무 문자열이나 Gemini 키로 오인한다. */
   const clean = cleanApiKey(t);
   const hit = Object.keys(LLM_CONFIG).find(id => {
-    const pat = LLM_CONFIG[id].keyPattern;
+    const pat = LLM_CONFIG[id].keyGuess;
     return pat && pat.test(clean);
   });
   if (hit) return { provider: hit, key: clean };
