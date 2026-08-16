@@ -2,6 +2,14 @@
   "version": "1.0",
   "issues": [
     {
+      "file": "vela-issue-2026-W34.json",
+      "year": 2026,
+      "week": 34,
+      "monday": "2026-08-17",
+      "headline": "But what is a GPT? · 트랜스포머 시각 입문",
+      "signal_count": 20
+    },
+    {
       "file": "vela-issue-2026-W33.json",
       "year": 2026,
       "week": 33,
@@ -138,5 +146,5 @@
       "signal_count": 8
     }
   ],
-  "updated_at": "2026-08-10T06:24:06.128711+09:00"
+  "updated_at": "2026-08-17T06:14:18.686987+09:00"
 }
