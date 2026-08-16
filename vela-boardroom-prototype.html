@@ -12,7 +12,7 @@
 <meta name="description" content="벨챗 — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=10bdd01efbcc" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=924c51ef170c" />
 <meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
 <meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -3319,6 +3319,25 @@
     color: var(--text-dim);
     word-break: keep-all;
   }
+  /* v2.8.3 — 최근 라우팅 내역 (설정 전용) */
+  .route-log {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    line-height: 1.75;
+    color: var(--text-dim);
+    max-height: 168px;
+    overflow-y: auto;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    padding: 9px 11px;
+    background: var(--bubble);
+  }
+  .route-log .rl-row { display: flex; gap: 7px; align-items: baseline; white-space: nowrap; }
+  .route-log .rl-who { color: var(--text); font-weight: 700; }
+  .route-log .rl-ms { margin-left: auto; opacity: 0.65; }
+  .route-log .rl-fail { color: var(--c-warn); }
+  .route-log .rl-empty { opacity: 0.7; white-space: normal; }
+
   .key-status.ok      { border-color: #16a34a; color: #16a34a; }
   .key-status.fail    { border-color: var(--c-warn); color: var(--c-warn); }
   .key-status.testing { border-color: var(--cyan); color: var(--cyan); }
@@ -3606,7 +3625,7 @@
 
 <div class="issue-strip">
   <div class="left">
-    <span id="versionTag">v2.8.2</span>
+    <span id="versionTag">v2.8.3</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -3865,10 +3884,24 @@
 
     <label>Provider</label>
     <select id="inputProvider">
+      <option value="auto">🔀 자동 (추천) — 텍스트는 빠른 곳, 사진은 보는 곳으로</option>
       <option value="anthropic">Anthropic Claude (유료, 최고 품질)</option>
       <option value="gemini">Google Gemini (무료 티어 · 빠름 · 사진 인식)</option>
       <option value="groq">Groq + Llama (무료)</option>
     </select>
+    <!-- v2.8.3 — 자동 모드일 때만 뜬다. 어느 키가 준비됐는지 한눈에. -->
+    <div class="modal-info" id="autoRouteInfo" hidden></div>
+
+    <!-- v2.8.3 — 자동 모드에서도 키·모델은 회사별로 관리한다.
+         아래 키/모델 칸이 여기서 고른 회사에 묶인다. -->
+    <div id="keyTargetRow" hidden>
+      <label style="margin-top: 14px;">키·모델을 관리할 회사</label>
+      <select id="inputKeyTarget">
+        <option value="groq">Groq</option>
+        <option value="gemini">Google Gemini</option>
+        <option value="anthropic">Anthropic Claude</option>
+      </select>
+    </div>
     <div class="modal-info" id="providerInfo">1콜당 약 20원 (Sonnet 4.6 기준).</div>
 
     <label id="labelApiKey">API Key</label>
@@ -3924,6 +3957,13 @@
 
       <!-- v2.8 — 한국어 재생성 발생률 -->
       <div class="modal-info" id="langGuardStat" style="margin-top: 14px;"></div>
+
+      <!-- v2.8.3 — 최근 라우팅 내역.
+           대화 화면에는 절대 안 띄운다. 궁금한 사람만 여기서 본다. -->
+      <div style="margin-top: 18px;">
+        <div class="modal-info" style="margin-bottom: 6px;">🔀 최근 라우팅</div>
+        <div id="routeLogView" class="route-log"></div>
+      </div>
     </div>
 
     <div style="margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line);">
@@ -4152,6 +4192,113 @@ const LLM_CONFIG = {
   }
 };
 
+/* ═══════════ 하이브리드 라우팅 (v2.8.3) ═══════════
+ * state.provider 가 'auto' 면 메시지마다 provider 를 고른다.
+ * 그 외에는 지금까지처럼 고정이다 — 수동 선택은 그대로 살아 있다.
+ *
+ * 이 블록의 핵심은 "route" 객체다. { provider, key, model, cfg }
+ * 호출 계층(callLLM)은 이제 state 를 직접 읽지 않고 route 를 받는다.
+ * 그래야 같은 대화 안에서 메시지마다 다른 회사로 나갈 수 있다.
+ * ══════════════════════════════════════════════════ */
+const AUTO_PROVIDER = 'auto';
+const REAL_PROVIDERS = ['anthropic', 'gemini', 'groq'];
+
+function providerKeyOf(p) {
+  try { return localStorage.getItem(apiKeyStorageKey(p)) || ''; } catch (e) { return ''; }
+}
+function providerModelOf(p) {
+  let saved = '';
+  try { saved = localStorage.getItem(modelStorageKey(p)) || ''; } catch (e) {}
+  const moved = (MODEL_MIGRATIONS[p] || {})[saved];
+  if (moved) saved = moved;
+  return saved || defaultModelFor(p);
+}
+/* 키가 등록된 provider 들. 자동 모드는 이게 2개 이상일 때 의미가 있다. */
+function configuredProviders() {
+  return REAL_PROVIDERS.filter(p => !!providerKeyOf(p));
+}
+function isAutoMode() {
+  return state.provider === AUTO_PROVIDER;
+}
+
+/* provider 별 일시 정지 상태 — 429/503 을 맞으면 잠깐 후보에서 뺀다 */
+const providerCoolDown = {};   // { provider: 다시 쓸 수 있는 시각(ms) }
+const providerLastCallAt = {}; // { provider: 마지막으로 콜을 쏜 시각(ms) }
+
+function coolDownProvider(provider, status) {
+  const ms = ROUTING_RULES.coolDownMs[status] || 15000;
+  providerCoolDown[provider] = Date.now() + ms;
+}
+function providerAvailable(provider) {
+  const until = providerCoolDown[provider] || 0;
+  return Date.now() >= until;
+}
+
+/* 콜 사이 최소 간격 — 무료 분당 한도가 빡빡한 provider 를 위한 페이싱.
+ * 한 마디에 두세 명이 답하므로, 간격이 없으면 같은 순간에 몰려 한도를 친다. */
+async function paceProvider(provider) {
+  const gap = ROUTING_RULES.minGapMs[provider] || 0;
+  if (!gap) return;
+  const last = providerLastCallAt[provider] || 0;
+  const wait = last + gap - Date.now();
+  // 다음 호출자를 위해 "지금 쏜다"를 먼저 예약한다 (동시 진입해도 줄이 선다)
+  providerLastCallAt[provider] = Math.max(Date.now(), last + gap);
+  if (wait > 0) await sleep(wait);
+}
+
+/* 이번 호출을 어디로 보낼지 정한다.
+ *   needsVision — 사진이 붙은 메시지인가 (사진을 못 보는 곳은 후보에서 빠진다)
+ *   exclude     — 이미 실패한 provider 들 (폴백용)
+ * 고정 모드면 그 provider 하나만 본다. */
+function resolveRoute(opts = {}) {
+  const exclude = opts.exclude || [];
+  const build = (p) => {
+    const key = providerKeyOf(p);
+    if (!key) return null;
+    return { provider: p, key: key, model: providerModelOf(p), cfg: LLM_CONFIG[p] };
+  };
+
+  if (!isAutoMode()) {
+    if (exclude.indexOf(state.provider) >= 0) return null;
+    // 고정 모드는 state 를 그대로 쓴다 (설정에서 방금 바꾼 값이 즉시 반영되게)
+    const cfg = LLM_CONFIG[state.provider];
+    if (!cfg || !state.apiKey) return null;
+    return { provider: state.provider, key: state.apiKey, model: state.model, cfg: cfg };
+  }
+
+  const order = opts.needsVision ? ROUTING_RULES.vision : ROUTING_RULES.text;
+  const usable = order.filter(p => exclude.indexOf(p) < 0 && providerKeyOf(p));
+  // 쉬는 중이 아닌 곳을 먼저, 전부 쉬는 중이면 그중 가장 빨리 풀리는 곳
+  const ready = usable.filter(providerAvailable);
+  if (ready.length) return build(ready[0]);
+  if (!usable.length) return null;
+  const soonest = usable.slice().sort((a, b) =>
+    (providerCoolDown[a] || 0) - (providerCoolDown[b] || 0))[0];
+  return build(soonest);
+}
+
+/* 자동 모드에서 지금 사진을 볼 수 있나 — 후보 중 하나라도 보면 된다 */
+function autoVisionAvailable() {
+  return ROUTING_RULES.vision.some(p => providerKeyOf(p) && (LLM_CONFIG[p] || {}).vision);
+}
+
+/* 사용자에게 보여줄 지금 provider 이름 (자동 모드 포함) */
+function currentProviderLabel() {
+  if (isAutoMode()) return '지금 등록된 키';
+  const cfg = LLM_CONFIG[state.provider];
+  return cfg ? cfg.name : '지금 모델';
+}
+
+/* ---- 라우팅 내역 (설정에서만 본다) --------------------------------
+ * 대화 화면에는 절대 표시하지 않는다 — 단톡방에 "이번엔 Groq이 답했습니다"가
+ * 끼면 몰입이 깨진다. 궁금한 사람만 설정에서 확인한다.
+ * ------------------------------------------------------------------ */
+const routeLog = [];
+function noteRoute(entry) {
+  routeLog.unshift(Object.assign({ at: Date.now() }, entry));
+  if (routeLog.length > ROUTING_RULES.historyMax) routeLog.length = ROUTING_RULES.historyMax;
+}
+
 /* provider 별 엔드포인트 — Gemini 만 모델·스트리밍 여부에 따라 URL 이 달라진다 */
 function providerEndpoint(provider, model, opts) {
   const cfg = LLM_CONFIG[provider];
@@ -4188,7 +4335,7 @@ function providerHeaders(provider, key) {
 
 const APP = {
   name: '벨챗',                // v2.4 — 앱 이름
-  version: '2.8.2',
+  version: '2.8.3',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -4455,6 +4602,58 @@ const SPEED_RULES = {
    * 'main' 은 사용자가 설정에서 고른 모델. fastModel 이 없는 provider 는 전부 main. */
   tierByWeight: { filler: 'fast', casual: 'fast', normal: 'main', serious: 'main' },
   streamFlushMs: 45    // 스트림 조각을 화면에 반영하는 최소 간격 (rAF 와 함께 씀)
+};
+
+/* ---- ⑧-3 하이브리드 자동 라우팅 (v2.8.3) --------------------------
+ * 회사마다 잘하는 게 다르고, 무료 한도도 따로 논다.
+ *   Groq   — 텍스트가 가장 빠르다. 사진은 못 본다.
+ *   Gemini — 사진을 보고 무료 티어가 있다. 분당 한도가 빡빡하다.
+ *   Anthropic — 품질 최고, 웹 검색 가능. 유료.
+ * 사용자가 메시지마다 이걸 따져가며 provider 를 바꿔 끼울 수는 없다.
+ * 그래서 메시지 하나 단위로 앱이 고른다 — 사진이 붙었나, 지금 누가 살아 있나.
+ *
+ * order 는 우선순위다. 앞에서부터 "키가 있고 지금 쉬는 중"인 곳을 고른다.
+ * 목록에 없는 provider 는 그 상황에서 아예 후보가 아니다
+ * (vision 목록에 groq 이 없는 이유 — 사진을 못 보는데 부르면 헛돈다).
+ * ---------------------------------------------------------------- */
+const ROUTING_RULES = {
+  text:   ['groq', 'gemini', 'anthropic'],   // 텍스트만 있는 메시지
+  vision: ['gemini', 'anthropic'],           // 사진이 붙은 메시지
+  /* 이 상태 코드는 "이 회사가 지금 안 된다"는 뜻이다 — 기다리기 전에 옆집을 먼저 본다.
+   * 자동 모드에서 30초 기다리는 것보다 다른 회사가 0.5초에 답하는 게 낫다. */
+  failoverStatuses: [429, 503, 529],
+  /* 한 번 429 를 맞은 provider 를 이만큼 쉬게 둔다 (같은 벽에 계속 부딪히지 않게) */
+  coolDownMs: { 429: 45000, 503: 15000, 529: 15000 },
+  /* 콜 사이 최소 간격 — 무료 분당 한도가 빡빡한 곳만.
+   * 한 마디에 두세 명이 답하므로, 간격이 없으면 동시에 몰려 한도를 친다. */
+  minGapMs: { gemini: 1400, groq: 0, anthropic: 0 },
+  /* 미리 걸기(v2.8)를 허용할 provider. 무료 한도가 빡빡한 곳은 제외한다 —
+   * 미리 걸면 같은 순간에 두 콜이 나가고, 그게 정확히 분당 한도를 치는 방식이다. */
+  prefetch: { anthropic: true, gemini: false, groq: false },
+  historyMax: 12   // 설정에 보여줄 최근 라우팅 내역 개수
+};
+
+/* ---- ⑧-4 한도·장애 재시도 (v2.8.3) --------------------------------
+ * 429(내 한도 초과)와 503(저쪽 혼잡)은 성격이 다르다.
+ *   429 — 기다리면 반드시 풀린다. 지수 백오프로 두 번까지 기다려본다.
+ *   503 — 기다린다고 풀린다는 보장이 없다. 한 번만 짧게 보고 포기한다.
+ * 둘 다 "다른 provider 가 있으면 그쪽이 먼저"다 (ROUTING_RULES.failoverStatuses).
+ * ---------------------------------------------------------------- */
+const RETRY_RULES = {
+  429: { tries: 2, baseMs: 4000, maxMs: 30000 },
+  503: { tries: 1, baseMs: 1500, maxMs: 4000 },
+  529: { tries: 1, baseMs: 1500, maxMs: 4000 },
+  jitter: 0.25   // 여러 턴이 동시에 깨어나 또 몰리는 걸 막는다
+};
+
+/* ---- ⑧-5 우아한 축소 (v2.8.3) -------------------------------------
+ * 한도에 걸렸을 때 최악은 아무도 말하지 않는 것이다.
+ * 셋이 다 실패하느니 한 명이라도 답하는 게 낫다.
+ * ---------------------------------------------------------------- */
+const DEGRADE_RULES = {
+  shrinkOnQuota: true,   // 한도를 만나면 이번 메시지의 남은 응답자를 접는다
+  lastResort: true,      // 아무도 못 말했으면 한 명만 다시 시도한다
+  lastResortWeight: 'casual'   // 그 한 명은 짧게 — 다시 한도를 치지 않게
 };
 
 /* ---- ⑧-2 대화 중 입력 (v2.8) --------------------------------------
@@ -5074,7 +5273,7 @@ function pickExpert(topic) {
 // 키워드가 하나도 안 걸릴 때만 — 짧은 분류 콜 1회로 직함을 받아온다.
 // 실패해도 제너럴리스트로 그냥 진행한다 (회의는 절대 막히지 않는다).
 async function refineExpertTitle(topic) {
-  if (!state.apiKey) return null;
+  if (!hasAnyKey()) return null;
   try {
     const res = await callLLM(
       '너는 회의 준비 담당이다. 주제를 보고 그 회의에 반드시 필요한 실무 전문가의 "직함" 하나만 한국어로 답한다. 설명·문장부호 없이 직함만. 예) 물류 운영 전문가',
@@ -5432,6 +5631,15 @@ const MODEL_MIGRATIONS = {
 };
 
 function loadProviderKeys() {
+  /* v2.8.3 — 자동 모드에는 "그 provider 의 키" 라는 게 없다.
+   * state.apiKey/model 은 상태 표시용 대표값으로만 채우고,
+   * 실제 호출은 resolveRoute() 가 회사별 저장값을 그때그때 읽는다. */
+  if (state.provider === AUTO_PROVIDER) {
+    const first = configuredProviders()[0];
+    state.apiKey = first ? providerKeyOf(first) : '';
+    state.model = first ? providerModelOf(first) : '';
+    return;
+  }
   state.apiKey = localStorage.getItem(apiKeyStorageKey(state.provider)) || '';
   let saved = localStorage.getItem(modelStorageKey(state.provider));
   const moved = (MODEL_MIGRATIONS[state.provider] || {})[saved];
@@ -7236,21 +7444,32 @@ function bindEvents() {
     renderSettingsModal();
     openModal('modalSettings');
   });
-  $('#inputProvider').addEventListener('change', (e) => {
-    renderSettingsModalForProvider(e.target.value);
+  $('#inputProvider').addEventListener('change', () => {
+    // v2.8.3 — 자동 모드면 보조 선택이 열리고, 키/모델 칸은 그쪽에 묶인다
+    syncKeyTargetRow();
+    renderSettingsModalForProvider(settingsKeyTarget());
+    refreshAutoRouteInfo();
   });
+  const keyTargetSel = $('#inputKeyTarget');
+  if (keyTargetSel) {
+    keyTargetSel.addEventListener('change', () => {
+      renderSettingsModalForProvider(settingsKeyTarget());
+      setKeyStatus('');
+    });
+  }
   $('#btnSaveSettings').addEventListener('click', async () => {
     const newProvider = $('#inputProvider').value;
+    const keyTarget = settingsKeyTarget();            // v2.8.3 — 키가 실제로 저장될 회사
     const newKey = cleanApiKey($('#inputApiKey').value);   // v2.7 — 공백·줄바꿈 제거
     $('#inputApiKey').value = newKey;
-    const newModel = chosenModelValue(newProvider);   // v2.8.2 — 직접 입력 값 포함
+    const newModel = chosenModelValue(keyTarget);   // v2.8.2 — 직접 입력 값 포함
     const newVoiceURI = $('#inputVoice').value;
     const newVoiceRate = parseFloat($('#inputVoiceRate').value);
     const newMax = Math.min(
       parseInt($('#inputMaxResponders').value, 10) || CHAT_RULES.maxResponders,
       CHAT_RULES.hardMaxResponders);
-    localStorage.setItem(apiKeyStorageKey(newProvider), newKey);
-    localStorage.setItem(modelStorageKey(newProvider), newModel);
+    localStorage.setItem(apiKeyStorageKey(keyTarget), newKey);
+    localStorage.setItem(modelStorageKey(keyTarget), newModel);
     localStorage.setItem(STORAGE_KEYS.provider, newProvider);
     localStorage.setItem('vela.boardroom.voiceURI', newVoiceURI);
     localStorage.setItem('vela.boardroom.voiceRate', String(newVoiceRate));
@@ -7258,8 +7477,16 @@ function bindEvents() {
     const newTwoTier = !!($('#inputTwoTier') && $('#inputTwoTier').checked);
     localStorage.setItem('vela.boardroom.twoTier', newTwoTier ? '1' : '0');
     state.provider = newProvider;
-    state.apiKey = newKey;
-    state.model = newModel;
+    /* v2.8.3 — 자동 모드에서 state.apiKey/model 은 "대표값"일 뿐이다.
+     * 실제 호출은 resolveRoute() 가 회사별 저장값을 그때그때 읽어 쓴다. */
+    if (newProvider === AUTO_PROVIDER) {
+      const first = configuredProviders()[0] || keyTarget;
+      state.apiKey = providerKeyOf(first);
+      state.model = providerModelOf(first);
+    } else {
+      state.apiKey = newKey;
+      state.model = newModel;
+    }
     state.voiceURI = newVoiceURI;
     state.voiceRate = newVoiceRate;
     state.maxResponders = newMax;
@@ -7267,7 +7494,8 @@ function bindEvents() {
     modelRescueDone = false;      // v2.8.2 — 모델을 바꿨으니 구제 안내를 다시 띄울 수 있게
     refreshApiStatus();
     refreshModelTag();
-    refreshModelHint(newProvider);
+    refreshModelHint(keyTarget);
+    refreshAutoRouteInfo();
     renderAttachStrip();   // v2.2 — provider 가 바뀌면 사진 지원 여부 안내도 바뀐다
 
     /* v2.7 — 저장하면서 바로 연결을 확인한다.
@@ -7339,8 +7567,9 @@ function bindEvents() {
 
 function refreshApiStatus() {
   const el = $('#apiStatus');
-  if (state.apiKey) {
-    el.textContent = 'API READY';
+  if (hasAnyKey()) {
+    // v2.8.3 — 자동 모드는 몇 곳이 준비됐는지 같이 보여준다
+    el.textContent = isAutoMode() ? `AUTO · ${configuredProviders().length}` : 'API READY';
     el.style.color = 'var(--cyan)';
   } else {
     el.textContent = 'NO API KEY';
@@ -7348,8 +7577,9 @@ function refreshApiStatus() {
   }
 }
 function refreshModelTag() {
+  if (isAutoMode()) { $('#modelTag').textContent = 'AUTO'; return; }
   for (const cfg of Object.values(LLM_CONFIG)) {
-    const found = cfg.models.find(m => m.id === state.model);
+    const found = (cfg.models || []).find(m => m.id === state.model);
     if (found) { $('#modelTag').textContent = found.tag; return; }
   }
   $('#modelTag').textContent = state.model || 'NO MODEL';
@@ -7372,7 +7602,10 @@ function renderSettingsModal() {
   applyFontScale(state.fontScale, { persist: false });
   applyShellWidth(state.shellWidth, { persist: false });
   $('#inputProvider').value = state.provider;
-  renderSettingsModalForProvider(state.provider);
+  syncKeyTargetRow();                                  // v2.8.3
+  renderSettingsModalForProvider(settingsKeyTarget());
+  refreshAutoRouteInfo();
+  renderRouteLog();
   // 음성 옵션 채우기
   populateVoiceOptions();
   $('#inputVoiceRate').value = state.voiceRate || 1.0;
@@ -7396,10 +7629,93 @@ function renderSettingsModal() {
   refreshLangStat();
 }
 
+/* ---- 자동 모드 안내 · 라우팅 내역 (v2.8.3) ---- */
+const PROVIDER_SHORT = { anthropic: 'Claude', gemini: 'Gemini', groq: 'Groq' };
+
+/* 자동 모드에서만 "키·모델을 관리할 회사" 줄을 연다.
+ * 처음 열 땐 키가 없는 회사를 먼저 보여준다 — 지금 할 일이 그거니까. */
+function syncKeyTargetRow() {
+  const row = $('#keyTargetRow');
+  const sel = $('#inputProvider');
+  const target = $('#inputKeyTarget');
+  if (!row || !sel) return;
+  const isAuto = sel.value === AUTO_PROVIDER;
+  row.hidden = !isAuto;
+  if (!isAuto || !target) return;
+  if (!target.value || REAL_PROVIDERS.indexOf(target.value) < 0) {
+    const missing = REAL_PROVIDERS.filter(p => !providerKeyOf(p));
+    target.value = missing[0] || configuredProviders()[0] || REAL_PROVIDERS[0];
+  }
+  // 어느 회사에 키가 있는지 라벨에 표시 — 열어보지 않아도 알 수 있게
+  Array.prototype.forEach.call(target.options, (opt) => {
+    const base = opt.textContent.replace(/\s*·\s*(키 있음|키 없음)$/, '');
+    opt.textContent = base + (providerKeyOf(opt.value) ? ' · 키 있음' : ' · 키 없음');
+  });
+}
+
+function refreshAutoRouteInfo() {
+  const el = $('#autoRouteInfo');
+  if (!el) return;
+  const sel = $('#inputProvider');
+  const isAuto = sel && sel.value === AUTO_PROVIDER;
+  el.hidden = !isAuto;
+  if (!isAuto) return;
+
+  const have = configuredProviders();
+  if (have.length < 2) {
+    el.innerHTML = have.length
+      ? `자동 모드는 <b>키가 2개 이상</b>일 때 의미가 있습니다. 지금은 `
+        + `<b>${escapeHtml(PROVIDER_SHORT[have[0]] || have[0])}</b> 하나뿐이라 항상 그쪽으로 갑니다. `
+        + `다른 provider 를 골라 키를 하나 더 넣어두면 자동으로 나눠 씁니다.`
+      : '등록된 키가 없습니다. provider 를 골라 키를 먼저 넣어주세요.';
+    return;
+  }
+  const pick = (list) => list.filter(p => have.indexOf(p) >= 0).map(p => PROVIDER_SHORT[p] || p);
+  const textOrder = pick(ROUTING_RULES.text);
+  const visionOrder = pick(ROUTING_RULES.vision);
+  el.innerHTML =
+    `글만 있는 메시지 → <b>${escapeHtml(textOrder.join(' → '))}</b><br/>` +
+    `사진이 붙은 메시지 → <b>${escapeHtml(visionOrder.join(' → ') || '없음 (사진 보는 키를 넣어주세요)')}</b><br/>` +
+    `한쪽이 한도·장애를 만나면 그 메시지만 조용히 다른 쪽으로 넘깁니다. 모델은 provider 별 설정을 그대로 씁니다.`;
+}
+
+function renderRouteLog() {
+  const el = $('#routeLogView');
+  if (!el) return;
+  if (!routeLog.length) {
+    el.innerHTML = '<div class="rl-empty">아직 기록이 없습니다. 대화를 나누면 어느 회사가 답했는지 여기에 쌓입니다.</div>';
+    return;
+  }
+  el.innerHTML = routeLog.map(r => {
+    const t = new Date(r.at);
+    const hh = String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0');
+    const who = PROVIDER_SHORT[r.provider] || r.provider;
+    const mark = r.ok ? (r.fellBack ? '↪' : '·') : '✕';
+    const cls = r.ok ? '' : ' rl-fail';
+    const tail = r.ok ? `${r.ms}ms` : String(r.status || 'err');
+    return `<div class="rl-row${cls}">`
+      + `<span>${hh}</span>`
+      + `<span>${mark}</span>`
+      + `<span class="rl-who">${escapeHtml(who)}</span>`
+      + `<span>${escapeHtml(r.persona || '')}${r.vision ? ' 📷' : ''}</span>`
+      + `<span class="rl-ms">${escapeHtml(tail)}</span>`
+      + `</div>`;
+  }).join('');
+}
+
 /* 2단 모델 안내 — provider 마다 "빠른 모델"이 다르고, 없는 provider 도 있다 */
 function refreshTwoTierInfo() {
   const el = $('#twoTierInfo');
   if (!el) return;
+  // 자동 모드에서는 회사가 메시지마다 바뀐다 — 특정 모델 이름을 못 박을 수 없다
+  if (isAutoMode() || ($('#inputProvider') && $('#inputProvider').value === AUTO_PROVIDER)) {
+    const wrap = $('#twoTierLabel');
+    if (wrap) wrap.style.opacity = '';
+    const tt = $('#inputTwoTier');
+    if (tt) tt.disabled = false;
+    el.textContent = '리액션·잡담은 각 회사의 소형 모델로, 대화·안건은 설정한 모델로 답합니다.';
+    return;
+  }
   const cfg = LLM_CONFIG[state.provider] || {};
   const wrap = $('#twoTierLabel');
   if (!cfg.fastModel) {
@@ -7486,8 +7802,26 @@ const MODEL_CUSTOM = '__custom__';
  * (저장 전이라 state.provider 는 아직 옛 값일 수 있다) */
 function settingsProvider(explicit) {
   if (explicit) return explicit;
+  return settingsKeyTarget();
+}
+
+/* v2.8.3 — 키·모델 칸이 실제로 묶여 있는 회사.
+ * 자동 모드에서는 provider 선택이 'auto' 라 그걸로 저장하면 안 된다
+ * (vela.boardroom.apiKey.auto 같은 쓰레기 칸이 생긴다).
+ * 그때는 보조 선택(#inputKeyTarget)이 대상이다. */
+function settingsKeyTarget() {
   const sel = $('#inputProvider');
-  return (sel && sel.value) || state.provider;
+  const v = (sel && sel.value) || state.provider;
+  if (v !== AUTO_PROVIDER) return v;
+  const t = $('#inputKeyTarget');
+  if (t && t.value) return t.value;
+  return configuredProviders()[0] || REAL_PROVIDERS[0];
+}
+
+/* 어느 회사든 키가 하나라도 있나 — 전송 가능 여부의 기준.
+ * 자동 모드에서는 state.apiKey 하나로 판단할 수 없다. */
+function hasAnyKey() {
+  return isAutoMode() ? configuredProviders().length > 0 : !!state.apiKey;
 }
 
 function renderModelPicker(provider, storedModel) {
@@ -7644,6 +7978,9 @@ function pickModelName(name) {
 
 // 지금 provider 가 이미지를 볼 수 있나
 function providerSupportsVision() {
+  // v2.8.3 — 자동 모드는 사진이 붙으면 사진 보는 곳으로 라우팅한다.
+  // 후보 중 하나라도 볼 수 있으면 "본다"가 맞다.
+  if (isAutoMode()) return autoVisionAvailable();
   const cfg = LLM_CONFIG[state.provider];
   return !!(cfg && cfg.vision);
 }
@@ -7760,7 +8097,7 @@ function renderAttachStrip() {
     `<span class="attach-note${visionOk ? '' : ' warn'}">${
       visionOk
         ? `${imgs.length}장 · ${humanBytes(total)} · 최대 ${IMAGE_RULES.maxEdge}px 로 줄여서 보냅니다`
-        : `${LLM_CONFIG[state.provider] ? LLM_CONFIG[state.provider].name : '지금 모델'}은 사진을 못 봅니다 — 방에만 남고 답변엔 반영되지 않아요`
+        : `${currentProviderLabel()}은 사진을 못 봅니다 — 방에만 남고 답변엔 반영되지 않아요`
     }</span>`;
 
   strip.querySelectorAll('[data-del]').forEach(btn => {
@@ -8166,6 +8503,13 @@ function createStreamBubble(persona) {
 
   return {
     get spoke() { return started; },
+    /* v2.8.3 — 아직 글자가 안 나온 동안 머리에 상태를 띄운다
+     * ("무료 한도 — 12초 후 재시도"). 이미 말하기 시작했으면 건드리지 않는다. */
+    setStatus(text) {
+      if (started) return;
+      const tag = el.querySelector('.msg-tag');
+      if (tag) tag.textContent = text || '생각하는 중…';
+    },
     /* 첫 조각이 오면 점 세 개를 말풍선으로 승격시킨다 */
     push(full) {
       target = full;
@@ -8767,6 +9111,29 @@ async function readSseStream(res, onEvent) {
   }
 }
 
+/* 저쪽이 "언제 다시 오라"고 알려준 시간 (ms). 우리 추측보다 이게 항상 낫다.
+ *   · Retry-After 헤더 — 표준. 초 단위 숫자 또는 HTTP 날짜.
+ *   · Groq — 본문에 "try again in 12.5s"
+ *   · Gemini — RetryInfo 의 "retryDelay": "17s"
+ * 못 찾으면 0 을 주고, 호출부가 지수 백오프로 알아서 정한다. */
+function parseRetryAfterMs(res, raw) {
+  try {
+    const h = res.headers && res.headers.get && res.headers.get('retry-after');
+    if (h) {
+      const n = parseFloat(h);
+      if (isFinite(n) && n >= 0) return Math.round(n * 1000);
+      const t = Date.parse(h);
+      if (!isNaN(t)) return Math.max(0, t - Date.now());
+    }
+  } catch (e) {}
+  const s = String(raw || '');
+  let m = s.match(/try again in ([\d.]+)\s*s/i) || s.match(/"?retryDelay"?\s*[:=]\s*"?([\d.]+)s/i);
+  if (m) return Math.round(parseFloat(m[1]) * 1000);
+  m = s.match(/try again in ([\d.]+)\s*ms/i);
+  if (m) return Math.round(parseFloat(m[1]));
+  return 0;
+}
+
 /* "모델 이름이 틀렸다"인가 — 이 오류만 사용자가 스스로 고칠 수 있고,
  * 고치는 데 필요한 재료(쓸 수 있는 이름 목록)를 우리가 물어다 줄 수 있다. */
 function isModelUnknownError(provider, status, raw) {
@@ -8805,14 +9172,18 @@ function describeApiError(provider, status, raw) {
 /* 무게별 모델 선택 (v2.8 — 2단 구성)
  * 잡담·리액션은 소형 모델로 넘겨 첫 글자까지의 시간을 줄인다.
  * fastModel 이 없는 provider 이거나 twoTier 를 끄면 항상 사용자가 고른 모델. */
-function pickModelForWeight(weight) {
-  if (!SPEED_RULES.twoTier || !state.twoTier) return state.model;
-  const cfg = LLM_CONFIG[state.provider] || {};
-  if (!cfg.fastModel) return state.model;
+function pickModelForWeight(weight, provider) {
+  // v2.8.3 — provider 를 받는다. 자동 모드에서는 폴백 때마다 회사가 바뀐다.
+  const p = provider || (isAutoMode() ? null : state.provider);
+  if (!p) return null;                                   // 호출부가 route.model 을 쓰게 둔다
+  const main = (p === state.provider && !isAutoMode()) ? state.model : providerModelOf(p);
+  if (!SPEED_RULES.twoTier || !state.twoTier) return main;
+  const cfg = LLM_CONFIG[p] || {};
+  if (!cfg.fastModel) return main;
   const tier = SPEED_RULES.tierByWeight[weight] || 'main';
-  if (tier !== 'fast') return state.model;
+  if (tier !== 'fast') return main;
   // 이미 그 소형 모델을 쓰고 있으면 바꿀 게 없다
-  return cfg.fastModel === state.model ? state.model : cfg.fastModel;
+  return cfg.fastModel === main ? main : cfg.fastModel;
 }
 
 /* 요청 본문 만들기 — 스트리밍/논스트리밍이 같은 걸 쓴다 */
@@ -8851,9 +9222,12 @@ function buildRequestBody(provider, systemPrompt, messages, o) {
 // opts: { webSearch, maxTokens, model, signal, onDelta }
 //   onDelta 가 있고 provider 가 스트리밍을 지원하면 조각이 오는 대로 흘려준다 (v2.8).
 async function callLLM(systemPrompt, messagesOrText, opts = {}) {
-  if (!state.apiKey) throw new Error('API key가 설정되지 않았습니다');
-  const provider = state.provider;
-  const cfg = LLM_CONFIG[provider];
+  /* v2.8.3 — provider 는 route 로 들어온다.
+   * 없으면 state 에서 만든다 (회의록 등 옛 호출부 호환). */
+  const route = opts.route || resolveRoute({});
+  if (!route) throw new Error('API key가 설정되지 않았습니다');
+  const provider = route.provider;
+  const cfg = route.cfg || LLM_CONFIG[provider];
   if (!cfg) throw new Error('알 수 없는 provider');
 
   // 문자열이면 단일 user 메시지로 변환 → provider 형식으로 정규화 (이미지 포함)
@@ -8864,38 +9238,40 @@ async function callLLM(systemPrompt, messagesOrText, opts = {}) {
     provider
   );
   const o = {
-    model: opts.model || state.model,
+    model: opts.model || route.model,
     maxTokens: opts.maxTokens || 1200,
     webSearch: !!opts.webSearch && provider === 'anthropic',
     stream: !!opts.onDelta && SPEED_RULES.stream && cfg.stream !== false
   };
-  const retryCount = opts.retryCount || 0;
+
+  // 무료 한도가 빡빡한 곳은 콜 사이 간격을 지킨다 (v2.8.3)
+  await paceProvider(provider);
 
   const url = providerEndpoint(provider, o.model, { stream: o.stream });
   let res;
   try {
     res = await fetch(url, {
       method: 'POST',
-      headers: providerHeaders(provider, state.apiKey),
+      headers: providerHeaders(provider, route.key),
       body: JSON.stringify(buildRequestBody(provider, systemPrompt, messages, o)),
       signal: opts.signal
     });
   } catch (e) {
     if (e && e.name === 'AbortError') throw e;
-    throw new Error('네트워크에 닿지 못했습니다 — 인터넷 연결을 확인해주세요');
+    const ne = new Error('네트워크에 닿지 못했습니다 — 인터넷 연결을 확인해주세요');
+    ne.networkError = true;
+    ne.provider = provider;
+    throw ne;
   }
 
   if (!res.ok) {
     let raw = '';
     let data = null;
     try { data = await res.json(); raw = (data && data.error && data.error.message) || ''; } catch (e) {}
-    // Groq 는 429 에 "try again in Ns" 를 준다 — 한 번은 그만큼 기다렸다 재시도
-    if (provider === 'groq' && res.status === 429 && retryCount < 1) {
-      const m = raw.match(/try again in ([\d.]+)s/i);
-      await sleep(((m ? Math.ceil(parseFloat(m[1])) : 30) + 1) * 1000);
-      return callLLM(systemPrompt, messagesOrText, { ...opts, retryCount: retryCount + 1 });
-    }
     const err = new Error(describeApiError(provider, res.status, raw));
+    err.status = res.status;
+    err.provider = provider;
+    err.retryAfterMs = parseRetryAfterMs(res, raw);   // 저쪽이 알려준 대기시간이 최우선
     // v2.8.2 — 모델 은퇴는 조용히 실패하면 안 된다. 위쪽에서 구제 안내를 띄우도록 표시한다
     if (isModelUnknownError(provider, res.status, raw)) {
       err.modelUnknown = true;
@@ -9079,7 +9455,15 @@ function startTurnRequest(persona, instruction, opts = {}) {
     sink: null,        // presentTurn 이 붙으면 그때부터 화면으로 흘러간다
     spoke: false,      // 화면에 한 글자라도 나갔나 (취소 판단 기준)
     cancelled: false,
-    citations: []
+    citations: [],
+    // v2.8.3 — 재시도 중 "무료 한도 — N초 후 재시도"를 말풍선 머리에 띄운다.
+    // 아직 표시 전이면 문구를 들고 있다가 붙는 순간 보여준다.
+    status: '',
+    statusSink: null
+  };
+  rec.setStatus = function (text) {
+    rec.status = text || '';
+    if (rec.statusSink) { try { rec.statusSink(rec.status); } catch (e) {} }
   };
   rec.cancel = function () {
     if (rec.cancelled) return;
@@ -9111,6 +9495,22 @@ function cancelStaleTurns(newSeq) {
   return killed;
 }
 
+/* 기다리는 동안 남은 초를 말풍선 머리에 띄운다 (v2.8.3).
+ * 그냥 멈춰 있으면 사용자는 앱이 죽은 줄 안다. "왜 기다리는지 + 언제 끝나는지"만
+ * 보여주면 같은 30초도 견딜 만해진다. 취소되면 즉시 빠져나온다. */
+async function countdownWait(rec, ms, status) {
+  const why = status === 429 ? '무료 한도' : '서버 혼잡';
+  const until = Date.now() + ms;
+  for (;;) {
+    if (rec.cancelled) return;
+    const left = until - Date.now();
+    if (left <= 0) break;
+    rec.setStatus(`${why} — ${Math.ceil(left / 1000)}초 후 재시도`);
+    await sleep(Math.min(1000, left));
+  }
+  rec.setStatus('다시 시도하는 중…');
+}
+
 // 페르소나 한 명의 발언 턴 — 요청 → (스트림) 버퍼 → 언어 가드
 async function runTurnFetch(persona, instruction, opts, rec) {
   // SVG 모드 — 프로세스 질문을 받은 담당자만
@@ -9137,17 +9537,24 @@ async function runTurnFetch(persona, instruction, opts, rec) {
     messages.push({ role: 'user', content: instr });
   }
 
-  const useWebSearch = state.provider === 'anthropic';
-  const model = opts.model || state.model;
+  /* v2.8.3 — 이 턴이 어디로 나갈지. 사진이 붙었으면 사진을 보는 곳으로만 간다.
+   * 고정 모드면 resolveRoute 가 그냥 그 provider 를 돌려준다.
+   *
+   * ★ 사진을 볼 수 있는 키가 아예 없으면 vision 라우팅을 요구하지 않는다.
+   *   그러면 후보가 0 이 돼서 아무도 답을 못 한다 — 사진 때문에 대화가 멈추는 꼴이다.
+   *   그 경우 이미 히스토리에서 이미지가 빠지고 "사진을 못 본다"고 안내도 나갔으므로,
+   *   텍스트로라도 답하는 게 맞다. */
+  const needsVision = !!opts.hasImages && providerSupportsVision();
 
   /* 한 번 호출 → SVG 분리 → 문자 정화 → 이름표 제거
    * live=true 인 첫 호출만 조각을 흘려보낸다. 언어 가드 재생성 호출은
    * 화면에 흘리면 안 된다 — 같은 말이 두 번 타이핑되는 것처럼 보인다. */
-  const askOnce = async (msgs, live) => {
+  const askOnce = async (msgs, live, route) => {
     const result = await callLLM(persona.system, msgs, {
-      webSearch: useWebSearch,
+      route: route,
+      webSearch: route.provider === 'anthropic',
       maxTokens: maxTokens,
-      model: model,
+      model: opts.modelFor ? opts.modelFor(route.provider) : route.model,
       signal: rec.ctrl ? rec.ctrl.signal : undefined,
       onDelta: live ? function (chunk, full) {
         rec.buffer = full;
@@ -9166,9 +9573,64 @@ async function runTurnFetch(persona, instruction, opts, rec) {
     return { text: t, svgRaw: svgRaw, citations: result.citations || [] };
   };
 
+  /* ═══ 폴백 · 재시도 (v2.8.3) ═══
+   * 순서가 이 함수의 전부다.
+   *   ① 다른 회사가 살아 있으면 거기로 — 30초 기다리는 것보다 0.5초에 답받는 게 낫다
+   *   ② 갈 곳이 없으면 그제야 기다렸다 재시도 (429 는 두 번, 503 은 한 번)
+   *   ③ 기다리는 동안 말풍선 머리에 남은 초를 띄운다 (멈춘 게 아니라는 신호)
+   * 스트림이 이미 시작된 뒤에 끊긴 경우는 재시도하지 않는다 —
+   * 반쯤 나온 말을 처음부터 다시 쓰면 사용자 화면에서 글이 되감긴다. */
+  const askWithFailover = async (msgs, live) => {
+    const tried = [];
+    let lastErr = null;
+    let retries = { 429: 0, 503: 0, 529: 0 };
+
+    for (let guard = 0; guard < 6; guard++) {
+      const route = resolveRoute({ needsVision: needsVision, exclude: tried });
+      if (!route) break;
+      const t0 = Date.now();
+      try {
+        const out = await askOnce(msgs, live, route);
+        rec.setStatus('');
+        noteRoute({ provider: route.provider, model: route.model, persona: persona.name,
+                    vision: needsVision, ms: Date.now() - t0, ok: true,
+                    fellBack: tried.length > 0 });
+        rec.usedProvider = route.provider;
+        return out;
+      } catch (e) {
+        if (e && e.name === 'AbortError') throw e;
+        lastErr = e;
+        const status = e.status || 0;
+        const failover = ROUTING_RULES.failoverStatuses.indexOf(status) >= 0 || e.networkError;
+        noteRoute({ provider: route.provider, model: route.model, persona: persona.name,
+                    vision: needsVision, ms: Date.now() - t0, ok: false,
+                    status: status || (e.networkError ? 'net' : 'err') });
+        if (!failover) throw e;                      // 키·모델 오류 등은 옮겨봐야 똑같다
+        if (status) coolDownProvider(route.provider, status);
+        if (rec.spoke) throw e;                      // 이미 말이 나갔다 — 되감지 않는다
+
+        tried.push(route.provider);
+        // ① 아직 안 써본 곳이 있으면 바로 그쪽으로 (기다리지 않는다)
+        if (resolveRoute({ needsVision: needsVision, exclude: tried })) continue;
+
+        // ② 갈 곳이 없다 — 기다렸다 다시. 이때는 처음 곳부터 다시 후보로 돌린다
+        const rule = RETRY_RULES[status] || RETRY_RULES[503];
+        if (retries[status] === undefined) retries[status] = 0;
+        if (retries[status] >= rule.tries) break;
+        const n = retries[status]++;
+        let waitMs = e.retryAfterMs || Math.min(rule.maxMs, rule.baseMs * Math.pow(2, n));
+        waitMs = Math.round(waitMs * (1 + (Math.random() * 2 - 1) * RETRY_RULES.jitter));
+        waitMs = Math.max(500, Math.min(rule.maxMs, waitMs));
+        await countdownWait(rec, waitMs, status);
+        tried.length = 0;                            // 다시 전부 후보로
+      }
+    }
+    throw lastErr || new Error('응답을 받지 못했습니다');
+  };
+
   try {
     langStats.turns++;
-    let result = await askOnce(messages, true);
+    let result = await askWithFailover(messages, true);
 
     /* v2.3 — 영어 혼입 방어. 문자 필터로는 못 잡는다(영문자는 허용 문자다).
      * v2.3.1 — 방아쇠가 둘로 늘었다. 파이프라인은 그대로 하나다.
@@ -9190,7 +9652,7 @@ async function runTurnFetch(persona, instruction, opts, rec) {
         ]);
         let retried;
         try {
-          retried = await askOnce(retryMsgs, false);
+          retried = await askWithFailover(retryMsgs, false);
         } catch (e) {
           if (e && e.name === 'AbortError') throw e;
           console.warn('[compass:한국어] 재생성 호출 실패 — 원본을 그대로 쓴다', e);
@@ -9225,7 +9687,16 @@ async function runTurnFetch(persona, instruction, opts, rec) {
     // v2.8.2 — 모델이 은퇴했으면 말풍선 하나 띄우고 끝내지 않는다. 쓸 수 있는 이름을 찾아온다
     if (err && err.modelUnknown) rescueUnknownModel(err.modelTried);
     const raw = String((err && err.message) || err);
-    return { ok: false, error: raw.length > 90 ? raw.slice(0, 90) + '…' : raw };
+    /* v2.8.3 — 한도·혼잡·네트워크는 "앱의 사정"이지 페르소나의 말이 아니다.
+     * quiet 로 표시해 말풍선 대신 시스템 칩 한 번으로 나가게 한다. */
+    const quiet = !!(err && (err.networkError ||
+      ROUTING_RULES.failoverStatuses.indexOf(err.status) >= 0));
+    return {
+      ok: false,
+      quiet: quiet,
+      quota: !!(err && err.status === 429),
+      error: raw.length > 90 ? raw.slice(0, 90) + '…' : raw
+    };
   }
 }
 
@@ -9262,15 +9733,31 @@ async function presentTurn(rec) {
 
   if (bubble) {
     rec.sink = (full) => bubble.push(full);
+    // v2.8.3 — 재시도 카운트다운을 "생각하는 중…" 자리에 흘린다
+    rec.statusSink = (text) => bubble.setStatus(text);
+    if (rec.status) bubble.setStatus(rec.status);   // 붙기 전에 이미 기다리고 있었다면
     if (rec.buffer) { rec.spoke = true; bubble.push(rec.buffer); }   // 미리 받아둔 몫부터
   }
 
   const out = await rec.promise;
   rec.sink = null;
+  rec.statusSink = null;
   state.liveTurns = state.liveTurns.filter(r => r !== rec);
 
   if (!out || out.aborted) {
     if (bubble) bubble.discard(); else removeTypingMessage(persona.id);
+    return null;
+  }
+
+  /* v2.8.3 — 한도·장애로 끝내 실패한 건 말풍선으로 띄우지 않는다.
+   * 페르소나가 "⚠ 무료 한도 초과"라고 말하는 건 이상하다.
+   * 그건 사람의 발언이 아니라 앱의 사정이므로 시스템 칩 한 번으로 처리한다. */
+  // 호출부의 "우아한 축소" 판단 재료
+  if (out.quota) rec.quotaHit = true;
+  if (out.quiet) rec.outage = true;
+  if (!out.ok && out.quiet) {
+    if (bubble) bubble.discard(); else removeTypingMessage(persona.id);
+    noteQuietFailure(out.error);
     return null;
   }
 
@@ -9291,6 +9778,16 @@ async function presentTurn(rec) {
   else { removeTypingMessage(persona.id); appendMessage(msg); }
   return msg;
 }
+
+/* 한도·장애 안내는 한 메시지에 한 번만. 셋이 답하다 셋 다 걸리면
+ * 같은 칩이 세 번 뜬다 — 그건 알림이 아니라 소음이다. */
+let quietFailureShown = '';
+function noteQuietFailure(text) {
+  if (quietFailureShown === text) return;
+  quietFailureShown = text;
+  pushSystemMessage(text);
+}
+function resetQuietFailure() { quietFailureShown = ''; }
 
 /* v2.7 까지의 호출부 호환 — 회의 모드(startMeeting)가 아직 이 이름을 쓴다.
  * 요청과 표시를 한 번에 하는 옛 동작 그대로다. */
@@ -9327,7 +9824,7 @@ async function startMeeting() {
     toast('주제를 입력해주세요', true);
     return;
   }
-  if (!state.apiKey) {
+  if (!hasAnyKey()) {
     toast('SETTINGS에서 API key를 먼저 입력해주세요', true);
     openModal('modalSettings');
     return;
@@ -9404,7 +9901,7 @@ async function runRound(roundKey) {
   const def = ROUND_DEFS[roundKey];
   if (!def) return;
   if (state.inProgress) { toast('진행 중입니다', true); return; }
-  if (!state.apiKey) {
+  if (!hasAnyKey()) {
     toast('SETTINGS에서 API key를 먼저 입력해주세요', true);
     openModal('modalSettings');
     return;
@@ -9757,7 +10254,7 @@ async function sendFollowup() {
   const attached = (state.pendingImages || []).slice();
   // v2.2 — 사진만 보내는 것도 허용 (텍스트 없이 "이거 봐줘")
   if (!question && attached.length === 0) { toast('할 말을 입력해주세요', true); return; }
-  if (!state.apiKey) {
+  if (!hasAnyKey()) {
     toast('SETTINGS에서 API key를 먼저 입력해주세요', true);
     openModal('modalSettings');
     return;
@@ -9768,6 +10265,7 @@ async function sendFollowup() {
    * 항상 "마지막 메시지" 기준으로만 답이 나간다. */
   const seq = ++state.turnSeq;
   cancelStaleTurns(seq);
+  resetQuietFailure();   // v2.8.3 — 한도 안내는 메시지마다 한 번씩만
   state.inProgress = true;
 
   // 방 제목(=세션 제목). 잡담으로 시작했으면 임시로 걸어두고,
@@ -9809,8 +10307,7 @@ async function sendFollowup() {
 
   // 이미지 미지원 모델 안내 — 사진은 방에 남지만 답변엔 반영되지 않는다
   if (attached.length && !providerSupportsVision()) {
-    const cfg = LLM_CONFIG[state.provider];
-    pushSystemMessage(`${cfg ? cfg.name : '지금 모델'}은 사진을 볼 수 없습니다 — 사진은 방에만 남고, 답변에는 반영되지 않아요. (설정에서 Anthropic 또는 Google Gemini 로 바꾸면 사진을 보고 답합니다)`);
+    pushSystemMessage(`${currentProviderLabel()}은 사진을 볼 수 없습니다 — 사진은 방에만 남고, 답변에는 반영되지 않아요. (설정에서 Anthropic 또는 Google Gemini 키를 넣으면 사진을 보고 답합니다)`);
   }
 
   // 최근 발언으로 프롬프트 문맥 갱신
@@ -9863,10 +10360,14 @@ async function sendFollowup() {
       return;
     }
 
-    const model = pickModelForWeight(weight);
+    /* v2.8.3 — 모델은 provider 가 정해진 뒤에야 고를 수 있다 (자동 모드에서는
+     * 어디로 갈지 폴백 시점에 바뀐다). 그래서 값이 아니라 함수로 넘긴다. */
+    const modelFor = (p) => pickModelForWeight(weight, p);
+    const hasImages = attached.length > 0;
     const turnOpts = (i) => ({
       seq: seq,
-      model: model,
+      modelFor: modelFor,
+      hasImages: hasImages,          // 사진이 붙었으면 사진 보는 provider 로만 간다
       maxTokens: chatMaxTokens(weight),
       svgMode: (responders[i].id === drawerId) && wantSvg
     });
@@ -9883,8 +10384,14 @@ async function sendFollowup() {
     /* v2.8 — 미리 걸기.
      * 첫 사람이 말하는 동안(스트림 + 연출 지연) 두 번째 이후 호출을 이미 진행시킨다.
      * 표시 순서는 그대로 유지되므로 화면상 달라지는 건 "기다림이 없다"는 것뿐이다.
-     * Groq 는 분당 요청 제한이 빡빡해서 동시에 쏘면 429 가 난다 — 거기선 순차로 둔다. */
-    const canPrefetch = SPEED_RULES.prefetch && state.provider !== 'groq';
+     *
+     * v2.8.3 — 어디로 갈지에 따라 갈린다. 무료 한도가 빡빡한 곳(Groq·Gemini)은
+     * 미리 걸면 같은 순간에 두 콜이 나가고, 그게 정확히 분당 한도를 치는 방식이다.
+     * 그래서 ROUTING_RULES.prefetch 로 provider 별로 허용 여부를 둔다.
+     * 자동 모드에서는 "지금 가장 먼저 고를 곳"을 기준으로 판단한다. */
+    const firstRoute = resolveRoute({ needsVision: hasImages });
+    const canPrefetch = SPEED_RULES.prefetch && !!firstRoute
+      && ROUTING_RULES.prefetch[firstRoute.provider] === true;
     const recs = new Array(responders.length).fill(null);
     recs[0] = startTurnRequest(responders[0], instructionFor(0, false), turnOpts(0));
     if (canPrefetch) {
@@ -9894,20 +10401,46 @@ async function sendFollowup() {
     }
 
     const spoke = [];
+    let quotaHit = false;
+    let anyOutage = false;   // 한도든 혼잡이든 네트워크든 — 조용히 실패한 게 있었나
     for (let i = 0; i < responders.length; i++) {
       if (seq !== state.turnSeq) break;                    // 새 메시지가 들어왔다 — 여기서 끊는다
       if (i > 0) await sleep(randBetween(CHAT_RULES.replyDelayMs));
       if (seq !== state.turnSeq) break;
       // 미리 안 걸어뒀으면 지금 건다 (prefetch 를 끈 경우 = v2.7 동작)
       if (!recs[i]) recs[i] = startTurnRequest(responders[i], instructionFor(i, false), turnOpts(i));
-      const msg = await presentTurn(recs[i]);
-      if (!msg) break;                                     // 취소됨
-      noteSpeaker(responders[i].id);
-      spoke.push(responders[i].id);
-      if (state.provider === 'groq' && i < responders.length - 1) await sleep(1000);
+      const rec = recs[i];
+      const msg = await presentTurn(rec);
+      if (msg) {
+        noteSpeaker(responders[i].id);
+        spoke.push(responders[i].id);
+      } else if (rec.cancelled) {
+        break;                                             // 새 메시지로 끊긴 것
+      } else if (rec.outage) {
+        anyOutage = true;
+      }
+      /* v2.8.3 우아한 축소 — 한도에 걸렸으면 남은 사람은 접는다.
+       * 어차피 같은 벽에 부딪힌다. 셋이 다 실패하느니 한 명이 답하고 끝나는 게 낫다. */
+      if (rec.quotaHit) { quotaHit = true; if (DEGRADE_RULES.shrinkOnQuota) break; }
     }
     // 표시하지 못한 나머지는 정리한다 (미리 걸어둔 호출이 떠돌지 않게)
     recs.forEach(r => { if (r && !r.done && spoke.indexOf(r.persona.id) < 0) r.cancel(); });
+
+    /* v2.8.3 최후의 한 명 — 아무도 말하지 못한 채 끝나는 건 막는다.
+     * 방이 조용한 것과 앱이 고장 난 것은 사용자에게 똑같이 보인다.
+     * 짧은 무게로 한 명만 다시 시도한다 (다시 한도를 치지 않게). */
+    if (DEGRADE_RULES.lastResort && spoke.length === 0 && (quotaHit || anyOutage)
+        && seq === state.turnSeq) {
+      const one = responders[0];
+      const lastRec = startTurnRequest(one, buildChatInstruction({
+        weight: DEGRADE_RULES.lastResortWeight, order: 0, isLast: true,
+        hasImages: hasImages, visionOk: providerSupportsVision()
+      }), {
+        seq: seq, modelFor: modelFor, hasImages: hasImages,
+        maxTokens: chatMaxTokens(DEGRADE_RULES.lastResortWeight)
+      });
+      if (await presentTurn(lastRec)) { noteSpeaker(one.id); spoke.push(one.id); }
+    }
 
     /* 연쇄 반응 — 동료 말에 다른 동료가 끼어든다.
      * 이건 미리 걸 수 없다. 반응할 대상(동료의 말)이 아직 없기 때문이다.
@@ -9920,7 +10453,7 @@ async function sendFollowup() {
         if (seq === state.turnSeq) {
           const cRec = startTurnRequest(chainer, buildChatInstruction({
             weight: weight, isChain: true, targetName: last.name
-          }), { seq: seq, model: model, maxTokens: 600 });
+          }), { seq: seq, modelFor: modelFor, hasImages: hasImages, maxTokens: 600 });
           if (await presentTurn(cRec)) noteSpeaker(chainer.id);
         }
       }
@@ -9933,6 +10466,8 @@ async function sendFollowup() {
       state.inProgress = false;
       renderRoundBar();
       refreshLangStat();
+      // 설정이 열려 있으면 라우팅 내역을 바로 갱신 (닫혀 있으면 열 때 그린다)
+      if (document.querySelector('#modalSettings.open')) renderRouteLog();
     }
   }
 }
@@ -10636,7 +11171,7 @@ async function generateMinutes(opts = {}) {
     toast('회의 내용이 충분하지 않습니다', true);
     return false;
   }
-  if (!state.apiKey) {
+  if (!hasAnyKey()) {
     toast('API key 필요', true);
     openModal('modalSettings');
     return false;
