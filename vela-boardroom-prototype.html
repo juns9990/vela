@@ -7,7 +7,7 @@
 <meta name="description" content="벨챗 — 베테랑 셋이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=bd0d06f64eef" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=e4b812f4f96d" />
 <meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
 <meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -2516,7 +2516,10 @@
   }
   body.has-bg-photo .orb { opacity: 0.35; }
 
-  /* PC — 중앙 카드형, 좌우로 배경이 보인다 */
+  /* PC — 중앙 카드형, 좌우로 배경이 보인다.
+     ★ v2.7.1 부터 이 값들은 파일 맨 아래 "PC 설치형 창 모드" 블록에서
+       CSS 변수(--stage-pad / --shell-radius / --shell-shadow)로 다시 잡는다.
+       설치 창에서는 같은 변수가 0 으로 바뀌어 셸이 창을 꽉 채운다. */
   @media (min-width: 560px) {
     body.chat-only { padding: 22px 0; }
     .app-shell {
@@ -3351,6 +3354,112 @@
     border-radius: 18px;
     pointer-events: none;
   }
+
+  /* ══════════════════════════════════════════════════════════════════
+     벨챗 v2.7.1 — PC 설치형 창 모드 (카톡 PC버전처럼)
+
+     · 브라우저 탭으로 열면        → 지금까지처럼 "무대 위 중앙 카드"
+     · 설치한 앱 창으로 열면       → 창 자체가 이미 채팅방이므로
+                                    좌우 배경 여백·라운드·그림자를 걷어내고
+                                    셸이 창을 꽉 채운다
+
+     두 모드는 공존한다. 스위치는 아래 변수 6개가 전부다 —
+     레이아웃 규칙 본문은 한 번만 쓰고, 변수만 두 경로에서 켠다.
+       ① @media (display-mode: …)  — 데스크탑 Chrome/Edge 는 이것만으로 즉시
+       ② body.pwa-window           — iOS(navigator.standalone) 대비 JS 보강
+     ══════════════════════════════════════════════════════════════════ */
+
+  :root {
+    --stage-pad: 22px;                      /* 무대 위아래 여백 (카드형) */
+    --shell-max: var(--shell-w, 480px);     /* 셸 최대 폭 */
+    --shell-radius: 24px;
+    --shell-shadow: 0 24px 64px var(--shadow), 0 3px 12px var(--shadow);
+    --main-max: 1280px;
+    --d-browser: block;                     /* 브라우저 탭에서만 보이는 것 */
+    --d-window: none;                       /* 설치 창에서만 보이는 것 */
+  }
+
+  /* ① 설치 창 — 표준 경로. fullscreen/WCO/minimal-ui 도 "창 = 앱"이다 */
+  @media (display-mode: standalone),
+         (display-mode: window-controls-overlay),
+         (display-mode: minimal-ui),
+         (display-mode: fullscreen) {
+    :root {
+      --stage-pad: 0px;
+      --shell-max: none;
+      --shell-radius: 0px;
+      --shell-shadow: none;
+      --main-max: none;
+      --d-browser: none;
+      --d-window: block;
+    }
+  }
+  /* ② JS 보강 — iOS Safari 는 display-mode 를 안 주고 navigator.standalone 만 준다 */
+  body.pwa-window {
+    --stage-pad: 0px;
+    --shell-max: none;
+    --shell-radius: 0px;
+    --shell-shadow: none;
+    --main-max: none;
+    --d-browser: none;
+    --d-window: block;
+  }
+
+  /* ---- 위 변수를 받아쓰는 레이아웃 (이 세 줄이 모드 전환의 전부다) ---- */
+  .app-shell { max-width: var(--shell-max); }
+  @media (min-width: 560px) {
+    body.chat-only { padding: var(--stage-pad) 0; }
+    .app-shell {
+      border-radius: var(--shell-radius);
+      box-shadow: var(--shell-shadow);
+    }
+  }
+  /* 매거진 시절 main 의 max-width:1280px 가 넓은 창에서 좌우 여백을 만든다 */
+  body.chat-only main { max-width: var(--main-max); margin: 0 auto; }
+
+  /* 설치 창에서는 셸이 곧 창이므로 배경 무대가 보일 일이 없다 —
+     빛망울만 셸 안에 남기고 body 그라데이션은 그대로 둔다(투명 구간 대비) */
+  .only-browser { display: var(--d-browser); }
+  .only-window  { display: var(--d-window); }
+  /* 모바일에선 PC 안내·너비 조절이 의미 없다 (위 규칙보다 뒤에 와야 이긴다) */
+  @media (max-width: 559px) {
+    .pc-only { display: none; }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     v2.7.1 — 좁은 창(최소 320px) 버티기
+     설치 창은 사용자가 마음대로 줄인다. 카톡 PC처럼 아주 좁혀도
+     헤더 한 줄 · 입력독 한 줄 · 칩 줄바꿈이 유지돼야 한다.
+     ══════════════════════════════════════════════════════════════════ */
+
+  /* textarea 는 cols 기본값(20) 만큼의 min-content 폭을 주장한다.
+     그 폭이 독보다 넓어지는 순간 버튼들이 창 밖으로 밀려난다 — 여기서 끊는다 */
+  .chat-input { min-width: 0; }
+  body.chat-only .masthead-meta { min-width: 0; }
+  .brand-name { flex-shrink: 0; }
+  /* 셸 자체가 절대 창보다 좁아지지 않게 (레이아웃 최소 보장선) */
+  .app-shell { min-width: 0; }
+
+  @media (max-width: 360px) {
+    body.chat-only main { padding-left: 10px; padding-right: 10px; }
+    body.chat-only .chat-dock { padding-left: 10px; padding-right: 10px; }
+    body.chat-only .issue-strip { padding-left: 10px; padding-right: 10px; font-size: 9px; }
+    body.chat-only .chat-input-bar { gap: 5px; }
+    .btn-attach { width: 32px; height: 32px; font-size: 16px; }
+    .chat-mic   { width: 34px; height: 34px; }
+    .btn-send   { width: 36px; height: 36px; font-size: 16px; }
+    .chat-input { padding: 9px 13px; min-height: 38px; }
+    .chat-routing { gap: 4px; padding: 7px 0 2px; }
+    .routing-chip { padding: 5px 9px; letter-spacing: 0.04em; gap: 4px; }
+    .brand-name { font-size: 15.5px; }
+    .brand-mark { width: 26px; height: 26px; border-radius: 8px; }
+    body.chat-only .masthead-meta button { width: 30px; height: 30px; }
+    .modal { padding-left: 16px; padding-right: 16px; }
+  }
+  /* 320px 전후 — 방 제목은 접힘 모드에서만 살리고 평소엔 자리를 양보한다 */
+  @media (max-width: 330px) {
+    body.chat-only:not(.chrome-collapsed) .brand-room { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -3407,7 +3516,7 @@
 
 <div class="issue-strip">
   <div class="left">
-    <span id="versionTag">v2.4.0</span>
+    <span id="versionTag">v2.7.1</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -3616,8 +3725,8 @@
         </div>
       </div>
 
-      <!-- v2.5 — PC 채팅창 너비 -->
-      <div class="pc-only" style="margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line);">
+      <!-- v2.5 — PC 채팅창 너비. v2.7.1 — 설치 창에서는 창 크기가 곧 폭이라 감춘다 -->
+      <div class="pc-only only-browser" style="margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line);">
         <div class="setting-row">
           <label style="margin:0">채팅창 너비</label>
           <span class="setting-value" id="shellWidthLabel">480px</span>
@@ -3655,6 +3764,14 @@
 
     <!-- ===== 일반 탭 ===== -->
     <div class="settings-pane" data-pane="general">
+
+    <!-- v2.7.1 — PC 설치형 창 모드 안내. 브라우저 탭일 때만 뜬다 -->
+    <div class="modal-info pc-only only-browser" style="margin-bottom: 16px;">
+      💻 PC 앱으로 설치하면 카톡처럼 쓸 수 있어요 — 헤더의 <b>앱 설치</b>를 누르면 창 하나가 통째로 채팅방이 됩니다.
+    </div>
+    <div class="modal-info pc-only only-window" style="margin-bottom: 16px;">
+      💻 PC 앱 창 모드로 실행 중이에요 — 창 크기가 곧 채팅창 크기입니다. 좁게 줄여 옆에 띄워두세요.
+    </div>
 
     <label>Provider</label>
     <select id="inputProvider">
@@ -3863,7 +3980,7 @@ const LLM_CONFIG = {
 
 const APP = {
   name: '벨챗',                // v2.4 — 앱 이름
-  version: '2.7.0',
+  version: '2.7.1',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -5146,6 +5263,38 @@ function updateCostNote() {
   if (wrap) wrap.classList.toggle('on', !!state.quick);
 }
 
+/* ---- 설치형 창 모드 감지 (v2.7.1) ------------------------------------
+ * CSS 는 @media (display-mode: standalone) 만으로도 이미 창 모드를 잡는다.
+ * 여기서 body 에 .pwa-window 를 덧붙이는 이유는 두 가지뿐이다.
+ *   ① iOS Safari 는 display-mode 미디어 쿼리를 주지 않는다
+ *      (navigator.standalone 불리언만 준다)
+ *   ② JS 쪽에서도 "지금 창 모드인가"를 물어볼 데가 필요하다
+ * 즉 CSS 가 주(主)고 이건 보강이다 — 이 함수가 안 돌아도 데스크탑은 멀쩡하다.
+ * --------------------------------------------------------------------- */
+const WINDOW_MODES = ['standalone', 'window-controls-overlay', 'minimal-ui', 'fullscreen'];
+
+function isWindowMode() {
+  if (window.navigator.standalone === true) return true;   // iOS 홈화면 앱
+  return WINDOW_MODES.some(m => {
+    try { return window.matchMedia('(display-mode: ' + m + ')').matches; } catch (e) { return false; }
+  });
+}
+
+function applyWindowMode() {
+  document.body.classList.toggle('pwa-window', isWindowMode());
+}
+
+function bindWindowMode() {
+  applyWindowMode();
+  // 창 모드는 도중에 바뀔 수 있다 (전체화면 토글, 탭에서 앱으로 열기 등)
+  WINDOW_MODES.forEach(m => {
+    let mq;
+    try { mq = window.matchMedia('(display-mode: ' + m + ')'); } catch (e) { return; }
+    if (mq.addEventListener) mq.addEventListener('change', applyWindowMode);
+    else if (mq.addListener) mq.addListener(applyWindowMode);
+  });
+}
+
 /* ---- FEATURES 플래그에 맞춰 화면 구성 (v2.1: 열자마자 채팅방) ---- */
 function applyFeatureFlags() {
   document.body.classList.toggle('chat-only', !FEATURES.startScreen);
@@ -6251,6 +6400,7 @@ window.addEventListener('DOMContentLoaded', () => {
   applyChrome(state.chromeCollapsed, { persist: false });
   bindEvents();
   bindInstallButton();
+  bindWindowMode();     // v2.7.1 — 설치 창이면 셸이 창을 꽉 채운다
   applyFeatureFlags();
   // v2.2 — 고정 셸: 뷰포트(모바일 키보드) 추적 + 메시지 영역 스크롤 정책
   bindViewport();
@@ -9511,7 +9661,8 @@ window.addEventListener('beforeinstallprompt', (e) => {
 window.addEventListener('appinstalled', () => {
   $('#btnInstall').hidden = true;
   deferredInstallPrompt = null;
-  toast('홈 화면에 설치 완료');
+  // v2.7.1 — 설치해도 지금 이 탭은 그대로 탭이다. 창 모드는 새로 뜬 앱 창에서 보인다
+  toast('설치 완료 — 새로 열린 앱 창에서는 창 전체가 채팅방이 됩니다');
 });
 function bindInstallButton() {
   const btn = $('#btnInstall');
