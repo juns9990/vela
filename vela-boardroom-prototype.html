@@ -12,7 +12,7 @@
 <meta name="description" content="벨챗 — 베테랑 다섯이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=4b83b547b56a" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=9e418f3ec999" />
 <meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
 <meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -3401,6 +3401,48 @@
   }
   .route-log .rl-diag-warn { color: var(--c-warn); opacity: 0.9; }
 
+  /* v2.9.3 — 대기 중 "그만" 버튼 (검색만 포기, 답은 받는다) */
+  .msg-giveup {
+    margin-left: 6px;
+    padding: 1px 7px;
+    font-size: 10.5px;
+    font-family: inherit;
+    color: var(--text-dim);
+    background: var(--bubble);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+    line-height: 1.5;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .msg-giveup:hover { color: var(--text); border-color: var(--text-faint); }
+
+  /* v2.9.3 — 측정 패널 */
+  .metrics-box { font-family: var(--mono); font-size: 11.5px; line-height: 1.7; }
+  .metrics-day { margin-bottom: 10px; }
+  .metrics-day b { color: var(--text); font-weight: 700; }
+  .metrics-kpi { font-size: 13px; font-weight: 700; }
+  .metrics-good { color: #10b981; }
+  .metrics-warn { color: var(--c-warn); }
+  .metrics-dim { opacity: 0.7; }
+  .metrics-empty { opacity: 0.7; white-space: normal; }
+
+  /* v2.9.3 — 출처 줄의 기준시각 라벨 (사용자 눈에 띄어야 한다) */
+  .msg-fact {
+    margin-top: 9px;
+    padding: 7px 9px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--accent, var(--cyan)) 9%, transparent);
+    border-left: 2.5px solid var(--accent, var(--cyan));
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: var(--text-dim);
+  }
+  .msg-fact b { color: var(--text); font-weight: 700; }
+  .msg-fact .msg-fact-asof { font-weight: 700; color: var(--text); }
+  .msg-fact a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+  .msg-fact-fixed { display: block; margin-top: 3px; color: var(--c-warn); }
+
   .key-status.ok      { border-color: #16a34a; color: #16a34a; }
   .key-status.fail    { border-color: var(--c-warn); color: var(--c-warn); }
   .key-status.testing { border-color: var(--cyan); color: var(--cyan); }
@@ -3688,7 +3730,7 @@
 
 <div class="issue-strip">
   <div class="left">
-    <span id="versionTag">v2.9.2</span>
+    <span id="versionTag">v2.9.3</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -4027,6 +4069,13 @@
         <div class="modal-info" style="margin-bottom: 6px;">🔀 최근 라우팅</div>
         <div id="routeLogView" class="route-log"></div>
       </div>
+
+      <!-- v2.9.3 — 측정. 고치기 전에 잰다.
+           메시지당 호출 수가 이 앱의 핵심 지표다 (무료 한도는 호출 수로 소모된다). -->
+      <div style="margin-top: 18px;">
+        <div class="modal-info" style="margin-bottom: 6px;">📊 측정</div>
+        <div id="metricsView" class="route-log metrics-box"></div>
+      </div>
     </div>
 
     <div style="margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line);">
@@ -4284,6 +4333,93 @@ function isAutoMode() {
   return state.provider === AUTO_PROVIDER;
 }
 
+/* ═══════════ 측정 (v2.9.3) ═══════════
+ * 고치기 전에 잰다. 특히 callsPerMessage — 무료 한도는 토큰이 아니라
+ * **호출 수**로 소모되므로, 이 값이 이 앱의 건강을 가장 정확히 나타낸다.
+ * ══════════════════════════════════════ */
+const METRIC_KEY = 'vela.boardroom.metrics';
+let metricCache = null;
+
+function metricToday() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0')
+    + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function metricLoad() {
+  if (metricCache) return metricCache;
+  try { metricCache = JSON.parse(localStorage.getItem(METRIC_KEY) || '{}'); }
+  catch (e) { metricCache = {}; }
+  return metricCache;
+}
+
+function metricDay(day) {
+  const all = metricLoad();
+  const key = day || metricToday();
+  if (!all[key]) {
+    all[key] = {
+      messages: 0, calls: 0, searchCalls: 0, dataCalls: 0,
+      e429: 0, e503: 0, retries: 0, circuitOpens: 0,
+      corrections: 0, msSum: 0, msN: 0,
+      buckets: new Array(METRICS.buckets.length + 1).fill(0)
+    };
+  }
+  return all[key];
+}
+
+let metricSaveTimer = 0;
+function metricSave() {
+  if (metricSaveTimer) return;                 // 잦은 쓰기를 묶는다
+  metricSaveTimer = setTimeout(() => {
+    metricSaveTimer = 0;
+    try {
+      const all = metricLoad();
+      // 오래된 날짜부터 버린다
+      const days = Object.keys(all).sort();
+      while (days.length > METRICS.keepDays) delete all[days.shift()];
+      localStorage.setItem(METRIC_KEY, JSON.stringify(all));
+    } catch (e) { /* 저장 실패는 조용히 무시 — 측정이 앱을 막으면 안 된다 */ }
+  }, 1500);
+}
+
+function metricBump(field, by) {
+  if (!METRICS.enabled) return;
+  const d = metricDay();
+  d[field] = (d[field] || 0) + (by === undefined ? 1 : by);
+  metricSave();
+}
+
+// 응답시간 — 평균용 합계와 P95 근사용 버킷을 함께 남긴다
+function metricTiming(ms) {
+  if (!METRICS.enabled || !(ms >= 0)) return;
+  const d = metricDay();
+  d.msSum += ms;
+  d.msN++;
+  let i = METRICS.buckets.findIndex(b => ms <= b);
+  if (i < 0) i = METRICS.buckets.length;
+  d.buckets[i] = (d.buckets[i] || 0) + 1;
+  metricSave();
+}
+
+/* 버킷에서 P95 를 근사한다. 원본을 저장하지 않으므로 정확한 분위수는 못 구하지만,
+ * "어느 구간에 95%가 들어오는가"는 알 수 있고 판단에는 그걸로 충분하다. */
+function metricP95(d) {
+  const total = (d.buckets || []).reduce((a, b) => a + b, 0);
+  if (!total) return 0;
+  const need = total * 0.95;
+  let acc = 0;
+  for (let i = 0; i < d.buckets.length; i++) {
+    acc += d.buckets[i];
+    if (acc >= need) return i < METRICS.buckets.length ? METRICS.buckets[i] : METRICS.buckets[METRICS.buckets.length - 1] * 2;
+  }
+  return 0;
+}
+
+function metricCallsPerMessage(d) {
+  if (!d.messages) return 0;
+  return d.calls / d.messages;
+}
+
 /* provider 별 일시 정지 상태 — 429/503 을 맞으면 잠깐 후보에서 뺀다 */
 const providerCoolDown = {};   // { provider: 다시 쓸 수 있는 시각(ms) }
 const providerLastCallAt = {}; // { provider: 마지막으로 콜을 쏜 시각(ms) }
@@ -4294,7 +4430,71 @@ function coolDownProvider(provider, status) {
 }
 function providerAvailable(provider) {
   const until = providerCoolDown[provider] || 0;
-  return Date.now() >= until;
+  return Date.now() >= until && circuitAllows(provider);
+}
+
+/* ═══════════ 서킷 브레이커 (v2.9.3) ═══════════
+ * 쿨다운과 뭐가 다른가 — 쿨다운은 "잠깐 쉬어라"고 순서를 미룰 뿐,
+ * 후보 목록에는 남아 있다. 그래서 갈 곳이 없으면 결국 그 회사를 다시 두드린다.
+ * 실제로 v2.9.2 에서 그게 "12초 뒤 찾아볼게요" 무한 반복의 원인이었다 —
+ * 쿨다운 중인 Gemini 를 8번 다시 부르면서 429 를 8건 더 만들어냈다.
+ *
+ * 서킷은 다르다. 연속으로 실패하면 **아예 후보에서 빼버린다.**
+ * 두드려봐야 안 될 문은 두드리지 않는 게 무료 한도에서는 언제나 이득이다.
+ *
+ *   CLOSED    정상
+ *   OPEN      연속 실패 threshold 회 → openMs 동안 호출 금지
+ *   HALF_OPEN openMs 가 지나면 딱 한 번 시험 호출. 성공하면 CLOSED, 실패하면 다시 OPEN
+ * ══════════════════════════════════════════════ */
+const circuitState = {};   // { provider: { fails, openUntil, probing } }
+
+function circuitOf(provider) {
+  if (!circuitState[provider]) circuitState[provider] = { fails: 0, openUntil: 0 };
+  return circuitState[provider];
+}
+
+/* 지금 이 회사를 부를 수 있나.
+ * ★ 부작용이 없는 순수 판정이다 — resolveRoute 의 filter 에서 여러 번 불리므로
+ *   여기서 상태를 바꾸면 "보기만 했는데 시험 기회가 소모되는" 일이 생긴다.
+ *   openMs 가 지나면 그냥 허용하고(HALF_OPEN), 그 호출이 실패하면
+ *   circuitOnFailure 가 곧바로 다시 OPEN 으로 되돌린다. */
+function circuitAllows(provider) {
+  if (!CIRCUIT_RULES.enabled) return true;
+  const c = circuitState[provider];
+  if (!c || !c.openUntil) return true;
+  return Date.now() >= c.openUntil;
+}
+
+function circuitOnFailure(provider, status) {
+  if (!CIRCUIT_RULES.enabled) return;
+  if (CIRCUIT_RULES.countStatuses.indexOf(status) < 0) return;
+  const c = circuitOf(provider);
+  // 이미 열렸다가 시간이 지나 시험 삼아 부른 것이었다면, 두 번 볼 것 없이 다시 닫는다
+  const wasProbe = c.openUntil > 0 && Date.now() >= c.openUntil;
+  c.fails++;
+  if (wasProbe || c.fails >= CIRCUIT_RULES.failThreshold) {
+    c.openUntil = Date.now() + CIRCUIT_RULES.openMs;
+    metricBump('circuitOpens');
+  }
+}
+
+function circuitOnSuccess(provider) {
+  const c = circuitOf(provider);
+  c.fails = 0;
+  c.openUntil = 0;
+}
+
+/* 화면에 보여줄 상태 — 라우팅 로그용 */
+function circuitLabel(provider) {
+  const c = circuitState[provider];
+  if (!c || !c.openUntil) return '';
+  const left = c.openUntil - Date.now();
+  return left > 0 ? `차단 중 (${Math.ceil(left / 1000)}초 남음)` : '시험 호출 대기';
+}
+
+// 검색 가능한 곳이 지금 전부 막혀 있나 — 기다려도 소용없는 상황을 미리 안다
+function allSearchProvidersBlocked() {
+  return !ROUTING_RULES.search.some(p => providerKeyOf(p) && circuitAllows(p));
 }
 
 /* 콜 사이 최소 간격 — 무료 분당 한도가 빡빡한 provider 를 위한 페이싱.
@@ -4439,7 +4639,7 @@ function providerHeaders(providerIn, key) {
 
 const APP = {
   name: '벨챗',                // v2.4 — 앱 이름
-  version: '2.9.2',
+  version: '2.9.3',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -4680,7 +4880,16 @@ const FEATURES = {
    * 코드(EXPERT_POOL·buildExpertSystem·pickExpert·CSS·TTS)는 전부 남겨뒀다 —
    * 이 한 줄을 true 로 바꾸면 v2.8 동작으로 그대로 돌아온다.
    * ★ 옛 세션에 이미 앉아 있던 전문가는 그 방에서 계속 보인다 (신규 입장만 막는다). */
-  expertSeat: false
+  expertSeat: false,
+
+  /* v2.9.3 — 자리만 만들어 둔 실험 플래그 (아직 구현 없음).
+   * 아이디어: 한 번의 호출로 두 사람의 발언을 JSON 으로 함께 받아 말풍선 2개로 나눈다.
+   *   → 호출 1회. callsPerMessage 목표(1.0)에 정확히 맞는다.
+   * 하지만 한 번의 생성으로 두 사람을 쓰면 **말투가 서로 수렴한다.**
+   * 그게 5인 체계의 핵심 가치를 정면으로 깎으므로, 측정 기반(📊 측정)이
+   * 자리 잡은 뒤 A/B 로 검증하고 켠다. 자세한 설계는 v2.9.3 계획서 5절.
+   * (흔한 오해: "분석 1콜 + 발언 2콜"은 총 3콜이라 오히려 KPI 가 나빠진다) */
+  sharedTurn: false
 };
 
 /* ---- ⑦ 단톡방 응답 규칙 -----------------------------------------
@@ -4792,6 +5001,242 @@ function freshnessHit(text) {
   return null;
 }
 
+/* ═══════════ 데이터 계층 (v2.9.3) ═══════════
+ *   API → Fact(정규화) → 프롬프트 주입 → 응답 → Validator
+ *
+ * 실시간 수치를 LLM 검색으로 알아내는 건 느리고 비싸고 틀릴 수 있다.
+ * 공식 API 가 있는 종류(환율·날씨)는 앱이 직접 받아온다:
+ *   · 검색 호출 0 — callsPerMessage 가 1.0 으로 떨어진다
+ *   · 숫자가 출처와 일치함을 앱이 보증한다 (Validator)
+ *   · 기준시각을 정확히 안다 — 이게 v2.9.1 사고의 재발을 막는 핵심이다
+ * ══════════════════════════════════════════════ */
+
+const dataCache = new Map();   // key → { at, fact }
+
+function dataCacheGet(key, ttlMs) {
+  const hit = dataCache.get(key);
+  if (!hit) return null;
+  if (Date.now() - hit.at > ttlMs) { dataCache.delete(key); return null; }
+  return hit.fact;
+}
+
+/* 짧은 타임아웃을 건 fetch — "빠르려고 붙인 계층"이 느림의 원인이 되면 안 된다 */
+async function fetchJsonWithTimeout(url, timeoutMs) {
+  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  const timer = setTimeout(() => { try { if (ctrl) ctrl.abort(); } catch (e) {} }, timeoutMs);
+  try {
+    const res = await fetch(url, { signal: ctrl ? ctrl.signal : undefined });
+    if (!res.ok) throw new Error('데이터 소스 응답 오류 ' + res.status);
+    return await res.json();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/* 질문에서 어떤 데이터 소스를 쓸지 고른다 (없으면 null → 검색 경로로) */
+function pickDataSource(text) {
+  const q = String(text || '').toLowerCase();
+  const keys = Object.keys(DATA_SOURCES);
+  for (let i = 0; i < keys.length; i++) {
+    const def = DATA_SOURCES[keys[i]];
+    if (def.match.some(w => q.includes(String(w).toLowerCase()))) {
+      return { kind: keys[i], def: def };
+    }
+  }
+  return null;
+}
+
+/* 어떤 통화를 묻는지 — 없으면 달러 */
+function pickCurrency(text) {
+  const q = String(text || '');
+  if (/엔화|엔저|일본\s*돈|엔\b/.test(q)) return 'JPY';
+  if (/유로/.test(q)) return 'EUR';
+  if (/위안|중국\s*돈/.test(q)) return 'CNY';
+  if (/파운드/.test(q)) return 'GBP';
+  return DATA_SOURCES.fx.defaultCurrency;
+}
+
+/* 어떤 도시를 묻는지 — 사전에 있는 이름만 인정한다 (지오코딩은 쓰지 않는다) */
+function pickCity(text) {
+  const q = String(text || '');
+  const names = Object.keys(KO_CITIES);
+  for (let i = 0; i < names.length; i++) {
+    if (q.includes(names[i])) return names[i];
+  }
+  return DATA_SOURCES.weather.defaultCity;
+}
+
+/* ---- 환율 Fact ---- */
+async function fetchFxFact(text) {
+  const def = DATA_SOURCES.fx;
+  const code = pickCurrency(text);
+  const cur = def.currencies[code];
+  const cacheKey = 'fx:' + code;
+  const cached = dataCacheGet(cacheKey, def.ttlMs);
+  if (cached) return cached;
+
+  const url = `https://api.frankfurter.dev/v1/latest?base=${encodeURIComponent(code)}&symbols=KRW`;
+  const json = await fetchJsonWithTimeout(url, def.timeoutMs);
+  const raw = json && json.rates && json.rates.KRW;
+  if (!(raw > 0)) throw new Error('환율 값을 받지 못했습니다');
+
+  const mult = cur.multiplier || 1;
+  const value = raw * mult;
+  const fact = {
+    kind: 'fx',
+    value: value,
+    display: value.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원',
+    unit: '원',
+    label: `${cur.name} ${cur.unit}`,
+    asOf: json.date || '',
+    asOfText: json.date ? formatFactDate(json.date) + ' 기준' : '기준일 미상',
+    sourceName: def.sourceName,
+    sourceUrl: def.sourceUrl,
+    caveat: def.caveat
+  };
+  dataCache.set(cacheKey, { at: Date.now(), fact: fact });
+  return fact;
+}
+
+/* ---- 날씨 Fact ---- */
+async function fetchWeatherFact(text) {
+  const def = DATA_SOURCES.weather;
+  const city = pickCity(text);
+  const co = KO_CITIES[city];
+  if (!co) throw new Error('아는 도시가 아닙니다');
+  const cacheKey = 'weather:' + city;
+  const cached = dataCacheGet(cacheKey, def.ttlMs);
+  if (cached) return cached;
+
+  const url = 'https://api.open-meteo.com/v1/forecast'
+    + `?latitude=${co[0]}&longitude=${co[1]}`
+    + '&current=temperature_2m,relative_humidity_2m,weather_code&timezone=Asia%2FSeoul';
+  const json = await fetchJsonWithTimeout(url, def.timeoutMs);
+  const cur = json && json.current;
+  if (!cur || typeof cur.temperature_2m !== 'number') throw new Error('날씨 값을 받지 못했습니다');
+
+  const sky = WMO_TEXT[cur.weather_code] || '';
+  const fact = {
+    kind: 'weather',
+    value: cur.temperature_2m,
+    display: cur.temperature_2m + '도' + (sky ? ' · ' + sky : ''),
+    unit: '도',
+    label: `${city} 현재 기온`,
+    extra: { sky: sky, humidity: cur.relative_humidity_2m, city: city },
+    asOf: cur.time || '',
+    asOfText: cur.time ? formatFactTime(cur.time) + ' 관측' : '관측 시각 미상',
+    sourceName: def.sourceName,
+    sourceUrl: def.sourceUrl,
+    caveat: def.caveat
+  };
+  dataCache.set(cacheKey, { at: Date.now(), fact: fact });
+  return fact;
+}
+
+// "2026-08-14" → "8/14"
+function formatFactDate(iso) {
+  const m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return String(iso);
+  return `${parseInt(m[2], 10)}/${parseInt(m[3], 10)}`;
+}
+// "2026-08-17T20:00" → "8/17 20시"
+function formatFactTime(iso) {
+  const m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):/);
+  if (!m) return String(iso);
+  return `${parseInt(m[2], 10)}/${parseInt(m[3], 10)} ${parseInt(m[4], 10)}시`;
+}
+
+/* 데이터 계층 진입점 — 실패하면 null 을 돌려주고 호출부가 검색으로 넘어간다.
+ * 여기서 예외를 던지지 않는 게 중요하다: 데이터 소스 장애가 대화를 막으면 안 된다. */
+async function fetchFact(text) {
+  const picked = pickDataSource(text);
+  if (!picked) return null;
+  try {
+    metricBump('dataCalls');
+    if (picked.kind === 'fx') return await fetchFxFact(text);
+    if (picked.kind === 'weather') return await fetchWeatherFact(text);
+    return null;
+  } catch (e) {
+    console.warn('[벨챗:데이터] ' + picked.kind + ' 조회 실패 — 검색으로 넘어갑니다', e);
+    return null;
+  }
+}
+
+/* Fact 를 프롬프트에 넣을 문장으로. "설명만 해라"가 핵심이다 */
+function factDirective(fact) {
+  const lines = [
+    '[확인된 실제 값 — 앱이 공식 소스에서 직접 받아왔다]',
+    `${fact.label}: ${fact.display}`,
+    `기준: ${fact.asOfText} · 출처: ${fact.sourceName}`,
+    '',
+    '**이 숫자를 바꾸지 마라.** 반올림하거나 어림잡아 고치지 말고 그대로 쓴다.',
+    '네 기억 속 숫자가 이것과 다르면 위 값이 맞다. 기억은 오래된 것이다.',
+    `말할 때 기준 시점을 함께 밝혀라 — "${fact.asOfText}" 처럼.`,
+    '이 값을 그냥 읊지만 말고, 네 분야 관점에서 그게 무슨 의미인지 한두 마디 보태라.',
+    '출처 링크와 기준 시점은 화면 아래에 앱이 자동으로 붙인다. 본문에 URL 을 쓰지 마라.'
+  ];
+  if (fact.caveat) lines.push(`참고: ${fact.caveat} — 필요하면 짧게 언급해도 좋다.`);
+  return lines.join('\n');
+}
+
+/* ═══════════ 수치 검증 (v2.9.3) ═══════════
+ * 공식 값을 프롬프트에 넣어줘도 모델이 다른 숫자를 쓸 수 있다.
+ * 그러면 본문 숫자와 아래 출처가 어긋나 오히려 더 나쁘다.
+ *
+ * ★ 오탐이 제일 위험하다. "작년엔 1,300원이었죠" 같은 과거 언급까지 고치면
+ *   맞는 문장을 망가뜨린다. 그래서 **Fact 값 ±window(20%) 안의 숫자만**
+ *   "지금 값을 말하려는 시도"로 보고 검사한다. 그 밖은 손대지 않는다.
+ * ══════════════════════════════════════════════ */
+
+// 응답에서 이 Fact 종류에 해당하는 숫자 토큰을 뽑는다 → [{ raw, num, index }]
+function extractNumbers(text, kind) {
+  const out = [];
+  const re = kind === 'weather'
+    ? /(-?\d+(?:\.\d+)?)\s*도(?![시로])/g          // "도시", "도로" 오탐 방지
+    : /([\d]{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)\s*원/g;
+  let m;
+  while ((m = re.exec(String(text || '')))) {
+    const num = parseFloat(m[1].replace(/,/g, ''));
+    if (isFinite(num)) out.push({ raw: m[0], numText: m[1], num: num, index: m.index });
+  }
+  return out;
+}
+
+/* 검증 결과: { ok, bad: [...], target } */
+function validateAgainstFact(text, fact) {
+  if (!VALIDATOR_RULES.enabled || !fact) return { ok: true, bad: [] };
+  const nums = extractNumbers(text, fact.kind);
+  if (!nums.length) return { ok: true, bad: [] };   // 숫자를 아예 안 썼으면 검사할 게 없다
+
+  const tol = VALIDATOR_RULES.tolerance[fact.kind];
+  const bad = [];
+  nums.forEach(n => {
+    // 창 밖이면 다른 얘기(과거·비교·예시)다. 건드리지 않는다
+    const rel = Math.abs(n.num - fact.value) / (Math.abs(fact.value) || 1);
+    if (rel > VALIDATOR_RULES.window) return;
+    const off = fact.kind === 'weather'
+      ? Math.abs(n.num - fact.value) > tol
+      : rel > tol;
+    if (off) bad.push(n);
+  });
+  return { ok: bad.length === 0, bad: bad };
+}
+
+/* 재생성해도 틀렸을 때 — 그 숫자 토큰만 정확한 값으로 갈아끼운다.
+ * 창 안의 숫자만 바꾸므로 문맥이 다른 숫자는 그대로 남는다. */
+function correctNumbers(text, fact, bad) {
+  let out = String(text || '');
+  const correct = fact.kind === 'weather'
+    ? String(fact.value)
+    : fact.value.toLocaleString('ko-KR', { maximumFractionDigits: 2 });
+  // 뒤에서부터 바꿔야 앞쪽 index 가 밀리지 않는다
+  bad.slice().sort((a, b) => b.index - a.index).forEach(n => {
+    const replaced = n.raw.replace(n.numText, correct);
+    out = out.slice(0, n.index) + replaced + out.slice(n.index + n.raw.length);
+  });
+  return out;
+}
+
 // 검색이 붙은 턴의 말풍선 머리 문구 — 왜 느린지가 화면에 드러나야 한다
 const SEARCH_STATUS_TEXT = '🔍 자료 찾는 중…';
 // 구글 검색 제안 위젯 저장 상한 (정상은 1~2KB. 넘으면 싣지 않는다)
@@ -4878,7 +5323,121 @@ const FRESHNESS_RULES = {
   soloResponder: true,     // 신선도 검색 턴은 담당자 1명만 (콜 절반)
   chainChance: 0.15,       // 그 턴의 연쇄 반응 확률 (기본 0.30 → 낮춤. 0 이면 아예 없음)
   waitCapMs: 90000,        // 검색을 완수하려고 기다릴 수 있는 총 시간
-  minWaitMs: 3000          // 저쪽이 알려준 대기시간이 없을 때의 최소 대기
+  minWaitMs: 3000,         // 저쪽이 알려준 대기시간이 없을 때의 최소 대기
+  /* v2.9.3 — 대기 "횟수" 상한. 예산(시간)만으로는 못 막는 경우가 있다:
+   * 3초씩 30번 기다리면 90초 예산 안이지만 화면에는 카운트다운이 30번 반복된다.
+   * 사용자에게 그건 무한 루프로 보인다. 시간과 횟수를 둘 다 자른다. */
+  maxWaits: 5
+};
+
+/* ---- ⑧-7 서킷 브레이커 (v2.9.3) -----------------------------------
+ * 연속으로 실패하는 회사를 아예 후보에서 빼는 장치.
+ * 쿨다운은 순서를 미룰 뿐이라 갈 곳이 없으면 결국 다시 두드리는데,
+ * 그게 v2.9.2 무한 대기의 원인이었다. 서킷은 두드리는 것 자체를 막는다.
+ * ------------------------------------------------------------------ */
+const CIRCUIT_RULES = {
+  enabled: true,
+  failThreshold: 3,                  // 연속 이 횟수만큼 실패하면 OPEN
+  openMs: 60000,                     // OPEN 유지 시간 (이 동안 호출 금지)
+  countStatuses: [429, 503, 529]     // 이 상태코드만 실패로 센다 (키 오류 등은 별개 문제)
+};
+
+/* ---- ⑯ 측정 (v2.9.3) ----------------------------------------------
+ * 고치기 전에 재야 한다. 특히 CALLS_PER_MESSAGE 는 이 앱의 핵심 지표다 —
+ * 무료 한도는 토큰이 아니라 **호출 수**로 소모되기 때문이다.
+ *
+ * 응답시간은 원본을 다 저장하지 않고 버킷 카운터로만 남긴다.
+ * 하루치가 100바이트 남짓이라 14일을 담아도 2KB 이하다.
+ * ------------------------------------------------------------------ */
+const METRICS = {
+  enabled: true,
+  keepDays: 14,
+  target: { callsPerMessage: 1.0, warnAt: 1.5 },   // 화면에 목표를 박아둔다
+  buckets: [250, 500, 1000, 2000, 4000, 8000, 16000, 32000]
+};
+
+/* ---- ⑰ 데이터 소스 (v2.9.3) ---------------------------------------
+ * 실시간 수치를 LLM 검색으로 알아내는 건 느리고, 비싸고, 틀릴 수 있다.
+ * 공식 API 가 있는 종류는 앱이 직접 받아온다 — 검색 0콜, 숫자는 출처와 일치 보장.
+ *
+ *   API → Fact(정규화) → 프롬프트 주입 → 응답 → Validator(수치 검증)
+ *
+ * ★ 소스 추가 = 여기에 한 항목. match 에 걸리면 자동으로 이 경로를 탄다.
+ * ★ 두 API 모두 키가 필요 없고 CORS 가 열려 있다 (실측 확인).
+ * ------------------------------------------------------------------ */
+const DATA_SOURCES = {
+  fx: {
+    label: '환율',
+    match: ['환율', '달러', '달러값', '원달러', '엔화', '엔저', '유로화', '위안화', '파운드'],
+    timeoutMs: 4000,
+    ttlMs: 30 * 60 * 1000,
+    /* frankfurter.dev — ECB 계열 기준환율. 무키·CORS 개방.
+     * ★ 영업일 하루 한 번 갱신이라 주말·공휴일에는 며칠 전 날짜가 나온다.
+     *   그래서 asOf 를 화면과 프롬프트 양쪽에 반드시 노출한다. */
+    currencies: {
+      USD: { code: 'USD', name: '미국 달러', unit: '1달러' },
+      JPY: { code: 'JPY', name: '일본 엔', unit: '100엔', multiplier: 100 },
+      EUR: { code: 'EUR', name: '유로', unit: '1유로' },
+      CNY: { code: 'CNY', name: '중국 위안', unit: '1위안' },
+      GBP: { code: 'GBP', name: '영국 파운드', unit: '1파운드' }
+    },
+    defaultCurrency: 'USD',
+    caveat: '실거래·은행 환전가와 다를 수 있어요',
+    sourceName: '국제 기준환율(ECB)',
+    sourceUrl: 'https://frankfurter.dev'
+  },
+  weather: {
+    label: '날씨',
+    match: ['날씨', '기온', '몇 도', '더워', '추워', '미세먼지', '비 와', '비가 와', '눈 와'],
+    timeoutMs: 4000,
+    ttlMs: 10 * 60 * 1000,
+    defaultCity: '서울',
+    caveat: '관측 시각 기준이라 지금과 조금 다를 수 있어요',
+    sourceName: 'Open-Meteo 기상 데이터',
+    sourceUrl: 'https://open-meteo.com'
+  }
+};
+
+/* 도시 좌표는 내장한다 — open-meteo 지오코딩이 한글 검색에서 엉뚱한 곳을 준다
+ * (실측: "부산" → 위경도 36.38/128.37 로 경북 어딘가). 왕복도 하나 줄어든다. */
+const KO_CITIES = {
+  서울: [37.5665, 126.9780], 부산: [35.1796, 129.0756], 대구: [35.8714, 128.6014],
+  인천: [37.4563, 126.7052], 광주: [35.1595, 126.8526], 대전: [36.3504, 127.3845],
+  울산: [35.5384, 129.3114], 세종: [36.4800, 127.2890], 제주: [33.4996, 126.5312],
+  수원: [37.2636, 127.0286], 성남: [37.4200, 127.1265], 고양: [37.6584, 126.8320],
+  용인: [37.2411, 127.1776], 창원: [35.2280, 128.6811], 청주: [36.6424, 127.4890],
+  전주: [35.8242, 127.1480], 천안: [36.8151, 127.1139], 춘천: [37.8813, 127.7300],
+  강릉: [37.7519, 128.8761], 포항: [36.0190, 129.3435], 여수: [34.7604, 127.6622],
+  목포: [34.8118, 126.3922], 안동: [36.5684, 128.7294], 김해: [35.2285, 128.8894]
+};
+
+// WMO 기상 코드 → 한국어
+const WMO_TEXT = {
+  0: '맑음', 1: '대체로 맑음', 2: '구름 조금', 3: '흐림',
+  45: '안개', 48: '서리 안개',
+  51: '가벼운 이슬비', 53: '이슬비', 55: '짙은 이슬비',
+  56: '얼어붙는 이슬비', 57: '짙게 얼어붙는 이슬비',
+  61: '약한 비', 63: '비', 65: '강한 비',
+  66: '얼어붙는 비', 67: '강하게 얼어붙는 비',
+  71: '약한 눈', 73: '눈', 75: '많은 눈', 77: '싸락눈',
+  80: '소나기', 81: '소나기', 82: '강한 소나기',
+  85: '소낙눈', 86: '강한 소낙눈',
+  95: '천둥번개', 96: '천둥번개와 우박', 99: '강한 천둥번개와 우박'
+};
+
+/* ---- ⑱ 수치 검증 (v2.9.3) -----------------------------------------
+ * 공식 값을 프롬프트에 넣어줘도 모델이 다른 숫자를 쓸 수 있다.
+ * 그러면 본문 숫자와 아래 출처가 어긋나서 오히려 더 나쁘다. 그래서 검사한다.
+ *
+ * ★ 오탐이 제일 위험하다 — "작년엔 1,300원이었죠" 같은 과거 언급까지 고치면 안 된다.
+ *   그래서 Fact 값과 상대오차 window 안에 있는 숫자만 "지금 값을 말하려는 시도"로 본다.
+ * ------------------------------------------------------------------ */
+const VALIDATOR_RULES = {
+  enabled: true,
+  window: 0.20,          // 이 비율 안의 숫자만 검사 대상 (밖은 과거 언급으로 보고 놔둔다)
+  tolerance: { fx: 0.005, weather: 0.5 },   // fx 는 비율, weather 는 절대값(도)
+  retries: 1,            // 불일치 시 재생성 횟수
+  fixInPlace: true       // 재생성해도 틀리면 앱이 숫자를 고치고 그 사실을 표시한다
 };
 
 /* ---- ⑧-5 우아한 축소 (v2.8.3) -------------------------------------
@@ -5550,6 +6109,18 @@ const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효 · 가장 �
   실제로 있는 곳만 든다 — 네이버·구글에서 그 단어로 검색, 은행 앱, 기상청 같은 것.
   주소(URL)를 지어내지 마라. 있는지 확신 없는 서비스 이름도 대지 마라.
 - 사과를 길게 늘어놓지 마라. 한 마디면 충분하고, 네 말투를 유지한다.
+
+[못 지킬 약속을 하지 마라 — 너는 나중에 혼자 움직일 수 없다]
+- 이 방에서 **네가 나중에 혼자 할 수 있는 일은 없다.** 대화가 끝나면 너는 멈춘다.
+  그러니 "이따 알려주겠다"는 말은 전부 거짓말이 된다. {chair}가 다시 묻지 않으면 영영 안 온다.
+- 금지 → 대체 (짝으로 외워라):
+  · "확인해볼게요" → "잠시 뒤에 다시 물어봐 주시면 찾아볼게요"
+  · "알아보고 알려드릴게요" → "지금은 확인이 잘 안 되네요. 다시 한번 물어봐 주세요"
+  · "잠시만요, 찾아볼게요" → "지금 숫자는 확인이 필요해요"
+  · "이따 알려드릴게요" → "조금 뒤에 다시 여쭤보시면 그때 찾아볼게요"
+  · "곧 업데이트해서 알려드릴게요" → (그냥 쓰지 마라)
+- 핵심은 하나다. **다음 행동은 항상 {chair}가 다시 물어보는 것이다.**
+  네가 무언가를 하겠다고 하지 말고, {chair}가 무엇을 하면 되는지를 말해라.
 
 [자료 — 기본은 "검색 없음"이다]
 - 이 방의 기본 상태는 웹 검색이 **없는** 상태다. 네가 아는 실제 사례·기관·제품 이름을 최대한 구체적으로 들되,
@@ -8094,6 +8665,7 @@ function renderSettingsModal() {
   renderSettingsModalForProvider(settingsKeyTarget());
   refreshAutoRouteInfo();
   renderRouteLog();
+  renderMetrics();          // v2.9.3
   // 음성 옵션 채우기
   populateVoiceOptions();
   $('#inputVoiceRate').value = state.voiceRate || 1.0;
@@ -8187,9 +8759,13 @@ function renderRouteLog() {
     const s = r.search;
     let diag = '';
     if (s && s.reason) {
-      const icon = s.on ? '🔍' : (s.wanted ? '🚫' : '·');
-      const dcls = s.wanted && !s.on ? ' rl-diag-warn' : '';
+      const icon = /데이터API/.test(s.reason) ? '📡' : (s.on ? '🔍' : (s.wanted ? '🚫' : '·'));
+      const dcls = s.wanted && !s.on && !/데이터API/.test(s.reason) ? ' rl-diag-warn' : '';
       diag = `<div class="rl-diag${dcls}">${icon} ${escapeHtml(s.reason)}</div>`;
+    }
+    // v2.9.3 — 서킷 상태 (이 회사가 차단 중이면 왜 다른 곳으로 갔는지가 설명된다)
+    if (r.circuit) {
+      diag += `<div class="rl-diag rl-diag-warn">⛔ ${escapeHtml(who)} ${escapeHtml(r.circuit)}</div>`;
     }
     return `<div class="rl-item">`
       + `<div class="rl-row${cls}">`
@@ -8202,6 +8778,51 @@ function renderRouteLog() {
       + diag
       + `</div>`;
   }).join('');
+}
+
+/* v2.9.3 — 측정 패널.
+ * 목표(메시지당 1.0콜)를 화면에 박아둔다. 숫자만 보여주면 그게 좋은 건지 나쁜 건지 모른다. */
+function renderMetrics() {
+  const el = $('#metricsView');
+  if (!el) return;
+  if (!METRICS.enabled) { el.innerHTML = '<div class="metrics-empty">측정이 꺼져 있습니다.</div>'; return; }
+
+  const all = metricLoad();
+  const days = Object.keys(all).sort().reverse().slice(0, 8);
+  if (!days.length) {
+    el.innerHTML = '<div class="metrics-empty">아직 기록이 없습니다. 대화를 나누면 여기에 쌓입니다.</div>';
+    return;
+  }
+
+  const fmtMs = (ms) => (ms >= 1000 ? (ms / 1000).toFixed(1) + '초' : Math.round(ms) + 'ms');
+  const today = metricToday();
+
+  const rows = days.map((day, i) => {
+    const d = all[day];
+    const cpm = metricCallsPerMessage(d);
+    const cls = !d.messages ? 'metrics-dim'
+      : (cpm <= METRICS.target.callsPerMessage ? 'metrics-good'
+        : (cpm > METRICS.target.warnAt ? 'metrics-warn' : ''));
+    const avg = d.msN ? d.msSum / d.msN : 0;
+
+    if (i > 0) {
+      // 지난 날은 한 줄 요약만
+      return `<div><span class="metrics-dim">${escapeHtml(day.slice(5))}</span> `
+        + `메시지 ${d.messages} · 호출 ${d.calls} · `
+        + `<span class="${cls}">메시지당 ${cpm.toFixed(2)}</span></div>`;
+    }
+    return `<div class="metrics-day">`
+      + `<div><b>${day === today ? '오늘' : day.slice(5)}</b> (${escapeHtml(day)})</div>`
+      + `<div>메시지 ${d.messages} · LLM 호출 ${d.calls}</div>`
+      + `<div class="metrics-kpi ${cls}">메시지당 ${cpm.toFixed(2)}콜`
+      + `<span class="metrics-dim" style="font-size:11px;font-weight:400"> (목표 ${METRICS.target.callsPerMessage.toFixed(1)} 이하)</span></div>`
+      + `<div>검색 ${d.searchCalls} · 데이터API ${d.dataCalls || 0} · 수치정정 ${d.corrections || 0}</div>`
+      + `<div>429 ${d.e429} · 503 ${d.e503} · 재시도 ${d.retries} · 서킷 ${d.circuitOpens || 0}회</div>`
+      + `<div>응답 평균 ${fmtMs(avg)} · P95 ${fmtMs(metricP95(d))}</div>`
+      + `</div>`;
+  });
+
+  el.innerHTML = rows.join('');
 }
 
 /* 2단 모델 안내 — provider 마다 "빠른 모델"이 다르고, 없는 provider 도 있다 */
@@ -8714,6 +9335,30 @@ function renderMessageImages(msg) {
   return html;
 }
 
+/* ---- v2.9.3 데이터 출처 줄 ----------------------------------------
+ * 공식 API 로 받아온 값에는 **기준 시각이 반드시 붙어야 한다.**
+ * ECB 환율은 영업일 하루 한 번 갱신이라 월요일에 물으면 금요일 값이 나온다.
+ * 그 사실을 안 보여주면 정확한 소스를 쓰고도 v2.9.1 과 똑같은 사고가 난다 —
+ * 시점 없는 숫자는 전부 "지금 값"으로 읽히기 때문이다.
+ *
+ * 그래서 이 줄은 접지 않는다. 말풍선 하단에 항상 펼쳐 둔다.
+ * ------------------------------------------------------------------ */
+function renderFactSource(msg) {
+  const f = msg && msg.fact;
+  if (!f) return '';
+  const bits = [];
+  bits.push(`<b>${escapeHtml(f.asOfText || '')}</b>`);
+  if (f.sourceName) {
+    bits.push(f.sourceUrl
+      ? `<a href="${escapeHtml(f.sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(f.sourceName)}</a>`
+      : escapeHtml(f.sourceName));
+  }
+  if (f.caveat) bits.push(escapeHtml(f.caveat));
+  const fixed = msg.corrected
+    ? `<span class="msg-fact-fixed">※ 숫자는 출처 기준으로 정정했습니다</span>` : '';
+  return `<div class="msg-fact">${bits.join(' · ')}${fixed}</div>`;
+}
+
 /* ---- v2.9 구글 검색 제안 위젯 ------------------------------------
  * 구글 그라운딩 사용 요건상 제공된 위젯을 **수정하거나 다른 것으로 대체하면 안 된다.**
  * 그래서 renderedContent 는 손대지 않고 그대로 넣는다 (sanitize·재작성 없음).
@@ -8801,6 +9446,9 @@ function renderBubbleContent(msg) {
       }).join('') +
       '</div>';
   }
+
+  // v2.9.3 — 데이터 계층 출처 줄 (기준시각을 눈에 띄게)
+  html += renderFactSource(msg);
 
   // v2.9 — 구글 검색 제안 위젯 (접이식). 위젯 HTML 자체는 무수정으로 넣는다
   html += renderSearchWidget(msg);
@@ -9033,7 +9681,7 @@ function parseIdeas(text) {
  * 스트림이 끝난 뒤 renderBubbleContent() 가 한 번에 제대로 그린다.
  * 반쯤 온 마크다운을 그리면 화면이 깜빡이고, 반쪽짜리 태그가 남는다.
  * ══════════════════════════════════════════════ */
-function createStreamBubble(persona) {
+function createStreamBubble(persona, onGiveUp) {
   const container = $('#chatMessages');
   let el = container ? container.querySelector(`.msg-typing[data-persona="${persona.id}"]`) : null;
   if (!el) return null;
@@ -9064,10 +9712,27 @@ function createStreamBubble(persona) {
     get spoke() { return started; },
     /* v2.8.3 — 아직 글자가 안 나온 동안 머리에 상태를 띄운다
      * ("무료 한도 — 12초 후 재시도"). 이미 말하기 시작했으면 건드리지 않는다. */
-    setStatus(text) {
+    setStatus(text, canGiveUp) {
       if (started) return;
       const tag = el.querySelector('.msg-tag');
       if (tag) tag.textContent = text || '생각하는 중…';
+      /* v2.9.3 — 기다리는 중에는 "그만" 을 준다.
+       * 취소가 아니라 검색만 포기하는 버튼이다 (답은 받는다). */
+      let btn = el.querySelector('.msg-giveup');
+      if (canGiveUp && onGiveUp) {
+        if (!btn) {
+          btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'msg-giveup';
+          btn.textContent = '그만';
+          btn.title = '기다리지 않고 지금 답 받기';
+          btn.addEventListener('click', (e) => { e.stopPropagation(); onGiveUp(); });
+          const head = el.querySelector('.msg-persona-head');
+          if (head) head.appendChild(btn);
+        }
+      } else if (btn) {
+        btn.remove();
+      }
     },
     /* 첫 조각이 오면 점 세 개를 말풍선으로 승격시킨다 */
     push(full) {
@@ -9823,6 +10488,10 @@ async function callLLM(systemPrompt, messagesOrText, opts = {}) {
   // 무료 한도가 빡빡한 곳은 콜 사이 간격을 지킨다 (v2.8.3)
   await paceProvider(provider);
 
+  // v2.9.3 — 호출 수를 여기서 센다. 성공·실패·재시도 전부 한도를 소모하므로 전부 센다
+  metricBump('calls');
+  if (o.webSearch) metricBump('searchCalls');
+
   const url = providerEndpoint(provider, o.model, { stream: o.stream });
   let res;
   try {
@@ -10089,9 +10758,16 @@ function startTurnRequest(persona, instruction, opts = {}) {
     status: '',
     statusSink: null
   };
-  rec.setStatus = function (text) {
+  rec.setStatus = function (text, o) {
     rec.status = text || '';
-    if (rec.statusSink) { try { rec.statusSink(rec.status); } catch (e) {} }
+    rec.statusGiveUp = !!(o && o.canGiveUp);   // v2.9.3 — "그만" 버튼을 띄울 상태인가
+    if (rec.statusSink) { try { rec.statusSink(rec.status, rec.statusGiveUp); } catch (e) {} }
+  };
+  /* v2.9.3 — 검색만 포기한다. 취소(cancel)와 다르다: 답은 그대로 받는다.
+   * 기다리다 지친 사람에게 "취소"밖에 없으면 대화가 끊긴다. */
+  rec.giveUpSearchNow = function () {
+    rec.giveUpSearch = true;
+    rec.setStatus('');
   };
   rec.cancel = function () {
     if (rec.cancelled) return;
@@ -10139,6 +10815,29 @@ async function countdownWait(rec, ms, status) {
   rec.setStatus('다시 시도하는 중…');
 }
 
+/* ═══════════ 신선도 대기 계획 (v2.9.3) ═══════════
+ * v2.9.2 는 이 판단이 두 군데(route 없음 / 호출 실패)에 흩어져 있었고
+ * 계산식도 미묘하게 달랐다. 그래서 "언제 그만두는가"가 코드에서 한눈에 안 보였고,
+ * 실제로 종료 조건 하나가 빠져 12초 카운트다운이 반복됐다.
+ * 이제 **한 함수가 모든 종료 조건을 판단한다.** 호출부는 결과를 따르기만 한다.
+ *
+ * 종료 조건 네 가지 — 하나라도 걸리면 검색을 포기한다:
+ *   ① 시간 예산(waitCapMs) 소진
+ *   ② 대기 횟수(maxWaits) 초과   ← 3초씩 30번 기다리는 경우를 막는다
+ *   ③ 사용자가 "그만" 을 눌렀다
+ *   ④ 검색 되는 곳이 전부 서킷 차단 — 기다려도 열릴 곳이 없다
+ * ══════════════════════════════════════════════ */
+function planFreshnessWait(st, hintMs) {
+  if (st.giveUp) return { action: 'giveup', why: '사용자 중단' };
+  if (allSearchProvidersBlocked()) return { action: 'giveup', why: '검색 가능한 곳이 전부 차단' };
+  if (st.waits >= FRESHNESS_RULES.maxWaits) return { action: 'giveup', why: '대기 횟수 상한' };
+  const budget = FRESHNESS_RULES.waitCapMs - st.waitedMs;
+  if (budget <= 0) return { action: 'giveup', why: '대기 시간 상한' };
+  const ms = Math.min(budget, Math.max(FRESHNESS_RULES.minWaitMs, hintMs || 0));
+  if (ms <= 0) return { action: 'giveup', why: '대기 시간 상한' };
+  return { action: 'wait', ms: ms };
+}
+
 /* v2.9.2 — 신선도 턴에서 검색이 풀리기를 기다리는 동안의 문구.
  * 일반 재시도와 말을 다르게 한다. 사용자 입장에서 이건 "오류를 재시도하는 중"이 아니라
  * "찾아보려고 순서를 기다리는 중"이기 때문이다. 기다림의 이유가 납득되면 같은 시간도 견딜 만하다.
@@ -10146,10 +10845,11 @@ async function countdownWait(rec, ms, status) {
 async function countdownSearchWait(rec, ms) {
   const until = Date.now() + ms;
   for (;;) {
-    if (rec.cancelled) return;
+    // v2.9.3 — 취소(새 메시지)와 "그만"(검색만 포기) 둘 다 즉시 빠져나온다
+    if (rec.cancelled || rec.giveUpSearch) return;
     const left = until - Date.now();
     if (left <= 0) break;
-    rec.setStatus(`🔍 사용량이 많아 ${Math.ceil(left / 1000)}초 뒤 찾아볼게요`);
+    rec.setStatus(`🔍 사용량이 많아 ${Math.ceil(left / 1000)}초 뒤 찾아볼게요`, { canGiveUp: true });
     await sleep(Math.min(1000, left));
   }
   rec.setStatus(SEARCH_STATUS_TEXT);
@@ -10171,6 +10871,13 @@ async function runTurnFetch(persona, instruction, opts, rec) {
     instr = instruction + '\n\n' + buildDiagramDirective(state.agenda || '');
     maxTokens = 2000;
   }
+
+  /* v2.9.3 — 데이터 계층이 값을 가져왔으면 그 값을 프롬프트 맨 앞에 박는다.
+   * fact 는 호출부(sendChatMessage)가 미리 받아 넘긴다 — 한 메시지에 한 번만 조회하기 위해서다.
+   * ★ 반드시 messages 를 만들기 **전에** 붙여야 한다. 아래에서 instr 이 messages 에 병합되므로
+   *   그 뒤에 instr 을 고치면 아무 효과가 없다. */
+  const fact = opts.fact || null;
+  if (fact) instr = factDirective(fact) + '\n\n' + instr;
 
   // 대화 히스토리 + 이번 지시
   const history = buildConversationHistory(persona.id);
@@ -10200,7 +10907,7 @@ async function runTurnFetch(persona, instruction, opts, rec) {
   /* v2.9 — 이 턴에 웹 검색을 붙일지. 호출부(sendChatMessage)가 이미 정해서 넘긴다.
    * 여기서 다시 판단하지 않는 이유: "한 메시지에 한 명만 검색"을 지키려면
    * 턴 하나가 아니라 메시지 하나를 보는 자리에서 정해야 하기 때문이다. */
-  const needsSearch = !!opts.webSearch;
+  const needsSearch = !!opts.webSearch && !fact;
   if (needsSearch) rec.setStatus(SEARCH_STATUS_TEXT);
 
   /* v2.9.1 — 이 턴의 검색 판정을 진단 로그에 남긴다.
@@ -10257,7 +10964,17 @@ async function runTurnFetch(persona, instruction, opts, rec) {
      * 아무 곳에서나 답을 받아온다 (그 답은 비상 화법으로 나간다). */
     let strict = !!(needsSearch && opts.freshness && FRESHNESS_RULES.waitCapMs > 0
                     && searchCapable());
-    let waitedMs = 0;
+    // 대기 상태는 한 덩어리로 들고 다닌다 — planFreshnessWait 가 이걸 보고 판단한다
+    const waitSt = { waitedMs: 0, waits: 0, get giveUp() { return !!rec.giveUpSearch; } };
+
+    /* 검색을 포기하고 일반 경로로 내려간다. 세 군데에서 부르므로 함수로 묶었다 —
+     * v2.9.2 는 이 처리가 흩어져 있어서 한 경로에서 빠졌다. */
+    const dropSearch = (why) => {
+      strict = false;
+      rec.searchGaveUp = why || '검색 실패';
+      rec.setStatus('');
+      tried.length = 0;
+    };
 
     /* guard 는 **실제 호출 횟수**만 센다.
      * 기다리는 회차까지 여기서 세면, 90초를 잘게 쪼개 기다리는 동안 상한을 다 써버리고
@@ -10270,23 +10987,15 @@ async function runTurnFetch(persona, instruction, opts, rec) {
         strictSearch: strict, exclude: tried
       });
       if (!route && strict) {
-        /* 검색 되는 곳이 지금은 전부 막혀 있다.
-         * 남은 대기 예산이 있으면 기다렸다 다시 본다. */
-        const budget = FRESHNESS_RULES.waitCapMs - waitedMs;
-        const hinted = (lastErr && lastErr.retryAfterMs) || 0;
-        const wait = Math.min(budget, Math.max(FRESHNESS_RULES.minWaitMs, hinted));
-        if (budget > 0 && wait > 0) {
-          await countdownSearchWait(rec, wait);
-          if (rec.cancelled) throw makeAbort();
-          waitedMs += wait;
-          tried.length = 0;                 // 쉬었으니 전부 다시 후보로
-          continue;
-        }
-        // 예산을 다 썼다 — 검색을 포기하고 일반 경로로 답이라도 받는다
-        strict = false;
-        rec.searchGaveUp = true;
-        rec.setStatus('');
-        tried.length = 0;
+        // 검색 되는 곳이 지금 전부 막혀 있다 — 기다릴지 그만둘지는 한 함수가 정한다
+        const plan = planFreshnessWait(waitSt, (lastErr && lastErr.retryAfterMs) || 0);
+        if (plan.action === 'giveup') { dropSearch(plan.why); continue; }
+        await countdownSearchWait(rec, plan.ms);
+        if (rec.cancelled) throw makeAbort();
+        waitSt.waitedMs += plan.ms;
+        waitSt.waits++;
+        metricBump('retries');
+        tried.length = 0;                   // 쉬었으니 전부 다시 후보로
         continue;
       }
       if (!route) break;
@@ -10295,13 +11004,17 @@ async function runTurnFetch(persona, instruction, opts, rec) {
       try {
         const out = await askOnce(msgs, live, route);
         rec.setStatus('');
+        circuitOnSuccess(route.provider);           // v2.9.3 — 성공하면 연속 실패 카운터 초기화
+        metricTiming(Date.now() - t0);
         noteRoute({ provider: route.provider, model: route.model, persona: persona.name,
                     vision: needsVision, ms: Date.now() - t0, ok: true,
                     // v2.9.2 — 기다리다 검색을 포기했으면 그 사실이 로그에 남아야 한다
                     search: rec.searchGaveUp
                       ? { on: false, wanted: true,
-                          reason: (searchNote.reason || '') + ` → ${Math.round(waitedMs / 1000)}초 기다렸지만 검색 실패` }
+                          reason: (searchNote.reason || '') + ` → ${rec.searchGaveUp}`
+                            + (waitSt.waitedMs ? ` (${Math.round(waitSt.waitedMs / 1000)}초 대기)` : '') }
                       : searchNote,
+                    circuit: circuitLabel(route.provider),
                     fellBack: tried.length > 0 });
         rec.usedProvider = route.provider;
         return out;
@@ -10313,9 +11026,15 @@ async function runTurnFetch(persona, instruction, opts, rec) {
         noteRoute({ provider: route.provider, model: route.model, persona: persona.name,
                     vision: needsVision, ms: Date.now() - t0, ok: false,
                     search: searchNote,
+                    circuit: circuitLabel(route.provider),
                     status: status || (e.networkError ? 'net' : 'err') });
+        if (status === 429) metricBump('e429');
+        else if (status === 503 || status === 529) metricBump('e503');
         if (!failover) throw e;                      // 키·모델 오류 등은 옮겨봐야 똑같다
-        if (status) coolDownProvider(route.provider, status);
+        if (status) {
+          coolDownProvider(route.provider, status);
+          circuitOnFailure(route.provider, status);  // v2.9.3 — 연속 실패면 아예 차단한다
+        }
         if (rec.spoke) throw e;                      // 이미 말이 나갔다 — 되감지 않는다
 
         tried.push(route.provider);
@@ -10331,19 +11050,13 @@ async function runTurnFetch(persona, instruction, opts, rec) {
          * 저쪽이 "7분 뒤에 오라"고 하면 그건 진짜다. 30초 만에 다시 두드려봐야
          * 429 를 한 건 더 생산할 뿐이다. 예산 안에서는 그 말을 그대로 존중한다. */
         if (strict) {
-          const budget = FRESHNESS_RULES.waitCapMs - waitedMs;
-          const hinted = e.retryAfterMs || rule.baseMs;
-          const wait = Math.min(budget, Math.max(FRESHNESS_RULES.minWaitMs, hinted));
-          if (budget <= 0 || wait <= 0) {
-            strict = false;                          // 예산 소진 → 검색 포기, 답이라도 받는다
-            rec.searchGaveUp = true;
-            rec.setStatus('');
-            tried.length = 0;
-            continue;
-          }
-          await countdownSearchWait(rec, wait);
+          const plan = planFreshnessWait(waitSt, e.retryAfterMs || rule.baseMs);
+          if (plan.action === 'giveup') { dropSearch(plan.why); continue; }
+          await countdownSearchWait(rec, plan.ms);
           if (rec.cancelled) throw makeAbort();
-          waitedMs += wait;
+          waitSt.waitedMs += plan.ms;
+          waitSt.waits++;
+          metricBump('retries');
           tried.length = 0;
           continue;
         }
@@ -10406,13 +11119,48 @@ async function runTurnFetch(persona, instruction, opts, rec) {
         langStage(final.needsRewrite ? 'gaveup' : 'recovered', trigger), final);
     }
 
+    /* v2.9.3 — 수치 검증. 공식 값을 줬는데도 다른 숫자를 썼으면 고친다.
+     * 한 번은 다시 쓰게 하고, 그래도 틀리면 앱이 갈아끼운 뒤 그 사실을 화면에 남긴다.
+     * (조용히 고치면 안 된다 — 사용자가 무엇을 믿어야 할지 알아야 한다) */
+    let corrected = false;
+    if (fact) {
+      let check = validateAgainstFact(result.text, fact);
+      for (let i = 0; !check.ok && i < VALIDATOR_RULES.retries; i++) {
+        const exact = fact.kind === 'weather'
+          ? String(fact.value) + '도'
+          : fact.value.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원';
+        let retried;
+        try {
+          retried = await askWithFailover(messages.concat([
+            { role: 'assistant', content: result.text },
+            { role: 'user', content: `숫자가 틀렸다. ${fact.label}은(는) 정확히 ${exact}다. `
+                + `이 값을 그대로 써서 같은 내용을 다시 말해라. 다른 숫자로 바꾸지 마라.` }
+          ]), false);
+        } catch (e) {
+          if (e && e.name === 'AbortError') throw e;
+          break;
+        }
+        if (retried && retried.text) {
+          result = retried;
+          check = validateAgainstFact(result.text, fact);
+        }
+      }
+      if (!check.ok && VALIDATOR_RULES.fixInPlace) {
+        result = Object.assign({}, result, { text: correctNumbers(result.text, fact, check.bad) });
+        corrected = true;
+        metricBump('corrections');
+      }
+    }
+
     rec.done = true;
     return {
       ok: true,
       text: result.text,
       svg: result.svgRaw ? sanitizeSvg(result.svgRaw) : '',
       citations: result.citations || [],
-      search: result.search || null       // v2.9 — 구글 검색 제안 위젯 + 검색어
+      search: result.search || null,      // v2.9 — 구글 검색 제안 위젯 + 검색어
+      fact: fact || null,                 // v2.9.3 — 말풍선 하단 출처 줄에 쓴다
+      corrected: corrected
     };
   } catch (err) {
     rec.done = true;
@@ -10469,13 +11217,14 @@ async function presentTurn(rec) {
     id: 'typing_' + persona.id, type: 'typing', personaId: persona.id,
     statusText: rec.status || ''
   });
-  const bubble = createStreamBubble(persona);
+  const bubble = createStreamBubble(persona, () => rec.giveUpSearchNow());
 
   if (bubble) {
     rec.sink = (full) => bubble.push(full);
     // v2.8.3 — 재시도 카운트다운을 "생각하는 중…" 자리에 흘린다
-    rec.statusSink = (text) => bubble.setStatus(text);
-    if (rec.status) bubble.setStatus(rec.status);   // 붙기 전에 이미 기다리고 있었다면
+    rec.statusSink = (text, canGiveUp) => bubble.setStatus(text, canGiveUp);
+    // 붙기 전에 이미 기다리고 있었다면 그 상태를 그대로 반영한다
+    if (rec.status) bubble.setStatus(rec.status, rec.statusGiveUp);
     if (rec.buffer) { rec.spoke = true; bubble.push(rec.buffer); }   // 미리 받아둔 몫부터
   }
 
@@ -10506,7 +11255,9 @@ async function presentTurn(rec) {
         id: 'msg_' + persona.id + '_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
         type: 'persona', personaId: persona.id,
         content: out.text, svg: out.svg, citations: out.citations,
-        search: out.search || null, ts: Date.now()
+        search: out.search || null,
+        fact: out.fact || null, corrected: !!out.corrected,   // v2.9.3
+        ts: Date.now()
       }
     : {
         id: 'msg_err_' + persona.id + '_' + Date.now(),
@@ -11005,7 +11756,7 @@ function buildChatInstruction(opts) {
         + '"지금은 확인이 잘 안 되네요, 잠시 뒤에 다시 물어봐 주시면 찾아볼게요" 정도로 네 말투로 말해라. '
         + '왜 안 됐는지 기술적으로 설명하지 마라 — 그건 네가 알 바가 아니고 듣는 사람도 궁금하지 않다.');
     }
-  } else if (opts.freshness) {
+  } else if (opts.freshness && !opts.hasFact) {
     /* v2.9.1 — 검색을 걸고 싶었지만 못 건 턴.
      * 여기가 v2.9 에서 환율 사고가 난 바로 그 자리다. 가장 강하게 막는다. */
     parts.push(`지금 묻는 건 ${opts.freshness.category}처럼 **시시각각 바뀌는 값**인데, 이번 턴에는 웹 검색이 붙지 않았다.`);
@@ -11040,6 +11791,7 @@ async function sendFollowup() {
   const seq = ++state.turnSeq;
   cancelStaleTurns(seq);
   resetQuietFailure();   // v2.8.3 — 한도 안내는 메시지마다 한 번씩만
+  metricBump('messages');   // v2.9.3 — callsPerMessage 의 분모
   state.inProgress = true;
 
   // 방 제목(=세션 제목). 잡담으로 시작했으면 임시로 걸어두고,
@@ -11163,7 +11915,17 @@ async function sendFollowup() {
       reason: decision.wanted && !capable ? decision.reason + ' → 검색 가능한 키 없음' : decision.reason,
       freshness: decision.freshness || null
     };
-    let searchLeft = wantSearch ? SEARCH_RULES.maxPerTurn : 0;
+    /* v2.9.3 — 데이터 계층 먼저.
+     * 공식 API 로 값을 받아오면 LLM 검색이 아예 필요 없어진다 (검색 0콜).
+     * 실패하면 fact 가 null 이라 아래 검색 경로가 그대로 살아 있다.
+     * 조회는 메시지당 한 번뿐 — 응답자가 여럿이어도 같은 Fact 를 공유한다. */
+    let fact = null;
+    if (searchInfo.freshness && !hasImages) {
+      fact = await fetchFact(question);
+      if (fact) searchInfo.reason = `데이터API:${DATA_SOURCES[fact.kind].label}`;
+    }
+
+    let searchLeft = (wantSearch && !fact) ? SEARCH_RULES.maxPerTurn : 0;
     const takeSearchSlot = () => (searchLeft > 0 ? (searchLeft--, true) : false);
 
     /* v2.9.2 — 신선도 검색 턴은 담당자 한 명만 답한다.
@@ -11183,6 +11945,7 @@ async function sendFollowup() {
       webSearch: takeSearchSlot(),   // 앞사람부터 한 명만 가져간다
       searchInfo: searchInfo,        // v2.9.1 — 진단 로그용 (발동 여부·사유)
       freshness: searchInfo.freshness,  // v2.9.2 — 검색 완수 우선 정책의 방아쇠
+      fact: (i === 0) ? fact : null,    // v2.9.3 — 공식 값은 먼저 말하는 사람에게만
       maxTokens: chatMaxTokens(weight),
       svgMode: (responders[i].id === drawerId) && wantSvg
     });
@@ -11195,7 +11958,8 @@ async function sendFollowup() {
       hasImages: attached.length > 0,
       visionOk: providerSupportsVision(),
       // 검색이 붙는 사람에게만 별도 지시가 내려간다 (아래 buildChatInstruction)
-      webSearch: wantSearch && i === 0,
+      webSearch: wantSearch && !fact && i === 0,
+      hasFact: !!fact && i === 0,       // v2.9.3 — 공식 값을 받았으면 "모르면 단정 금지"가 필요 없다
       /* v2.9.1 — 신선도 질문이면 검색이 붙든 안 붙든 지시가 나간다.
        * 붙었으면 "검색 결과를 따르라", 안 붙었으면 "단정하지 마라". */
       freshness: searchInfo.freshness
@@ -11288,7 +12052,7 @@ async function sendFollowup() {
       renderRoundBar();
       refreshLangStat();
       // 설정이 열려 있으면 라우팅 내역을 바로 갱신 (닫혀 있으면 열 때 그린다)
-      if (document.querySelector('#modalSettings.open')) renderRouteLog();
+      if (document.querySelector('#modalSettings.open')) { renderRouteLog(); renderMetrics(); }
     }
   }
 }
