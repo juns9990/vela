@@ -12,7 +12,7 @@
 <meta name="description" content="벨챗 — 베테랑 다섯이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=fd6ca54e7c39" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=6ac76ac384d1" />
 <meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
 <meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -3730,7 +3730,7 @@
 
 <div class="issue-strip">
   <div class="left">
-    <span id="versionTag">v2.9.4</span>
+    <span id="versionTag">v2.9.5</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -4553,7 +4553,17 @@ function resolveRoute(opts = {}) {
     if (opts.strictSearch) return null;
     order = ROUTING_RULES.text;
   }
-  const usable = order.filter(p => exclude.indexOf(p) < 0 && providerKeyOf(p));
+  /* v2.9.5 — 서킷이 열린 곳은 **후보 목록에서부터** 뺀다.
+   *
+   * v2.9.3~4 는 usable 을 키 유무로만 만들고 서킷은 providerAvailable(=ready) 에서만 봤다.
+   * 그래서 ready 가 비면 아래 soonest 폴백이 **차단된 provider 를 그대로 돌려줬다.**
+   * 실측 로그에서 "차단 중"과 같은 시각에 ✕ 가 찍힌 건 순서 문제가 아니라
+   * 정말로 호출이 나간 것이었다 — 서킷을 달아놓고 우회로를 열어둔 셈이다.
+   *
+   * 전부 차단이면 null 을 돌려준다. 호출부가 Fact 표시나 안내로 처리하고,
+   * 서킷은 openMs(기본 60초) 뒤 스스로 풀린다. */
+  const usable = order.filter(p =>
+    exclude.indexOf(p) < 0 && providerKeyOf(p) && circuitAllows(p));
   // 쉬는 중이 아닌 곳을 먼저, 전부 쉬는 중이면 그중 가장 빨리 풀리는 곳
   const ready = usable.filter(providerAvailable);
   if (ready.length) return build(ready[0]);
@@ -4639,7 +4649,7 @@ function providerHeaders(providerIn, key) {
 
 const APP = {
   name: '벨챗',                // v2.4 — 앱 이름
-  version: '2.9.4',
+  version: '2.9.5',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -5481,6 +5491,22 @@ const WMO_TEXT = {
  * ★ 오탐이 제일 위험하다 — "작년엔 1,300원이었죠" 같은 과거 언급까지 고치면 안 된다.
  *   그래서 Fact 값과 상대오차 window 안에 있는 숫자만 "지금 값을 말하려는 시도"로 본다.
  * ------------------------------------------------------------------ */
+/* ---- ⑲ Fact 를 쥔 상태의 정책 (v2.9.5) ----------------------------
+ * 공식 값을 이미 받아온 턴은 급할 게 없다. 사용자에게 보여줄 숫자가 손에 있기 때문이다.
+ * LLM 은 그 숫자에 설명을 붙이는 역할일 뿐이고, 설명은 없어도 답은 성립한다.
+ *
+ * 그런데 v2.9.4 까지는 이런 턴에서도 평소와 똑같이 폴백·재시도를 다 태웠다.
+ * 실측 로그에서 데이터API 성공(📡) 뒤에 LLM 을 6회나 두드린 게 그 결과다 —
+ * 이미 답을 아는 질문에 무료 한도를 여섯 번 쓴 셈이다.
+ *
+ * 그래서 뒤집는다: **한 번 실패하면 바로 숫자만 내보낸다.**
+ * 기다려서 얻는 건 설명 한 줄이고, 잃는 건 다음 질문에 쓸 한도다.
+ * ------------------------------------------------------------------ */
+const FACT_RULES = {
+  llmAttempts: 1,        // Fact 가 있을 때 LLM 호출을 몇 번까지 시도할지
+  waitOnQuota: false     // 한도를 만나도 기다렸다 재시도할지 (false = 즉시 숫자 표시)
+};
+
 const VALIDATOR_RULES = {
   enabled: true,
   window: 0.20,          // 이 비율 안의 숫자만 검사 대상 (밖은 과거 언급으로 보고 놔둔다)
@@ -11036,8 +11062,11 @@ async function runTurnFetch(persona, instruction, opts, rec) {
      * 기다리는 회차까지 여기서 세면, 90초를 잘게 쪼개 기다리는 동안 상한을 다 써버리고
      * 정작 한도가 풀린 뒤에 호출을 못 하게 된다 (기다린 보람 없이 실패).
      * 대기 쪽은 waitedMs 예산이 따로 끝을 보장한다. */
+    /* v2.9.5 — Fact 를 쥐고 있으면 시도 횟수를 잘라낸다.
+     * 설명을 못 받아도 숫자는 나간다. 한도를 더 태울 이유가 없다. */
+    const maxAttempts = fact ? Math.max(1, FACT_RULES.llmAttempts) : 8;
     let guard = 0;
-    while (guard < 8) {
+    while (guard < maxAttempts) {
       let route = resolveRoute({
         needsVision: needsVision, needsSearch: needsSearch,
         strictSearch: strict, exclude: tried
@@ -11092,6 +11121,10 @@ async function runTurnFetch(persona, instruction, opts, rec) {
           circuitOnFailure(route.provider, status);  // v2.9.3 — 연속 실패면 아예 차단한다
         }
         if (rec.spoke) throw e;                      // 이미 말이 나갔다 — 되감지 않는다
+
+        /* v2.9.5 — Fact 가 있으면 폴백도 대기도 하지 않는다.
+         * 여기서 멈추면 catch 바깥이 "숫자만 표시" 경로로 받아준다. */
+        if (fact && !FACT_RULES.waitOnQuota) throw e;
 
         tried.push(route.provider);
         // ① 아직 안 써본 곳이 있으면 바로 그쪽으로 (기다리지 않는다)
@@ -11230,7 +11263,7 @@ async function runTurnFetch(persona, instruction, opts, rec) {
      * 그래서 설명은 포기하되 숫자는 그대로 내보낸다.
      * 출처 줄(기준시각·ECB·주의문구)도 평소와 똑같이 붙으므로
      * 사용자가 그 값을 어떻게 받아들여야 하는지도 함께 전달된다. */
-    if (fact && fact.plainText) {
+    if (fact && fact.plainText && !rec.spoke) {
       return {
         ok: true,
         text: fact.plainText,
@@ -12015,7 +12048,14 @@ async function sendFollowup() {
         : (factInfo.status === 'fail' ? `데이터API 실패: ${factInfo.reason}`
           : `데이터API 미발동: ${factInfo.reason}`);
     }
-    // reason 은 "왜 이 판정이 났나"를 그대로 두고, 결과는 위 data 줄이 보여준다 (중복 방지)
+    /* v2.9.5 — Fact 를 확보했으면 검색은 "원하지도 않는" 상태가 된다.
+     * v2.9.4 는 wanted 가 true 로 남아 로그에 🚫(원했지만 못 함)가 찍혔다.
+     * 실제로는 검색할 이유가 사라진 것이므로 표시도 동작도 그렇게 맞춘다. */
+    if (fact) {
+      searchInfo.wanted = false;
+      searchInfo.on = false;
+      searchInfo.reason = `${searchInfo.reason} → 데이터API로 해결(검색 불필요)`;
+    }
 
     let searchLeft = (wantSearch && !fact) ? SEARCH_RULES.maxPerTurn : 0;
     const takeSearchSlot = () => (searchLeft > 0 ? (searchLeft--, true) : false);
