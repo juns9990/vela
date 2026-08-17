@@ -12,7 +12,7 @@
 <meta name="description" content="벨챗 — 베테랑 다섯이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=93c43946da7a" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=7b338eb07065" />
 <meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
 <meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -3390,6 +3390,16 @@
   .route-log .rl-ms { margin-left: auto; opacity: 0.65; }
   .route-log .rl-fail { color: var(--c-warn); }
   .route-log .rl-empty { opacity: 0.7; white-space: normal; }
+  /* v2.9.1 — 검색 진단 한 줄 ("왜 검색을 안 했지?" 추적용) */
+  .route-log .rl-item { margin-bottom: 5px; }
+  .route-log .rl-diag {
+    padding-left: 40px;
+    font-size: 10.5px;
+    opacity: 0.6;
+    white-space: normal;
+    line-height: 1.4;
+  }
+  .route-log .rl-diag-warn { color: var(--c-warn); opacity: 0.9; }
 
   .key-status.ok      { border-color: #16a34a; color: #16a34a; }
   .key-status.fail    { border-color: var(--c-warn); color: var(--c-warn); }
@@ -3678,7 +3688,7 @@
 
 <div class="issue-strip">
   <div class="left">
-    <span id="versionTag">v2.9.0</span>
+    <span id="versionTag">v2.9.1</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -4420,7 +4430,7 @@ function providerHeaders(providerIn, key) {
 
 const APP = {
   name: '벨챗',                // v2.4 — 앱 이름
-  version: '2.9.0',
+  version: '2.9.1',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -4728,6 +4738,50 @@ const SEARCH_RULES = {
   maxCitations: 5,
   showWidget: true             // 구글이 준 검색 제안 위젯을 접이식으로 표시 (ToS)
 };
+
+/* ---- ⑦-3 신선도 필수 주제 (v2.9.1) --------------------------------
+ * v2.9 에서 실제로 사고가 났다: "환율 알려줘"에 학습 시점 숫자(1352원)를
+ * 현재값처럼 답했다. 실제는 1415원이었다. 이런 답 하나면 방 전체를 못 믿게 된다.
+ *
+ * 이 사전에 걸리는 말은 **"지금 값"을 묻는 질문**이다.
+ * 이런 건 모델이 아무리 똑똑해도 학습 시점 이후를 알 수 없다 —
+ * 그래서 메시지 무게(잡담이든 안건이든)와 **무관하게** 검색을 건다.
+ * 검색이 불가능한 상황이면 대신 [실시간 수치] 규칙이 단정을 막는다.
+ *
+ * ★ 카테고리로 나눈 이유: 진단 로그에 "왜 검색했는지"를 그대로 찍기 위해서다.
+ *   빠진 주제가 보이면 해당 배열에 한 줄 추가하면 끝난다.
+ * ------------------------------------------------------------------ */
+const FRESHNESS_TRIGGERS = {
+  환율: ['환율', '달러값', '원달러', '엔화', '엔저', '유로화', '달러 얼마', '달러가 얼마'],
+  주가: ['주가', '주식', '코스피', '코스닥', '나스닥', '다우', '증시', '시가총액', '시총', '상한가', '공모주'],
+  코인: ['비트코인', '이더리움', '코인 시세', '코인값', '코인 얼마', '가상자산'],
+  시세: ['시세', '집값', '아파트값', '전세가', '매매가', '분양가', '땅값', '금값', '금 시세',
+        '기름값', '유가', '휘발유', '경유값', '전기요금', '가스요금'],
+  금리: ['금리', '기준금리', '대출금리', '예금금리', '적금금리', '이자율'],
+  날씨: ['날씨', '기온', '몇 도', '미세먼지', '초미세먼지', '태풍', '장마', '한파', '폭염',
+        '비 와', '비가 와', '비 올', '눈 와', '눈 올', '강수'],
+  뉴스: ['뉴스', '속보', '오늘 이슈', '요즘 이슈', '무슨 일 있', '터졌', '발표했'],
+  순위: ['순위', '랭킹', '차트', '1위', '박스오피스', '베스트셀러', '실시간 검색'],
+  일정: ['개봉일', '출시일', '발매일', '마감일', '접수 기간', '경기 일정', '언제 열',
+        '언제 시작', '언제 나와', '언제 나오'],
+  물가: ['물가', '인플레', '소비자물가', '최저임금', '실업률', '기준 시급']
+};
+
+/* 신선도 사전에 걸리나 — 걸리면 { category, word } 를 돌려준다 (진단 로그용) */
+function freshnessHit(text) {
+  const q = String(text || '').toLowerCase();
+  if (!q) return null;
+  const cats = Object.keys(FRESHNESS_TRIGGERS);
+  for (let i = 0; i < cats.length; i++) {
+    const words = FRESHNESS_TRIGGERS[cats[i]];
+    for (let j = 0; j < words.length; j++) {
+      if (q.includes(String(words[j]).toLowerCase())) {
+        return { category: cats[i], word: words[j] };
+      }
+    }
+  }
+  return null;
+}
 
 // 검색이 붙은 턴의 말풍선 머리 문구 — 왜 느린지가 화면에 드러나야 한다
 const SEARCH_STATUS_TEXT = '🔍 자료 찾는 중…';
@@ -5435,6 +5489,21 @@ const COMMON_RULES = `[한국어 출력 — 위반 시 응답 무효 · 가장 �
 - 확실한 것은 당당하게 말해라. 이 규칙은 "겁먹고 얼버무려라"가 아니라
   **"모르는 걸 아는 척하지 마라"**는 뜻이다. 아는 건 구체적으로, 모르는 건 의견으로.
 - {chair}가 준 정보(사진·앞선 대화에 나온 수치)는 마음껏 인용해도 된다. 그건 지어낸 게 아니다.
+
+[실시간 수치 — 모르면 단정하지 마라 · 가장 자주 사고가 나는 자리]
+- 환율·주가·코인·금리·시세·집값·기름값·날씨·물가·순위처럼 **시간에 따라 변하는 값**이 있다.
+  이런 건 네가 배운 시점의 숫자이지 **지금 값이 아니다.** 그 사이에 얼마든지 바뀌었다.
+- 검색이 붙지 않은 턴에서 이런 질문을 받으면 **기억 속 숫자를 현재값처럼 말하지 마라.**
+  "환율 1,352원이에요" 처럼 단정하는 순간, 실제와 다르면 방 전체를 못 믿게 된다.
+- 대신 정직하게 말한다. 네 말투를 유지한 채로:
+  · "지금 정확한 수치는 확인을 해봐야 해요. 찾아볼까요?"
+  · "실시간 값이라 지금 얼마인지는 제가 장담 못 해요. 대신 흐름은 이래요."
+  숫자 없이도 구조·흐름·판단 기준은 얼마든지 말할 수 있다. 그건 계속 해라.
+- 과거 지식으로 말해야 할 때는 **시점을 반드시 붙인다.**
+  "작년 기준으로는", "제가 마지막으로 본 시점엔", "몇 년 전 얘기지만" —
+  시점 없이 던진 숫자는 전부 현재값으로 읽힌다. 그게 사고의 원인이다.
+- 반대로 시간이 지나도 안 변하는 것(개념·구조·계산법·제도의 취지)은 자신 있게 말해라.
+  이 규칙은 "겁먹어라"가 아니라 **"변하는 값과 안 변하는 값을 구분하라"**는 뜻이다.
 
 [자료 — 기본은 "검색 없음"이다]
 - 이 방의 기본 상태는 웹 검색이 **없는** 상태다. 네가 아는 실제 사례·기관·제품 이름을 최대한 구체적으로 들되,
@@ -8061,12 +8130,25 @@ function renderRouteLog() {
     const mark = r.ok ? (r.fellBack ? '↪' : '·') : '✕';
     const cls = r.ok ? '' : ' rl-fail';
     const tail = r.ok ? `${r.ms}ms` : String(r.status || 'err');
-    return `<div class="rl-row${cls}">`
+    /* v2.9.1 — 검색 진단 한 줄.
+     * 🔍 = 검색이 붙었다 / 🚫 = 걸고 싶었는데 못 했다 / 표시 없음 = 검색할 질문이 아니었다
+     * "왜 검색을 안 했지?"를 여기서 바로 확인할 수 있어야 한다. */
+    const s = r.search;
+    let diag = '';
+    if (s && s.reason) {
+      const icon = s.on ? '🔍' : (s.wanted ? '🚫' : '·');
+      const dcls = s.wanted && !s.on ? ' rl-diag-warn' : '';
+      diag = `<div class="rl-diag${dcls}">${icon} ${escapeHtml(s.reason)}</div>`;
+    }
+    return `<div class="rl-item">`
+      + `<div class="rl-row${cls}">`
       + `<span>${hh}</span>`
       + `<span>${mark}</span>`
       + `<span class="rl-who">${escapeHtml(who)}</span>`
       + `<span>${escapeHtml(r.persona || '')}${r.vision ? ' 📷' : ''}</span>`
       + `<span class="rl-ms">${escapeHtml(tail)}</span>`
+      + `</div>`
+      + diag
       + `</div>`;
   }).join('');
 }
@@ -10038,6 +10120,14 @@ async function runTurnFetch(persona, instruction, opts, rec) {
   const needsSearch = !!opts.webSearch;
   if (needsSearch) rec.setStatus(SEARCH_STATUS_TEXT);
 
+  /* v2.9.1 — 이 턴의 검색 판정을 진단 로그에 남긴다.
+   * "왜 검색을 안 했지?"는 사후에 추적할 수 없으면 영영 못 잡는다.
+   * 실제로 v2.9 의 환율 사고가 그래서 늦게 발견됐다. */
+  const info = opts.searchInfo || null;
+  const searchNote = info
+    ? { on: needsSearch, wanted: !!info.wanted, reason: info.reason || '' }
+    : { on: needsSearch, wanted: needsSearch, reason: needsSearch ? '지정됨' : '해당 없음' };
+
   /* 한 번 호출 → SVG 분리 → 문자 정화 → 이름표 제거
    * live=true 인 첫 호출만 조각을 흘려보낸다. 언어 가드 재생성 호출은
    * 화면에 흘리면 안 된다 — 같은 말이 두 번 타이핑되는 것처럼 보인다. */
@@ -10086,6 +10176,7 @@ async function runTurnFetch(persona, instruction, opts, rec) {
         rec.setStatus('');
         noteRoute({ provider: route.provider, model: route.model, persona: persona.name,
                     vision: needsVision, ms: Date.now() - t0, ok: true,
+                    search: searchNote,
                     fellBack: tried.length > 0 });
         rec.usedProvider = route.provider;
         return out;
@@ -10096,6 +10187,7 @@ async function runTurnFetch(persona, instruction, opts, rec) {
         const failover = ROUTING_RULES.failoverStatuses.indexOf(status) >= 0 || e.networkError;
         noteRoute({ provider: route.provider, model: route.model, persona: persona.name,
                     vision: needsVision, ms: Date.now() - t0, ok: false,
+                    search: searchNote,
                     status: status || (e.networkError ? 'net' : 'err') });
         if (!failover) throw e;                      // 키·모델 오류 등은 옮겨봐야 똑같다
         if (status) coolDownProvider(route.provider, status);
@@ -10752,6 +10844,21 @@ function buildChatInstruction(opts) {
     parts.push('이번 답변에는 실제 웹 검색이 붙어 있다. 최신 정보·시세·규정처럼 확인이 필요한 건 검색해서 진짜 정보로 답해라.');
     parts.push('검색 결과에서 확인한 것만 인용한다. 본문에 URL 을 쓰지 마라 — 출처 링크는 화면 아래에 자동으로 붙는다.');
     parts.push('검색해도 안 나온 수치는 여전히 말하지 마라. 검색이 붙었다고 지어내도 되는 게 아니다.');
+    /* v2.9.1 — 모델이 검색 결과를 받고도 "아는 숫자"를 쓰는 일이 있다.
+     * 그러면 본문 숫자와 아래 출처 링크가 어긋나서 오히려 더 나쁘다. */
+    parts.push('**네 기억과 검색 결과가 다르면 무조건 검색 결과가 맞다.** 기억 속 숫자를 덮어써라.');
+    parts.push('답변에 쓰는 수치는 검색해서 본 출처의 값과 정확히 일치해야 한다. 반올림해서 바꾸거나 어림잡아 고치지 마라.');
+    if (opts.freshness) {
+      parts.push(`지금 묻는 건 ${opts.freshness.category}처럼 시시각각 바뀌는 값이다. 검색으로 확인한 **현재 값**을 기준 시점과 함께 말해라 (예: "오늘 기준").`);
+    }
+  } else if (opts.freshness) {
+    /* v2.9.1 — 검색을 걸고 싶었지만 못 건 턴.
+     * 여기가 v2.9 에서 환율 사고가 난 바로 그 자리다. 가장 강하게 막는다. */
+    parts.push(`지금 묻는 건 ${opts.freshness.category}처럼 **시시각각 바뀌는 값**인데, 이번 턴에는 웹 검색이 붙지 않았다.`);
+    parts.push('그러니 네가 아는 숫자를 현재값처럼 말하면 절대 안 된다. 그 숫자는 이미 틀렸을 가능성이 높다.');
+    parts.push('"지금 정확한 수치는 확인이 필요하다"고 네 말투로 정직하게 말하고, 원하면 찾아봐 줄지 물어라.');
+    parts.push('과거 값을 언급할 거면 반드시 "작년 기준", "제가 마지막으로 본 시점엔" 같은 시점 표시를 붙여라.');
+    parts.push('숫자 대신 흐름·구조·판단 기준을 말하는 건 얼마든지 좋다. 거기서는 평소처럼 구체적으로.');
   }
   return parts.join('\n');
 }
@@ -10859,6 +10966,14 @@ async function sendFollowup() {
   // 사진이 붙으면 리액션 한 줄로 넘기지 않는다 (사진은 볼 게 있는 메시지다)
   if (attached.length && weight === 'filler') weight = 'casual';
 
+  /* v2.9.1 — "지금 값"을 묻는 질문은 짧아도 잡담으로 처리하지 않는다.
+   * 잡담 무게로 가면 소형 모델(fastModel)이 1~2문장으로 답하는데,
+   * 그 조합이 정확히 "기억 속 숫자를 툭 던지는" 사고가 나는 자리다.
+   * 검색 결과를 제대로 읽고 답하려면 큰 모델과 문장 여유가 필요하다. */
+  if (!attached.length && (weight === 'filler' || weight === 'casual') && freshnessHit(question)) {
+    weight = 'normal';
+  }
+
   // 프로세스 질문이면 담당자가 다이어그램을 그린다
   const wantSvg = isProcessQuestion(question);
   const drawerId = diagramDrawerId();
@@ -10879,7 +10994,18 @@ async function sendFollowup() {
      * 첫 응답자 한 명만 검색한다 (SEARCH_RULES.maxPerTurn).
      * 두 번째 사람은 첫 사람의 말이 이미 대화에 실려 있으니 그걸 보고 말하면 된다.
      * 같은 안건에 두세 명이 각자 검색하면 비용도 한도도 그만큼 배로 든다. */
-    const wantSearch = shouldSearch(question, weight, hasImages) && searchCapable();
+    const decision = searchDecision(question, weight, hasImages);
+    const capable = searchCapable();
+    const wantSearch = decision.wanted && capable;
+    /* v2.9.1 — 검색을 원했는데 못 한 경우를 반드시 구분해 남긴다.
+     * 키가 없어 검색이 안 된 것과, 애초에 검색할 질문이 아니었던 것은 전혀 다른 상황이다.
+     * 전자는 아래 [실시간 수치] 지시로 "단정하지 마라"가 나가야 한다. */
+    const searchInfo = {
+      on: wantSearch,
+      wanted: decision.wanted,
+      reason: decision.wanted && !capable ? decision.reason + ' → 검색 가능한 키 없음' : decision.reason,
+      freshness: decision.freshness || null
+    };
     let searchLeft = wantSearch ? SEARCH_RULES.maxPerTurn : 0;
     const takeSearchSlot = () => (searchLeft > 0 ? (searchLeft--, true) : false);
 
@@ -10888,6 +11014,7 @@ async function sendFollowup() {
       modelFor: modelFor,
       hasImages: hasImages,          // 사진이 붙었으면 사진 보는 provider 로만 간다
       webSearch: takeSearchSlot(),   // 앞사람부터 한 명만 가져간다
+      searchInfo: searchInfo,        // v2.9.1 — 진단 로그용 (발동 여부·사유)
       maxTokens: chatMaxTokens(weight),
       svgMode: (responders[i].id === drawerId) && wantSvg
     });
@@ -10900,7 +11027,10 @@ async function sendFollowup() {
       hasImages: attached.length > 0,
       visionOk: providerSupportsVision(),
       // 검색이 붙는 사람에게만 별도 지시가 내려간다 (아래 buildChatInstruction)
-      webSearch: wantSearch && i === 0
+      webSearch: wantSearch && i === 0,
+      /* v2.9.1 — 신선도 질문이면 검색이 붙든 안 붙든 지시가 나간다.
+       * 붙었으면 "검색 결과를 따르라", 안 붙었으면 "단정하지 마라". */
+      freshness: searchInfo.freshness
     });
 
     /* v2.8 — 미리 걸기.
@@ -11002,12 +11132,35 @@ async function sendFollowup() {
  * 둘을 동시에 요구하면 갈 수 있는 곳이 사라진다.
  * ------------------------------------------------------------------ */
 function shouldSearch(text, weight, hasImages) {
-  if (!SEARCH_RULES.enabled) return false;
-  if (hasImages) return false;
-  if (SEARCH_RULES.weights.indexOf(weight) >= 0) return true;
-  if (SEARCH_RULES.triggerWeights.indexOf(weight) < 0) return false;
-  const q = String(text || '').toLowerCase();
-  return SEARCH_RULES.triggers.some(t => q.includes(t));
+  return searchDecision(text, weight, hasImages).wanted;
+}
+
+/* v2.9.1 — 판정과 **그 이유**를 함께 돌려준다.
+ * 이유를 남기지 않으면 "왜 검색을 안 했지?"를 나중에 추적할 방법이 없다.
+ * 실제로 v2.9 의 환율 사고를 뒤늦게야 짚은 게 이것 때문이었다.
+ *
+ * 반환: { wanted, reason }
+ *   wanted — 검색을 걸고 싶은가 (키가 있는지는 여기서 따지지 않는다)
+ *   reason — 진단 로그·설정 화면에 그대로 찍히는 한 줄
+ */
+function searchDecision(text, weight, hasImages) {
+  if (!SEARCH_RULES.enabled) return { wanted: false, reason: '검색 꺼짐' };
+  if (hasImages) return { wanted: false, reason: '사진 첨부' };
+
+  /* ★ 신선도 사전이 가장 먼저다. 무게보다 위다.
+   * "환율 얼마야"는 잡담처럼 짧아도 학습 시점 숫자를 말하면 안 되는 질문이다. */
+  const fresh = freshnessHit(text);
+  if (fresh) return { wanted: true, reason: '신선도:' + fresh.category, freshness: fresh };
+
+  if (SEARCH_RULES.weights.indexOf(weight) >= 0) {
+    return { wanted: true, reason: '무게:' + ((MESSAGE_WEIGHTS[weight] || {}).label || weight) };
+  }
+  if (SEARCH_RULES.triggerWeights.indexOf(weight) >= 0) {
+    const q = String(text || '').toLowerCase();
+    const hit = SEARCH_RULES.triggers.find(t => q.includes(t));
+    if (hit) return { wanted: true, reason: '단어:' + hit };
+  }
+  return { wanted: false, reason: '해당 없음(' + ((MESSAGE_WEIGHTS[weight] || {}).label || weight) + ')' };
 }
 
 // 검색이 실제로 가능한 키가 있나 (없으면 "자료 찾는 중"을 띄울 이유도 없다)
