@@ -12,7 +12,7 @@
 <meta name="description" content="벨챗 — 베테랑 다섯이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=9e418f3ec999" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=fd6ca54e7c39" />
 <meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
 <meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -3730,7 +3730,7 @@
 
 <div class="issue-strip">
   <div class="left">
-    <span id="versionTag">v2.9.3</span>
+    <span id="versionTag">v2.9.4</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -4358,7 +4358,7 @@ function metricDay(day) {
   const key = day || metricToday();
   if (!all[key]) {
     all[key] = {
-      messages: 0, calls: 0, searchCalls: 0, dataCalls: 0,
+      messages: 0, calls: 0, searchCalls: 0, dataCalls: 0, dataFails: 0,
       e429: 0, e503: 0, retries: 0, circuitOpens: 0,
       corrections: 0, msSum: 0, msN: 0,
       buckets: new Array(METRICS.buckets.length + 1).fill(0)
@@ -4639,7 +4639,7 @@ function providerHeaders(providerIn, key) {
 
 const APP = {
   name: '벨챗',                // v2.4 — 앱 이름
-  version: '2.9.3',
+  version: '2.9.4',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -4985,7 +4985,16 @@ const FRESHNESS_TRIGGERS = {
   물가: ['물가', '인플레', '소비자물가', '최저임금', '실업률', '기준 시급']
 };
 
-/* 신선도 사전에 걸리나 — 걸리면 { category, word } 를 돌려준다 (진단 로그용) */
+/* 신선도 사전에 걸리나 — 걸리면 { category, word } 를 돌려준다 (진단 로그용)
+ *
+ * v2.9.4 — DATA_SOURCES 의 match 도 함께 본다.
+ *   v2.9.3 은 두 사전이 따로 놀았다. 데이터 API 는 freshnessHit 이 걸려야만 호출되는데,
+ *   DATA_SOURCES 에만 있는 말('달러', '추워' 등)은 신선도 사전에 없어서
+ *   **소스가 멀쩡히 있는데도 데이터 API 가 아예 안 불렸다.**
+ *   실측 구멍: "1달러 몇 원이야?", "달러 지금 몇 원", "밖에 추워?"
+ *
+ *   이제 소스에 단어를 추가하면 신선도로도 자동으로 잡힌다 — 사전을 두 번 고칠 일이 없다.
+ */
 function freshnessHit(text) {
   const q = String(text || '').toLowerCase();
   if (!q) return null;
@@ -4998,6 +5007,9 @@ function freshnessHit(text) {
       }
     }
   }
+  // 데이터 소스가 답할 수 있는 질문이면 그것도 "지금 값"을 묻는 것이다
+  const src = pickDataSource(text);
+  if (src) return { category: src.def.label, word: src.matched || '', fromSource: src.kind };
   return null;
 }
 
@@ -5039,9 +5051,8 @@ function pickDataSource(text) {
   const keys = Object.keys(DATA_SOURCES);
   for (let i = 0; i < keys.length; i++) {
     const def = DATA_SOURCES[keys[i]];
-    if (def.match.some(w => q.includes(String(w).toLowerCase()))) {
-      return { kind: keys[i], def: def };
-    }
+    const hit = def.match.find(w => q.includes(String(w).toLowerCase()));
+    if (hit) return { kind: keys[i], def: def, matched: hit };
   }
   return null;
 }
@@ -5082,10 +5093,13 @@ async function fetchFxFact(text) {
 
   const mult = cur.multiplier || 1;
   const value = raw * mult;
+  const shown = value.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원';
   const fact = {
     kind: 'fx',
     value: value,
-    display: value.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원',
+    display: shown,
+    // v2.9.4 — LLM 이 전부 막혔을 때 앱이 직접 말할 문장 (숫자를 버리지 않기 위해)
+    plainText: `지금 자세한 설명은 어렵지만, 조회된 환율은 ${cur.unit} = ${shown}이에요.`,
     unit: '원',
     label: `${cur.name} ${cur.unit}`,
     asOf: json.date || '',
@@ -5120,6 +5134,10 @@ async function fetchWeatherFact(text) {
     kind: 'weather',
     value: cur.temperature_2m,
     display: cur.temperature_2m + '도' + (sky ? ' · ' + sky : ''),
+    // v2.9.4 — LLM 이 전부 막혔을 때 앱이 직접 말할 문장
+    // 조사까지 맞춘다 — "부산는", "맑음예요" 같은 문장이 나오면 앱이 어색해 보인다
+    plainText: `지금 자세한 설명은 어렵지만, ${withParticle(city, '은', '는')} ${cur.temperature_2m}도`
+      + (sky ? ', ' + withParticle(sky, '이에요.', '예요.') : '예요.'),
     unit: '도',
     label: `${city} 현재 기온`,
     extra: { sky: sky, humidity: cur.relative_humidity_2m, city: city },
@@ -5131,6 +5149,15 @@ async function fetchWeatherFact(text) {
   };
   dataCache.set(cacheKey, { at: Date.now(), fact: fact });
   return fact;
+}
+
+/* 받침에 맞는 조사를 고른다 — "부산는 26도" 같은 문장이 나오면 앱이 어색해 보인다.
+ * 한글 음절은 (코드 - 0xAC00) % 28 이 0 이 아니면 받침이 있다. */
+function withParticle(word, withJong, withoutJong) {
+  const s = String(word || '');
+  const last = s.charCodeAt(s.length - 1);
+  if (!(last >= 0xAC00 && last <= 0xD7A3)) return s + withoutJong;   // 한글이 아니면 기본형
+  return s + (((last - 0xAC00) % 28) ? withJong : withoutJong);
 }
 
 // "2026-08-14" → "8/14"
@@ -5149,16 +5176,32 @@ function formatFactTime(iso) {
 /* 데이터 계층 진입점 — 실패하면 null 을 돌려주고 호출부가 검색으로 넘어간다.
  * 여기서 예외를 던지지 않는 게 중요하다: 데이터 소스 장애가 대화를 막으면 안 된다. */
 async function fetchFact(text) {
+  const r = await resolveFact(text);
+  return r.fact;
+}
+
+/* v2.9.4 — 결과와 **사유**를 함께 돌려준다.
+ * v2.9.3 은 null 만 돌려줘서, 로그를 봐도 "소스가 없어서 안 한 건지 /
+ * 불렀는데 실패한 건지"를 구분할 수 없었다. 이번 환율 건이 정확히 그래서 늦게 잡혔다.
+ *
+ * 반환: { fact, status: 'ok'|'fail'|'skip', reason }
+ */
+async function resolveFact(text) {
   const picked = pickDataSource(text);
-  if (!picked) return null;
+  if (!picked) return { fact: null, status: 'skip', reason: '해당 소스 없음' };
   try {
     metricBump('dataCalls');
-    if (picked.kind === 'fx') return await fetchFxFact(text);
-    if (picked.kind === 'weather') return await fetchWeatherFact(text);
-    return null;
+    let fact = null;
+    if (picked.kind === 'fx') fact = await fetchFxFact(text);
+    else if (picked.kind === 'weather') fact = await fetchWeatherFact(text);
+    if (!fact) return { fact: null, status: 'fail', reason: picked.def.label + ' 값 없음' };
+    return { fact: fact, status: 'ok', reason: picked.def.label };
   } catch (e) {
+    const why = (e && e.name === 'AbortError') ? '시간 초과'
+      : ((e && e.message) ? String(e.message).slice(0, 40) : '조회 실패');
     console.warn('[벨챗:데이터] ' + picked.kind + ' 조회 실패 — 검색으로 넘어갑니다', e);
-    return null;
+    metricBump('dataFails');
+    return { fact: null, status: 'fail', reason: picked.def.label + ' ' + why };
   }
 }
 
@@ -5368,18 +5411,23 @@ const METRICS = {
 const DATA_SOURCES = {
   fx: {
     label: '환율',
-    match: ['환율', '달러', '달러값', '원달러', '엔화', '엔저', '유로화', '위안화', '파운드'],
+    /* v2.9.4 — 실측에서 새던 표현을 채웠다.
+     * ★ '몇 원' 같은 일반 단위는 넣지 않는다 — "이거 몇 원이야?"까지 환율로 잡힌다.
+     *   "1달러 몇 원이야?"는 '달러'로 이미 걸리므로 넣을 필요도 없다. */
+    match: ['환율', '달러', '달러값', '원달러', '엔화', '엔저', '유로화', '위안화', '파운드',
+      '미국 돈', '일본 돈', '중국 돈'],
     timeoutMs: 4000,
     ttlMs: 30 * 60 * 1000,
     /* frankfurter.dev — ECB 계열 기준환율. 무키·CORS 개방.
      * ★ 영업일 하루 한 번 갱신이라 주말·공휴일에는 며칠 전 날짜가 나온다.
      *   그래서 asOf 를 화면과 프롬프트 양쪽에 반드시 노출한다. */
+    /* 키가 그대로 API 의 통화 코드로 쓰인다 (별도 code 필드를 두면 둘이 어긋날 수 있다) */
     currencies: {
-      USD: { code: 'USD', name: '미국 달러', unit: '1달러' },
-      JPY: { code: 'JPY', name: '일본 엔', unit: '100엔', multiplier: 100 },
-      EUR: { code: 'EUR', name: '유로', unit: '1유로' },
-      CNY: { code: 'CNY', name: '중국 위안', unit: '1위안' },
-      GBP: { code: 'GBP', name: '영국 파운드', unit: '1파운드' }
+      USD: { name: '미국 달러', unit: '1달러' },
+      JPY: { name: '일본 엔', unit: '100엔', multiplier: 100 },
+      EUR: { name: '유로', unit: '1유로' },
+      CNY: { name: '중국 위안', unit: '1위안' },
+      GBP: { name: '영국 파운드', unit: '1파운드' }
     },
     defaultCurrency: 'USD',
     caveat: '실거래·은행 환전가와 다를 수 있어요',
@@ -5388,7 +5436,8 @@ const DATA_SOURCES = {
   },
   weather: {
     label: '날씨',
-    match: ['날씨', '기온', '몇 도', '더워', '추워', '미세먼지', '비 와', '비가 와', '눈 와'],
+    match: ['날씨', '기온', '몇 도', '더워', '추워', '미세먼지', '비 와', '비가 와', '눈 와',
+      '비 올', '눈 올', '쌀쌀', '포근', '기상'],
     timeoutMs: 4000,
     ttlMs: 10 * 60 * 1000,
     defaultCity: '서울',
@@ -8763,6 +8812,13 @@ function renderRouteLog() {
       const dcls = s.wanted && !s.on && !/데이터API/.test(s.reason) ? ' rl-diag-warn' : '';
       diag = `<div class="rl-diag${dcls}">${icon} ${escapeHtml(s.reason)}</div>`;
     }
+    /* v2.9.4 — 데이터 API 판정을 별도 줄로.
+     * "성공 / 실패(사유) / 미발동(사유)" 를 한 줄로 읽을 수 있어야
+     * 이번 환율 건 같은 상황을 로그만 보고 판정할 수 있다. */
+    if (s && s.data) {
+      const ok = /성공/.test(s.data);
+      diag += `<div class="rl-diag${ok ? '' : ' rl-diag-warn'}">${ok ? '📡' : '📭'} ${escapeHtml(s.data)}</div>`;
+    }
     // v2.9.3 — 서킷 상태 (이 회사가 차단 중이면 왜 다른 곳으로 갔는지가 설명된다)
     if (r.circuit) {
       diag += `<div class="rl-diag rl-diag-warn">⛔ ${escapeHtml(who)} ${escapeHtml(r.circuit)}</div>`;
@@ -8816,7 +8872,7 @@ function renderMetrics() {
       + `<div>메시지 ${d.messages} · LLM 호출 ${d.calls}</div>`
       + `<div class="metrics-kpi ${cls}">메시지당 ${cpm.toFixed(2)}콜`
       + `<span class="metrics-dim" style="font-size:11px;font-weight:400"> (목표 ${METRICS.target.callsPerMessage.toFixed(1)} 이하)</span></div>`
-      + `<div>검색 ${d.searchCalls} · 데이터API ${d.dataCalls || 0} · 수치정정 ${d.corrections || 0}</div>`
+      + `<div>검색 ${d.searchCalls} · 데이터API ${d.dataCalls || 0}(실패 ${d.dataFails || 0}) · 수치정정 ${d.corrections || 0}</div>`
       + `<div>429 ${d.e429} · 503 ${d.e503} · 재시도 ${d.retries} · 서킷 ${d.circuitOpens || 0}회</div>`
       + `<div>응답 평균 ${fmtMs(avg)} · P95 ${fmtMs(metricP95(d))}</div>`
       + `</div>`;
@@ -10915,7 +10971,7 @@ async function runTurnFetch(persona, instruction, opts, rec) {
    * 실제로 v2.9 의 환율 사고가 그래서 늦게 발견됐다. */
   const info = opts.searchInfo || null;
   const searchNote = info
-    ? { on: needsSearch, wanted: !!info.wanted, reason: info.reason || '' }
+    ? { on: needsSearch, wanted: !!info.wanted, reason: info.reason || '', data: info.data || '' }
     : { on: needsSearch, wanted: needsSearch, reason: needsSearch ? '지정됨' : '해당 없음' };
 
   /* 한 번 호출 → SVG 분리 → 문자 정화 → 이름표 제거
@@ -11165,6 +11221,26 @@ async function runTurnFetch(persona, instruction, opts, rec) {
   } catch (err) {
     rec.done = true;
     if (err && err.name === 'AbortError') return { ok: false, aborted: true };
+
+    /* ═══ v2.9.4 — 숫자를 버리지 않는다 ═══
+     * 앱이 이미 공식 값을 손에 쥐고 있는데 LLM 이 한도에 막혔다고 해서
+     * 사용자에게 아무것도 안 보여주는 건 말이 안 된다.
+     * 그건 "모르는 것"이 아니라 **알면서 숨기는 것**이다.
+     *
+     * 그래서 설명은 포기하되 숫자는 그대로 내보낸다.
+     * 출처 줄(기준시각·ECB·주의문구)도 평소와 똑같이 붙으므로
+     * 사용자가 그 값을 어떻게 받아들여야 하는지도 함께 전달된다. */
+    if (fact && fact.plainText) {
+      return {
+        ok: true,
+        text: fact.plainText,
+        svg: '',
+        citations: [],
+        search: null,
+        fact: fact,
+        factOnly: true            // 페르소나가 쓴 말이 아니라 앱이 대신 낸 문장이다
+      };
+    }
     // v2.8.2 — 모델이 은퇴했으면 말풍선 하나 띄우고 끝내지 않는다. 쓸 수 있는 이름을 찾아온다
     if (err && err.modelUnknown) rescueUnknownModel(err.modelTried, err.provider);
     const raw = String((err && err.message) || err);
@@ -11257,6 +11333,7 @@ async function presentTurn(rec) {
         content: out.text, svg: out.svg, citations: out.citations,
         search: out.search || null,
         fact: out.fact || null, corrected: !!out.corrected,   // v2.9.3
+        factOnly: !!out.factOnly,                             // v2.9.4
         ts: Date.now()
       }
     : {
@@ -11919,11 +11996,26 @@ async function sendFollowup() {
      * 공식 API 로 값을 받아오면 LLM 검색이 아예 필요 없어진다 (검색 0콜).
      * 실패하면 fact 가 null 이라 아래 검색 경로가 그대로 살아 있다.
      * 조회는 메시지당 한 번뿐 — 응답자가 여럿이어도 같은 Fact 를 공유한다. */
+    /* v2.9.4 — Fact 선확보 원칙.
+     * 조건을 freshness 가 아니라 **데이터 소스 매칭**으로 바꿨다.
+     * v2.9.3 은 freshness 가 걸려야만 여기 들어왔는데, 두 사전이 따로 놀아서
+     * 소스가 멀쩡히 있는 질문("1달러 몇 원이야?")이 데이터 API 를 못 탔다.
+     * 이제 소스가 답할 수 있는 질문이면 무조건 먼저 값을 확보한다. */
     let fact = null;
-    if (searchInfo.freshness && !hasImages) {
-      fact = await fetchFact(question);
-      if (fact) searchInfo.reason = `데이터API:${DATA_SOURCES[fact.kind].label}`;
+    let factInfo = { status: 'skip', reason: '해당 없음' };
+    if (!hasImages) {
+      factInfo = await resolveFact(question);
+      fact = factInfo.fact;
+    } else if (pickDataSource(question)) {
+      factInfo = { status: 'skip', reason: '사진 첨부' };
     }
+    // 로그에 성공/실패/미발동을 사유까지 남긴다 — 로그 한 줄로 판정할 수 있게
+    if (factInfo.status !== 'skip' || pickDataSource(question)) {
+      searchInfo.data = factInfo.status === 'ok' ? `데이터API 성공: ${factInfo.reason}`
+        : (factInfo.status === 'fail' ? `데이터API 실패: ${factInfo.reason}`
+          : `데이터API 미발동: ${factInfo.reason}`);
+    }
+    // reason 은 "왜 이 판정이 났나"를 그대로 두고, 결과는 위 data 줄이 보여준다 (중복 방지)
 
     let searchLeft = (wantSearch && !fact) ? SEARCH_RULES.maxPerTurn : 0;
     const takeSearchSlot = () => (searchLeft > 0 ? (searchLeft--, true) : false);
@@ -11985,6 +12077,7 @@ async function sendFollowup() {
     }
 
     const spoke = [];
+    let lastWasFactOnly = false;   // v2.9.4 — 앱이 값만 낸 턴이었나
     let quotaHit = false;
     let anyOutage = false;   // 한도든 혼잡이든 네트워크든 — 조용히 실패한 게 있었나
     for (let i = 0; i < responders.length; i++) {
@@ -11998,6 +12091,9 @@ async function sendFollowup() {
       if (msg) {
         noteSpeaker(responders[i].id);
         spoke.push(responders[i].id);
+        lastWasFactOnly = !!msg.factOnly;
+        // 앱이 값만 대신 낸 상황이면 남은 응답자도 어차피 막힌다 — 여기서 접는다
+        if (msg.factOnly) break;
       } else if (rec.cancelled) {
         break;                                             // 새 메시지로 끊긴 것
       } else if (rec.outage) {
@@ -12029,7 +12125,9 @@ async function sendFollowup() {
     /* 연쇄 반응 — 동료 말에 다른 동료가 끼어든다.
      * 이건 미리 걸 수 없다. 반응할 대상(동료의 말)이 아직 없기 때문이다.
      * 속도보다 대화의 앞뒤가 중요한 유일한 자리라서 여기만 순차로 남긴다. */
-    if (weight !== 'filler' && spoke.length > 0 && seq === state.turnSeq) {
+    /* v2.9.4 — 앱이 값만 대신 내보낸 턴(factOnly)에는 끼어들기를 붙이지 않는다.
+     * 그 턴은 LLM 이 한도에 막혀서 나온 결과다. 여기에 한 콜을 더 쓰면 그것도 막힌다. */
+    if (weight !== 'filler' && spoke.length > 0 && seq === state.turnSeq && !lastWasFactOnly) {
       const last = resolvePersona(spoke[spoke.length - 1]);
       const chainer = pickChainResponder(last.id, spoke,
         searchInfo.freshness ? { chance: FRESHNESS_RULES.chainChance } : {});
