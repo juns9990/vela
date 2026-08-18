@@ -12,7 +12,7 @@
 <meta name="description" content="벨챗 — 베테랑 다섯이 상주하는 아이디어 단톡방. 아무 얘기나 던지면 관련 있는 사람만 답하고, 주제가 잡히면 그 분야 전문가가 합류합니다." />
 
 <!-- PWA · manifest 쿼리는 vela-boardroom-stamp.js 가 BUILD_ID 로 갱신한다 -->
-<link rel="manifest" href="vela-boardroom-manifest.json?b=6ac76ac384d1" />
+<link rel="manifest" href="vela-boardroom-manifest.json?b=1fea9dbdcef8" />
 <meta name="theme-color" content="#dbeafe" id="metaThemeColor" />
 <meta name="color-scheme" content="light dark" />
 <!-- 표준 PWA meta (Chrome 등 — 2023+ 표준) -->
@@ -3730,7 +3730,7 @@
 
 <div class="issue-strip">
   <div class="left">
-    <span id="versionTag">v2.9.5</span>
+    <span id="versionTag">v3.0.0-p0</span>
     <span class="dot">●</span>
     <span id="apiStatus">NO API KEY</span>
   </div>
@@ -4361,7 +4361,19 @@ function metricDay(day) {
       messages: 0, calls: 0, searchCalls: 0, dataCalls: 0, dataFails: 0,
       e429: 0, e503: 0, retries: 0, circuitOpens: 0,
       corrections: 0, msSum: 0, msN: 0,
-      buckets: new Array(METRICS.buckets.length + 1).fill(0)
+      buckets: new Array(METRICS.buckets.length + 1).fill(0),
+      /* v3.0 — 유료 전환 판단에 필요한 것들.
+       * ★ 이미 저장된 지난 날짜에는 이 필드들이 없다. 마이그레이션은 하지 않는다 —
+       *   keepDays 가 14 이므로 2주면 자연히 교체된다.
+       *   대신 읽는 쪽이 전부 (d.x || 0) 로 방어한다. */
+      errors: {},        // 'gemini:flash' → { '429_RPD': 3, ... }
+      kinds: {},         // 종류별 합계 (provider 를 합쳐서 본다)
+      inferred: 0,       // 그중 추정으로 분류된 건수 — 확정과 섞이지 않게 따로 센다
+      cacheHits: 0,      // 캐시로 해결해 API 왕복을 생략한 횟수
+      degradedMsgs: 0,   // 숫자 카드·시스템 안내로 끝난 메시지
+      unservedMsgs: 0,   // 정상 AI 응답을 못 받은 메시지 (= 체감 실패)
+      rpdHit: 0,         // 그날 일일 한도를 한 번이라도 만났으면 1
+      rpdLimit: {}       // 'gemini:flash' → 200 (확정된 한도만 들어온다)
     };
   }
   return all[key];
@@ -4386,6 +4398,39 @@ function metricBump(field, by) {
   if (!METRICS.enabled) return;
   const d = metricDay();
   d[field] = (d[field] || 0) + (by === undefined ? 1 : by);
+  metricSave();
+}
+
+/* v3.0 — 중첩 카운터. metricBump 는 평평해서 provider·종류별 집계를 담지 못한다.
+ *   metricBump2('errors', 'gemini:flash', '429_RPD')  →  d.errors['gemini:flash']['429_RPD']++ */
+function metricBump2(field, k1, k2) {
+  if (!METRICS.enabled) return;
+  const d = metricDay();
+  if (!d[field] || typeof d[field] !== 'object') d[field] = {};
+  if (!d[field][k1] || typeof d[field][k1] !== 'object') d[field][k1] = {};
+  d[field][k1][k2] = (d[field][k1][k2] || 0) + 1;
+  metricSave();
+}
+
+/* 오류 하나를 분류해 남긴다 — 라우팅 로그와 대시보드가 같은 기록을 본다.
+ * 여기 한 곳에서만 기록하므로, 어디서 실패했든 집계가 어긋나지 않는다. */
+function noteErrorKind(provider, model, kind, confirmed, cls) {
+  if (!METRICS.enabled || !kind) return;
+  const who = provider + (model ? ':' + String(model).split('/').pop() : '');
+  metricBump2('errors', who, kind);
+  const d = metricDay();
+  if (!d.kinds || typeof d.kinds !== 'object') d.kinds = {};
+  d.kinds[kind] = (d.kinds[kind] || 0) + 1;
+  if (!confirmed) d.inferred = (d.inferred || 0) + 1;
+  /* 일일 한도는 "몇 번 났나"보다 "며칠에 걸쳐 났나"가 중요하다 —
+   * 유료 전환 기준선이 '14일 중 3일 소진' 이기 때문이다. */
+  if (kind === '429_RPD') d.rpdHit = 1;
+  /* 한도 숫자는 확정된 것만 남긴다. 추정치를 여기 넣으면
+   * 대시보드가 "187/200" 같은 정확한 얼굴로 거짓말을 하게 된다. */
+  if (cls && confirmed && cls.limit > 0) {
+    if (!d.rpdLimit || typeof d.rpdLimit !== 'object') d.rpdLimit = {};
+    d.rpdLimit[who] = cls.limit;
+  }
   metricSave();
 }
 
@@ -4649,7 +4694,7 @@ function providerHeaders(providerIn, key) {
 
 const APP = {
   name: '벨챗',                // v2.4 — 앱 이름
-  version: '2.9.5',
+  version: '3.0.0-p0',
   chair: 'Juns',              // 사용자 표기명
   costPerCallKRW: 20          // Sonnet 4.6 기준 1콜 대략치 — 비용 표기용
 };
@@ -5039,6 +5084,9 @@ function dataCacheGet(key, ttlMs) {
   const hit = dataCache.get(key);
   if (!hit) return null;
   if (Date.now() - hit.at > ttlMs) { dataCache.delete(key); return null; }
+  /* v3.0 — 적중은 곧 "API 왕복 하나를 생략했다"는 뜻이다. 그 절약을 센다.
+   * 적중률이 낮게 나오면 TTL 이 데이터의 갱신 주기보다 짧다는 신호로 읽는다. */
+  metricBump('cacheHits');
   return hit.fact;
 }
 
@@ -5406,7 +5454,17 @@ const METRICS = {
   enabled: true,
   keepDays: 14,
   target: { callsPerMessage: 1.0, warnAt: 1.5 },   // 화면에 목표를 박아둔다
-  buckets: [250, 500, 1000, 2000, 4000, 8000, 16000, 32000]
+  buckets: [250, 500, 1000, 2000, 4000, 8000, 16000, 32000],
+
+  /* ---- v3.0 유료 전환 기준선 ------------------------------------
+   * "언제 돈을 내야 하나"를 감이 아니라 숫자로 판단하기 위한 선이다.
+   * 숫자만 보여주면 그게 좋은 건지 나쁜 건지 알 수 없으므로 화면에 선을 함께 그린다.
+   *
+   *   unservedRate  체감 실패율 — 정상 AI 응답을 못 받은 메시지 비율.
+   *                 숫자 카드도 여기 들어간다. 사용자가 겪는 불편에 가장 가까운 값.
+   *   rpdDays       최근 14일 중 일일 한도를 만난 날의 수.
+   *                 하루 이틀은 우연이지만 3일이면 구조적이다. */
+  baseline: { unservedRate: 0.03, rpdDays: 3, windowDays: 14 }
 };
 
 /* ---- ⑰ 데이터 소스 (v2.9.3) ---------------------------------------
@@ -5427,7 +5485,13 @@ const DATA_SOURCES = {
     match: ['환율', '달러', '달러값', '원달러', '엔화', '엔저', '유로화', '위안화', '파운드',
       '미국 돈', '일본 돈', '중국 돈'],
     timeoutMs: 4000,
-    ttlMs: 30 * 60 * 1000,
+    /* v3.0 — 30분 → 6시간.
+     * ECB 계열은 영업일 하루 한 번(16:00 CET) 갱신한다. 30분마다 다시 받아와도
+     * 같은 값이 돌아올 뿐이고, 왕복만 늘어난다.
+     * ★ 캐시가 오래돼도 위험하지 않은 이유: 출처줄에는 캐시 나이가 아니라
+     *   원 데이터의 asOf(예: "8/14 기준")가 그대로 나간다. 사용자가 보는
+     *   "언제 기준 값인가"는 캐시와 무관하게 언제나 정확하다. */
+    ttlMs: 6 * 60 * 60 * 1000,
     /* frankfurter.dev — ECB 계열 기준환율. 무키·CORS 개방.
      * ★ 영업일 하루 한 번 갱신이라 주말·공휴일에는 며칠 전 날짜가 나온다.
      *   그래서 asOf 를 화면과 프롬프트 양쪽에 반드시 노출한다. */
@@ -5449,7 +5513,11 @@ const DATA_SOURCES = {
     match: ['날씨', '기온', '몇 도', '더워', '추워', '미세먼지', '비 와', '비가 와', '눈 와',
       '비 올', '눈 올', '쌀쌀', '포근', '기상'],
     timeoutMs: 4000,
-    ttlMs: 10 * 60 * 1000,
+    /* v3.0 — 10분 → 30분. open-meteo 관측 갱신이 15분 단위라 체감 차이가 없다.
+     * ★ "모든 캐시 5분" 같은 일괄 정책을 쓰지 않는 이유가 여기 있다 —
+     *   환율에 30분은 과하게 짧고, 날씨에 6시간은 과하게 길다.
+     *   데이터마다 변하는 속도가 다르면 TTL 도 달라야 한다. */
+    ttlMs: 30 * 60 * 1000,
     defaultCity: '서울',
     caveat: '관측 시각 기준이라 지금과 조금 다를 수 있어요',
     sourceName: 'Open-Meteo 기상 데이터',
@@ -5504,7 +5572,65 @@ const WMO_TEXT = {
  * ------------------------------------------------------------------ */
 const FACT_RULES = {
   llmAttempts: 1,        // Fact 가 있을 때 LLM 호출을 몇 번까지 시도할지
-  waitOnQuota: false     // 한도를 만나도 기다렸다 재시도할지 (false = 즉시 숫자 표시)
+  waitOnQuota: false,    // 한도를 만나도 기다렸다 재시도할지 (false = 즉시 숫자 표시)
+
+  /* ---- v3.0 — 오류 성격별 차등 ----------------------------------
+   * v2.9.5 는 "Fact 가 있으면 무조건 1회"였다. 단순해서 좋았지만 너무 거칠다.
+   * 503 한 번에 설명을 포기하는 건 과하고, 반대로 일일 한도(RPD)에 걸린 뒤
+   * 기다리는 건 아무 의미가 없다 — 오늘은 열리지 않는다.
+   *
+   * 그래서 "기다리면 풀리는 오류"와 "기다려도 소용없는 오류"를 갈라 대한다.
+   *   retry 0     → 즉시 숫자 표시로 내려간다
+   *   waitMs      → 숫자(ms) 또는 'retryAfter' (저쪽이 알려준 시간)
+   *   maxWaitMs   → ★ 상한. Retry-After 가 7분이어도 7분을 기다리지 않는다.
+   *                 숫자는 이미 손에 있고, 사용자는 지금 답을 기다린다.
+   * byKind 에 없는 kind 는 위의 기본값(1회·대기 없음)을 그대로 따른다. */
+  byKind: {
+    '429_RPD':   { retry: 0 },                                     // 오늘은 끝났다
+    'AUTH':      { retry: 0 },                                     // 사용자가 고쳐야 한다
+    'MODEL_404': { retry: 0 },                                     // 재시도 무의미
+    '429_RPM':   { retry: 1, waitMs: 'retryAfter', maxWaitMs: 15000 },
+    '429_TPM':   { retry: 1, waitMs: 'retryAfter', maxWaitMs: 15000 },
+    '503':       { retry: 1, waitMs: 2000, maxWaitMs: 4000 },
+    'TIMEOUT':   { retry: 1, waitMs: 1500, maxWaitMs: 4000 },
+    'NETWORK':   { retry: 1, waitMs: 1500, maxWaitMs: 4000 },
+    'UNKNOWN':   { retry: 0 }
+  }
+};
+
+/* ---- ⑲-2 오류 분류 (v3.0) -----------------------------------------
+ * 429 는 한 덩어리가 아니다. **분당 한도**는 잠깐 기다리면 풀리고,
+ * **일일 한도**는 오늘 안에는 절대 풀리지 않는다.
+ * 둘을 같게 대하면 둘 다 잘못 대한다 — 앞엣것은 성급히 포기하고,
+ * 뒤엣것은 열리지도 않을 문을 계속 두드린다.
+ *
+ * ★ 그런데 판별 가능성이 provider 마다 다르다. 여기가 이번 버전의 핵심 제약이다.
+ *
+ *   Gemini    본문 error.details[] 의 QuotaFailure.violations[].quotaId 에
+ *             'PerDay' / 'PerMinute' 가 이름으로 적혀 있다 → 확정
+ *             quotaValue 로 한도 숫자까지 알려준다.
+ *   Groq      본문 메시지에 "on requests per day (RPD): Limit 14400, Used 14400" → 추정
+ *   Anthropic 본문에 단서가 거의 없다 → 대기시간 길이로만 추정
+ *
+ *   ⚠ 헤더(x-ratelimit-*, retry-after)는 브라우저에서 읽을 수 없다.
+ *     Groq·Anthropic 이 Access-Control-Expose-Headers 를 주지 않기 때문이다.
+ *     res.headers.get() 은 CORS 안전목록 밖 헤더를 전부 null 로 돌려준다.
+ *     → 이 앱이 브라우저 단일 파일인 한, 헤더로는 확정할 수 없다.
+ *
+ * 그래서 확정(confirmed)과 추정(inferred)을 구분해 기록하고, 화면에도 그대로 쓴다.
+ * 추정을 확정처럼 보여주는 건 v2.9.1 환율 사고와 같은 종류의 잘못이다.
+ * ------------------------------------------------------------------ */
+const ERROR_RULES = {
+  /* 본문에 단서가 없을 때의 마지막 휴리스틱 —
+   * "이만큼 기다리라"는 말 자체가 한도의 성격을 알려준다.
+   * 분당 한도는 길어야 1분이고, 10분을 넘겨 기다리라는 건 일일 한도 쪽이다. */
+  rpdHintMs: 10 * 60 * 1000,
+  /* Gemini 무료 티어 일일 한도는 태평양시 자정에 리셋된다.
+   * 한국 시간으로는 오후 4~5시인데, 이 한 시간 차이가 서머타임에서 온다.
+   * 그래서 고정 오프셋을 쓰지 않고 시간대 이름으로 계산한다 —
+   * 고정값을 쓰면 3월~11월 내내 안내가 한 시간씩 틀린다.
+   * (fallbackOffsetMin 은 Intl 을 못 쓰는 환경에서만 쓰는 최후의 값) */
+  rpdResetTz: { zone: 'America/Los_Angeles', fallbackOffsetMin: -8 * 60 }
 };
 
 const VALIDATOR_RULES = {
@@ -5522,7 +5648,25 @@ const VALIDATOR_RULES = {
 const DEGRADE_RULES = {
   shrinkOnQuota: true,   // 한도를 만나면 이번 메시지의 남은 응답자를 접는다
   lastResort: true,      // 아무도 못 말했으면 한 명만 다시 시도한다
-  lastResortWeight: 'casual'   // 그 한 명은 짧게 — 다시 한도를 치지 않게
+  lastResortWeight: 'casual',  // 그 한 명은 짧게 — 다시 한도를 치지 않게
+
+  /* ---- v3.0 축소 모드 — LLM 이 전멸해도 앱은 응답한다 -------------
+   * v2.8.3 의 "우아한 축소"는 응답자를 줄이는 것까지였다. 다 막히면 침묵했다.
+   * 사용자에게 침묵은 고장과 구별되지 않는다.
+   *
+   * 그래서 마지막 한 겹을 더 둔다:
+   *   Fact 턴      → 숫자 카드 (v2.9.4 그대로)
+   *   일반 대화 턴 → 시스템 안내 한 번. 페르소나 말풍선이 아니다 —
+   *                  앱의 사정을 사람이 말하게 하면 그건 거짓말에 가깝다.
+   *   회복         → 자동. 별도 안내 없이 다음 답이 그냥 나간다.
+   *
+   * lastResort 가 먼저 시도되고, 그것도 실패했을 때 이 안내가 나간다. */
+  notice: true,          // 전멸 시 시스템 안내를 낼지
+  noticeGapMs: 3 * 60 * 1000,  // 같은 상태라도 최소 이 간격은 두고 낸다
+  /* ★ 회복 안내는 내지 않는다.
+   * "다시 연결됐어요"는 알림처럼 보이지만, 정상 복귀는 답이 오는 것으로
+   * 이미 드러난다. 그걸 또 알리면 그것도 도배다. */
+  recoveryNotice: false
 };
 
 /* ---- ⑧-2 대화 중 입력 (v2.8) --------------------------------------
@@ -8849,6 +8993,12 @@ function renderRouteLog() {
     if (r.circuit) {
       diag += `<div class="rl-diag rl-diag-warn">⛔ ${escapeHtml(who)} ${escapeHtml(r.circuit)}</div>`;
     }
+    /* v3.0 — 오류 분류 한 줄. 추정이면 '(추정)' 이 붙고, 리셋 시점을 알면 함께 적는다.
+     * 이 줄 하나로 "지금 기다려야 하나 / 오늘은 접어야 하나"가 판정된다. */
+    if (r.kind) {
+      const reset = r.resetAt ? ' · ' + formatResetAt(r.resetAt) + ' 리셋' : '';
+      diag += `<div class="rl-diag rl-diag-warn">⛔ ${escapeHtml(errorKindLabel(r.kind, r.kindConfirmed))}${escapeHtml(reset)}</div>`;
+    }
     return `<div class="rl-item">`
       + `<div class="rl-row${cls}">`
       + `<span>${hh}</span>`
@@ -8893,18 +9043,94 @@ function renderMetrics() {
         + `메시지 ${d.messages} · 호출 ${d.calls} · `
         + `<span class="${cls}">메시지당 ${cpm.toFixed(2)}</span></div>`;
     }
+    /* ---- v3.0 유료 판단 지표 ----
+     * 체감 실패율: 정상 AI 응답을 못 받은 메시지 비율. 정의를 화면에 함께 적는다 —
+     * 정의를 모르면 4.2% 가 좋은 건지 나쁜 건지 판단할 수 없다. */
+    const unserved = d.unservedMsgs || 0;
+    const uRate = d.messages ? unserved / d.messages : 0;
+    const uCls = !d.messages ? 'metrics-dim'
+      : (uRate > METRICS.baseline.unservedRate ? 'metrics-warn' : 'metrics-good');
+    const degraded = d.degradedMsgs || 0;
+    const dRate = d.messages ? degraded / d.messages : 0;
+    const hits = d.cacheHits || 0;
+    const attempts = d.dataCalls || 0;
+    const hitRate = attempts ? hits / attempts : 0;
+    const failRate = d.calls ? (d.e429 + d.e503) / d.calls : 0;
+
     return `<div class="metrics-day">`
       + `<div><b>${day === today ? '오늘' : day.slice(5)}</b> (${escapeHtml(day)})</div>`
       + `<div>메시지 ${d.messages} · LLM 호출 ${d.calls}</div>`
       + `<div class="metrics-kpi ${cls}">메시지당 ${cpm.toFixed(2)}콜`
       + `<span class="metrics-dim" style="font-size:11px;font-weight:400"> (목표 ${METRICS.target.callsPerMessage.toFixed(1)} 이하)</span></div>`
-      + `<div>검색 ${d.searchCalls} · 데이터API ${d.dataCalls || 0}(실패 ${d.dataFails || 0}) · 수치정정 ${d.corrections || 0}</div>`
+      + `<div class="metrics-kpi ${uCls}">체감 실패율 ${(uRate * 100).toFixed(1)}% (${unserved}/${d.messages})`
+      + `<span class="metrics-dim" style="font-size:11px;font-weight:400"> 기준선 ${(METRICS.baseline.unservedRate * 100).toFixed(0)}%</span></div>`
+      + `<div class="metrics-dim" style="font-size:11px">체감 실패 = 정상 AI 응답을 못 받은 메시지 (숫자 카드·안내 포함)</div>`
+      + `<div>축소 응답 ${(dRate * 100).toFixed(1)}% (${degraded}) · LLM 실패율 ${(failRate * 100).toFixed(1)}%</div>`
+      + `<div>검색 ${d.searchCalls} · 데이터조회 ${attempts}(캐시적중 ${(hitRate * 100).toFixed(0)}% · 실패 ${d.dataFails || 0}) · 수치정정 ${d.corrections || 0}</div>`
       + `<div>429 ${d.e429} · 503 ${d.e503} · 재시도 ${d.retries} · 서킷 ${d.circuitOpens || 0}회</div>`
+      + renderErrorKinds(d)
       + `<div>응답 평균 ${fmtMs(avg)} · P95 ${fmtMs(metricP95(d))}</div>`
       + `</div>`;
   });
 
-  el.innerHTML = rows.join('');
+  el.innerHTML = renderQuotaPanel(all) + rows.join('');
+}
+
+/* 오류 분류 내역 — 확정과 추정을 섞어 보여주되, 섞였다는 걸 숫자로 밝힌다 */
+function renderErrorKinds(d) {
+  const kinds = d.kinds && typeof d.kinds === 'object' ? d.kinds : {};
+  const keys = Object.keys(kinds).filter(k => kinds[k] > 0);
+  if (!keys.length) return '';
+  keys.sort((a, b) => kinds[b] - kinds[a]);
+  const body = keys.map(k => `${k} ${kinds[k]}`).join(' · ');
+  const inf = d.inferred || 0;
+  return `<div class="metrics-warn">오류 ${escapeHtml(body)}`
+    + (inf ? `<span class="metrics-dim" style="font-weight:400"> (그중 추정 ${inf})</span>` : '')
+    + `</div>`;
+}
+
+/* ---- 일일 한도(RPD) 패널 — 유료 전환 판단의 본체 --------------------
+ * ★ 여기서 지키는 원칙 하나: 모르는 건 모른다고 쓴다.
+ *   한도 숫자를 확정할 수 있는 건 Gemini 뿐이다(오류 본문이 알려준다).
+ *   나머지는 "한도 미상"으로 두고 '며칠 만났나'만 센다.
+ *   앱이 사용자에게 요구하는 정직함을 대시보드에도 똑같이 적용한다.
+ * ------------------------------------------------------------------ */
+function renderQuotaPanel(all) {
+  const days = Object.keys(all).sort().reverse().slice(0, METRICS.baseline.windowDays);
+  if (!days.length) return '';
+  let rpdDays = 0;
+  const seen = {};      // 'gemini:flash' → { hits, limit }
+  days.forEach(day => {
+    const d = all[day] || {};
+    if (d.rpdHit) rpdDays++;
+    const errs = (d.errors && typeof d.errors === 'object') ? d.errors : {};
+    Object.keys(errs).forEach(who => {
+      const n = (errs[who] && errs[who]['429_RPD']) || 0;
+      if (!n) return;
+      if (!seen[who]) seen[who] = { hits: 0, limit: 0 };
+      seen[who].hits += n;
+      const lim = (d.rpdLimit && d.rpdLimit[who]) || 0;
+      if (lim > seen[who].limit) seen[who].limit = lim;
+    });
+  });
+  const whos = Object.keys(seen);
+  if (!rpdDays && !whos.length) {
+    return `<div class="metrics-day"><div><b>일일 한도</b></div>`
+      + `<div class="metrics-good">최근 ${days.length}일 동안 만난 적 없음</div>`
+      + `<div class="metrics-dim" style="font-size:11px">전환 기준선: ${METRICS.baseline.windowDays}일 중 ${METRICS.baseline.rpdDays}일 소진 · 체감 실패 ${(METRICS.baseline.unservedRate * 100).toFixed(0)}%</div></div>`;
+  }
+  const lines = whos.map(who => {
+    const s = seen[who];
+    const limitTxt = s.limit ? `한도 ${s.limit}회/일` : '한도 미상 (브라우저에서 확인 불가)';
+    return `<div>${escapeHtml(who)} — ${escapeHtml(limitTxt)} · 소진 ${s.hits}회</div>`;
+  }).join('');
+  const over = rpdDays >= METRICS.baseline.rpdDays;
+  return `<div class="metrics-day"><div><b>일일 한도</b></div>`
+    + lines
+    + `<div class="${over ? 'metrics-warn' : 'metrics-good'}">최근 ${days.length}일 중 소진 ${rpdDays}일`
+    + `<span class="metrics-dim" style="font-weight:400"> (기준선 ${METRICS.baseline.rpdDays}일)</span></div>`
+    + (over ? `<div class="metrics-warn">기준선을 넘었습니다 — 유료 전환을 검토할 시점입니다</div>` : '')
+    + `<div class="metrics-dim" style="font-size:11px">전환 기준선: ${METRICS.baseline.windowDays}일 중 ${METRICS.baseline.rpdDays}일 소진 · 체감 실패 ${(METRICS.baseline.unservedRate * 100).toFixed(0)}%</div></div>`;
 }
 
 /* 2단 모델 안내 — provider 마다 "빠른 모델"이 다르고, 없는 provider 도 있다 */
@@ -10425,6 +10651,12 @@ async function readSseStream(res, onEvent) {
  * 못 찾으면 0 을 주고, 호출부가 지수 백오프로 알아서 정한다. */
 function parseRetryAfterMs(res, raw) {
   try {
+    /* ⚠ v3.0 확인 — 이 분기는 지금 브라우저에서 사실상 항상 null 이다.
+     * Groq·Anthropic 이 Access-Control-Expose-Headers 를 주지 않아서,
+     * CORS 안전목록 밖 헤더(retry-after 포함)는 JS 로 읽히지 않는다.
+     * 실제로 동작해 온 건 아래의 본문 문자열 파싱뿐이다.
+     * 지우지는 않는다 — provider 가 헤더를 열어주면 그때 그대로 살아난다.
+     * 다만 다음 사람이 이 분기를 믿고 설계하지 않도록 여기 적어둔다. */
     const h = res.headers && res.headers.get && res.headers.get('retry-after');
     if (h) {
       const n = parseFloat(h);
@@ -10448,6 +10680,177 @@ function parseRetryAfterMs(res, raw) {
   m = s.match(/try again in ([\d.]+)\s*s/i) || s.match(/"?retryDelay"?\s*[:=]\s*"?([\d.]+)s/i);
   if (m) return Math.round(parseFloat(m[1]) * 1000);
   return 0;
+}
+
+/* ═══════════ 오류 분류 (v3.0) ═══════════
+ * 이 앱이 만나는 실패는 성격이 전혀 다른 것들이 429 라는 한 숫자 뒤에 섞여 있다.
+ * 아래 여덟 가지로 갈라야 각각에 맞는 대응을 할 수 있다.
+ *
+ *   429_RPM   분당 요청 한도  → 잠깐 기다리면 풀린다
+ *   429_RPD   일일 요청 한도  → 오늘은 끝났다. 기다려도 소용없다
+ *   429_TPM   분당 토큰 한도  → 잠깐 기다리면 풀린다
+ *   503       저쪽 서버 혼잡  → 짧게 한 번 더
+ *   TIMEOUT   응답 없음       → 짧게 한 번 더
+ *   NETWORK   연결 실패       → 짧게 한 번 더
+ *   AUTH      키·권한 문제    → 재시도 무의미. 사용자가 고쳐야 한다
+ *   MODEL_404 모델 이름 문제  → 재시도 무의미 (구제 안내로 넘긴다)
+ *   UNKNOWN   그 외
+ * ═══════════════════════════════════════ */
+const ERROR_KINDS = ['429_RPM', '429_RPD', '429_TPM', '503', 'TIMEOUT',
+                     'NETWORK', 'AUTH', 'MODEL_404', 'UNKNOWN'];
+
+/* 한도 종류를 문자열에서 읽는다 — Gemini 의 quotaId 와 Groq 의 본문 둘 다 이 함수를 쓴다.
+ * 순서가 중요하다: 토큰 한도(TPM)가 'per minute' 도 함께 담고 있으므로 먼저 본다. */
+function quotaKindFromText(s) {
+  const t = String(s || '');
+  if (/InputToken|OutputToken|TokensPer|tokens per (minute|min)\b|\bTPM\b/i.test(t)) return '429_TPM';
+  if (/PerDay|per day\b|\bRPD\b|daily/i.test(t)) return '429_RPD';
+  if (/PerMinute|per minute\b|\bRPM\b/i.test(t)) return '429_RPM';
+  return '';
+}
+
+/* Gemini 만 429 의 원인을 본문에 구조화해서 준다 — 이 앱에서 유일하게 '확정'이 가능한 곳.
+ *   error.details[] 안의 QuotaFailure.violations[].quotaId 에
+ *   'GenerateRequestsPerDayPerProjectPerModel-FreeTier' 처럼 이름 자체가 답이다.
+ *   quotaValue 로 한도 숫자까지 알려주므로 대시보드의 "몇 개 중 몇 개"가 여기서 나온다. */
+function geminiQuotaInfo(data) {
+  try {
+    const details = (data && data.error && data.error.details) || [];
+    for (const d of details) {
+      const vios = d && (d.violations || d.quotaViolations);
+      if (!Array.isArray(vios)) continue;
+      for (const v of vios) {
+        const kind = quotaKindFromText(v && (v.quotaId || v.quotaMetric));
+        if (!kind) continue;
+        const limit = Number(v.quotaValue);
+        return { kind: kind, limit: isFinite(limit) && limit > 0 ? limit : 0,
+                 quotaId: String(v.quotaId || '') };
+      }
+    }
+  } catch (e) {}
+  return null;
+}
+
+/* 오류 하나를 분류한다.
+ * 반환: { kind, confirmed, retryAfterMs, resetAt, limit, used }
+ *   confirmed=false 는 "추정"이라는 뜻이고, 이 값은 로그·대시보드·안내 문구까지
+ *   그대로 따라간다. 추정을 확정처럼 보여주지 않기 위해서다. */
+function classifyError(provider, status, raw, res, data) {
+  const r = String(raw || '');
+  const out = { kind: 'UNKNOWN', confirmed: false, retryAfterMs: 0,
+                resetAt: 0, limit: 0, used: 0 };
+
+  if (status === 429 || /RESOURCE_EXHAUSTED|rate.?limit|quota/i.test(r)) {
+    out.retryAfterMs = parseRetryAfterMs(res, r);
+
+    // ① Gemini — 본문 구조에서 확정
+    if (provider === 'gemini') {
+      const q = geminiQuotaInfo(data);
+      if (q) {
+        out.kind = q.kind;
+        out.confirmed = true;
+        out.limit = q.limit;
+      }
+    }
+    // ② 본문 메시지에서 추정 (Groq 이 여기에 해당 — 사람이 읽는 문장으로 알려준다)
+    if (out.kind === 'UNKNOWN') {
+      const k = quotaKindFromText(r);
+      if (k) out.kind = k;                 // confirmed 는 false 로 둔다
+    }
+    // ③ 그래도 모르면 대기시간 길이로 추정한다 (마지막 수단)
+    if (out.kind === 'UNKNOWN') {
+      out.kind = out.retryAfterMs >= ERROR_RULES.rpdHintMs ? '429_RPD' : '429_RPM';
+    }
+    // Limit / Used — Groq 은 본문에 숫자로 적어준다
+    const mL = r.match(/Limit\s*:?\s*([\d,]+)/i);
+    const mU = r.match(/Used\s*:?\s*([\d,]+)/i);
+    if (mL && !out.limit) out.limit = parseInt(mL[1].replace(/,/g, ''), 10) || 0;
+    if (mU) out.used = parseInt(mU[1].replace(/,/g, ''), 10) || 0;
+    out.resetAt = estimateResetAt(provider, out.kind, out.retryAfterMs);
+    return out;
+  }
+
+  if (isModelUnknownError(provider, status, r)) { out.kind = 'MODEL_404'; out.confirmed = true; return out; }
+  if (status === 401 || status === 403
+      || /API_KEY_INVALID|API key not valid|invalid.?api.?key|permission|credit balance/i.test(r)) {
+    out.kind = 'AUTH'; out.confirmed = true; return out;
+  }
+  if (status === 503 || status === 529 || status === 500 || status === 502) {
+    out.kind = '503'; out.confirmed = true;
+    out.retryAfterMs = parseRetryAfterMs(res, r);
+    return out;
+  }
+  return out;
+}
+
+/* 언제 다시 열리나. 안내 문구가 "기다리면 되는지 / 오늘은 끝인지"를 말하려면 이게 필요하다.
+ * 0 을 돌려주면 "모른다"는 뜻이고, 그때는 안내에서도 시점을 말하지 않는다. */
+function estimateResetAt(provider, kind, retryAfterMs) {
+  const now = Date.now();
+  if (kind === '429_RPD') {
+    /* 저쪽이 알려준 시간이 있으면 그게 가장 정확하다 —
+     * Groq 은 일일 한도에서도 "try again in 7m30s" 처럼 남은 시간을 준다. */
+    if (retryAfterMs > 0) return now + retryAfterMs;
+    /* Gemini 무료 티어는 태평양시 자정 리셋이다. 그 시점을 계산한다.
+     * (다른 provider 는 리셋 규칙을 알 수 없으므로 0 = 모름 으로 둔다) */
+    if (provider === 'gemini') return nextRpdResetAt(now);
+    return 0;
+  }
+  if (retryAfterMs > 0) return now + retryAfterMs;
+  if (kind === '429_RPM' || kind === '429_TPM') return now + 60000;   // 분당 한도는 길어야 1분
+  return 0;
+}
+
+/* 태평양시 기준 다음 자정.
+ * ★ 서머타임 때문에 고정 오프셋으로는 못 구한다 — 3월~11월은 UTC-7, 나머지는 UTC-8 이라
+ *   한 시간이 어긋난다. "내일 오후 4시" 와 "오후 5시" 는 사용자에게 다른 말이다.
+ *   그래서 시간대 이름으로 그 시점의 실제 오프셋을 구해서 쓴다. */
+function nextRpdResetAt(now) {
+  const tz = ERROR_RULES.rpdResetTz;
+  try {
+    const parts = {};
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: tz.zone, hour12: false,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit'
+    }).formatToParts(new Date(now)).forEach(p => { parts[p.type] = p.value; });
+    /* 태평양시의 '지금'을 UTC 인 척 읽은 값과 실제 시각의 차이 = 그 순간의 오프셋 */
+    const asUTC = Date.UTC(+parts.year, +parts.month - 1, +parts.day,
+                           (+parts.hour) % 24, +parts.minute, +parts.second);
+    const offMs = asUTC - now;
+    const nextMidnight = Date.UTC(+parts.year, +parts.month - 1, (+parts.day) + 1, 0, 0, 0);
+    return nextMidnight - offMs;
+  } catch (e) {
+    // Intl 을 못 쓰는 환경 — 고정 오프셋으로 물러선다 (서머타임에는 한 시간 늦게 잡힌다)
+    const offMs = tz.fallbackOffsetMin * 60000;
+    const pacific = new Date(now + offMs);
+    return Date.UTC(pacific.getUTCFullYear(), pacific.getUTCMonth(),
+                    pacific.getUTCDate() + 1, 0, 0, 0) - offMs;
+  }
+}
+
+/* 로그에 쓸 짧은 표기 — 추정이면 그렇다고 적는다 */
+function errorKindLabel(kind, confirmed) {
+  const ko = {
+    '429_RPM': '분당 한도', '429_RPD': '일일 한도', '429_TPM': '분당 토큰 한도',
+    '503': '서버 혼잡', 'TIMEOUT': '응답 없음', 'NETWORK': '연결 실패',
+    'AUTH': '키·권한', 'MODEL_404': '모델 이름', 'UNKNOWN': '원인 미상'
+  }[kind] || kind;
+  return `${kind} ${ko}${confirmed ? '' : ' (추정)'}`;
+}
+
+/* Fact 를 쥔 턴에서 이 오류를 어떻게 대할지 — 규칙표에 없으면 기본값(재시도 없음) */
+function factRuleFor(kind) {
+  const t = (FACT_RULES.byKind && FACT_RULES.byKind[kind]) || null;
+  return t || { retry: 0 };
+}
+
+/* 얼마나 기다릴지. 'retryAfter' 는 저쪽 말을 따르되 상한을 넘지 않는다.
+ * 상한이 없으면 이 함수는 무의미해진다 — 7분짜리 대기가 그대로 통과하기 때문이다. */
+function factWaitMs(rule, retryAfterMs) {
+  const want = rule.waitMs === 'retryAfter' ? (retryAfterMs || 0) : (rule.waitMs || 0);
+  const cap = rule.maxWaitMs || 0;
+  return cap > 0 ? Math.min(want, cap) : want;
 }
 
 /* "모델 이름이 틀렸다"인가 — 이 오류만 사용자가 스스로 고칠 수 있고,
@@ -10588,6 +10991,11 @@ async function callLLM(systemPrompt, messagesOrText, opts = {}) {
     const ne = new Error('네트워크에 닿지 못했습니다 — 인터넷 연결을 확인해주세요');
     ne.networkError = true;
     ne.provider = provider;
+    /* v3.0 — fetch 자체가 던진 실패다. 응답이 없으므로 본문으로 가를 수 없고,
+     * 시간 초과인지 연결 실패인지만 이름으로 구분한다. 둘 다 짧게 한 번 더가 정답이다. */
+    ne.kind = /timeout|timed out/i.test(String(e && e.message)) ? 'TIMEOUT' : 'NETWORK';
+    ne.kindConfirmed = true;
+    noteErrorKind(provider, o.model, ne.kind, true);
     throw ne;
   }
 
@@ -10599,6 +11007,16 @@ async function callLLM(systemPrompt, messagesOrText, opts = {}) {
     err.status = res.status;
     err.provider = provider;
     err.retryAfterMs = parseRetryAfterMs(res, raw);   // 저쪽이 알려준 대기시간이 최우선
+    /* v3.0 — 여기서 한 번만 분류하고, 이후 모든 판단(재시도·안내·측정)이 이 결과를 쓴다.
+     * 같은 오류를 여러 군데서 제각각 해석하면 판단이 갈린다. */
+    const cls = classifyError(provider, res.status, raw, res, data);
+    err.kind = cls.kind;
+    err.kindConfirmed = cls.confirmed;
+    err.resetAt = cls.resetAt;
+    err.quotaLimit = cls.limit;
+    err.quotaUsed = cls.used;
+    if (cls.retryAfterMs > 0) err.retryAfterMs = cls.retryAfterMs;
+    noteErrorKind(provider, o.model, cls.kind, cls.confirmed, cls);
     // v2.8.2 — 모델 은퇴는 조용히 실패하면 안 된다. 위쪽에서 구제 안내를 띄우도록 표시한다
     if (isModelUnknownError(provider, res.status, raw)) {
       err.modelUnknown = true;
@@ -11064,7 +11482,11 @@ async function runTurnFetch(persona, instruction, opts, rec) {
      * 대기 쪽은 waitedMs 예산이 따로 끝을 보장한다. */
     /* v2.9.5 — Fact 를 쥐고 있으면 시도 횟수를 잘라낸다.
      * 설명을 못 받아도 숫자는 나간다. 한도를 더 태울 이유가 없다. */
-    const maxAttempts = fact ? Math.max(1, FACT_RULES.llmAttempts) : 8;
+    /* v3.0 — Fact 턴에서도 오류 종류에 따라 한 번은 더 갈 수 있다(byKind).
+     * 그래서 상한을 llmAttempts + 그 재시도 한 번으로 잡는다.
+     * factRetried 가 실제로 몇 번 더 갔는지를 세고, 그 이상은 못 가게 막는다. */
+    const maxAttempts = fact ? Math.max(1, FACT_RULES.llmAttempts) + 1 : 8;
+    let factRetried = 0;
     let guard = 0;
     while (guard < maxAttempts) {
       let route = resolveRoute({
@@ -11090,6 +11512,7 @@ async function runTurnFetch(persona, instruction, opts, rec) {
         const out = await askOnce(msgs, live, route);
         rec.setStatus('');
         circuitOnSuccess(route.provider);           // v2.9.3 — 성공하면 연속 실패 카운터 초기화
+        clearDegraded();                            // v3.0 — 하나만 성공해도 축소 모드는 끝이다
         metricTiming(Date.now() - t0);
         noteRoute({ provider: route.provider, model: route.model, persona: persona.name,
                     vision: needsVision, ms: Date.now() - t0, ok: true,
@@ -11112,6 +11535,11 @@ async function runTurnFetch(persona, instruction, opts, rec) {
                     vision: needsVision, ms: Date.now() - t0, ok: false,
                     search: searchNote,
                     circuit: circuitLabel(route.provider),
+                    /* v3.0 — 로그에도 분류를 남긴다. "429" 만 적힌 줄은
+                     * 기다리면 되는 건지 오늘은 끝인 건지를 알려주지 못한다. */
+                    kind: e.kind || (e.networkError ? 'NETWORK' : ''),
+                    kindConfirmed: !!e.kindConfirmed,
+                    resetAt: e.resetAt || 0,
                     status: status || (e.networkError ? 'net' : 'err') });
         if (status === 429) metricBump('e429');
         else if (status === 503 || status === 529) metricBump('e503');
@@ -11122,9 +11550,29 @@ async function runTurnFetch(persona, instruction, opts, rec) {
         }
         if (rec.spoke) throw e;                      // 이미 말이 나갔다 — 되감지 않는다
 
-        /* v2.9.5 — Fact 가 있으면 폴백도 대기도 하지 않는다.
-         * 여기서 멈추면 catch 바깥이 "숫자만 표시" 경로로 받아준다. */
-        if (fact && !FACT_RULES.waitOnQuota) throw e;
+        /* ═══ v3.0 — Fact 를 쥔 상태에서는 오류 성격대로 대한다 ═══
+         * v2.9.5 는 여기서 무조건 멈췄다(숫자만 표시). 한도에는 맞는 대응이었지만
+         * 503·네트워크 같은 일시적 실패까지 한 번에 포기하는 건 과했다.
+         *
+         *   429_RPD·AUTH  → 즉시 멈춘다. 기다려도 오늘은 열리지 않는다.
+         *   429_RPM·503   → 상한 안에서 딱 한 번만 더. 그 이상은 숫자를 늦출 뿐이다.
+         *
+         * ★ maxWaitMs 가 이 블록의 핵심이다. 저쪽이 "7분 뒤에 오라"고 해도
+         *   7분을 기다리지 않는다 — 사용자가 볼 숫자는 이미 손에 있다. */
+        if (fact && !FACT_RULES.waitOnQuota) {
+          const fr = factRuleFor(e.kind);
+          if (!fr.retry) throw e;                    // 바깥의 "숫자만 표시" 경로가 받아준다
+          if (factRetried >= fr.retry) throw e;
+          factRetried++;
+          const fw = factWaitMs(fr, e.retryAfterMs || 0);
+          if (fw > 0) {
+            await countdownWait(rec, fw, status);
+            if (rec.cancelled) throw makeAbort();
+          }
+          metricBump('retries');
+          tried.length = 0;                          // 잠깐 쉬었으니 처음 곳부터 다시
+          continue;
+        }
 
         tried.push(route.provider);
         // ① 아직 안 써본 곳이 있으면 바로 그쪽으로 (기다리지 않는다)
@@ -11285,6 +11733,11 @@ async function runTurnFetch(persona, instruction, opts, rec) {
       ok: false,
       quiet: quiet,
       quota: !!(err && err.status === 429),
+      /* v3.0 — 분류를 밖으로 그대로 들고 나간다.
+       * 축소 모드 안내가 "기다리면 되는지 / 오늘은 끝인지"를 말하려면 이게 필요하다. */
+      kind: (err && err.kind) || (err && err.networkError ? 'NETWORK' : 'UNKNOWN'),
+      kindConfirmed: !!(err && err.kindConfirmed),
+      resetAt: (err && err.resetAt) || 0,
       error: raw.length > 90 ? raw.slice(0, 90) + '…' : raw
     };
   }
@@ -11355,7 +11808,16 @@ async function presentTurn(rec) {
   if (out.quiet) rec.outage = true;
   if (!out.ok && out.quiet) {
     if (bubble) bubble.discard(); else removeTypingMessage(persona.id);
-    noteQuietFailure(out.error);
+    /* v3.0 — 예전엔 여기서 곧바로 시스템 칩을 띄웠다("Groq 한도 초과 — 잠시 후 재시도").
+     * 두 가지가 잘못이었다. 개발자 말이고, 아직 끝난 게 아닌데 결론을 내버린다 —
+     * 뒤에 최후의 한 명이 성공하면 방금 띄운 안내가 거짓말이 된다.
+     *
+     * 그래서 채팅 턴에서는 판단을 턴 끝까지 미룬다(degradeDeferred).
+     * 다른 호출부(회의 모드 등)는 미룰 곳이 없으므로 예전처럼 그 자리에서 낸다. */
+    lastDegradeErr = out;
+    markDegraded(out);
+    if (degradeDeferred) rec.degraded = true;
+    else noteDegraded(out);
     return null;
   }
 
@@ -11390,6 +11852,110 @@ function noteQuietFailure(text) {
   pushSystemMessage(text);
 }
 function resetQuietFailure() { quietFailureShown = ''; }
+
+/* ═══════════ 축소 모드 (v3.0) ═══════════
+ * LLM 이 전부 막혀도 앱은 응답한다. 침묵은 사용자에게 고장과 같은 얼굴이다.
+ *
+ * 세 갈래로 나뉜다:
+ *   Fact 턴      → 숫자 카드 (v2.9.4 그대로. 이 파일 위쪽 catch 에서 처리)
+ *   일반 대화 턴 → 여기. 시스템 안내 한 번.
+ *   회복         → 자동. 성공 응답이 하나 오면 상태가 풀리고, 아무 말도 하지 않는다.
+ *
+ * ★ 페르소나 말풍선으로 내보내지 않는다. "무료 한도가 다 됐어요"를 사람이 말하면
+ *   그건 그 사람의 말이 아니다. 앱의 사정은 앱의 목소리로 나가야 한다.
+ * ═══════════════════════════════════════ */
+/* 채팅 턴이 도는 동안에는 안내를 미룬다 — 최후의 한 명이 아직 남아 있을 수 있다.
+ * lastDegradeErr 는 그 턴에서 마지막으로 본 실패의 분류를 들고 있는다. */
+let degradeDeferred = false;
+let lastDegradeErr = null;
+
+const degradeState = {
+  kind: '',          // 지금 무엇에 막혀 있나
+  confirmed: false,  // 그 판단이 확정인가 추정인가
+  resetAt: 0,        // 언제 풀리나 (0 = 모름)
+  since: 0,
+  noticeShownAt: 0,
+  noticeKey: ''      // 같은 상태에서 두 번 내지 않기 위한 열쇠
+};
+
+/* 성공 한 번이면 상태를 즉시 푼다. 회복 안내는 내지 않는다 —
+ * 답이 오는 것 자체가 이미 "돌아왔다"는 신호다. */
+function clearDegraded() {
+  if (!degradeState.kind) return;
+  degradeState.kind = '';
+  degradeState.confirmed = false;
+  degradeState.resetAt = 0;
+  degradeState.since = 0;
+  degradeState.noticeKey = '';
+  if (DEGRADE_RULES.recoveryNotice) pushSystemMessage('다시 연결됐어요.');
+}
+
+function markDegraded(err) {
+  if (!err) return;
+  const kind = err.kind || (err.networkError ? 'NETWORK' : 'UNKNOWN');
+  if (degradeState.kind !== kind) degradeState.since = Date.now();
+  degradeState.kind = kind;
+  degradeState.confirmed = !!err.kindConfirmed;
+  degradeState.resetAt = err.resetAt || 0;
+}
+
+/* 언제 다시 열리는지를 사람 말로. 모르면 빈 문자열을 주고, 그러면 안내에서 시점을 빼버린다.
+ * ★ 개발자 용어 금지(v2.9.2) — 429·RPD·API 같은 말은 한 글자도 쓰지 않는다. */
+function formatResetAt(ts) {
+  if (!ts) return '';
+  const ms = ts - Date.now();
+  if (ms <= 0) return '곧';
+  if (ms < 90 * 1000) return `약 ${Math.max(10, Math.round(ms / 10000) * 10)}초 뒤`;
+  if (ms < 60 * 60 * 1000) return `약 ${Math.round(ms / 60000)}분 뒤`;
+  const t = new Date(ts);
+  const today = new Date();
+  const sameDay = t.getFullYear() === today.getFullYear() && t.getMonth() === today.getMonth()
+                  && t.getDate() === today.getDate();
+  const h = t.getHours();
+  const ampm = h < 12 ? '오전' : '오후';
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${sameDay ? '오늘' : '내일'} ${ampm} ${h12}시쯤`;
+}
+
+/* 안내 문구를 만든다. 추정이면 단정하지 않는다 — "다 쓴 것 같아요".
+ * 이게 v2.9.1 환율 사고에서 배운 것이다: 모르는 걸 아는 척하면 그게 제일 나쁘다. */
+function degradedNoticeText() {
+  const k = degradeState.kind;
+  const soft = !degradeState.confirmed;
+  const when = formatResetAt(degradeState.resetAt);
+  let cause;
+  if (k === '429_RPD') cause = soft ? '오늘 쓸 수 있는 양을 다 쓴 것 같아요' : '오늘 쓸 수 있는 양을 다 썼어요';
+  else if (k === '429_RPM' || k === '429_TPM') cause = '잠시 요청이 몰렸어요';
+  else if (k === '503') cause = '연결된 서비스가 지금 혼잡해요';
+  else if (k === 'NETWORK') cause = '인터넷 연결이 불안정해요';
+  else if (k === 'TIMEOUT') cause = '응답이 오지 않았어요';
+  else if (k === 'AUTH') return '지금 답변이 어려워요. 설정에서 키를 확인해주세요.';
+  else cause = '지금은 답변을 받지 못했어요';
+  const tail = when ? ` · ${when} 다시 열려요` : '';
+  return `지금 답변이 어려워요. ${cause}${tail}`;
+}
+
+/* 안내를 낼지 판단하고 낸다.
+ * 도배 방지가 여기 전부 모여 있다:
+ *   ① 같은 상태(종류 + 리셋 시점)에서는 한 번만
+ *   ② 상태가 같아도 최소 간격(noticeGapMs)은 둔다
+ *   ③ 리셋 시점을 지나 상태가 바뀌면 다시 낼 수 있다 */
+function noteDegraded(err) {
+  markDegraded(err);
+  if (!DEGRADE_RULES.notice) return false;
+  /* 리셋 시점은 분 단위로 뭉갠다 — 초 단위로 들고 있으면 매번 다른 열쇠가 되어
+   * "같은 상태"를 영원히 인식하지 못하고 매 메시지마다 안내가 나간다. */
+  const bucket = degradeState.resetAt ? Math.round(degradeState.resetAt / 60000) : 0;
+  const key = degradeState.kind + '@' + bucket;
+  const now = Date.now();
+  if (degradeState.noticeKey === key
+      && now - degradeState.noticeShownAt < DEGRADE_RULES.noticeGapMs) return false;
+  degradeState.noticeKey = key;
+  degradeState.noticeShownAt = now;
+  pushSystemMessage(degradedNoticeText());
+  metricBump('degradedMsgs');
+  return true;
+}
 
 /* v2.7 까지의 호출부 호환 — 회의 모드(startMeeting)가 아직 이 이름을 쓴다.
  * 요청과 표시를 한 번에 하는 옛 동작 그대로다. */
@@ -12117,6 +12683,9 @@ async function sendFollowup() {
     }
 
     const spoke = [];
+    /* v3.0 — 이 턴이 끝날 때까지 축소 모드 안내를 보류한다 (아래 finally 에서 해제) */
+    degradeDeferred = true;
+    lastDegradeErr = null;
     let lastWasFactOnly = false;   // v2.9.4 — 앱이 값만 낸 턴이었나
     let quotaHit = false;
     let anyOutage = false;   // 한도든 혼잡이든 네트워크든 — 조용히 실패한 게 있었나
@@ -12162,6 +12731,18 @@ async function sendFollowup() {
       if (await presentTurn(lastRec)) { noteSpeaker(one.id); spoke.push(one.id); }
     }
 
+    /* ═══ v3.0 축소 모드 — 여기가 "LLM 이 죽어도 앱은 산다"의 마지막 겹이다 ═══
+     * 최후의 한 명까지 실패했다. 이제 확실히 아무도 말하지 못한다.
+     * 그러면 침묵하지 않고 앱이 직접 사정을 말한다 — 한 번만, 사람 말로. */
+    if (spoke.length === 0 && lastDegradeErr && seq === state.turnSeq) {
+      noteDegraded(lastDegradeErr);
+    }
+    /* 체감 실패율의 분자 — "정상 AI 응답을 못 받은 메시지".
+     * 숫자 카드(factOnly)도 여기 포함된다. 답이 나가긴 했지만 그건 앱이 낸 값이지
+     * 사용자가 기대한 대화가 아니다. 불편을 재는 지표라면 그걸 실패로 세야 한다. */
+    if (spoke.length === 0 || lastWasFactOnly) metricBump('unservedMsgs');
+    if (lastWasFactOnly) metricBump('degradedMsgs');   // 숫자 카드로 끝난 턴
+
     /* 연쇄 반응 — 동료 말에 다른 동료가 끼어든다.
      * 이건 미리 걸 수 없다. 반응할 대상(동료의 말)이 아직 없기 때문이다.
      * 속도보다 대화의 앞뒤가 중요한 유일한 자리라서 여기만 순차로 남긴다. */
@@ -12184,6 +12765,7 @@ async function sendFollowup() {
 
     autoSave();
   } finally {
+    degradeDeferred = false;      // v3.0 — 보류 해제 (예외로 빠져나가도 반드시 풀린다)
     // 최신 세대만 잠금을 푼다 — 옛 세대가 늦게 끝나며 상태를 되돌리면 안 된다
     if (seq === state.turnSeq) {
       state.inProgress = false;
