@@ -6,236 +6,236 @@
     <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
     <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
     <language>ko</language>
-    <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
-    <lastBuildDate>Mon, 17 Aug 2026 06:14:18 +0900</lastBuildDate>
+    <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
+    <lastBuildDate>Mon, 24 Aug 2026 06:14:53 +0900</lastBuildDate>
     <generator>Vela Weekly Collector</generator>
     <ttl>10080</ttl>
     <item>
-      <title>[Cover] But what is a GPT? · 트랜스포머 시각 입문</title>
+      <title>[Cover] 신경망의 본질 · Deep Learning Chapter 1</title>
       <link>https://juns9990.github.io/vela/vela-prototype.html</link>
-      <guid isPermaLink="false">vela-cover-2026-W34</guid>
+      <guid isPermaLink="false">vela-cover-2026-W35</guid>
       <description>이번 주 Vela가 추천하는 깊이 있는 강의. 3Blue1Brown의 시그니처.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Cover Story</category>
     </item>
     <item>
-      <title>[Agent] 지미니 API 매니지드 에이전트: 3.6 버전 업데이트로 Hooks와 트리거</title>
+      <title>[Agent] Gemini API Managed Agents: 3.6 Flash, hooks, and more</title>
       <link>https://blog.google/innovation-and-ai/technology/developers-tools/expanding-managed-agents-gemini-api-3-6-flash-hooks/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/developers-tools/expanding-managed-agents-gemini-api-3-6-flash-hooks/</guid>
-      <description>지미니 API의 매니지드 에이전트는 새로운 기능을 업데이트했습니다. 3.6 버전에서 Flash, Hooks, 트리거 등 다양한 기능이 추가되었습니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <description>Managed Agents Gemini 3.6 Flash, Hooks and Triggers</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[LLM] 제미니 3.6 플래시, 3.5 플래시 라이트, 3.5 플래시 사이버 공개</title>
-      <link>https://deepmind.google/blog/introducing-gemini-3-6-flash-3-5-flash-lite-and-3-5-flash-cyber/</link>
-      <guid isPermaLink="true">https://deepmind.google/blog/introducing-gemini-3-6-flash-3-5-flash-lite-and-3-5-flash-cyber/</guid>
-      <description>새로운 제미니 모델을 소개합니다. 제미니 3.6 플래시, 3.5 플래시 라이트, 3.5 플래시 사이버가 포함됩니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <title>[LLM] Accelerating the frontiers of scientific discovery: Google’s $40M commitment to the Genesis Mission</title>
+      <link>https://deepmind.google/blog/accelerating-the-frontiers-of-scientific-discovery-googles-40m-commitment-to-the-genesis-mission/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/accelerating-the-frontiers-of-scientific-discovery-googles-40m-commitment-to-the-genesis-mission/</guid>
+      <description>Google commits $40M in AI tokens and credits for the Genesis Mission</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
-    </item>
-    <item>
-      <title>[Vision] 5가지 방법 AI 모드가 검색을 통해 현실 세계를 즐기는 데 도움을 줌</title>
-      <link>https://blog.google/products-and-platforms/products/search/ai-mode-real-world-tips/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/ai-mode-real-world-tips/</guid>
-      <description>인공지능 모드가 검색 결과를 개선하는 5가지 방법을 알아보자. 이는 사용자가 더 많은 시간을 현실 세계에 투자할 수 있도록 돕는다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
-      <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
       <title>[Robotics] Gemini Robotics ER 2: powering robotics with video understanding, task orchestration, and multi-robot collaboration</title>
       <link>https://deepmind.google/blog/gemini-robotics-er-2-powering-robotics-with-video-understanding-task-orchestration-and-multi-robot-collaboration/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/gemini-robotics-er-2-powering-robotics-with-video-understanding-task-orchestration-and-multi-robot-collaboration/</guid>
       <description>Gemini Robotics ER 2 helps robots reason, collaborate, and solve real-world tasks. It represents a step change in video understanding, tool orchestration, and multi-robot collaboration for robotic applications.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Robotics</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[Tool] 353만 명이 참여한 코드 교육 프로그램의 비밀</title>
+      <title>[Tool] Inside our 353,000-person vibe coding course</title>
       <link>https://blog.google/innovation-and-ai/technology/developers-tools/ai-agents-intensive-recap-2026/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/developers-tools/ai-agents-intensive-recap-2026/</guid>
-      <description>353만 명이 참여한 온라인 코드 교육 프로그램의 성공를 밝히고 있습니다. 이 프로그램은 인공지능 기술을 통해 학생들에게 개인화된 교육 경험을 제공합니다. 프로그램의 목표는 학생들이 자신만의 프로젝트를 개발하고, 협업을 통해 새로운 기술을 배울 수 있도록 하는 것입니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <description>Illustrations of a laptop, an AI spark, messages, code, and a 3-D cube</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Tool</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Infra] 리소스 절약 AI: 이론적 이익을 고려한 추측</title>
-      <link>https://machinelearning.apple.com/research/arbitrage-efficient-reasoning</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/arbitrage-efficient-reasoning</guid>
-      <description>최신 대형 언어 모델은 장기적인 사고 체인을 통해 훌륭한 추론 능력을 달성했지만, 추론 단계에서 큰 계산 비용을 지불해야 하므로, 성능-비용 비율을 개선하기 위한 기술을 개발하게 되었다. 이 연구에서는 이 문제를 해결하기 위해 &apos;리소스 절약&apos;이라는 개념을 도입하고, 이론적 이익을 고려한 추측 기법을 제안한다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
-      <category>Infra</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
-    </item>
-    <item>
-      <title>[Safety] 다중모드 LLM에서 정렬의 이해: 광범위한 연구</title>
-      <link>https://machinelearning.apple.com/research/alignment-multimodal-llms</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/alignment-multimodal-llms</guid>
-      <description>대형 언어 모델(LLM)의 성능을 향상시키기 위한 선호도 정렬이 중요하게 되었다. 그러나 다중모드 대형 언어 모델(MLLM)에서 정렬의 영향은 상대적으로 덜 연구되었다. 언어 모델과 마찬가지로 MLLM도 언어와 비언어 정보를 통합하는 데 있어 정렬의 역할을 하는 것으로 나타났다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
-      <category>Safety</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
-    </item>
-    <item>
-      <title>[LLM] 구글, 400억 원 규모 지분 투자로 과학 발견의 새로운 지평 열다</title>
-      <link>https://deepmind.google/blog/accelerating-the-frontiers-of-scientific-discovery-googles-40m-commitment-to-the-genesis-mission/</link>
-      <guid isPermaLink="true">https://deepmind.google/blog/accelerating-the-frontiers-of-scientific-discovery-googles-40m-commitment-to-the-genesis-mission/</guid>
-      <description>구글은 400억 원 규모의 AI 토큰과 크레딧을 투자하여 Genesis Mission을 지원하고 있다. 이 투자는 과학적 발견을 가속화하고 새로운 지식의 경계를 넓히기 위한 목표를 가진다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
-    </item>
-    <item>
-      <title>[Vision] 디퓨전 트랜스폼어의 이상 토큰을 제어하는 방법</title>
-      <link>https://machinelearning.apple.com/research/taming-outlier-tokens</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/taming-outlier-tokens</guid>
-      <description>이 연구에서는 이미지 생성을 위한 디퓨전 트랜스폼어(DiTs)에서 이상 토큰(outlier tokens)을 연구합니다. 이전 연구에서는 비전 트랜스폼어(ViTs)가 고유의 높은 노름 토큰을 생성하며, 이 토큰은 비례적 주의를 받으면서 한계된 정보를 전달한다고 밝혔습니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <title>[Vision] MindTopo reveals VLMs’ spatial reasoning abilities</title>
+      <link>https://www.microsoft.com/en-us/research/blog/mindtopo-reveals-vlms-spatial-reasoning-abilities/</link>
+      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/mindtopo-reveals-vlms-spatial-reasoning-abilities/</guid>
+      <description>A path, a fence, a knot. MindTopo sets a new benchmark for testing how AI understands topological relationships and highlights new opportunities to strengthen spatial reasoning and planning. The post MindTopo reveals VLMs&amp;#8217; spatial rea</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
     </item>
     <item>
-      <title>[Tool] AMIE, 의료 AI 시스템, 실시간 의료 비디오 상담 기능을 보유한 최초의 연구</title>
-      <link>https://blog.google/innovation-and-ai/models-and-research/google-research/amie-video-consultations/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/models-and-research/google-research/amie-video-consultations/</guid>
-      <description>AMIE는 의료 비디오 상담 기능을 실시간으로 제공하는 최초의 연구를 통해 의료 AI 시스템으로서의 능력을 입증했습니다. AMIE는 의료 전문가와 환자 간의 원활한 의사소통을 지원하는 데 도움을 줄 수 있습니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
-      <category>Tool</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Audio] UniSwap: 대화하는 비디오에서 음성-시각 식별 정보를 실시간으로 교체하는 기술</title>
-      <link>https://arxiv.org/abs/2608.11752</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2608.11752</guid>
-      <description>UniSwap은 대화하는 비디오에서 음성-시각 식별 정보를 실시간으로 교체하는 기술입니다. 이 기술은 HuggingFace Daily Papers에 큐레이션된 주목받는 논문입니다. UniSwap은 대화하는 비디오에서 음성-시각 식별 정보를 실시간으로 교체하는 기술로, 이 기술은 음성과 시각 정보를 혼합하여 대화하는 비디오를 생성하는 데 사용됩니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <title>[Audio] Paper page - Towards Quantifying Benchmark Optimization in ASR Models</title>
+      <link>https://arxiv.org/abs/2608.19936</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2608.19936</guid>
+      <description>HuggingFace Daily Papers에 큐레이션된 주목받는 논문.</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Audio</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">HF Daily</source>
     </item>
     <item>
-      <title>[LLM] 5가지로 완벽한 저녁 파티를 열 수 있는 구글 검색 방법</title>
-      <link>https://blog.google/products-and-platforms/products/search/dinner-party-hosting-tips/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/dinner-party-hosting-tips/</guid>
-      <description>구글 검색을 활용하여 완벽한 저녁 파티를 준비하는 방법을 소개합니다. 다양한 요리와 디저트 아이디어, 장식 아이디어를 제공합니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Vision] 분류 흐름지도 확장</title>
-      <link>https://machinelearning.apple.com/research/scaling-categorical-flow-maps</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/scaling-categorical-flow-maps</guid>
-      <description>자동화된 언어 모델링을 위한 강력한 대안으로서 연속 확산 및 흐름 일치 모델이 주목받고 있습니다. 이 모델은 연속 모드에서만 가능했던 여러 이점을 언어 모델링에 도입할 수 있습니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
-      <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
-    </item>
-    <item>
-      <title>[Tool] 인간 추적기: 인간과 동의하는 움직임 추적 벤치마크로</title>
-      <link>https://arxiv.org/abs/2608.13555v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2608.13555v1</guid>
-      <description>인간 모션 추적은 원격 조종과 전체 신체 모방에 필수적이지만, 평가가 비디오에서 사람들의 관찰과 일치하지 않는 문제가 있다. 운동학적 오류는 프레임당 자세 차이의 평균을 계산하지만, 가장 중요한 물리적 오류인 불안정한 지지체를 무시한다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
-      <category>Tool</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Robotics] 로봇 제어에 딥러닝, 드림엑스-파이 1.0</title>
-      <link>https://arxiv.org/abs/2608.13489v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2608.13489v1</guid>
-      <description>로봇 제어를 위한 비디오 월드 모델 드림엑스-파이 1.0을 소개합니다. 이 모델은 관찰 프레임, 언어 명령, 그리고 손 끝 및 손가락 상태를 포함한 동작 시퀀스를 입력받아, 결과적인 미래 관찰을 예측합니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
-      <category>Robotics</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Safety] 생각 속으로 창조가 가속화된 세상에서 장기 신뢰를 구축하는 방법</title>
-      <link>https://blog.fal.ai/building-long-term-trust-in-a-world-where-creation-moves-at-the-speed-of-thought/</link>
-      <guid isPermaLink="true">https://blog.fal.ai/building-long-term-trust-in-a-world-where-creation-moves-at-the-speed-of-thought/</guid>
-      <description>생각 속으로 창조가 가속화된 세상을 위해 신뢰와 안심을 구축하기 위해, 우리는 신뢰와 안전을 책임지는 팀의 리더가 되었습니다. 우리의 임무는 항상 생명을 보호하는 것입니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
-      <category>Safety</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
-    </item>
-    <item>
-      <title>[Agent] 플린트: 인공지능 시대의 시각화 언어</title>
-      <link>https://www.microsoft.com/en-us/research/blog/flint-a-visualization-language-for-the-ai-era/</link>
-      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/flint-a-visualization-language-for-the-ai-era/</guid>
-      <description>단순한 차트 사양을 쉽게 작성할 수 있지만, 종종 흥미로운 결과를 낳지 못합니다. 플린트는 인공지능 에이전트가 compact한, 인간이 편집할 수 있는 사양에서 표현력 있는 차트를 생성할 수 있도록 하는 오픈 소스 시각화 언어입니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <title>[Agent] Orchard: An open framework for scalable agentic AI</title>
+      <link>https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/</link>
+      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/</guid>
+      <description>Orchard is an open-source framework for the research community to train and evaluate AI agents across task types. It reduces complexity while supporting strong performance from smaller models by enabling researchers to reuse the same infras</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
     </item>
     <item>
-      <title>[LLM] 2026년 7월 AI 뉴스 리뷰</title>
+      <title>[LLM] The latest AI news we announced in July 2026</title>
       <link>https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-july-2026/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-july-2026/</guid>
-      <description>2026년 7월 AI 뉴스와 업데이트를 정리합니다. 최신 인공지능 기술과 연구 결과를 소개합니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <description>July AI recap header</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Vision] 다음 토큰 예측을 넘어: 확산 모델과 자가회귀 언어 모델의 성능 특성</title>
-      <link>https://machinelearning.apple.com/research/diffusion-autoregressive-performance</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/diffusion-autoregressive-performance</guid>
-      <description>대규모 언어 모델(LLM)은 문서 처리 및 코드 생성과 같은 자연어 처리(NLP) 업무의 광범위한 범위에서 최고의 성능을 달성했습니다. 자가회귀 언어 모델(ARM)은 다음 토큰을 예측하는 방식으로 언어를 생성합니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <title>[Robotics] Growth Without Us: Machine Consumers, Corporate Circularity, and the Decoupling of GDP from Humanity after AGI</title>
+      <link>https://arxiv.org/abs/2608.20231v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2608.20231v1</guid>
+      <description>The standard objection to full automation is demand-side: if humans earn nothing, who buys the output? This confuses an accounting role with a biological species. We model a post-AGI economy in which corporations own populations of AI and robotic agents that are both producers an</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
+      <category>Robotics</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Tool] AMIE, our research medical AI system, demonstrates real-time clinical video consultation capabilities in a first-of-its-kind study.</title>
+      <link>https://blog.google/innovation-and-ai/models-and-research/google-research/amie-video-consultations/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/models-and-research/google-research/amie-video-consultations/</guid>
+      <description>AMIE promotional video</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
+      <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Vision] 5 new ways to level up your learning with Search</title>
+      <link>https://blog.google/products-and-platforms/products/search/back-to-school-study-tools/</link>
+      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/back-to-school-study-tools/</guid>
+      <description>an illustrated image with icons and phrasing like &quot;Add Notebook&quot; and &quot;Ask Google&quot;</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Infra] Pandora&apos;s AI Model Routing Box: Efficient Allocation with Costly Value Estimation</title>
+      <link>https://arxiv.org/abs/2608.20316v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2608.20316v1</guid>
+      <description>Heterogeneous AI systems composed of multiple models, architectures, harnesses, or inference-time settings can improve quality and efficiency by routing queries to the specialist who can answer most effectively at the lowest cost. Routing requires estimating each specialist&apos;s exp</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
+      <category>Infra</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Agent] NVIDIA and Local AI Community Fuel Open Source Models and Intelligent Agents</title>
+      <link>https://blogs.nvidia.com/blog/local-ai-open-source-models-agents-nemotron/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/local-ai-open-source-models-agents-nemotron/</guid>
+      <description>The open source ecosystem is making it easier for AI enthusiasts and developers to build, customize and run increasingly capable agents locally. Throughout August, NVIDIA is celebrating the partners and open source communities moving local </description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
+    </item>
+    <item>
+      <title>[LLM] Evolve your marketing with new AI tools</title>
+      <link>https://blog.google/products/ads-commerce/google-ads-analytics-ai-updates/</link>
+      <guid isPermaLink="true">https://blog.google/products/ads-commerce/google-ads-analytics-ai-updates/</guid>
+      <description>Advisor UI in Google Ads and Google Analytics</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
       <title>[Tool] Bring your spreadsheet data to life with Sheets canvas</title>
       <link>https://blog.google/products-and-platforms/products/workspace/sheets-canvas-for-google-sheets-spreadsheets/</link>
       <guid isPermaLink="true">https://blog.google/products-and-platforms/products/workspace/sheets-canvas-for-google-sheets-spreadsheets/</guid>
       <description>The video shows Sheets canvas in action.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Tool</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Featured] 다중모드 LLM에서 정렬의 이해: 광범위한 연구</title>
-      <link>https://machinelearning.apple.com/research/alignment-multimodal-llms</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/alignment-multimodal-llms</guid>
-      <description>대형 언어 모델(LLM)의 성능을 향상시키기 위한 선호도 정렬이 중요하게 되었다. 그러나 다중모드 대형 언어 모델(MLLM)에서 정렬의 영향은 상대적으로 덜 연구되었다. 언어 모델과 마찬가지로 MLLM도 언어와 비언어 정보를 통합하는 데 있어 정렬의 </description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <title>[Vision] Swift-Image: Exploring the Performance Frontier of Compact Unified Image Generation Models</title>
+      <link>https://arxiv.org/abs/2608.20334v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2608.20334v1</guid>
+      <description>We present Swift-Image, a compact unified model for text-to-image generation, single-image editing, and multi-image editing. Our goal is to explore how far a relatively small visual generator can be pushed through systematic training engineering under a constrained computational </description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
+      <category>Vision</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Audio] Progressive Refinement: An Iterative Pseudo-Labeling Approach for Mandarin-English Code-Switching ASR</title>
+      <link>https://machinelearning.apple.com/research/progressive-refinement-pseudo-labeling</link>
+      <guid isPermaLink="true">https://machinelearning.apple.com/research/progressive-refinement-pseudo-labeling</guid>
+      <description>Code-switching (CS), alternating languages within the same utterance, poses significant challenges for automatic speech recognition (ASR) due to limited CS training data. This paper applies an iterative pseudo-labeling training approach to </description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
+      <category>Audio</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
+    </item>
+    <item>
+      <title>[Infra] Inject, Align, Recover: Staged Post-Training for Retrieval-Free Document Knowledge Internalization</title>
+      <link>https://arxiv.org/abs/2608.20281v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2608.20281v1</guid>
+      <description>Large language models often fail to answer questions about a bounded document collection when the source documents are not retrieved at inference time. We study this setting as document knowledge internalization: converting a fixed corpus into usable parametric knowledge for retr</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
+      <category>Infra</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Agent] The P-Completeness of Inverted Index Traversal: On the Complexity of Evaluating Boolean Query DAGs</title>
+      <link>https://machinelearning.apple.com/research/the-p-completeness-of-inverted-index-traversal</link>
+      <guid isPermaLink="true">https://machinelearning.apple.com/research/the-p-completeness-of-inverted-index-traversal</guid>
+      <description>Modern AI agents increasingly rely on search infrastructure to execute complex, neuro-symbolic reasoning workflows. These workflows often compile into deeply nested, non-monotonic Boolean queries over text fields. However, standard query ev</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
+    </item>
+    <item>
+      <title>[LLM] Putting sign language AI into users’ hands</title>
+      <link>https://deepmind.google/blog/putting-sign-language-ai-into-users-hands/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/putting-sign-language-ai-into-users-hands/</guid>
+      <description>Introducing sign-language-to-text (SL2T), our breakthrough model powering new sign language features for Deaf and hard of hearing users.</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
+    </item>
+    <item>
+      <title>[Featured] Orchard: An open framework for scalable agentic AI</title>
+      <link>https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/</link>
+      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/</guid>
+      <description>Orchard is an open-source framework for the research community to train and evaluate AI agents across task types. It reduces complexity whil</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] 구글, 400억 원 규모 지분 투자로 과학 발견의 새로운 지평 열다</title>
-      <link>https://deepmind.google/blog/accelerating-the-frontiers-of-scientific-discovery-googles-40m-commitment-to-the-genesis-mission/</link>
-      <guid isPermaLink="true">https://deepmind.google/blog/accelerating-the-frontiers-of-scientific-discovery-googles-40m-commitment-to-the-genesis-mission/</guid>
-      <description>구글은 400억 원 규모의 AI 토큰과 크레딧을 투자하여 Genesis Mission을 지원하고 있다. 이 투자는 과학적 발견을 가속화하고 새로운 지식의 경계를 넓히기 위한 목표를 가진다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <title>[Featured] The latest AI news we announced in July 2026</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-july-2026/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-july-2026/</guid>
+      <description>July AI recap header</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] 디퓨전 트랜스폼어의 이상 토큰을 제어하는 방법</title>
-      <link>https://machinelearning.apple.com/research/taming-outlier-tokens</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/taming-outlier-tokens</guid>
-      <description>이 연구에서는 이미지 생성을 위한 디퓨전 트랜스폼어(DiTs)에서 이상 토큰(outlier tokens)을 연구합니다. 이전 연구에서는 비전 트랜스폼어(ViTs)가 고유의 높은 노름 토큰을 생성하며, 이 토큰은 비례적 주의를 받으면서 한계된 정보를 전</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <title>[Featured] Growth Without Us: Machine Consumers, Corporate Circularity, and the Decoupling </title>
+      <link>https://arxiv.org/abs/2608.20231v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2608.20231v1</guid>
+      <description>The standard objection to full automation is demand-side: if humans earn nothing, who buys the output? This confuses an accounting role with</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] AMIE, 의료 AI 시스템, 실시간 의료 비디오 상담 기능을 보유한 최초의 연구</title>
+      <title>[Featured] AMIE, our research medical AI system, demonstrates real-time clinical video cons</title>
       <link>https://blog.google/innovation-and-ai/models-and-research/google-research/amie-video-consultations/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/models-and-research/google-research/amie-video-consultations/</guid>
-      <description>AMIE는 의료 비디오 상담 기능을 실시간으로 제공하는 최초의 연구를 통해 의료 AI 시스템으로서의 능력을 입증했습니다. AMIE는 의료 전문가와 환자 간의 원활한 의사소통을 지원하는 데 도움을 줄 수 있습니다.</description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <description>AMIE promotional video</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] UniSwap: 대화하는 비디오에서 음성-시각 식별 정보를 실시간으로 교체하는 기술</title>
-      <link>https://arxiv.org/abs/2608.11752</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2608.11752</guid>
-      <description>UniSwap은 대화하는 비디오에서 음성-시각 식별 정보를 실시간으로 교체하는 기술입니다. 이 기술은 HuggingFace Daily Papers에 큐레이션된 주목받는 논문입니다. UniSwap은 대화하는 비디오에서 음성-시각 식별 정보를 실시간으로 </description>
-      <pubDate>Mon, 17 Aug 2026 06:14:18 +0900</pubDate>
+      <title>[Featured] 5 new ways to level up your learning with Search</title>
+      <link>https://blog.google/products-and-platforms/products/search/back-to-school-study-tools/</link>
+      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/back-to-school-study-tools/</guid>
+      <description>an illustrated image with icons and phrasing like &quot;Add Notebook&quot; and &quot;Ask Google&quot;</description>
+      <pubDate>Mon, 24 Aug 2026 06:14:53 +0900</pubDate>
       <category>Featured</category>
     </item>
   </channel>
