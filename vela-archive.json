@@ -2,6 +2,14 @@
   "version": "1.0",
   "issues": [
     {
+      "file": "vela-issue-2026-W37.json",
+      "year": 2026,
+      "week": 37,
+      "monday": "2026-09-07",
+      "headline": "How DeepSeek Rewrote the AI Playbook",
+      "signal_count": 20
+    },
+    {
       "file": "vela-issue-2026-W36.json",
       "year": 2026,
       "week": 36,
@@ -162,5 +170,5 @@
       "signal_count": 8
     }
   ],
-  "updated_at": "2026-08-31T08:04:49.447519+09:00"
+  "updated_at": "2026-09-07T07:36:18.680729+09:00"
 }
