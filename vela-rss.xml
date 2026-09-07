@@ -6,8 +6,8 @@
     <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
     <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
     <language>ko</language>
-    <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
-    <lastBuildDate>Mon, 07 Sep 2026 07:36:18 +0900</lastBuildDate>
+    <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
+    <lastBuildDate>Mon, 07 Sep 2026 22:24:06 +0900</lastBuildDate>
     <generator>Vela Weekly Collector</generator>
     <ttl>10080</ttl>
     <item>
@@ -15,7 +15,7 @@
       <link>https://juns9990.github.io/vela/vela-prototype.html</link>
       <guid isPermaLink="false">vela-cover-2026-W37</guid>
       <description>이번 주 Vela가 추천하는 깊이 있는 강의. Computerphile의 시그니처.</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Cover Story</category>
     </item>
     <item>
@@ -23,7 +23,7 @@
       <link>https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/</link>
       <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/</guid>
       <description>Orchard is an open-source framework for the research community to train and evaluate AI agents across task types. It reduces complexity while supporting strong performance from smaller models by enabling researchers to reuse the same infras</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
     </item>
@@ -32,7 +32,7 @@
       <link>https://www.microsoft.com/en-us/research/blog/mindtopo-reveals-vlms-spatial-reasoning-abilities/</link>
       <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/mindtopo-reveals-vlms-spatial-reasoning-abilities/</guid>
       <description>A path, a fence, a knot. MindTopo sets a new benchmark for testing how AI understands topological relationships and highlights new opportunities to strengthen spatial reasoning and planning. The post MindTopo reveals VLMs&amp;#8217; spatial rea</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
     </item>
@@ -41,7 +41,7 @@
       <link>https://blog.google/products-and-platforms/products/workspace/sheets-canvas-for-google-sheets-spreadsheets/</link>
       <guid isPermaLink="true">https://blog.google/products-and-platforms/products/workspace/sheets-canvas-for-google-sheets-spreadsheets/</guid>
       <description>The video shows Sheets canvas in action.</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Tool</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
@@ -50,7 +50,7 @@
       <link>https://blog.google/products-and-platforms/products/gemini/google-gemini-pixel-football-club-partnerships/</link>
       <guid isPermaLink="true">https://blog.google/products-and-platforms/products/gemini/google-gemini-pixel-football-club-partnerships/</guid>
       <description>Low-angle view of a soccer player kicking a ball mid-air against a bright blue sky, with grass flying from their cleats.</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
@@ -59,34 +59,34 @@
       <link>https://deepmind.google/blog/intelligent-transcription-with-gemini-3-5-transcribe/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/intelligent-transcription-with-gemini-3-5-transcribe/</guid>
       <description>Now you can get more intelligent speech-to-text transcription with Gemini 3.5 Transcribe.</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Audio</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
-    </item>
-    <item>
-      <title>[Robotics] Formation Matrix and Energy-based Control of Multi-Agent Systems</title>
-      <link>https://arxiv.org/abs/2609.04158v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.04158v1</guid>
-      <description>This paper presents an energy-based controller for a multiagent robotic system designed to achieve and maintain a specific formation while moving on a plane and avoiding collisions between agents. The controller emulates a network of elementary spring-damper modules connecting pa</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
-      <category>Robotics</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
       <title>[Infra] IDEA Prune: An Integrated Enlarge-and-Prune Pipeline in Generative Language Model Pretraining</title>
       <link>https://machinelearning.apple.com/research/idea-prune-pipeline</link>
       <guid isPermaLink="true">https://machinelearning.apple.com/research/idea-prune-pipeline</guid>
       <description>Recent advancements in large language models have intensified the need for efficient and deployable models within limited inference budgets. Structured pruning pipelines have shown promise in token efficiency compared to training target-siz</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Infra</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
+    </item>
+    <item>
+      <title>[Robotics] Development of a Humanoid Robot Prototype for Multimodal Human-Robot Interaction</title>
+      <link>https://arxiv.org/abs/2609.05361v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2609.05361v1</guid>
+      <description>Human-robot interaction (HRI) enables intuitive and intelligent collaboration between humans and robots in real-world environments. This paper introduces a humanoid robot prototype designed as a flexible testbed for developing and integrating artificial intelligence (AI) modules </description>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
+      <category>Robotics</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
       <title>[Agent] PROOF-Gen: From Optimized Data to Better Distillation</title>
       <link>https://machinelearning.apple.com/research/proof-gen-optimized-distillation</link>
       <guid isPermaLink="true">https://machinelearning.apple.com/research/proof-gen-optimized-distillation</guid>
       <description>Supervised fine-tuning on teacher-generated trajectories is the standard first stage for distilling tool-calling capabilities into deployable models. Post-training pipelines that drive shipped tool-calling agents re-run this stage on a dail</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
     </item>
@@ -95,34 +95,34 @@
       <link>https://blog.google/products-and-platforms/products/search/back-to-school-study-tools/</link>
       <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/back-to-school-study-tools/</guid>
       <description>an illustrated image with icons and phrasing like &quot;Add Notebook&quot; and &quot;Ask Google&quot;</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Tool] Legibility is Not Interpretability: Comparing Judged and Actual Importance in Chain-Of-Thought Reasoning</title>
-      <link>https://arxiv.org/abs/2609.04194v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.04194v1</guid>
-      <description>Reasoning traces from chain-of-thought models appear to offer a legible window into how a model arrives at its answer. A growing body of work treats them as such, using LLM judges to diagnose errors, evaluate faithfulness, and provide step-level supervision via process reward mod</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
-      <category>Tool</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
       <title>[LLM] From Atari to EVE Online: Building on 15 Years of AI Research in Games</title>
       <link>https://deepmind.google/blog/from-atari-to-eve-online-building-on-15-years-of-ai-research-in-games/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/from-atari-to-eve-online-building-on-15-years-of-ai-research-in-games/</guid>
       <description>Google DeepMind partners with game studios to prototype breakthrough AI gameplay.</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
+    </item>
+    <item>
+      <title>[Tool] Broadening access to Skala creates a faster path to predictive DFT</title>
+      <link>https://www.microsoft.com/en-us/research/blog/broadening-access-to-skala-creates-a-faster-path-to-predictive-dft/</link>
+      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/broadening-access-to-skala-creates-a-faster-path-to-predictive-dft/</guid>
+      <description>Skala 1.1, the updated deep-learning exchange-correlation functional from Microsoft Research, provides greater accuracy, expanded accessibility across the computational chemistry ecosystem, and a living benchmark to track computational perf</description>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
+      <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
     </item>
     <item>
       <title>[Agent] NVIDIA NVLink Fusion Expands With NVHBM Custom High-Bandwidth Memory</title>
       <link>https://blogs.nvidia.com/blog/nvlink-fusion-nvhbm-custom-high-bandwidth-memory/</link>
       <guid isPermaLink="true">https://blogs.nvidia.com/blog/nvlink-fusion-nvhbm-custom-high-bandwidth-memory/</guid>
       <description>The next wave of AI is placing new demands on infrastructure. As AI agents and trillion-parameter workloads become mainstream, the performance of AI infrastructure depends not only on compute, but on how compute, memory, storage, networking</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
     </item>
@@ -131,35 +131,26 @@
       <link>https://machinelearning.apple.com/research/starflow2-multimodal-generation</link>
       <guid isPermaLink="true">https://machinelearning.apple.com/research/starflow2-multimodal-generation</guid>
       <description>Unified multimodal models that understand, reason over, and generate interleaved text–image sequences remain structurally fragmented: existing approaches either sacrifice visual fidelity through discrete tokenization, impose structural asym</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
-    </item>
-    <item>
-      <title>[Tool] Puffin-World: Scaling a Unified Multimodal Model with Native 3D World States</title>
-      <link>https://arxiv.org/abs/2609.04196v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.04196v1</guid>
-      <description>We propose Puffin-World, a unified multimodal architecture that integrates physical understanding, spatial simulation, and 3D world generation and reconstruction without relying on external offline modules. To reliably construct and interact with 3D worlds, our framework jointly </description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
-      <category>Tool</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
       <title>[LLM] 5 ways to upgrade your home decor with Google Search</title>
       <link>https://blog.google/products-and-platforms/products/search/home-decor-tips/</link>
       <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/home-decor-tips/</guid>
       <description>Illustration of ombre rainbow furniture items like a sofa, lamp, and chair against a purple background</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Robotics] Paper page - RoboTok: An Internet-Scale Data Engine for Human Demonstration Retrieval and Dexterous Manipulation Learning</title>
-      <link>https://arxiv.org/abs/2609.03199</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.03199</guid>
+      <title>[Audio] Paper page - The Attention Triangle in Audio-Video Models</title>
+      <link>https://arxiv.org/abs/2609.03586</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2609.03586</guid>
       <description>HuggingFace Daily Papers에 큐레이션된 주목받는 논문.</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
-      <category>Robotics</category>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
+      <category>Audio</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">HF Daily</source>
     </item>
     <item>
@@ -167,7 +158,7 @@
       <link>https://blog.fal.ai/building-long-term-trust-in-a-world-where-creation-moves-at-the-speed-of-thought/</link>
       <guid isPermaLink="true">https://blog.fal.ai/building-long-term-trust-in-a-world-where-creation-moves-at-the-speed-of-thought/</guid>
       <description>By Sean Bonawitz, Head of Trust Safety at fal My first job was in the US Navy as an EOD platoon commander, where my job was to protect the people around us and make sure they could keep moving forward. The mission was always to protect life</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Safety</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
     </item>
@@ -176,16 +167,25 @@
       <link>https://blog.fal.ai/introducing-h3-max-by-fal/</link>
       <guid isPermaLink="true">https://blog.fal.ai/introducing-h3-max-by-fal/</guid>
       <description>Announcing H3 Max, a post-trained version of MiniMax H3 developed by fal Research and optimized for maximum speed by fal s inference team. In our human preference evaluations, H3 Max ranks #1 across overall quality, prompt understanding, an</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Infra</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
+    </item>
+    <item>
+      <title>[Tool] Distill Globally, Adapt Locally: Reasoning Distillation and Product-Type Test-Time Training for Scalable Trade-Up Recommendation</title>
+      <link>https://arxiv.org/abs/2609.05363v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2609.05363v1</guid>
+      <description>Trade-up recommendation identifies higher-quality alternatives that preserve a customer&apos;s purchase intent while offering upgraded benefits. Large language models (LLMs) can reason about such distinctions, but applying them directly to hundreds of millions of product pairs is oper</description>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
+      <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
       <title>[Agent] NVIDIA and CrowdStrike Strengthen Agentic Cybersecurity Frontier</title>
       <link>https://blogs.nvidia.com/blog/nvidia-crowdstrike-fal-con-2026/</link>
       <guid isPermaLink="true">https://blogs.nvidia.com/blog/nvidia-crowdstrike-fal-con-2026/</guid>
       <description>“We’re at an inflection point in cybersecurity,” Jensen Huang told a sold-out crowd at CrowdStrike’s Fal.Con 2026 in Las Vegas Tuesday. Attacks are now automated. Defense has to be, too. The NVIDIA founder and CEO joined CrowdStrike CEO and</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
     </item>
@@ -194,16 +194,16 @@
       <link>https://blog.google/products-and-platforms/products/workspace/google-pics/</link>
       <guid isPermaLink="true">https://blog.google/products-and-platforms/products/workspace/google-pics/</guid>
       <description>Collage of images created by Google Pics, with the text &quot;Say hello to Google Pics&quot; on top</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Featured] IDEA Prune: An Integrated Enlarge-and-Prune Pipeline in Generative Language Mode</title>
-      <link>https://machinelearning.apple.com/research/idea-prune-pipeline</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/idea-prune-pipeline</guid>
-      <description>Recent advancements in large language models have intensified the need for efficient and deployable models within limited inference budgets.</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <title>[Featured] Development of a Humanoid Robot Prototype for Multimodal Human-Robot Interaction</title>
+      <link>https://arxiv.org/abs/2609.05361v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2609.05361v1</guid>
+      <description>Human-robot interaction (HRI) enables intuitive and intelligent collaboration between humans and robots in real-world environments. This pap</description>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
@@ -211,7 +211,7 @@
       <link>https://machinelearning.apple.com/research/proof-gen-optimized-distillation</link>
       <guid isPermaLink="true">https://machinelearning.apple.com/research/proof-gen-optimized-distillation</guid>
       <description>Supervised fine-tuning on teacher-generated trajectories is the standard first stage for distilling tool-calling capabilities into deployabl</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
@@ -219,15 +219,7 @@
       <link>https://blog.google/products-and-platforms/products/search/back-to-school-study-tools/</link>
       <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/back-to-school-study-tools/</guid>
       <description>an illustrated image with icons and phrasing like &quot;Add Notebook&quot; and &quot;Ask Google&quot;</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
-      <category>Featured</category>
-    </item>
-    <item>
-      <title>[Featured] Legibility is Not Interpretability: Comparing Judged and Actual Importance in Ch</title>
-      <link>https://arxiv.org/abs/2609.04194v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.04194v1</guid>
-      <description>Reasoning traces from chain-of-thought models appear to offer a legible window into how a model arrives at its answer. A growing body of wor</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
@@ -235,7 +227,15 @@
       <link>https://deepmind.google/blog/from-atari-to-eve-online-building-on-15-years-of-ai-research-in-games/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/from-atari-to-eve-online-building-on-15-years-of-ai-research-in-games/</guid>
       <description>Google DeepMind partners with game studios to prototype breakthrough AI gameplay.</description>
-      <pubDate>Mon, 07 Sep 2026 07:36:18 +0900</pubDate>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] Broadening access to Skala creates a faster path to predictive DFT</title>
+      <link>https://www.microsoft.com/en-us/research/blog/broadening-access-to-skala-creates-a-faster-path-to-predictive-dft/</link>
+      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/broadening-access-to-skala-creates-a-faster-path-to-predictive-dft/</guid>
+      <description>Skala 1.1, the updated deep-learning exchange-correlation functional from Microsoft Research, provides greater accuracy, expanded accessibil</description>
+      <pubDate>Mon, 07 Sep 2026 22:24:06 +0900</pubDate>
       <category>Featured</category>
     </item>
   </channel>
