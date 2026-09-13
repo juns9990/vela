@@ -2,6 +2,14 @@
   "version": "1.0",
   "issues": [
     {
+      "file": "vela-issue-2026-W38.json",
+      "year": 2026,
+      "week": 38,
+      "monday": "2026-09-14",
+      "headline": "Building Agents · 에이전트 설계 원리",
+      "signal_count": 20
+    },
+    {
       "file": "vela-issue-2026-W37.json",
       "year": 2026,
       "week": 37,
@@ -170,5 +178,5 @@
       "signal_count": 8
     }
   ],
-  "updated_at": "2026-09-07T22:24:06.182834+09:00"
+  "updated_at": "2026-09-14T07:47:28.024820+09:00"
 }
