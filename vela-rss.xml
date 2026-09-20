@@ -6,236 +6,236 @@
     <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
     <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
     <language>ko</language>
-    <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-    <lastBuildDate>Mon, 14 Sep 2026 07:47:28 +0900</lastBuildDate>
+    <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+    <lastBuildDate>Mon, 21 Sep 2026 07:49:27 +0900</lastBuildDate>
     <generator>Vela Weekly Collector</generator>
     <ttl>10080</ttl>
     <item>
-      <title>[Cover] Building Agents · 에이전트 설계 원리</title>
+      <title>[Cover] 신경망의 본질 · Deep Learning Chapter 1</title>
       <link>https://juns9990.github.io/vela/vela-prototype.html</link>
-      <guid isPermaLink="false">vela-cover-2026-W38</guid>
-      <description>이번 주 Vela가 추천하는 깊이 있는 강의. Andrew Ng의 시그니처.</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
+      <guid isPermaLink="false">vela-cover-2026-W39</guid>
+      <description>이번 주 Vela가 추천하는 깊이 있는 강의. 3Blue1Brown의 시그니처.</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
       <category>Cover Story</category>
-    </item>
-    <item>
-      <title>[Agent] Orchard: An open framework for scalable agentic AI</title>
-      <link>https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/</link>
-      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/</guid>
-      <description>Orchard is an open-source framework for the research community to train and evaluate AI agents across task types. It reduces complexity while supporting strong performance from smaller models by enabling researchers to reuse the same infras</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
     </item>
     <item>
       <title>[Vision] MindTopo reveals VLMs’ spatial reasoning abilities</title>
       <link>https://www.microsoft.com/en-us/research/blog/mindtopo-reveals-vlms-spatial-reasoning-abilities/</link>
       <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/mindtopo-reveals-vlms-spatial-reasoning-abilities/</guid>
       <description>A path, a fence, a knot. MindTopo sets a new benchmark for testing how AI understands topological relationships and highlights new opportunities to strengthen spatial reasoning and planning. The post MindTopo reveals VLMs&amp;#8217; spatial rea</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
       <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
-    </item>
-    <item>
-      <title>[LLM] 5 ways to upgrade your home decor with Google Search</title>
-      <link>https://blog.google/products-and-platforms/products/search/home-decor-tips/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/home-decor-tips/</guid>
-      <description>Illustration of ombre rainbow furniture items like a sofa, lamp, and chair against a purple background</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Audio] Intelligent transcription with Gemini 3.5 Transcribe</title>
-      <link>https://deepmind.google/blog/intelligent-transcription-with-gemini-3-5-transcribe/</link>
-      <guid isPermaLink="true">https://deepmind.google/blog/intelligent-transcription-with-gemini-3-5-transcribe/</guid>
-      <description>Now you can get more intelligent speech-to-text transcription with Gemini 3.5 Transcribe.</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Audio</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
-    </item>
-    <item>
-      <title>[Tool] Recreating a 70-year love story frame by frame</title>
-      <link>https://blog.google/innovation-and-ai/technology/ai/love-rendered-film/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/love-rendered-film/</guid>
-      <description>An elderly couple sitting in a movie theater. Overlayed are &quot;Teulluride Film Festival&quot; and &quot;Love, Rendered&quot;</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Tool</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Robotics] Physical AI Takes the Wheel: How the World’s Robotaxi Leaders Are Building With NVIDIA Technologies</title>
-      <link>https://blogs.nvidia.com/blog/robotaxi-leaders-full-stack-open-platform/</link>
-      <guid isPermaLink="true">https://blogs.nvidia.com/blog/robotaxi-leaders-full-stack-open-platform/</guid>
-      <description>The global robotaxi market — physical AI’s first commercial breakthrough — is projected to reach $400 billion by 2035, with over 6 million commercial vehicles in operation as driverless fleets are already moving people through some of the w</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Robotics</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
-    </item>
-    <item>
-      <title>[Agent] PROOF-Gen: From Optimized Data to Better Distillation</title>
-      <link>https://machinelearning.apple.com/research/proof-gen-optimized-distillation</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/proof-gen-optimized-distillation</guid>
-      <description>Supervised fine-tuning on teacher-generated trajectories is the standard first stage for distilling tool-calling capabilities into deployable models. Post-training pipelines that drive shipped tool-calling agents re-run this stage on a dail</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
-    </item>
-    <item>
-      <title>[Vision] Try Google Pics: Easy image creation and editing in Google Workspace</title>
-      <link>https://blog.google/products-and-platforms/products/workspace/google-pics/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/workspace/google-pics/</guid>
-      <description>Collage of images created by Google Pics, with the text &quot;Say hello to Google Pics&quot; on top</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[LLM] 3 new ways to plan and book travel in Search</title>
-      <link>https://blog.google/products-and-platforms/products/search/book-travel-ai-mode/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/book-travel-ai-mode/</guid>
-      <description>Graphic depicting new travel features for AI Mode in Search</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Safety] Building long-term trust in a world where creation moves at the speed of thought</title>
-      <link>https://blog.fal.ai/building-long-term-trust-in-a-world-where-creation-moves-at-the-speed-of-thought/</link>
-      <guid isPermaLink="true">https://blog.fal.ai/building-long-term-trust-in-a-world-where-creation-moves-at-the-speed-of-thought/</guid>
-      <description>By Sean Bonawitz, Head of Trust Safety at fal My first job was in the US Navy as an EOD platoon commander, where my job was to protect the people around us and make sure they could keep moving forward. The mission was always to protect life</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Safety</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
-    </item>
-    <item>
-      <title>[Infra] Generative Marketing Mix Modeling: A Causal Inference Framework Linking GEO and GEM to Business Impact</title>
-      <link>https://arxiv.org/abs/2609.11915v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.11915v1</guid>
-      <description>Generative artificial intelligence changes how firms reach customers, but standard marketing data do not record how often users see and notice a firm&apos;s name in generated answers. We develop Generative Marketing Mix Modeling (GMMM) to estimate the causal effects of Generative Engi</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Infra</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Tool] Broadening access to Skala creates a faster path to predictive DFT</title>
-      <link>https://www.microsoft.com/en-us/research/blog/broadening-access-to-skala-creates-a-faster-path-to-predictive-dft/</link>
-      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/broadening-access-to-skala-creates-a-faster-path-to-predictive-dft/</guid>
-      <description>Skala 1.1, the updated deep-learning exchange-correlation functional from Microsoft Research, provides greater accuracy, expanded accessibility across the computational chemistry ecosystem, and a living benchmark to track computational perf</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Tool</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
-    </item>
-    <item>
-      <title>[Agent] Sparks Fly: NVIDIA Accelerates Local AI at IFA 2026</title>
-      <link>https://blogs.nvidia.com/blog/local-ai-ifa-next-gen-agents-nv-pair-rtx-spark/</link>
-      <guid isPermaLink="true">https://blogs.nvidia.com/blog/local-ai-ifa-next-gen-agents-nv-pair-rtx-spark/</guid>
-      <description>Frontier intelligence is going local. At IFA 2026, NVIDIA, Microsoft and its partners are teaming up to provide faster inference and new tools that make agents easier to set up and run locally on NVIDIA hardware. New compact NVIDIA RTX Spar</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
-    </item>
-    <item>
-      <title>[Vision] Can Edge-Deployable Vision-Language Models Identify Species?</title>
-      <link>https://arxiv.org/abs/2609.11916v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.11916v1</guid>
-      <description>Camera traps often run in the field on edge hardware with limited or no connectivity, making small, locally-deployable vision-language models (VLMs) -- not frontier-scale ones -- the practically relevant class to evaluate for species identification. We test whether models in this</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
       <title>[LLM] Piloting the world&apos;s first double-blind AI evaluations</title>
       <link>https://deepmind.google/blog/piloting-the-worlds-first-double-blind-ai-evaluations/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/piloting-the-worlds-first-double-blind-ai-evaluations/</guid>
       <description>Piloting the world&apos;s first double-blind AI evaluations</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[Robotics] Skild AI Taps NVIDIA Physical AI to Teach Robots New Tasks From a Single Video</title>
-      <link>https://blogs.nvidia.com/blog/skild-ai-s1-physical-ai/</link>
-      <guid isPermaLink="true">https://blogs.nvidia.com/blog/skild-ai-s1-physical-ai/</guid>
-      <description>Manufacturing floors, warehouses and production lines rarely stay fixed — tasks change, layouts shift and new products arrive, and most robots can’t keep up without significant reprogramming. Skild AI’s new S1 robot foundation model helps a</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Robotics</category>
+      <title>[Tool] Watch astronaut Christina Koch and Google’s James Manyika discuss space, technology, and discovery.</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/dialogues-christina-koch/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/dialogues-christina-koch/</guid>
+      <description>Christina Koch sits down with James Manyika, Google’s Senior Vice President of Research, Labs, Technology &amp; Society.</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Infra] NVIDIA Vera Rubin NVL72 Delivers Leading Performance in MLPerf Inference v6.1 Debut</title>
+      <link>https://blogs.nvidia.com/blog/vera-rubin-nvl72-mlperf-inference/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/vera-rubin-nvl72-mlperf-inference/</guid>
+      <description>System performance, efficient infrastructure scaling and continuous software optimization are key levers that determine AI inference economics. Higher system performance means more tokens generated, resulting in higher revenue. Efficient sc</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>Infra</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
     </item>
     <item>
-      <title>[Safety] From Preferences to Principles: Rubric-Based Alignment for Grounded Knowledge Answers</title>
-      <link>https://machinelearning.apple.com/research/rubric-based-alignment</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/rubric-based-alignment</guid>
-      <description>Designing effective reward signals for open-domain question answering is challenging because high-quality responses must simultaneously satisfy multiple aspects of answer quality that are difficult to capture with a holistic scalar objectiv</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Safety</category>
+      <title>[Robotics] Agile-WAM: An Agile Tactile World Action Model for Contact-Rich Robot Control</title>
+      <link>https://arxiv.org/abs/2609.20761v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2609.20761v1</guid>
+      <description>World Action Models (WAMs) advance beyond conventional visuomotor policies by jointly predicting future world states and robot actions, enabling the policy to learn physical dynamics that support effective control. However, recent tactile WAMs often rely on large-scale pretrained</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>Robotics</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Agent] Orchard: An open framework for scalable agentic AI</title>
+      <link>https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/</link>
+      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/</guid>
+      <description>Orchard is an open-source framework for the research community to train and evaluate AI agents across task types. It reduces complexity while supporting strong performance from smaller models by enabling researchers to reuse the same infras</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
+    </item>
+    <item>
+      <title>[Vision] Glyph: A Multi-Strategy Agentic System for Column Description and Sensitivity-Ontology Tagging of Enterprise Data Catalogs</title>
+      <link>https://machinelearning.apple.com/research/glyph-column-description-tagging</link>
+      <guid isPermaLink="true">https://machinelearning.apple.com/research/glyph-column-description-tagging</guid>
+      <description>Enterprise data lakes accumulate tables faster than human stewards can document or classify them, leaving columns with missing descriptions and unassigned governance labels. This documentation debt undermines data discovery, access control,</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
     </item>
     <item>
-      <title>[Audio] RetroThinker: Enabling Retrospective Thinking in Speech LLMs</title>
-      <link>https://arxiv.org/abs/2609.11864v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.11864v1</guid>
-      <description>Speech large language models (SpeechLLMs) offer reduced latency and retain paralinguistic nuances that are typically lost in cascaded automatic speech recognition (ASR) and text-based LM architectures. However, they continue to lag behind text-only LLMs on complex reasoning tasks</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
+      <title>[LLM] AlphaGenome Atlas: A predictive map of every possible DNA letter change in the human genome</title>
+      <link>https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/</guid>
+      <description>AlphaGenome Atlas maps the molecular effects of 9 billion single-letter DNA variants across the human genome.</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
+    </item>
+    <item>
+      <title>[Audio] From Megawatts to Tokens: How NVIDIA Maximizes AI Factory Production</title>
+      <link>https://blogs.nvidia.com/blog/from-megawatts-to-tokens-how-nvidia-maximizes-ai-factory-production/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/from-megawatts-to-tokens-how-nvidia-maximizes-ai-factory-production/</guid>
+      <description>On a sweltering August evening in Silicon Valley, as the sun dropped and air conditioning loads spiked, Silicon Valley Power sent a signal to an AI factory to adjust its power consumption. Varun Sivaram was watching on Zoom with about forty</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>Audio</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
+    </item>
+    <item>
+      <title>[Infra] H3 Max: Built with fal Inference and Training</title>
+      <link>https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</link>
+      <guid isPermaLink="true">https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</guid>
+      <description>H3 Max generates a 5-second video in under 3 seconds. In our human preference evaluations against twelve leading video models, it ranks first on quality, prompt understanding, and aesthetics. Independent benchmarks from Artificial Analysis </description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>Infra</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
+    </item>
+    <item>
+      <title>[Robotics] Coding Agents with an Obstacle-Aware Harness for Safe Robot Manipulation</title>
+      <link>https://arxiv.org/abs/2609.20822v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2609.20822v1</guid>
+      <description>Coding agents have emerged as a promising paradigm for robot manipulation: a language model writes the robot controller as a program, and agents built in this way now operate robots without robot-specific training.Whether this paradigm is also safe, however, has not been asked. W</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>Robotics</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[LLM] AI for Societal Impact</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/</guid>
+      <description>Explore this collection to see how experts and local leaders are using AI breakthroughs to ensure everyone can share the opportunity of AI.</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Tool] Emerald AI, Google and NVIDIA Launch Alliance to Advance Flexible AI Data Centers</title>
+      <link>https://blogs.nvidia.com/blog/ai-energy-management-alliance/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/ai-energy-management-alliance/</guid>
+      <description>AI factories are the infrastructure of the intelligence era. Scaling them responsibly will depend as much on innovation across the grid as inside the data center. Today, Emerald AI, Google and NVIDIA announced the launch of the AI Energy Ma</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
+    </item>
+    <item>
+      <title>[Audio] Unifying Models of Intergroup Hostility in Online Discourse</title>
+      <link>https://arxiv.org/abs/2609.20808v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2609.20808v1</guid>
+      <description>Hostile rhetoric toward social groups can normalize exclusion and justify mistreatment, as well as contribute to rising polarization and political violence. Efforts to moderate hostile rhetoric in online speech draw on foundational theories in social and moral psychology, and pol</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
       <category>Audio</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Tool] MindTopo: Can Foundation Models Reason in Topological Space?</title>
-      <link>https://arxiv.org/abs/2609.11900v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.11900v1</guid>
-      <description>Spatial reasoning depends not only on metric properties such as distance, angle, and shape, but also on topological relations that remain invariant under continuous deformation. Cognitive science identifies these relations as foundational to spatial understanding, yet foundation-</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
-      <category>Tool</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+      <title>[Vision] How We Achieved ~1000 tok/s and 16x Throughput with DSpark for Ideogram V4 Prompt Expander</title>
+      <link>https://blog.fal.ai/how-we-achieved-1000-tok-s-and-16x-throughput-with-dspark-for-ideogram-v4-prompt-expander/</link>
+      <guid isPermaLink="true">https://blog.fal.ai/how-we-achieved-1000-tok-s-and-16x-throughput-with-dspark-for-ideogram-v4-prompt-expander/</guid>
+      <description>At @fal , we ve achieved 16 times higher throughput on Qwen3.6 for a use-case that required high interactivity per user using DSpark on SGLang. But why did we need it? And how did we achieve it? Intro Text-to-image models like Ideogram V4 c</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>Vision</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
     </item>
     <item>
-      <title>[Agent] Artificial Id: Drive and Persistent Alignment in Agentic AI</title>
-      <link>https://arxiv.org/abs/2609.11911v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.11911v1</guid>
-      <description>Agentic AI is moving from bounded task execution toward systems that retain consequential state, continue operating and adapt across task boundaries. That shift creates a control problem that current harnesses largely solve by hand: objectives, retries, verification, stopping rul</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
+      <title>[Robotics] REVERSAL-BENCH: A Reversibility Axis and Reset Oracle for Measuring the Reset-Free RL Cliff</title>
+      <link>https://machinelearning.apple.com/research/reversal-bench-rl-cliff</link>
+      <guid isPermaLink="true">https://machinelearning.apple.com/research/reversal-bench-rl-cliff</guid>
+      <description>A central goal of autonomous reinforcement learning is continuous policy training without external resets. However, existing paradigms largely depend on underlying environmental reversibility, a property absent in real world manipulation, w</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>Robotics</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
+    </item>
+    <item>
+      <title>[Agent] Shared Selective Persistent Memory for Agentic LLM Systems</title>
+      <link>https://machinelearning.apple.com/research/shared-selective-persistent-memory</link>
+      <guid isPermaLink="true">https://machinelearning.apple.com/research/shared-selective-persistent-memory</guid>
+      <description>Agentic LLM systems that generate code through multi-turn tool use face a fundamental context problem: each session starts from zero, discarding the configuration choices, domain constraints, data schemas, and tool-use patterns that made pr</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
       <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
+    </item>
+    <item>
+      <title>[LLM] Building AI to accelerate science and improve lives</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/ai-applications-science-people/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/ai-applications-science-people/</guid>
+      <description>B-roll showing diverse environments and people, including a teacher and students in a classroom and a patient with a doctor</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Safety] Harm Laundering in GPT Models: Evidence That Gender Discrimination Is Transformed Rather Than Reduced Across Safety-Trained Generations</title>
+      <link>https://arxiv.org/abs/2609.20779v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2609.20779v1</guid>
+      <description>Safety evaluations for large language models rely on surface-form classifiers that report declining harm scores across model generations. We provide evidence that this methodology is systematically incomplete: explicit discriminatory content is transformed rather than removed. We</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>Safety</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Featured] PROOF-Gen: From Optimized Data to Better Distillation</title>
-      <link>https://machinelearning.apple.com/research/proof-gen-optimized-distillation</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/proof-gen-optimized-distillation</guid>
-      <description>Supervised fine-tuning on teacher-generated trajectories is the standard first stage for distilling tool-calling capabilities into deployabl</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
+      <title>[Infra] Introducing H3 Max by fal</title>
+      <link>https://blog.fal.ai/introducing-h3-max-by-fal/</link>
+      <guid isPermaLink="true">https://blog.fal.ai/introducing-h3-max-by-fal/</guid>
+      <description>Announcing H3 Max, a post-trained version of MiniMax H3 developed by fal Research and optimized for maximum speed by fal s inference team. In our human preference evaluations, H3 Max ranks #1 across overall quality, prompt understanding, an</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
+      <category>Infra</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
+    </item>
+    <item>
+      <title>[Featured] Glyph: A Multi-Strategy Agentic System for Column Description and Sensitivity-On</title>
+      <link>https://machinelearning.apple.com/research/glyph-column-description-tagging</link>
+      <guid isPermaLink="true">https://machinelearning.apple.com/research/glyph-column-description-tagging</guid>
+      <description>Enterprise data lakes accumulate tables faster than human stewards can document or classify them, leaving columns with missing descriptions </description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] Try Google Pics: Easy image creation and editing in Google Workspace</title>
-      <link>https://blog.google/products-and-platforms/products/workspace/google-pics/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/workspace/google-pics/</guid>
-      <description>Collage of images created by Google Pics, with the text &quot;Say hello to Google Pics&quot; on top</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
+      <title>[Featured] AlphaGenome Atlas: A predictive map of every possible DNA letter change in the h</title>
+      <link>https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/</guid>
+      <description>AlphaGenome Atlas maps the molecular effects of 9 billion single-letter DNA variants across the human genome.</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] 3 new ways to plan and book travel in Search</title>
-      <link>https://blog.google/products-and-platforms/products/search/book-travel-ai-mode/</link>
-      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/search/book-travel-ai-mode/</guid>
-      <description>Graphic depicting new travel features for AI Mode in Search</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
+      <title>[Featured] From Megawatts to Tokens: How NVIDIA Maximizes AI Factory Production</title>
+      <link>https://blogs.nvidia.com/blog/from-megawatts-to-tokens-how-nvidia-maximizes-ai-factory-production/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/from-megawatts-to-tokens-how-nvidia-maximizes-ai-factory-production/</guid>
+      <description>On a sweltering August evening in Silicon Valley, as the sun dropped and air conditioning loads spiked, Silicon Valley Power sent a signal t</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] Building long-term trust in a world where creation moves at the speed of thought</title>
-      <link>https://blog.fal.ai/building-long-term-trust-in-a-world-where-creation-moves-at-the-speed-of-thought/</link>
-      <guid isPermaLink="true">https://blog.fal.ai/building-long-term-trust-in-a-world-where-creation-moves-at-the-speed-of-thought/</guid>
-      <description>By Sean Bonawitz, Head of Trust Safety at fal My first job was in the US Navy as an EOD platoon commander, where my job was to protect the p</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
+      <title>[Featured] H3 Max: Built with fal Inference and Training</title>
+      <link>https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</link>
+      <guid isPermaLink="true">https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</guid>
+      <description>H3 Max generates a 5-second video in under 3 seconds. In our human preference evaluations against twelve leading video models, it ranks firs</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] Generative Marketing Mix Modeling: A Causal Inference Framework Linking GEO and </title>
-      <link>https://arxiv.org/abs/2609.11915v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.11915v1</guid>
-      <description>Generative artificial intelligence changes how firms reach customers, but standard marketing data do not record how often users see and noti</description>
-      <pubDate>Mon, 14 Sep 2026 07:47:28 +0900</pubDate>
+      <title>[Featured] Coding Agents with an Obstacle-Aware Harness for Safe Robot Manipulation</title>
+      <link>https://arxiv.org/abs/2609.20822v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2609.20822v1</guid>
+      <description>Coding agents have emerged as a promising paradigm for robot manipulation: a language model writes the robot controller as a program, and ag</description>
+      <pubDate>Mon, 21 Sep 2026 07:49:27 +0900</pubDate>
       <category>Featured</category>
     </item>
   </channel>
