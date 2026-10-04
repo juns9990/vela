@@ -2,6 +2,14 @@
   "version": "1.0",
   "issues": [
     {
+      "file": "vela-issue-2026-W41.json",
+      "year": 2026,
+      "week": 41,
+      "monday": "2026-10-05",
+      "headline": "Deep Dive into LLMs like ChatGPT",
+      "signal_count": 20
+    },
+    {
       "file": "vela-issue-2026-W40.json",
       "year": 2026,
       "week": 40,
@@ -194,5 +202,5 @@
       "signal_count": 8
     }
   ],
-  "updated_at": "2026-09-28T08:31:24.829328+09:00"
+  "updated_at": "2026-10-05T08:44:48.244088+09:00"
 }

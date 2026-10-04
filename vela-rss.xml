@@ -6,33 +6,24 @@
     <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
     <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
     <language>ko</language>
-    <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-    <lastBuildDate>Mon, 28 Sep 2026 08:31:24 +0900</lastBuildDate>
+    <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+    <lastBuildDate>Mon, 05 Oct 2026 08:44:48 +0900</lastBuildDate>
     <generator>Vela Weekly Collector</generator>
     <ttl>10080</ttl>
     <item>
-      <title>[Cover] How might LLMs store facts · MLP 해부</title>
+      <title>[Cover] Deep Dive into LLMs like ChatGPT</title>
       <link>https://juns9990.github.io/vela/vela-prototype.html</link>
-      <guid isPermaLink="false">vela-cover-2026-W40</guid>
-      <description>이번 주 Vela가 추천하는 깊이 있는 강의. 3Blue1Brown의 시그니처.</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
+      <guid isPermaLink="false">vela-cover-2026-W41</guid>
+      <description>이번 주 Vela가 추천하는 깊이 있는 강의. Andrej Karpathy의 시그니처.</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
       <category>Cover Story</category>
-    </item>
-    <item>
-      <title>[Agent] Orchard: An open framework for scalable agentic AI</title>
-      <link>https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/</link>
-      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/</guid>
-      <description>Orchard is an open-source framework for the research community to train and evaluate AI agents across task types. It reduces complexity while supporting strong performance from smaller models by enabling researchers to reuse the same infras</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-      <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
     </item>
     <item>
       <title>[Vision] MindTopo reveals VLMs’ spatial reasoning abilities</title>
       <link>https://www.microsoft.com/en-us/research/blog/mindtopo-reveals-vlms-spatial-reasoning-abilities/</link>
       <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/mindtopo-reveals-vlms-spatial-reasoning-abilities/</guid>
       <description>A path, a fence, a knot. MindTopo sets a new benchmark for testing how AI understands topological relationships and highlights new opportunities to strengthen spatial reasoning and planning. The post MindTopo reveals VLMs&amp;#8217; spatial rea</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
       <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
     </item>
@@ -41,177 +32,186 @@
       <link>https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/</guid>
       <description>AlphaGenome Atlas maps the molecular effects of 9 billion single-letter DNA variants across the human genome.</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
-    </item>
-    <item>
-      <title>[Robotics] NVIDIA Isaac ROS 5.0 Advances Agentic, Open Source Robotics Development</title>
-      <link>https://blogs.nvidia.com/blog/isaac-ros-5-0-agentic-open-source-robotics/</link>
-      <guid isPermaLink="true">https://blogs.nvidia.com/blog/isaac-ros-5-0-agentic-open-source-robotics/</guid>
-      <description>To build and deploy sophisticated robotics applications that can perceive, reason and act in dynamic environments, developers need new physical AI models and tools. The ROS open framework is a project from Open Robotics that helps humans bu</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-      <category>Robotics</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
-    </item>
-    <item>
-      <title>[Infra] H3 Max: Built with fal Inference and Training</title>
-      <link>https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</link>
-      <guid isPermaLink="true">https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</guid>
-      <description>H3 Max generates a 5-second video in under 3 seconds. In our human preference evaluations against twelve leading video models, it ranks first on quality, prompt understanding, and aesthetics. Independent benchmarks from Artificial Analysis </description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-      <category>Infra</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
-    </item>
-    <item>
-      <title>[Audio] A Practical Recipe for Semi-Supervised Federated ASR: Online Pseudo-Labels with Server Update Stabilization</title>
-      <link>https://machinelearning.apple.com/research/practical-recipe-federated-asr</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/practical-recipe-federated-asr</guid>
-      <description>Semi-supervised federated learning (SSFL) trains models on clients’ unlabeled data using a teacher to generate pseudo-labels, with a small labeled seed dataset on the server. Automatic Speech Recognition (ASR) is particularly fragile here: </description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-      <category>Audio</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
-    </item>
-    <item>
-      <title>[Agent] Shared Selective Persistent Memory for Agentic LLM Systems</title>
-      <link>https://machinelearning.apple.com/research/shared-selective-persistent-memory</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/shared-selective-persistent-memory</guid>
-      <description>Agentic LLM systems that generate code through multi-turn tool use face a fundamental context problem: each session starts from zero, discarding the configuration choices, domain constraints, data schemas, and tool-use patterns that made pr</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-      <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
-    </item>
-    <item>
-      <title>[Vision] Glyph: A Multi-Strategy Agentic System for Column Description and Sensitivity-Ontology Tagging of Enterprise Data Catalogs</title>
-      <link>https://machinelearning.apple.com/research/glyph-column-description-tagging</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/glyph-column-description-tagging</guid>
-      <description>Enterprise data lakes accumulate tables faster than human stewards can document or classify them, leaving columns with missing descriptions and unassigned governance labels. This documentation debt undermines data discovery, access control,</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-      <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
-    </item>
-    <item>
-      <title>[LLM] AI for Societal Impact</title>
-      <link>https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/</guid>
-      <description>Explore this collection to see how experts and local leaders are using AI breakthroughs to ensure everyone can share the opportunity of AI.</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Robotics] RAPID: Robot Agentic Programming from Demonstrations</title>
-      <link>https://arxiv.org/abs/2609.30249v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.30249v1</guid>
-      <description>Coding agents have demonstrated enormous success in solving complex programming problems. To leverage their potential for robot systems, this work introduces Robot Agentic Programming from Demonstrations (RAPID), which automatically generates, verifies, and refines robot programs</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-      <category>Robotics</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
       <title>[Tool] Advancing Private AI Compute with secure, server-side memory</title>
       <link>https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/</guid>
       <description>Introducing private, server-side memory to Private AI Compute for personal AI.</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
       <category>Tool</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[Safety] A Living Benchmark for Information Retrieval from Electronic Health Records</title>
-      <link>https://arxiv.org/abs/2609.30205v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.30205v1</guid>
-      <description>Large language model (LLM)-based clinical assistants are increasingly being integrated into electronic health record (EHR) systems, transforming how clinicians retrieve and synthesize information from patient records. Their safety and utility depend on rigorous evaluation, yet ex</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-      <category>Safety</category>
+      <title>[Agent] From Training to Production, NVIDIA and CoreWeave Close the Loop on Agentic AI</title>
+      <link>https://blogs.nvidia.com/blog/coreweave-agentic-ai-vera-rubin/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/coreweave-agentic-ai-vera-rubin/</guid>
+      <description>Building on nearly a decade of co-engineering, CoreWeave has built NVIDIA compute, networking and software into a cloud purpose-built for AI that’s still returning on investment across multiple generations of deployment. Now, CoreWeave is b</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
+    </item>
+    <item>
+      <title>[Infra] Introducing SynthID Bio</title>
+      <link>https://deepmind.google/blog/introducing-synthid-bio/</link>
+      <guid isPermaLink="true">https://deepmind.google/blog/introducing-synthid-bio/</guid>
+      <description>Proof of concept for watermarking AI-generated proteins while preserving biological function.</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <category>Infra</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
+    </item>
+    <item>
+      <title>[Robotics] Reconstruct, Practice, Go Real: Guided Self-Improvement for Embodied Agents</title>
+      <link>https://arxiv.org/abs/2610.02204v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.02204v1</guid>
+      <description>Building reliable robot capabilities across diverse tasks requires substantial human effort to develop and maintain skills, design rewards, and integrate perception with control. We present Reconstruct, Practice, Go Real (RPG), a framework for autonomous improvement of robot exec</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <category>Robotics</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Agent] LLM Agents Can Easily Tamper With Their Own Traces</title>
-      <link>https://arxiv.org/abs/2609.30266v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.30266v1</guid>
-      <description>Asynchronous monitoring, incident investigations, and compliance audits primarily rely on agent traces to reconstruct what happened. These analyses assume that LLM agents cannot tamper with their own execution traces. We show that local LLM agents such as Claude Code, Codex, Anti</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
+      <title>[Audio] Paper page - OmniSeek: Native Tool Integration for Multi-turn Audio-Visual Reasoning</title>
+      <link>https://arxiv.org/abs/2610.02181</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.02181</guid>
+      <description>HuggingFace Daily Papers에 큐레이션된 주목받는 논문.</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <category>Audio</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">HF Daily</source>
+    </item>
+    <item>
+      <title>[Vision] Hierarchical Continuous Diffusion Language Models</title>
+      <link>https://arxiv.org/abs/2610.02193v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.02193v1</guid>
+      <description>Discrete diffusion language models offer a compelling alternative to autoregressive generation for tasks demanding bidirectional reasoning and global constraint satisfaction. Yet they share a structural bottleneck: when decoding in parallel, each token is sampled independently fr</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <category>Vision</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[LLM] AI for Societal Impact</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/</guid>
+      <description>Explore this collection to see how experts and local leaders are using AI breakthroughs to ensure everyone can share the opportunity of AI.</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Agent] KaliBench: A Fine-Grained Benchmark for Cybersecurity Tool Use on Kali Linux with Runtime-Free Verifiable Rewards</title>
+      <link>https://arxiv.org/abs/2610.02206v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.02206v1</guid>
+      <description>LLMs are increasingly applied to cybersecurity workflows, where they are expected to translate analysts&apos; intent into tool invocations. However, existing evaluations focus on knowledge-based assessments or end-to-end agentic tasks, and do not directly measure LLMs&apos; ability to gene</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Vision] Paper page - AV-GRPO: Modality-Anchored Decoupling Diffusion Reinforcement Learning for Joint Audio-Video Generation</title>
-      <link>https://arxiv.org/abs/2609.29816</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.29816</guid>
-      <description>HuggingFace Daily Papers에 큐레이션된 주목받는 논문.</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
+      <title>[Infra] H3 Max: Built with fal Inference and Training</title>
+      <link>https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</link>
+      <guid isPermaLink="true">https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</guid>
+      <description>H3 Max generates a 5-second video in under 3 seconds. In our human preference evaluations against twelve leading video models, it ranks first on quality, prompt understanding, and aesthetics. Independent benchmarks from Artificial Analysis </description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <category>Infra</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
+    </item>
+    <item>
+      <title>[Vision] Generative Cinematographer: Composing Camera and Object Motion in 3D</title>
+      <link>https://arxiv.org/abs/2610.02180v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.02180v1</guid>
+      <description>Current controllable video generation systems often rely on 2D motion trajectories or sparse drag signals for object motion. These controls are ambiguous because the same 2D trajectory can correspond to different 3D motions, especially when the camera and objects move simultaneou</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
       <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">HF Daily</source>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
       <title>[LLM] Building AI to accelerate science and improve lives</title>
       <link>https://blog.google/innovation-and-ai/technology/ai/ai-applications-science-people/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/ai-applications-science-people/</guid>
       <description>B-roll showing diverse environments and people, including a teacher and students in a classroom and a patient with a doctor</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Infra] Introducing H3 Max by fal</title>
-      <link>https://blog.fal.ai/introducing-h3-max-by-fal/</link>
-      <guid isPermaLink="true">https://blog.fal.ai/introducing-h3-max-by-fal/</guid>
-      <description>Announcing H3 Max, a post-trained version of MiniMax H3 developed by fal Research and optimized for maximum speed by fal s inference team. In our human preference evaluations, H3 Max ranks #1 across overall quality, prompt understanding, an</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-      <category>Infra</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
-    </item>
-    <item>
-      <title>[Audio] To Trust or Not to Trust: Retrieval-Augmented Fact Checking in Speech</title>
-      <link>https://arxiv.org/abs/2609.30227v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.30227v1</guid>
-      <description>Online misinformation increasingly appears in spoken formats such as news clips, podcasts, interviews, political speeches, and social media videos, creating a need for fact-checking systems that can verify claims directly from speech. We introduce VeriSpeak, a probe benchmark for</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-      <category>Audio</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Robotics] REVERSAL-BENCH: A Reversibility Axis and Reset Oracle for Measuring the Reset-Free RL Cliff</title>
-      <link>https://machinelearning.apple.com/research/reversal-bench-rl-cliff</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/reversal-bench-rl-cliff</guid>
-      <description>A central goal of autonomous reinforcement learning is continuous policy training without external resets. However, existing paradigms largely depend on underlying environmental reversibility, a property absent in real world manipulation, w</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-      <category>Robotics</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
-    </item>
-    <item>
-      <title>[Safety] The Alignment Illusion in Multimodal Large Language Models</title>
-      <link>https://arxiv.org/abs/2609.30210v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.30210v1</guid>
-      <description>Layer-wise visual-text similarity in Multimodal Large Language Models (MLLMs) is widely interpreted as evidence that the language model progressively integrates visual content into a shared representation space. This reading rests on the assumption that scalar alignment scores re</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
-      <category>Safety</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Tool] Broadening access to Skala creates a faster path to predictive DFT</title>
-      <link>https://www.microsoft.com/en-us/research/blog/broadening-access-to-skala-creates-a-faster-path-to-predictive-dft/</link>
-      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/broadening-access-to-skala-creates-a-faster-path-to-predictive-dft/</guid>
-      <description>Skala 1.1, the updated deep-learning exchange-correlation functional from Microsoft Research, provides greater accuracy, expanded accessibility across the computational chemistry ecosystem, and a living benchmark to track computational perf</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
+      <title>[Tool] Where-OPD: Spatially Guided On-Policy Self-Distillation of MLLMs with Synthetic Scenes</title>
+      <link>https://arxiv.org/abs/2610.02117v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.02117v1</guid>
+      <description>On-policy self-distillation has recently emerged as an effective approach for improving language-model reasoning by supervising students with a frozen or EMA version of themselves that receives privileged information. Its application to multimodal large language models (MLLMs), h</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
       <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Agent] AutoCompact: Learning When to Compact Context in Long-Horizon Coding Agents</title>
+      <link>https://arxiv.org/abs/2610.02163v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.02163v1</guid>
+      <description>Coding agents solve repository-level software engineering tasks through long trajectories of code inspection, search, editing, and testing. As a task progresses, earlier exploration becomes stale, so managing context is more than avoiding overflow: an agent must decide when to co</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Robotics] Offloaded inference for real-world physical AI robotics</title>
+      <link>https://www.microsoft.com/en-us/research/blog/offloaded-inference-for-real-world-physical-ai-robotics/</link>
+      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/offloaded-inference-for-real-world-physical-ai-robotics/</guid>
+      <description>Robots are getting smarter, but how can their hardware match that growth? New Microsoft Research findings show that moving AI inference beyond the robot can improve task success, boost efficiency, and support more advanced physical AI workl</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <category>Robotics</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
     </item>
     <item>
-      <title>[Featured] Shared Selective Persistent Memory for Agentic LLM Systems</title>
-      <link>https://machinelearning.apple.com/research/shared-selective-persistent-memory</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/shared-selective-persistent-memory</guid>
-      <description>Agentic LLM systems that generate code through multi-turn tool use face a fundamental context problem: each session starts from zero, discar</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
+      <title>[Audio] Language Discrimination Improves Linguistic Learning in Multilingual Speech Models</title>
+      <link>https://machinelearning.apple.com/research/language-discrimination-multilingual-learning</link>
+      <guid isPermaLink="true">https://machinelearning.apple.com/research/language-discrimination-multilingual-learning</guid>
+      <description>Multilingual self-supervised speech models can benefit from sharing information across languages, but under a matched total pretraining data budget they still fall short of monolingual models. We show that strengthening the model’s ability </description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <category>Audio</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
+    </item>
+    <item>
+      <title>[Infra] SILSA: Sliding-Window Slice Latents for Topology-Preserving High-Resolution 3D Generation</title>
+      <link>https://arxiv.org/abs/2610.02201v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.02201v1</guid>
+      <description>High-resolution 3D generation increasingly relies on voxel latents and multi-stage pipelines that first predict active structure and then synthesize local geometry. While effective, this design fragments continuous surfaces into many local tokens, inflates generation cost, and of</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <category>Infra</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Vision] Embedding Prediction Helps Image Generation</title>
+      <link>https://arxiv.org/abs/2610.02203v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.02203v1</guid>
+      <description>In diffusion transformers, a class label or a text prompt is embedded once, and the same condition is reused at every denoising step. We ask whether predicted embeddings can serve as this condition instead. Next-Embedding Predictive Autoregression (NEPA) trains a Transformer to p</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <category>Vision</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[LLM] Making global data easier to explore</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/google-un-data-commons-platform/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-un-data-commons-platform/</guid>
+      <description>UN System Data Commons Data webpage</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Featured] Paper page - OmniSeek: Native Tool Integration for Multi-turn Audio-Visual Reaso</title>
+      <link>https://arxiv.org/abs/2610.02181</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.02181</guid>
+      <description>HuggingFace Daily Papers에 큐레이션된 주목받는 논문.</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] Glyph: A Multi-Strategy Agentic System for Column Description and Sensitivity-On</title>
-      <link>https://machinelearning.apple.com/research/glyph-column-description-tagging</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/glyph-column-description-tagging</guid>
-      <description>Enterprise data lakes accumulate tables faster than human stewards can document or classify them, leaving columns with missing descriptions </description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
+      <title>[Featured] Hierarchical Continuous Diffusion Language Models</title>
+      <link>https://arxiv.org/abs/2610.02193v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.02193v1</guid>
+      <description>Discrete diffusion language models offer a compelling alternative to autoregressive generation for tasks demanding bidirectional reasoning a</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
@@ -219,23 +219,23 @@
       <link>https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/</guid>
       <description>Explore this collection to see how experts and local leaders are using AI breakthroughs to ensure everyone can share the opportunity of AI.</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] RAPID: Robot Agentic Programming from Demonstrations</title>
-      <link>https://arxiv.org/abs/2609.30249v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2609.30249v1</guid>
-      <description>Coding agents have demonstrated enormous success in solving complex programming problems. To leverage their potential for robot systems, thi</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
+      <title>[Featured] KaliBench: A Fine-Grained Benchmark for Cybersecurity Tool Use on Kali Linux wit</title>
+      <link>https://arxiv.org/abs/2610.02206v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.02206v1</guid>
+      <description>LLMs are increasingly applied to cybersecurity workflows, where they are expected to translate analysts&apos; intent into tool invocations. Howev</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] Advancing Private AI Compute with secure, server-side memory</title>
-      <link>https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/</link>
-      <guid isPermaLink="true">https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/</guid>
-      <description>Introducing private, server-side memory to Private AI Compute for personal AI.</description>
-      <pubDate>Mon, 28 Sep 2026 08:31:24 +0900</pubDate>
+      <title>[Featured] H3 Max: Built with fal Inference and Training</title>
+      <link>https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</link>
+      <guid isPermaLink="true">https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</guid>
+      <description>H3 Max generates a 5-second video in under 3 seconds. In our human preference evaluations against twelve leading video models, it ranks firs</description>
+      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
       <category>Featured</category>
     </item>
   </channel>
