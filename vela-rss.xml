@@ -6,33 +6,24 @@
     <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
     <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
     <language>ko</language>
-    <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
-    <lastBuildDate>Mon, 05 Oct 2026 08:44:48 +0900</lastBuildDate>
+    <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
+    <lastBuildDate>Mon, 12 Oct 2026 09:08:49 +0900</lastBuildDate>
     <generator>Vela Weekly Collector</generator>
     <ttl>10080</ttl>
     <item>
-      <title>[Cover] Deep Dive into LLMs like ChatGPT</title>
+      <title>[Cover] 신경망의 본질 · Deep Learning Chapter 1</title>
       <link>https://juns9990.github.io/vela/vela-prototype.html</link>
-      <guid isPermaLink="false">vela-cover-2026-W41</guid>
-      <description>이번 주 Vela가 추천하는 깊이 있는 강의. Andrej Karpathy의 시그니처.</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <guid isPermaLink="false">vela-cover-2026-W42</guid>
+      <description>이번 주 Vela가 추천하는 깊이 있는 강의. 3Blue1Brown의 시그니처.</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>Cover Story</category>
-    </item>
-    <item>
-      <title>[Vision] MindTopo reveals VLMs’ spatial reasoning abilities</title>
-      <link>https://www.microsoft.com/en-us/research/blog/mindtopo-reveals-vlms-spatial-reasoning-abilities/</link>
-      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/mindtopo-reveals-vlms-spatial-reasoning-abilities/</guid>
-      <description>A path, a fence, a knot. MindTopo sets a new benchmark for testing how AI understands topological relationships and highlights new opportunities to strengthen spatial reasoning and planning. The post MindTopo reveals VLMs&amp;#8217; spatial rea</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
-      <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
     </item>
     <item>
       <title>[LLM] AlphaGenome Atlas: A predictive map of every possible DNA letter change in the human genome</title>
       <link>https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/</guid>
       <description>AlphaGenome Atlas maps the molecular effects of 9 billion single-letter DNA variants across the human genome.</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
@@ -41,53 +32,53 @@
       <link>https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/</guid>
       <description>Introducing private, server-side memory to Private AI Compute for personal AI.</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>Tool</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
-    </item>
-    <item>
-      <title>[Agent] From Training to Production, NVIDIA and CoreWeave Close the Loop on Agentic AI</title>
-      <link>https://blogs.nvidia.com/blog/coreweave-agentic-ai-vera-rubin/</link>
-      <guid isPermaLink="true">https://blogs.nvidia.com/blog/coreweave-agentic-ai-vera-rubin/</guid>
-      <description>Building on nearly a decade of co-engineering, CoreWeave has built NVIDIA compute, networking and software into a cloud purpose-built for AI that’s still returning on investment across multiple generations of deployment. Now, CoreWeave is b</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
-      <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
     </item>
     <item>
       <title>[Infra] Introducing SynthID Bio</title>
       <link>https://deepmind.google/blog/introducing-synthid-bio/</link>
       <guid isPermaLink="true">https://deepmind.google/blog/introducing-synthid-bio/</guid>
       <description>Proof of concept for watermarking AI-generated proteins while preserving biological function.</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>Infra</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
     </item>
     <item>
-      <title>[Robotics] Reconstruct, Practice, Go Real: Guided Self-Improvement for Embodied Agents</title>
-      <link>https://arxiv.org/abs/2610.02204v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.02204v1</guid>
-      <description>Building reliable robot capabilities across diverse tasks requires substantial human effort to develop and maintain skills, design rewards, and integrate perception with control. We present Reconstruct, Practice, Go Real (RPG), a framework for autonomous improvement of robot exec</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <title>[Agent] How Much of a Harness Does a Strong Agent Need for Autonomous ML Engineering?</title>
+      <link>https://machinelearning.apple.com/research/harness-autonomous-ml-engineering</link>
+      <guid isPermaLink="true">https://machinelearning.apple.com/research/harness-autonomous-ml-engineering</guid>
+      <description>Recent autonomous machine learning engineering (MLE) agents have made significant progress on public leaderboards. Often motivated by progress stagnation over long-horizon cycles and limited Large Language Model (LLM) primitives, modern MLE</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
+    </item>
+    <item>
+      <title>[Robotics] WOVEN: Weaving Visual World Modeling into Multimodal LLMs</title>
+      <link>https://arxiv.org/abs/2610.12417v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.12417v1</guid>
+      <description>Multimodal large language models (MLLMs) struggle with spatial, embodied, physical, and temporal reasoning. We hypothesize that these failures reflect a shared deficit in visual transition reasoning, and test whether this capability can serve as a shared training primitive, one t</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>Robotics</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Audio] Paper page - OmniSeek: Native Tool Integration for Multi-turn Audio-Visual Reasoning</title>
-      <link>https://arxiv.org/abs/2610.02181</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.02181</guid>
-      <description>HuggingFace Daily Papers에 큐레이션된 주목받는 논문.</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
-      <category>Audio</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">HF Daily</source>
+      <title>[Vision] SpaceCast-Bench: Evaluating Predictive Spatial Reasoning in Vision-Language Models</title>
+      <link>https://arxiv.org/abs/2610.12402v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.12402v1</guid>
+      <description>Existing spatial reasoning benchmarks mainly test spatial perception: reading off relations already visible in the input. Yet real-world spatial intelligence demands predictive spatial reasoning: constructing a scene from observations, anticipating how an intervention changes it,</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
+      <category>Vision</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Vision] Hierarchical Continuous Diffusion Language Models</title>
-      <link>https://arxiv.org/abs/2610.02193v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.02193v1</guid>
-      <description>Discrete diffusion language models offer a compelling alternative to autoregressive generation for tasks demanding bidirectional reasoning and global constraint satisfaction. Yet they share a structural bottleneck: when decoding in parallel, each token is sampled independently fr</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
-      <category>Vision</category>
+      <title>[Safety] Searching for &quot;Harmful Refusal&quot;: A Psychometric Audit of an AI Safety Benchmark</title>
+      <link>https://arxiv.org/abs/2610.12409v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.12409v1</guid>
+      <description>Safety benchmarks typically report one overall score for a suite of datasets, each of which may target one or more safety-related attributes, so models with similar overall scores can have very different attribute profiles. Comparing models is more tractable at the level of indiv</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
+      <category>Safety</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
@@ -95,17 +86,80 @@
       <link>https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/</guid>
       <description>Explore this collection to see how experts and local leaders are using AI breakthroughs to ensure everyone can share the opportunity of AI.</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Agent] KaliBench: A Fine-Grained Benchmark for Cybersecurity Tool Use on Kali Linux with Runtime-Free Verifiable Rewards</title>
-      <link>https://arxiv.org/abs/2610.02206v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.02206v1</guid>
-      <description>LLMs are increasingly applied to cybersecurity workflows, where they are expected to translate analysts&apos; intent into tool invocations. However, existing evaluations focus on knowledge-based assessments or end-to-end agentic tasks, and do not directly measure LLMs&apos; ability to gene</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <title>[Tool] The latest AI news we announced in September 2026</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/</guid>
+      <description>A video showing the September AI updates</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
+      <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Agent] RISED: Rubrics for Agentic Multi-Environment Selection and Self-Distillation</title>
+      <link>https://machinelearning.apple.com/research/rised-multi-environment-selection</link>
+      <guid isPermaLink="true">https://machinelearning.apple.com/research/rised-multi-environment-selection</guid>
+      <description>Training a single LLM agent jointly across diverse interactive environments has attracted increasing attention as a route to generalist agents. Existing curriculum and data-selection strategies often allocate training at the environment lev</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
+    </item>
+    <item>
+      <title>[Robotics] SpatialHarness: Test-Time Spatial Scaffolding for Fine Robotic Manipulation</title>
+      <link>https://arxiv.org/abs/2610.12457v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.12457v1</guid>
+      <description>Frontier multimodal foundation models (e.g., GPT-6 Astra) have recently shown strong potential for direct robotic control, yet their performance on fine manipulation remains limited. We argue that an important source of failure is not necessarily insufficient policy capability, b</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
+      <category>Robotics</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Audio] Language Discrimination Improves Linguistic Learning in Multilingual Speech Models</title>
+      <link>https://machinelearning.apple.com/research/language-discrimination-multilingual-learning</link>
+      <guid isPermaLink="true">https://machinelearning.apple.com/research/language-discrimination-multilingual-learning</guid>
+      <description>Multilingual self-supervised speech models can benefit from sharing information across languages, but under a matched total pretraining data budget they still fall short of monolingual models. We show that strengthening the model’s ability </description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
+      <category>Audio</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
+    </item>
+    <item>
+      <title>[LLM] Making global data easier to explore</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/google-un-data-commons-platform/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-un-data-commons-platform/</guid>
+      <description>UN System Data Commons Data webpage</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
+      <category>LLM</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Agent] Agent Lightning v1.0: A 3,500-Line Lightweight Agentic RL Framework for Training Agents with Real Harnesses</title>
+      <link>https://www.microsoft.com/en-us/research/blog/agent-lightning-v1-0-a-3500-line-lightweight-agentic-rl-framework-for-training-agents-with-real-harnesses/</link>
+      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/agent-lightning-v1-0-a-3500-line-lightweight-agentic-rl-framework-for-training-agents-with-real-harnesses/</guid>
+      <description>Training AI agents with reinforcement learning can be challenging because their tools, context, and decision-making are managed by complex frameworks. Agent Lightning connects existing agents to RL training, making it easier to improve them</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
+    </item>
+    <item>
+      <title>[Vision] Paper page - Distilling Routed 3D Privilege for Spatial Reasoning in Vision-Language Models</title>
+      <link>https://arxiv.org/abs/2610.12355</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.12355</guid>
+      <description>HuggingFace Daily Papers에 큐레이션된 주목받는 논문.</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
+      <category>Vision</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">HF Daily</source>
+    </item>
+    <item>
+      <title>[Safety] Predicting Alignment Generalization with Value Representations</title>
+      <link>https://arxiv.org/abs/2610.12410v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.12410v1</guid>
+      <description>LLM developers post-train their models to exhibit prosocial values and behavioral traits, which are enumerated in an alignment target. However, while recent post-training developments have yielded models that score highly on alignment evaluations, training models on sets of narro</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
+      <category>Safety</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
@@ -113,105 +167,43 @@
       <link>https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</link>
       <guid isPermaLink="true">https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</guid>
       <description>H3 Max generates a 5-second video in under 3 seconds. In our human preference evaluations against twelve leading video models, it ranks first on quality, prompt understanding, and aesthetics. Independent benchmarks from Artificial Analysis </description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>Infra</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
     </item>
     <item>
-      <title>[Vision] Generative Cinematographer: Composing Camera and Object Motion in 3D</title>
-      <link>https://arxiv.org/abs/2610.02180v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.02180v1</guid>
-      <description>Current controllable video generation systems often rely on 2D motion trajectories or sparse drag signals for object motion. These controls are ambiguous because the same 2D trajectory can correspond to different 3D motions, especially when the camera and objects move simultaneou</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
-      <category>Vision</category>
+      <title>[Robotics] RoboRSI: Stable, efficient, and reusable robot self-evolution in complex real-world environments</title>
+      <link>https://arxiv.org/abs/2610.12424v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.12424v1</guid>
+      <description>A generalist robot should not only perform diverse tasks but also improve through experience, turning what it learns during execution into capabilities that later tasks can reuse. Robot agents that act through code can already repair programs from execution feedback, yet it remai</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
+      <category>Robotics</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[LLM] Building AI to accelerate science and improve lives</title>
-      <link>https://blog.google/innovation-and-ai/technology/ai/ai-applications-science-people/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/ai-applications-science-people/</guid>
-      <description>B-roll showing diverse environments and people, including a teacher and students in a classroom and a patient with a doctor</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <title>[LLM] New experts join Google’s AI &amp; Economy team</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/expanding-ai-economy-research-bench/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/expanding-ai-economy-research-bench/</guid>
+      <description>Text &quot;AI &amp; Economy Research Program&quot; all over a green grid background, with the Google G logo in the bottom right corner</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Tool] Where-OPD: Spatially Guided On-Policy Self-Distillation of MLLMs with Synthetic Scenes</title>
-      <link>https://arxiv.org/abs/2610.02117v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.02117v1</guid>
-      <description>On-policy self-distillation has recently emerged as an effective approach for improving language-model reasoning by supervising students with a frozen or EMA version of themselves that receives privileged information. Its application to multimodal large language models (MLLMs), h</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
-      <category>Tool</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Agent] AutoCompact: Learning When to Compact Context in Long-Horizon Coding Agents</title>
-      <link>https://arxiv.org/abs/2610.02163v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.02163v1</guid>
-      <description>Coding agents solve repository-level software engineering tasks through long trajectories of code inspection, search, editing, and testing. As a task progresses, earlier exploration becomes stale, so managing context is more than avoiding overflow: an agent must decide when to co</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <title>[Agent] BrickBench: Evaluating Agentic Brick Design</title>
+      <link>https://arxiv.org/abs/2610.12452v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.12452v1</guid>
+      <description>We propose BrickBench, a benchmark for agentic text-conditioned LEGO-set design. Given a prompt, an agent is tasked with producing an assembly that not only satisfies semantic and design criteria, but that can also be physically built. To do so, it must select parts from a discre</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Robotics] Offloaded inference for real-world physical AI robotics</title>
-      <link>https://www.microsoft.com/en-us/research/blog/offloaded-inference-for-real-world-physical-ai-robotics/</link>
-      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/offloaded-inference-for-real-world-physical-ai-robotics/</guid>
-      <description>Robots are getting smarter, but how can their hardware match that growth? New Microsoft Research findings show that moving AI inference beyond the robot can improve task success, boost efficiency, and support more advanced physical AI workl</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
-      <category>Robotics</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
-    </item>
-    <item>
-      <title>[Audio] Language Discrimination Improves Linguistic Learning in Multilingual Speech Models</title>
-      <link>https://machinelearning.apple.com/research/language-discrimination-multilingual-learning</link>
-      <guid isPermaLink="true">https://machinelearning.apple.com/research/language-discrimination-multilingual-learning</guid>
-      <description>Multilingual self-supervised speech models can benefit from sharing information across languages, but under a matched total pretraining data budget they still fall short of monolingual models. We show that strengthening the model’s ability </description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
-      <category>Audio</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
-    </item>
-    <item>
-      <title>[Infra] SILSA: Sliding-Window Slice Latents for Topology-Preserving High-Resolution 3D Generation</title>
-      <link>https://arxiv.org/abs/2610.02201v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.02201v1</guid>
-      <description>High-resolution 3D generation increasingly relies on voxel latents and multi-stage pipelines that first predict active structure and then synthesize local geometry. While effective, this design fragments continuous surfaces into many local tokens, inflates generation cost, and of</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
-      <category>Infra</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Vision] Embedding Prediction Helps Image Generation</title>
-      <link>https://arxiv.org/abs/2610.02203v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.02203v1</guid>
-      <description>In diffusion transformers, a class label or a text prompt is embedded once, and the same condition is reused at every denoising step. We ask whether predicted embeddings can serve as this condition instead. Next-Embedding Predictive Autoregression (NEPA) trains a Transformer to p</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
-      <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[LLM] Making global data easier to explore</title>
-      <link>https://blog.google/innovation-and-ai/technology/ai/google-un-data-commons-platform/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-un-data-commons-platform/</guid>
-      <description>UN System Data Commons Data webpage</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Featured] Paper page - OmniSeek: Native Tool Integration for Multi-turn Audio-Visual Reaso</title>
-      <link>https://arxiv.org/abs/2610.02181</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.02181</guid>
-      <description>HuggingFace Daily Papers에 큐레이션된 주목받는 논문.</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
-      <category>Featured</category>
-    </item>
-    <item>
-      <title>[Featured] Hierarchical Continuous Diffusion Language Models</title>
-      <link>https://arxiv.org/abs/2610.02193v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.02193v1</guid>
-      <description>Discrete diffusion language models offer a compelling alternative to autoregressive generation for tasks demanding bidirectional reasoning a</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <title>[Featured] Searching for &quot;Harmful Refusal&quot;: A Psychometric Audit of an AI Safety Benchmark</title>
+      <link>https://arxiv.org/abs/2610.12409v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.12409v1</guid>
+      <description>Safety benchmarks typically report one overall score for a suite of datasets, each of which may target one or more safety-related attributes</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
@@ -219,23 +211,31 @@
       <link>https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/</guid>
       <description>Explore this collection to see how experts and local leaders are using AI breakthroughs to ensure everyone can share the opportunity of AI.</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] KaliBench: A Fine-Grained Benchmark for Cybersecurity Tool Use on Kali Linux wit</title>
-      <link>https://arxiv.org/abs/2610.02206v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.02206v1</guid>
-      <description>LLMs are increasingly applied to cybersecurity workflows, where they are expected to translate analysts&apos; intent into tool invocations. Howev</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <title>[Featured] The latest AI news we announced in September 2026</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/</guid>
+      <description>A video showing the September AI updates</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] H3 Max: Built with fal Inference and Training</title>
-      <link>https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</link>
-      <guid isPermaLink="true">https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</guid>
-      <description>H3 Max generates a 5-second video in under 3 seconds. In our human preference evaluations against twelve leading video models, it ranks firs</description>
-      <pubDate>Mon, 05 Oct 2026 08:44:48 +0900</pubDate>
+      <title>[Featured] RISED: Rubrics for Agentic Multi-Environment Selection and Self-Distillation</title>
+      <link>https://machinelearning.apple.com/research/rised-multi-environment-selection</link>
+      <guid isPermaLink="true">https://machinelearning.apple.com/research/rised-multi-environment-selection</guid>
+      <description>Training a single LLM agent jointly across diverse interactive environments has attracted increasing attention as a route to generalist agen</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
+      <category>Featured</category>
+    </item>
+    <item>
+      <title>[Featured] SpatialHarness: Test-Time Spatial Scaffolding for Fine Robotic Manipulation</title>
+      <link>https://arxiv.org/abs/2610.12457v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2610.12457v1</guid>
+      <description>Frontier multimodal foundation models (e.g., GPT-6 Astra) have recently shown strong potential for direct robotic control, yet their perform</description>
+      <pubDate>Mon, 12 Oct 2026 09:08:49 +0900</pubDate>
       <category>Featured</category>
     </item>
   </channel>

@@ -1,0 +1,574 @@
+{
+  "version": "v0.23.0",
+  "meta": {
+    "issue_year": 2026,
+    "issue_week": 42,
+    "monday": "2026-10-12",
+    "next_monday": "2026-10-19",
+    "generated_at": "2026-10-12T09:06:20.035493+09:00"
+  },
+  "domains": [
+    {
+      "key": "Generative",
+      "label": "Generative AI",
+      "desc": "이미지·영상·음성 생성과 멀티모달"
+    },
+    {
+      "key": "Agentic",
+      "label": "Agents & Reasoning",
+      "desc": "자율 에이전트와 추론 능력"
+    },
+    {
+      "key": "Models",
+      "label": "Models & Infra",
+      "desc": "언어모델·학습·서빙 인프라"
+    },
+    {
+      "key": "Applied",
+      "label": "Applied & Safety",
+      "desc": "로보틱스·응용·정렬과 안전"
+    }
+  ],
+  "editorsNote": "이번 주 AI는 시각 세계 모델링을 멀티모달에 결합하는 흐름이 두드러진다.",
+  "trends": null,
+  "numbers": {
+    "raw_collected": 110,
+    "academic_count": 30,
+    "industry_count": 15,
+    "fresh_this_week": 30,
+    "top_category": "LLM",
+    "top_score_title": "AlphaGenome Atlas: A predictiv…",
+    "blog_sources": 52,
+    "news_sources": 18
+  },
+  "cover": {
+    "label": "Cover Story · Week 42",
+    "headline": "신경망의 본질 · Deep Learning Chapter 1",
+    "deck": "이번 주 Vela가 추천하는 깊이 있는 강의. 3Blue1Brown의 시그니처.",
+    "byline": [
+      "By 3BLUE1BROWN",
+      "18:40",
+      "Curated"
+    ],
+    "image": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=1600&q=80",
+    "videoId": "aircAruvnKk",
+    "credit": "Click image to play"
+  },
+  "thisMonth": [
+    {
+      "date": "SEP 08",
+      "category": "LLM",
+      "title": "AlphaGenome Atlas: A predictive map of every possible DNA letter change in the h",
+      "deck": "AlphaGenome Atlas maps the molecular effects of 9 billion single-letter DNA variants across the human genome.",
+      "why": "",
+      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=70",
+      "url": "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/"
+    },
+    {
+      "date": "SEP 23",
+      "category": "Tool",
+      "title": "Advancing Private AI Compute with secure, server-side memory",
+      "deck": "Introducing private, server-side memory to Private AI Compute for personal AI.",
+      "why": "",
+      "image": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=600&q=70",
+      "url": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/"
+    },
+    {
+      "date": "SEP 30",
+      "category": "Infra",
+      "title": "Introducing SynthID Bio",
+      "deck": "Proof of concept for watermarking AI-generated proteins while preserving biological function.",
+      "why": "",
+      "image": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=600&q=70",
+      "url": "https://deepmind.google/blog/introducing-synthid-bio/"
+    },
+    {
+      "date": "OCT 01",
+      "category": "Agent",
+      "title": "How Much of a Harness Does a Strong Agent Need for Autonomous ML Engineering?",
+      "deck": "Recent autonomous machine learning engineering (MLE) agents have made significant progress on public leaderboards. Often motivated by progre",
+      "why": "",
+      "image": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "url": "https://machinelearning.apple.com/research/harness-autonomous-ml-engineering"
+    },
+    {
+      "date": "OCT 08",
+      "category": "Robotics",
+      "title": "WOVEN: Weaving Visual World Modeling into Multimodal LLMs",
+      "deck": "Multimodal large language models (MLLMs) struggle with spatial, embodied, physical, and temporal reasoning. We hypothesize that these failur",
+      "why": "",
+      "image": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "url": "https://arxiv.org/abs/2610.12417v1"
+    },
+    {
+      "date": "OCT 08",
+      "category": "Vision",
+      "title": "SpaceCast-Bench: Evaluating Predictive Spatial Reasoning in Vision-Language Mode",
+      "deck": "Existing spatial reasoning benchmarks mainly test spatial perception: reading off relations already visible in the input. Yet real-world spa",
+      "why": "",
+      "image": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "url": "https://arxiv.org/abs/2610.12402v1"
+    }
+  ],
+  "featured": [
+    {
+      "label": "Safety",
+      "title": "Searching for \"Harmful Refusal\": A Psychometric Audit of an AI Safety Benchmark",
+      "deck": "Safety benchmarks typically report one overall score for a suite of datasets, each of which may target one or more safety-related attributes",
+      "why": "",
+      "byline": "ARXIV · Christopher M. Stewart et al.",
+      "image": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "url": "https://arxiv.org/abs/2610.12409v1"
+    },
+    {
+      "label": "LLM",
+      "title": "AI for Societal Impact",
+      "deck": "Explore this collection to see how experts and local leaders are using AI breakthroughs to ensure everyone can share the opportunity of AI.",
+      "why": "",
+      "byline": "GOOGLE AI · Google AI",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Health_Header.max-1440x810.png",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/"
+    },
+    {
+      "label": "Tool",
+      "title": "The latest AI news we announced in September 2026",
+      "deck": "A video showing the September AI updates",
+      "why": "",
+      "byline": "GOOGLE AI · Google AI",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/September_AI_Recap_hero.width-1300.png",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/"
+    },
+    {
+      "label": "Agent",
+      "title": "RISED: Rubrics for Agentic Multi-Environment Selection and Self-Distillation",
+      "deck": "Training a single LLM agent jointly across diverse interactive environments has attracted increasing attention as a route to generalist agen",
+      "why": "",
+      "byline": "APPLE ML · Apple ML",
+      "image": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "url": "https://machinelearning.apple.com/research/rised-multi-environment-selection"
+    },
+    {
+      "label": "Robotics",
+      "title": "SpatialHarness: Test-Time Spatial Scaffolding for Fine Robotic Manipulation",
+      "deck": "Frontier multimodal foundation models (e.g., GPT-6 Astra) have recently shown strong potential for direct robotic control, yet their perform",
+      "why": "",
+      "byline": "ARXIV · Jiayu Wang et al.",
+      "image": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "url": "https://arxiv.org/abs/2610.12457v1"
+    }
+  ],
+  "videos": [
+    {
+      "title": "Let's build GPT — 처음부터 만드는 GPT",
+      "byline": "Andrej Karpathy",
+      "duration": "1:56:20",
+      "videoId": "kCc8FmEb1nY",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/kCc8FmEb1nY/hqdefault.jpg"
+    },
+    {
+      "title": "[1시간] LLM 입문 강의",
+      "byline": "Andrej Karpathy",
+      "duration": "59:48",
+      "videoId": "zjkBMFhNj_g",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/zjkBMFhNj_g/hqdefault.jpg"
+    },
+    {
+      "title": "But what is a GPT? — 트랜스포머 시각 입문",
+      "byline": "3Blue1Brown",
+      "duration": "27:14",
+      "videoId": "wjZofJX0v4M",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/wjZofJX0v4M/hqdefault.jpg"
+    },
+    {
+      "title": "신경망의 본질 — Deep Learning Chapter 1",
+      "byline": "3Blue1Brown",
+      "duration": "18:40",
+      "videoId": "aircAruvnKk",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/aircAruvnKk/hqdefault.jpg"
+    }
+  ],
+  "industry": [
+    {
+      "date": "OCT 02",
+      "source": "Ars Technica",
+      "title": "Apple changes full-disk access permissions to curb abuse from AI agents",
+      "deck": "Meta says FDA isn't sufficient to Muse reading messages. Apple begs to differ.",
+      "url": "https://arstechnica.com/security/2026/10/apple-changes-full-disk-access-permissions-to-curb-abuse-from-ai-agents/"
+    },
+    {
+      "date": "OCT 05",
+      "source": "Ars Technica",
+      "title": "MCP for agent-to-agent comms may be the riskiest protocol you've never heard of",
+      "deck": "Trust gaps in the new protocol spread malicious prompts from one agent to another.",
+      "url": "https://arstechnica.com/security/2026/10/vulnerability-in-agents-from-google-and-others-exposes-structural-flaw-in-mcp/"
+    },
+    {
+      "date": "OCT 06",
+      "source": "Ars Technica",
+      "title": "OpenAI agents tried to hack Wikipedia tools and flooded it with traffic",
+      "deck": "The reports of OpenAI agents harming third-party sites keep coming.",
+      "url": "https://arstechnica.com/security/2026/10/openai-agents-tried-to-hack-wikipedia-tools-and-flooded-it-with-traffic/"
+    },
+    {
+      "date": "OCT 07",
+      "source": "Wired AI",
+      "title": "These Researchers Made AI Drive a Toyota Corolla to Get In-N-Out",
+      "deck": "Three engineers put GPT, Claude, and Grok in charge of a real car. Only one of them was successful.",
+      "url": "https://www.wired.com/story/ai-is-driving-cars-now-oh-boy/"
+    },
+    {
+      "date": "OCT 10",
+      "source": "TechCrunch",
+      "title": "Here are the top AI agents that can live in your text messages",
+      "deck": "We created a list of the most notable AI agents that can live in your text messages, from general assistants to agents designed for families, travel, and work.",
+      "url": "https://techcrunch.com/2026/10/10/all-the-ai-agents-that-can-live-in-your-text-messages/"
+    },
+    {
+      "date": "OCT 11",
+      "source": "Hacker News",
+      "title": "The gap in shared understanding of LLM capability is widening",
+      "deck": "Hacker News 인기글. 185점 · 284개 댓글.",
+      "url": "https://twitter.com/karpathy/status/2109361546505966046"
+    },
+    {
+      "date": "OCT 11",
+      "source": "Hacker News",
+      "title": "500B tokens later: Letting AI agents decompile a first-person shooter",
+      "deck": "Hacker News 인기글. 139점 · 103개 댓글.",
+      "url": "https://momo5502.com/posts/2026-10-09-game-decompilation/"
+    },
+    {
+      "date": "OCT 06",
+      "source": "Ars Technica",
+      "title": "Hackers obtain counterfeit TLS certificates for Google and other large services",
+      "deck": "Compromise of 3 domain registries allows hackers to walk off with unauthorized certs.",
+      "url": "https://arstechnica.com/security/2026/10/hackers-obtain-counterfeit-tls-certificates-for-google-and-other-large-services/"
+    }
+  ],
+  "signals": [
+    {
+      "id": "dm-8aaadec7",
+      "source": "blog",
+      "sourceLabel": "DeepMind",
+      "title": "AlphaGenome Atlas: A predictive map of every possible DNA letter change in the human genome",
+      "abstract": "AlphaGenome Atlas maps the molecular effects of 9 billion single-letter DNA variants across the human genome.",
+      "url": "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/",
+      "published": "2026-09-08",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "DeepMind",
+      "thumb": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=70",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "dm-8f839c0d",
+      "source": "blog",
+      "sourceLabel": "DeepMind",
+      "title": "Advancing Private AI Compute with secure, server-side memory",
+      "abstract": "Introducing private, server-side memory to Private AI Compute for personal AI.",
+      "url": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/",
+      "published": "2026-09-23",
+      "tags": [
+        "Tool"
+      ],
+      "authors": "DeepMind",
+      "thumb": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=600&q=70",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "dm-c5fa6221",
+      "source": "blog",
+      "sourceLabel": "DeepMind",
+      "title": "Introducing SynthID Bio",
+      "abstract": "Proof of concept for watermarking AI-generated proteins while preserving biological function.",
+      "url": "https://deepmind.google/blog/introducing-synthid-bio/",
+      "published": "2026-09-30",
+      "tags": [
+        "Infra"
+      ],
+      "authors": "DeepMind",
+      "thumb": "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=600&q=70",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "apple-95bf307e",
+      "source": "blog",
+      "sourceLabel": "Apple ML",
+      "title": "How Much of a Harness Does a Strong Agent Need for Autonomous ML Engineering?",
+      "abstract": "Recent autonomous machine learning engineering (MLE) agents have made significant progress on public leaderboards. Often motivated by progress stagnation over long-horizon cycles and limited Large Language Model (LLM) primitives, modern MLE",
+      "url": "https://machinelearning.apple.com/research/harness-autonomous-ml-engineering",
+      "published": "2026-10-01",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Apple ML",
+      "thumb": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "score": 4,
+      "domain": "Agentic"
+    },
+    {
+      "id": "arxiv-2610.12417",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "WOVEN: Weaving Visual World Modeling into Multimodal LLMs",
+      "abstract": "Multimodal large language models (MLLMs) struggle with spatial, embodied, physical, and temporal reasoning. We hypothesize that these failures reflect a shared deficit in visual transition reasoning, and test whether this capability can serve as a shared training primitive, one t",
+      "url": "https://arxiv.org/abs/2610.12417v1",
+      "published": "2026-10-08",
+      "tags": [
+        "Robotics"
+      ],
+      "authors": "Zheyu Fan et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Agentic"
+    },
+    {
+      "id": "arxiv-2610.12402",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "SpaceCast-Bench: Evaluating Predictive Spatial Reasoning in Vision-Language Models",
+      "abstract": "Existing spatial reasoning benchmarks mainly test spatial perception: reading off relations already visible in the input. Yet real-world spatial intelligence demands predictive spatial reasoning: constructing a scene from observations, anticipating how an intervention changes it,",
+      "url": "https://arxiv.org/abs/2610.12402v1",
+      "published": "2026-10-08",
+      "tags": [
+        "Vision"
+      ],
+      "authors": "Hongxing Li et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Agentic"
+    },
+    {
+      "id": "arxiv-2610.12409",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "Searching for \"Harmful Refusal\": A Psychometric Audit of an AI Safety Benchmark",
+      "abstract": "Safety benchmarks typically report one overall score for a suite of datasets, each of which may target one or more safety-related attributes, so models with similar overall scores can have very different attribute profiles. Comparing models is more tractable at the level of indiv",
+      "url": "https://arxiv.org/abs/2610.12409v1",
+      "published": "2026-10-08",
+      "tags": [
+        "Safety"
+      ],
+      "authors": "Christopher M. Stewart et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 3,
+      "domain": "Applied"
+    },
+    {
+      "id": "googai-a56de3e9",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "AI for Societal Impact",
+      "abstract": "Explore this collection to see how experts and local leaders are using AI breakthroughs to ensure everyone can share the opportunity of AI.",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/ai-for-societal-impact/",
+      "published": "2026-09-15",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Health_Header.max-1440x810.png",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "googai-bfe2b156",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "The latest AI news we announced in September 2026",
+      "abstract": "A video showing the September AI updates",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/",
+      "published": "2026-10-02",
+      "tags": [
+        "Tool"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/September_AI_Recap_hero.width-1300.png",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "apple-3f2aa36b",
+      "source": "blog",
+      "sourceLabel": "Apple ML",
+      "title": "RISED: Rubrics for Agentic Multi-Environment Selection and Self-Distillation",
+      "abstract": "Training a single LLM agent jointly across diverse interactive environments has attracted increasing attention as a route to generalist agents. Existing curriculum and data-selection strategies often allocate training at the environment lev",
+      "url": "https://machinelearning.apple.com/research/rised-multi-environment-selection",
+      "published": "2026-10-06",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Apple ML",
+      "thumb": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "score": 4,
+      "domain": "Agentic"
+    },
+    {
+      "id": "arxiv-2610.12457",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "SpatialHarness: Test-Time Spatial Scaffolding for Fine Robotic Manipulation",
+      "abstract": "Frontier multimodal foundation models (e.g., GPT-6 Astra) have recently shown strong potential for direct robotic control, yet their performance on fine manipulation remains limited. We argue that an important source of failure is not necessarily insufficient policy capability, b",
+      "url": "https://arxiv.org/abs/2610.12457v1",
+      "published": "2026-10-08",
+      "tags": [
+        "Robotics"
+      ],
+      "authors": "Jiayu Wang et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Applied"
+    },
+    {
+      "id": "apple-a0d77d55",
+      "source": "blog",
+      "sourceLabel": "Apple ML",
+      "title": "Language Discrimination Improves Linguistic Learning in Multilingual Speech Models",
+      "abstract": "Multilingual self-supervised speech models can benefit from sharing information across languages, but under a matched total pretraining data budget they still fall short of monolingual models. We show that strengthening the model’s ability ",
+      "url": "https://machinelearning.apple.com/research/language-discrimination-multilingual-learning",
+      "published": "2026-10-02",
+      "tags": [
+        "Audio"
+      ],
+      "authors": "Apple ML",
+      "thumb": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "score": 2,
+      "domain": "Generative"
+    },
+    {
+      "id": "googai-b7fa72fd",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "Making global data easier to explore",
+      "abstract": "UN System Data Commons Data webpage",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/google-un-data-commons-platform/",
+      "published": "2026-09-17",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/DC_UN_Main.width-1300.png",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "msr-adaf772f",
+      "source": "blog",
+      "sourceLabel": "Microsoft Research",
+      "title": "Agent Lightning v1.0: A 3,500-Line Lightweight Agentic RL Framework for Training Agents with Real Harnesses",
+      "abstract": "Training AI agents with reinforcement learning can be challenging because their tools, context, and decision-making are managed by complex frameworks. Agent Lightning connects existing agents to RL training, making it easier to improve them",
+      "url": "https://www.microsoft.com/en-us/research/blog/agent-lightning-v1-0-a-3500-line-lightweight-agentic-rl-framework-for-training-agents-with-real-harnesses/",
+      "published": "2026-10-07",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Microsoft Research",
+      "thumb": "https://www.microsoft.com/en-us/research/wp-content/uploads/2026/10/AgentLightning-TWLIFB-1200x627-1.jpg",
+      "score": 4,
+      "domain": "Agentic"
+    },
+    {
+      "id": "arxiv-2610.12355",
+      "source": "arxiv",
+      "sourceLabel": "HF Daily",
+      "title": "Paper page - Distilling Routed 3D Privilege for Spatial Reasoning in Vision-Language Models",
+      "abstract": "HuggingFace Daily Papers에 큐레이션된 주목받는 논문.",
+      "url": "https://arxiv.org/abs/2610.12355",
+      "published": "2026-10-12",
+      "tags": [
+        "Vision"
+      ],
+      "authors": "Daily Papers",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Agentic"
+    },
+    {
+      "id": "arxiv-2610.12410",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "Predicting Alignment Generalization with Value Representations",
+      "abstract": "LLM developers post-train their models to exhibit prosocial values and behavioral traits, which are enumerated in an alignment target. However, while recent post-training developments have yielded models that score highly on alignment evaluations, training models on sets of narro",
+      "url": "https://arxiv.org/abs/2610.12410v1",
+      "published": "2026-10-08",
+      "tags": [
+        "Safety"
+      ],
+      "authors": "Andy Liu et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 2,
+      "domain": "Applied"
+    },
+    {
+      "id": "fal-60a4e256",
+      "source": "blog",
+      "sourceLabel": "fal",
+      "title": "H3 Max: Built with fal Inference and Training",
+      "abstract": "H3 Max generates a 5-second video in under 3 seconds. In our human preference evaluations against twelve leading video models, it ranks first on quality, prompt understanding, and aesthetics. Independent benchmarks from Artificial Analysis ",
+      "url": "https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/",
+      "published": "2026-09-17",
+      "tags": [
+        "Infra"
+      ],
+      "authors": "fal",
+      "thumb": "https://storage.ghost.io/c/0e/15/0e15ee8a-bd95-4b71-9258-950f77f4d196/content/images/2026/09/Luma---Template-04---Happy-Hour---Brown.png",
+      "score": 3,
+      "domain": "Models"
+    },
+    {
+      "id": "arxiv-2610.12424",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "RoboRSI: Stable, efficient, and reusable robot self-evolution in complex real-world environments",
+      "abstract": "A generalist robot should not only perform diverse tasks but also improve through experience, turning what it learns during execution into capabilities that later tasks can reuse. Robot agents that act through code can already repair programs from execution feedback, yet it remai",
+      "url": "https://arxiv.org/abs/2610.12424v1",
+      "published": "2026-10-08",
+      "tags": [
+        "Robotics"
+      ],
+      "authors": "Zimo Wen et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 3,
+      "domain": "Applied"
+    },
+    {
+      "id": "googai-3dd23fb9",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "New experts join Google’s AI & Economy team",
+      "abstract": "Text \"AI & Economy Research Program\" all over a green grid background, with the Google G logo in the bottom right corner",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/expanding-ai-economy-research-bench/",
+      "published": "2026-09-18",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/AI__Economy_team_hero.width-1300.png",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "arxiv-2610.12452",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "BrickBench: Evaluating Agentic Brick Design",
+      "abstract": "We propose BrickBench, a benchmark for agentic text-conditioned LEGO-set design. Given a prompt, an agent is tasked with producing an assembly that not only satisfies semantic and design criteria, but that can also be physically built. To do so, it must select parts from a discre",
+      "url": "https://arxiv.org/abs/2610.12452v1",
+      "published": "2026-10-08",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Peter Kulits et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Agentic"
+    }
+  ]
+}
