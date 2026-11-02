@@ -1,0 +1,574 @@
+{
+  "version": "v0.23.0",
+  "meta": {
+    "issue_year": 2026,
+    "issue_week": 45,
+    "monday": "2026-11-02",
+    "next_monday": "2026-11-09",
+    "generated_at": "2026-11-02T09:01:55.536854+09:00"
+  },
+  "domains": [
+    {
+      "key": "Generative",
+      "label": "Generative AI",
+      "desc": "이미지·영상·음성 생성과 멀티모달"
+    },
+    {
+      "key": "Agentic",
+      "label": "Agents & Reasoning",
+      "desc": "자율 에이전트와 추론 능력"
+    },
+    {
+      "key": "Models",
+      "label": "Models & Infra",
+      "desc": "언어모델·학습·서빙 인프라"
+    },
+    {
+      "key": "Applied",
+      "label": "Applied & Safety",
+      "desc": "로보틱스·응용·정렬과 안전"
+    }
+  ],
+  "editorsNote": "이번 주 AI는 경량 에이전트 플랫폼인 Agent Lightning이 출시돼 효율성을.",
+  "trends": null,
+  "numbers": {
+    "raw_collected": 129,
+    "academic_count": 30,
+    "industry_count": 15,
+    "fresh_this_week": 26,
+    "top_category": "LLM",
+    "top_score_title": "New experts join Google’s AI &…",
+    "blog_sources": 51,
+    "news_sources": 18
+  },
+  "cover": {
+    "label": "Cover Story · Week 45",
+    "headline": "Let's build GPT · 처음부터 만드는 GPT",
+    "deck": "이번 주 Vela가 추천하는 깊이 있는 강의. Andrej Karpathy의 시그니처.",
+    "byline": [
+      "By ANDREJ KARPATHY",
+      "1:56:20",
+      "Curated"
+    ],
+    "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1600&q=80",
+    "videoId": "kCc8FmEb1nY",
+    "credit": "Click image to play"
+  },
+  "thisMonth": [
+    {
+      "date": "SEP 18",
+      "category": "LLM",
+      "title": "New experts join Google’s AI & Economy team",
+      "deck": "Text \"AI & Economy Research Program\" all over a green grid background, with the Google G logo in the bottom right corner",
+      "why": "",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/AI__Economy_team_hero.width-1300.png",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/expanding-ai-economy-research-bench/"
+    },
+    {
+      "date": "OCT 02",
+      "category": "Tool",
+      "title": "The latest AI news we announced in September 2026",
+      "deck": "A video showing the September AI updates",
+      "why": "",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/September_AI_Recap_hero.width-1300.png",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/"
+    },
+    {
+      "date": "OCT 15",
+      "category": "Vision",
+      "title": "Accelerating the search for antimicrobial peptides with Google Antigravity",
+      "deck": "Accelerating the search for novel antimicrobial peptides using Google Antigravity for Science.",
+      "why": "",
+      "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70",
+      "url": "https://deepmind.google/blog/accelerating-antimicrobial-discovery/"
+    },
+    {
+      "date": "OCT 29",
+      "category": "Robotics",
+      "title": "Gym-Anything for Robotics: Scaling physical simulations with digital agents",
+      "deck": "Realistic, fast robotics simulations could enable large-scale training of embodied AI models that transfer to the real world. However, despi",
+      "why": "",
+      "image": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "url": "https://arxiv.org/abs/2610.40565v1"
+    },
+    {
+      "date": "SEP 17",
+      "category": "Infra",
+      "title": "H3 Max: Built with fal Inference and Training",
+      "deck": "H3 Max generates a 5-second video in under 3 seconds. In our human preference evaluations against twelve leading video models, it ranks firs",
+      "why": "",
+      "image": "https://storage.ghost.io/c/0e/15/0e15ee8a-bd95-4b71-9258-950f77f4d196/content/images/2026/09/Luma---Template-04---Happy-Hour---Brown.png",
+      "url": "https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/"
+    },
+    {
+      "date": "OCT 14",
+      "category": "Audio",
+      "title": "Code-Switching Detection via Language-Selective Dimensions in Speech Foundation ",
+      "deck": "Code-switching (CS), the alternation between languages within an utterance, is common in multilingual speech but underrepresented in pretrai",
+      "why": "",
+      "image": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "url": "https://machinelearning.apple.com/research/code-switching-detection"
+    }
+  ],
+  "featured": [
+    {
+      "label": "Agent",
+      "title": "Agent Lightning v1.0: A 3,500-Line Lightweight Agentic RL Framework for Training",
+      "deck": "Training AI agents with reinforcement learning can be challenging because their tools, context, and decision-making are managed by complex f",
+      "why": "",
+      "byline": "MICROSOFT RESEARCH · Microsoft Research",
+      "image": "https://www.microsoft.com/en-us/research/wp-content/uploads/2026/10/AgentLightning-TWLIFB-1200x627-1.jpg",
+      "url": "https://www.microsoft.com/en-us/research/blog/agent-lightning-v1-0-a-3500-line-lightweight-agentic-rl-framework-for-training-agents-with-real-harnesses/"
+    },
+    {
+      "label": "LLM",
+      "title": "Google Beam expands with new regions, partners, and customers",
+      "deck": "Google Beam promotional animation",
+      "why": "",
+      "byline": "GOOGLE AI · Google AI",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Google_Beam_hero.width-1300.png",
+      "url": "https://blog.google/innovation-and-ai/technology/research/google-beam-expansion/"
+    },
+    {
+      "label": "Vision",
+      "title": "Southeast Asia’s digital economy to hit $368 billion",
+      "deck": "Cover image for the e-Conomy SEA 2026 report titled Building the intelligent economy by Google, Temasek, and Bain and Company. A 3D illustra",
+      "why": "",
+      "byline": "GOOGLE AI · Google AI",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Hero_Image_e-Conomy_SEA_2026.width-1300.png",
+      "url": "https://blog.google/company-news/inside-google/around-the-globe/google-asia/e-conomy-sea-report-2026/"
+    },
+    {
+      "label": "Agent",
+      "title": "Selection-Based Structured Reasoning: Toward Efficient Multimodal Search Agents",
+      "deck": "Multimodal agents commonly generate freeform reasoning before each action. For small models, limited model capacity can result in lengthy re",
+      "why": "",
+      "byline": "APPLE ML · Apple ML",
+      "image": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "url": "https://machinelearning.apple.com/research/selection-structured-reasoning"
+    },
+    {
+      "label": "LLM",
+      "title": "Watch the winning trailer from the Future Vision XPRIZE, The Gifted.",
+      "deck": "Watch the winning trailer from the Future Vision XPRIZE, The Gifted.",
+      "why": "",
+      "byline": "GOOGLE AI · Google AI",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/futurevisionxprize_social.max-1440x810.png",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/winner-future-vision-xprize/"
+    }
+  ],
+  "videos": [
+    {
+      "title": "Let's build GPT — 처음부터 만드는 GPT",
+      "byline": "Andrej Karpathy",
+      "duration": "1:56:20",
+      "videoId": "kCc8FmEb1nY",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/kCc8FmEb1nY/hqdefault.jpg"
+    },
+    {
+      "title": "[1시간] LLM 입문 강의",
+      "byline": "Andrej Karpathy",
+      "duration": "59:48",
+      "videoId": "zjkBMFhNj_g",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/zjkBMFhNj_g/hqdefault.jpg"
+    },
+    {
+      "title": "But what is a GPT? — 트랜스포머 시각 입문",
+      "byline": "3Blue1Brown",
+      "duration": "27:14",
+      "videoId": "wjZofJX0v4M",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/wjZofJX0v4M/hqdefault.jpg"
+    },
+    {
+      "title": "신경망의 본질 — Deep Learning Chapter 1",
+      "byline": "3Blue1Brown",
+      "duration": "18:40",
+      "videoId": "aircAruvnKk",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/aircAruvnKk/hqdefault.jpg"
+    }
+  ],
+  "industry": [
+    {
+      "date": "OCT 21",
+      "source": "Ars Technica",
+      "title": "PHP warns it plans to release 2 emergency patches imminently",
+      "deck": "Unconfirmed report claims PHP2Shell exploit remotely executes code on PHP sites.",
+      "url": "https://arstechnica.com/security/2026/10/php-maintainers-tell-web-devs-to-prepare-themselves-for-critical-security-patches/"
+    },
+    {
+      "date": "OCT 29",
+      "source": "Wired AI",
+      "title": "A Defense Contractor Gave Their Personal AI Agent Access to a Secure Pentagon System",
+      "deck": "Sources tell WIRED that an Accenture employee’s personal Claude agent ran on a DOD network for two months before it was identified and the vulnerability could b",
+      "url": "https://www.wired.com/story/a-defense-contractor-gave-their-personal-ai-agent-access-to-a-secure-pentagon-system/"
+    },
+    {
+      "date": "OCT 29",
+      "source": "Wired AI",
+      "title": "Mistral Says Its AI Model ‘Le Chonk’ Has Leapfrogged China in the Open-Weight Race",
+      "deck": "The French AI lab claims its latest release matches or outperforms even the best models from DeepSeek and Z.ai in coding and cybersecurity.",
+      "url": "https://www.wired.com/story/mistral-says-le-chonk-surpasses-chinese-models-cybersecurity/"
+    },
+    {
+      "date": "OCT 30",
+      "source": "Wired AI",
+      "title": "How a Contractor’s Claude Agent Got Into the Pentagon",
+      "deck": "This week on Uncanny Valley, we also discuss Anthropic’s IPO filing and the volunteers gearing up to counter ICE at the midterms.",
+      "url": "https://www.wired.com/story/uncanny-valley-podcast-how-a-contractors-claude-agent-got-into-the-pentagon/"
+    },
+    {
+      "date": "OCT 31",
+      "source": "Wired AI",
+      "title": "Meta’s Muse Could Upend All Kinds of Businesses. It Hasn’t Yet",
+      "deck": "Companies have spent the past several weeks trying to reassure investors that Muse and other AI agents pose more of an opportunity than a threat.",
+      "url": "https://www.wired.com/story/metas-muse-could-upend-all-kinds-of-businesses-it-hasnt-yet/"
+    },
+    {
+      "date": "OCT 31",
+      "source": "Wired AI",
+      "title": "An AI Agent Injected Drugs Into a Live Mouse’s Brain",
+      "deck": "A biotech startup let an agent choose a gene therapy and successfully inject the treatment, offering a startling glimpse of the future of research labs.",
+      "url": "https://www.wired.com/story/an-ai-agent-did-brain-surgery-on-live-mouse/"
+    },
+    {
+      "date": "NOV 01",
+      "source": "Hacker News",
+      "title": "The AI cost of JavaScript frameworks",
+      "deck": "Hacker News 인기글. 283점 · 222개 댓글.",
+      "url": "https://nolanlawson.com/2026/10/28/the-ai-cost-of-javascript-frameworks/"
+    },
+    {
+      "date": "NOV 01",
+      "source": "Hacker News",
+      "title": "AI delivers 'zero financial payoff' to most companies, Apollo economist says",
+      "deck": "Hacker News 인기글. 73점 · 43개 댓글.",
+      "url": "https://techcrunch.com/2026/10/25/ai-delivers-zero-financial-payoff-to-most-companies-according-to-apollo-economist/"
+    }
+  ],
+  "signals": [
+    {
+      "id": "googai-3dd23fb9",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "New experts join Google’s AI & Economy team",
+      "abstract": "Text \"AI & Economy Research Program\" all over a green grid background, with the Google G logo in the bottom right corner",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/expanding-ai-economy-research-bench/",
+      "published": "2026-09-18",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/AI__Economy_team_hero.width-1300.png",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "googai-bfe2b156",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "The latest AI news we announced in September 2026",
+      "abstract": "A video showing the September AI updates",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/",
+      "published": "2026-10-02",
+      "tags": [
+        "Tool"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/September_AI_Recap_hero.width-1300.png",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "dm-ba028f76",
+      "source": "blog",
+      "sourceLabel": "DeepMind",
+      "title": "Accelerating the search for antimicrobial peptides with Google Antigravity",
+      "abstract": "Accelerating the search for novel antimicrobial peptides using Google Antigravity for Science.",
+      "url": "https://deepmind.google/blog/accelerating-antimicrobial-discovery/",
+      "published": "2026-10-15",
+      "tags": [
+        "Vision"
+      ],
+      "authors": "DeepMind",
+      "thumb": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=70",
+      "score": 4,
+      "domain": "Generative"
+    },
+    {
+      "id": "arxiv-2610.40565",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "Gym-Anything for Robotics: Scaling physical simulations with digital agents",
+      "abstract": "Realistic, fast robotics simulations could enable large-scale training of embodied AI models that transfer to the real world. However, despite decades of progress, available simulations cover only a narrow range of real-world tasks and physical phenomena. The core bottleneck is t",
+      "url": "https://arxiv.org/abs/2610.40565v1",
+      "published": "2026-10-29",
+      "tags": [
+        "Robotics"
+      ],
+      "authors": "Pranjal Aggarwal et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Applied"
+    },
+    {
+      "id": "fal-60a4e256",
+      "source": "blog",
+      "sourceLabel": "fal",
+      "title": "H3 Max: Built with fal Inference and Training",
+      "abstract": "H3 Max generates a 5-second video in under 3 seconds. In our human preference evaluations against twelve leading video models, it ranks first on quality, prompt understanding, and aesthetics. Independent benchmarks from Artificial Analysis ",
+      "url": "https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/",
+      "published": "2026-09-17",
+      "tags": [
+        "Infra"
+      ],
+      "authors": "fal",
+      "thumb": "https://storage.ghost.io/c/0e/15/0e15ee8a-bd95-4b71-9258-950f77f4d196/content/images/2026/09/Luma---Template-04---Happy-Hour---Brown.png",
+      "score": 3,
+      "domain": "Models"
+    },
+    {
+      "id": "apple-ddb57e17",
+      "source": "blog",
+      "sourceLabel": "Apple ML",
+      "title": "Code-Switching Detection via Language-Selective Dimensions in Speech Foundation Models",
+      "abstract": "Code-switching (CS), the alternation between languages within an utterance, is common in multilingual speech but underrepresented in pretraining corpora. Increasing CS coverage requires finding relevant utterances in large speech collection",
+      "url": "https://machinelearning.apple.com/research/code-switching-detection",
+      "published": "2026-10-14",
+      "tags": [
+        "Audio"
+      ],
+      "authors": "Apple ML",
+      "thumb": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "score": 3,
+      "domain": "Generative"
+    },
+    {
+      "id": "msr-adaf772f",
+      "source": "blog",
+      "sourceLabel": "Microsoft Research",
+      "title": "Agent Lightning v1.0: A 3,500-Line Lightweight Agentic RL Framework for Training Agents with Real Harnesses",
+      "abstract": "Training AI agents with reinforcement learning can be challenging because their tools, context, and decision-making are managed by complex frameworks. Agent Lightning connects existing agents to RL training, making it easier to improve them",
+      "url": "https://www.microsoft.com/en-us/research/blog/agent-lightning-v1-0-a-3500-line-lightweight-agentic-rl-framework-for-training-agents-with-real-harnesses/",
+      "published": "2026-10-07",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Microsoft Research",
+      "thumb": "https://www.microsoft.com/en-us/research/wp-content/uploads/2026/10/AgentLightning-TWLIFB-1200x627-1.jpg",
+      "score": 4,
+      "domain": "Agentic"
+    },
+    {
+      "id": "googai-1862986a",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "Google Beam expands with new regions, partners, and customers",
+      "abstract": "Google Beam promotional animation",
+      "url": "https://blog.google/innovation-and-ai/technology/research/google-beam-expansion/",
+      "published": "2026-09-23",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Google_Beam_hero.width-1300.png",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "googai-aec1886e",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "Southeast Asia’s digital economy to hit $368 billion",
+      "abstract": "Cover image for the e-Conomy SEA 2026 report titled Building the intelligent economy by Google, Temasek, and Bain and Company. A 3D illustration features a glowing yellow star surrounded by miniature scenes representing digital sectors, inc",
+      "url": "https://blog.google/company-news/inside-google/around-the-globe/google-asia/e-conomy-sea-report-2026/",
+      "published": "2026-10-21",
+      "tags": [
+        "Vision"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Hero_Image_e-Conomy_SEA_2026.width-1300.png",
+      "score": 4,
+      "domain": "Generative"
+    },
+    {
+      "id": "apple-3e97135f",
+      "source": "blog",
+      "sourceLabel": "Apple ML",
+      "title": "Selection-Based Structured Reasoning: Toward Efficient Multimodal Search Agents",
+      "abstract": "Multimodal agents commonly generate freeform reasoning before each action. For small models, limited model capacity can result in lengthy reasoning that provides little useful guidance for action generation while incurring substantial infer",
+      "url": "https://machinelearning.apple.com/research/selection-structured-reasoning",
+      "published": "2026-10-15",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Apple ML",
+      "thumb": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "score": 4,
+      "domain": "Agentic"
+    },
+    {
+      "id": "googai-c5edbf46",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "Watch the winning trailer from the Future Vision XPRIZE, The Gifted.",
+      "abstract": "Watch the winning trailer from the Future Vision XPRIZE, The Gifted.",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/winner-future-vision-xprize/",
+      "published": "2026-09-28",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/futurevisionxprize_social.max-1440x810.png",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "arxiv-2610.40578",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "VeriCUA: Verification as Agentic Exploration for Computer-Using Agents",
+      "abstract": "Building and scaling computer-using agents (CUAs) across desktop, mobile, and web environments requires reliable task-completion verification for data curation, evaluation, and reinforcement learning. Typical automated approaches prompt vision-language models (VLMs) to judge traj",
+      "url": "https://arxiv.org/abs/2610.40578v1",
+      "published": "2026-10-29",
+      "tags": [
+        "Vision"
+      ],
+      "authors": "Qiushi Sun et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Generative"
+    },
+    {
+      "id": "arxiv-2610.40627",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "ShallowDefend: Harnessing Shallow Safety Alignment for Multi-Turn Defender",
+      "abstract": "Safety alignment has enabled large language models to reliably refuse harmful requests directly, yet the same request distributed across a multi-turn conversation still succeeds far too often. This brittleness has a mechanistic root: Alignment is shallow, with safety behavior con",
+      "url": "https://arxiv.org/abs/2610.40627v1",
+      "published": "2026-10-29",
+      "tags": [
+        "Safety"
+      ],
+      "authors": "Qiyao Ma et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 2,
+      "domain": "Applied"
+    },
+    {
+      "id": "fal-c7076821",
+      "source": "blog",
+      "sourceLabel": "fal",
+      "title": "Introducing H3 Max by fal",
+      "abstract": "Announcing H3 Max, a post-trained version of MiniMax H3 developed by fal Research and optimized for maximum speed by fal s inference team. In our human preference evaluations, H3 Max ranks #1 across overall quality, prompt understanding, an",
+      "url": "https://blog.fal.ai/introducing-h3-max-by-fal/",
+      "published": "2026-08-27",
+      "tags": [
+        "Infra"
+      ],
+      "authors": "fal",
+      "thumb": "https://storage.ghost.io/c/0e/15/0e15ee8a-bd95-4b71-9258-950f77f4d196/content/images/2026/08/fal-glitch-dust-1080x1080-1787861178159.png",
+      "score": 2,
+      "domain": "Models"
+    },
+    {
+      "id": "googai-cf7f1b75",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "Introducing Playground: Create and play custom games",
+      "abstract": "Overview of Playground",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/",
+      "published": "2026-10-07",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/THUMBNAIL_BLOG.width-1300.png",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "arxiv-2610.40654",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "Propose-Filter-Release: Scaling Noise to Typical Sensitivity via Private Filtering",
+      "abstract": "An estimator can be accurate and stable on typical data, yet sensitive to a few possible records. Differentially private mechanisms commonly scale their noise to the worst-case influence of a single record, which lets these records dictate the noise even when the remaining data w",
+      "url": "https://arxiv.org/abs/2610.40654v1",
+      "published": "2026-10-29",
+      "tags": [
+        "Vision"
+      ],
+      "authors": "Moshe Shenfeld et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Generative"
+    },
+    {
+      "id": "arxiv-2610.40632",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "SymAnt: Grounding Long-Horizon Action Anticipation with Adaptable Symbolic Priors",
+      "abstract": "As robots and intelligent systems increasingly interact with humans, they must anticipate long sequences of future actions from only brief observations. While purely neural models typically require extensive observations to predict future actions and remain difficult to interpret",
+      "url": "https://arxiv.org/abs/2610.40632v1",
+      "published": "2026-10-29",
+      "tags": [
+        "Robotics"
+      ],
+      "authors": "Fnu Aryan et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 2,
+      "domain": "Applied"
+    },
+    {
+      "id": "arxiv-2610.40577",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "Multi-View MoE: Letting Every Router Shape Expert Computation",
+      "abstract": "Sparse mixture-of-experts (MoE) models expand parameter capacity by activating a small subset of experts per token. Expert selection directly affects model capabilities under a fixed active-expert budget. Dense evaluation of all experts reveals weak agreement between single-route",
+      "url": "https://arxiv.org/abs/2610.40577v1",
+      "published": "2026-10-29",
+      "tags": [
+        "Infra"
+      ],
+      "authors": "Zelin Zhao et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 2,
+      "domain": "Models"
+    },
+    {
+      "id": "fal-86b3391f",
+      "source": "blog",
+      "sourceLabel": "fal",
+      "title": "EAGLE-4 Technical Deepdive",
+      "abstract": "In collaboration with Fireworks and fal, we are releasing a technical analysis of EAGLE-4 alongside a public dataset for benchmarking speculative decoding on creative tasks. Why Speculative Decoding? LLMs generate text auto-regressively, pr",
+      "url": "https://blog.fal.ai/eagle-4-technical-deepdive/",
+      "published": "2026-10-20",
+      "tags": [
+        "Tool"
+      ],
+      "authors": "fal",
+      "thumb": "https://storage.ghost.io/c/0e/15/0e15ee8a-bd95-4b71-9258-950f77f4d196/content/images/size/w1200/2026/10/image--8--1.png",
+      "score": 3,
+      "domain": "Models"
+    },
+    {
+      "id": "arxiv-2610.40641",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "From extreme weather to agricultural consequences with agentic AI",
+      "abstract": "Extreme weather is forecast days ahead, yet its consequences for agriculture remain hard to predict: a forecast says where a storm will strike, not which crops will suffer or how much is at risk, and the records that could tell span many sources. We present WxCrop, the first agen",
+      "url": "https://arxiv.org/abs/2610.40641v1",
+      "published": "2026-10-29",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Minghan Yu et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Agentic"
+    }
+  ]
+}
