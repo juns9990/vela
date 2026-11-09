@@ -6,24 +6,24 @@
     <atom:link href="https://juns9990.github.io/vela/vela-rss.xml" rel="self" type="application/rss+xml" />
     <description>매주 월요일 자동 발행되는 AI 매거진. 파편을 매거진으로, 신호를 항해로.</description>
     <language>ko</language>
-    <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
-    <lastBuildDate>Mon, 02 Nov 2026 09:04:20 +0900</lastBuildDate>
+    <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
+    <lastBuildDate>Mon, 09 Nov 2026 09:21:44 +0900</lastBuildDate>
     <generator>Vela Weekly Collector</generator>
     <ttl>10080</ttl>
     <item>
-      <title>[Cover] Let&apos;s build GPT · 처음부터 만드는 GPT</title>
+      <title>[Cover] Attention in transformers, visually explained</title>
       <link>https://juns9990.github.io/vela/vela-prototype.html</link>
-      <guid isPermaLink="false">vela-cover-2026-W45</guid>
-      <description>이번 주 Vela가 추천하는 깊이 있는 강의. Andrej Karpathy의 시그니처.</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <guid isPermaLink="false">vela-cover-2026-W46</guid>
+      <description>이번 주 Vela가 추천하는 깊이 있는 강의. 3Blue1Brown의 시그니처.</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Cover Story</category>
     </item>
     <item>
-      <title>[LLM] New experts join Google’s AI &amp; Economy team</title>
-      <link>https://blog.google/innovation-and-ai/technology/ai/expanding-ai-economy-research-bench/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/expanding-ai-economy-research-bench/</guid>
-      <description>Text &quot;AI &amp; Economy Research Program&quot; all over a green grid background, with the Google G logo in the bottom right corner</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <title>[LLM] Watch the winning trailer from the Future Vision XPRIZE, The Gifted.</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/winner-future-vision-xprize/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/winner-future-vision-xprize/</guid>
+      <description>Watch the winning trailer from the Future Vision XPRIZE, The Gifted.</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
@@ -32,34 +32,25 @@
       <link>https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/</link>
       <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/</guid>
       <description>A video showing the September AI updates</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Tool</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Vision] Accelerating the search for antimicrobial peptides with Google Antigravity</title>
-      <link>https://deepmind.google/blog/accelerating-antimicrobial-discovery/</link>
-      <guid isPermaLink="true">https://deepmind.google/blog/accelerating-antimicrobial-discovery/</guid>
-      <description>Accelerating the search for novel antimicrobial peptides using Google Antigravity for Science.</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <title>[Vision] Southeast Asia’s digital economy to hit $368 billion</title>
+      <link>https://blog.google/company-news/inside-google/around-the-globe/google-asia/e-conomy-sea-report-2026/</link>
+      <guid isPermaLink="true">https://blog.google/company-news/inside-google/around-the-globe/google-asia/e-conomy-sea-report-2026/</guid>
+      <description>Cover image for the e-Conomy SEA 2026 report titled Building the intelligent economy by Google, Temasek, and Bain and Company. A 3D illustration features a glowing yellow star surrounded by miniature scenes representing digital sectors, inc</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">DeepMind</source>
-    </item>
-    <item>
-      <title>[Robotics] Gym-Anything for Robotics: Scaling physical simulations with digital agents</title>
-      <link>https://arxiv.org/abs/2610.40565v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.40565v1</guid>
-      <description>Realistic, fast robotics simulations could enable large-scale training of embodied AI models that transfer to the real world. However, despite decades of progress, available simulations cover only a narrow range of real-world tasks and physical phenomena. The core bottleneck is t</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
-      <category>Robotics</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
       <title>[Infra] H3 Max: Built with fal Inference and Training</title>
       <link>https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</link>
       <guid isPermaLink="true">https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/</guid>
       <description>H3 Max generates a 5-second video in under 3 seconds. In our human preference evaluations against twelve leading video models, it ranks first on quality, prompt understanding, and aesthetics. Independent benchmarks from Artificial Analysis </description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Infra</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
     </item>
@@ -68,34 +59,43 @@
       <link>https://machinelearning.apple.com/research/code-switching-detection</link>
       <guid isPermaLink="true">https://machinelearning.apple.com/research/code-switching-detection</guid>
       <description>Code-switching (CS), the alternation between languages within an utterance, is common in multilingual speech but underrepresented in pretraining corpora. Increasing CS coverage requires finding relevant utterances in large speech collection</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Audio</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
     </item>
     <item>
-      <title>[Agent] Agent Lightning v1.0: A 3,500-Line Lightweight Agentic RL Framework for Training Agents with Real Harnesses</title>
-      <link>https://www.microsoft.com/en-us/research/blog/agent-lightning-v1-0-a-3500-line-lightweight-agentic-rl-framework-for-training-agents-with-real-harnesses/</link>
-      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/agent-lightning-v1-0-a-3500-line-lightweight-agentic-rl-framework-for-training-agents-with-real-harnesses/</guid>
-      <description>Training AI agents with reinforcement learning can be challenging because their tools, context, and decision-making are managed by complex frameworks. Agent Lightning connects existing agents to RL training, making it easier to improve them</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
-      <category>Agent</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Microsoft Research</source>
+      <title>[Robotics] Social Humanoid: Socially Responsive Human-Humanoid Interaction</title>
+      <link>https://arxiv.org/abs/2611.08407v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2611.08407v1</guid>
+      <description>Humanoid robots are typically trained as solitary agents, leaving them unable to coordinate physically with human partners who naturally anticipate and adjust to one another. To bridge this gap, we present Social Humanoid, a hierarchical system that generates and executes sociall</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
+      <category>Robotics</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[LLM] Google Beam expands with new regions, partners, and customers</title>
-      <link>https://blog.google/innovation-and-ai/technology/research/google-beam-expansion/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/research/google-beam-expansion/</guid>
-      <description>Google Beam promotional animation</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <title>[LLM] Introducing Playground: Create and play custom games</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/</guid>
+      <description>Overview of Playground</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Vision] Southeast Asia’s digital economy to hit $368 billion</title>
-      <link>https://blog.google/company-news/inside-google/around-the-globe/google-asia/e-conomy-sea-report-2026/</link>
-      <guid isPermaLink="true">https://blog.google/company-news/inside-google/around-the-globe/google-asia/e-conomy-sea-report-2026/</guid>
-      <description>Cover image for the e-Conomy SEA 2026 report titled Building the intelligent economy by Google, Temasek, and Bain and Company. A 3D illustration features a glowing yellow star surrounded by miniature scenes representing digital sectors, inc</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <title>[Tool] StepBack: Step-Level Error-Localized Resampling for Efficient Test-Time Reasoning</title>
+      <link>https://arxiv.org/abs/2611.08403v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2611.08403v1</guid>
+      <description>Self-consistency (SC) is a widely used decoding strategy for improving chain-of-thought reasoning, but it requires sampling many complete reasoning trajectories with a preset budget. Its efficient variants reduce the cost mainly by stopping full-trajectory sampling early or distr</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
+      <category>Tool</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Vision] The latest AI news we announced in October 2026</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-october-2026/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-october-2026/</guid>
+      <description>Animated carousel of images from AI posts in October</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Vision</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
@@ -104,35 +104,26 @@
       <link>https://machinelearning.apple.com/research/selection-structured-reasoning</link>
       <guid isPermaLink="true">https://machinelearning.apple.com/research/selection-structured-reasoning</guid>
       <description>Multimodal agents commonly generate freeform reasoning before each action. For small models, limited model capacity can result in lengthy reasoning that provides little useful guidance for action generation while incurring substantial infer</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Apple ML</source>
     </item>
     <item>
-      <title>[LLM] Watch the winning trailer from the Future Vision XPRIZE, The Gifted.</title>
-      <link>https://blog.google/innovation-and-ai/technology/ai/winner-future-vision-xprize/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/winner-future-vision-xprize/</guid>
-      <description>Watch the winning trailer from the Future Vision XPRIZE, The Gifted.</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <title>[LLM] Our newest AI Quest: Mapping the human brain</title>
+      <link>https://blog.google/products-and-platforms/products/education/ai-quests-polar-peaks/</link>
+      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/education/ai-quests-polar-peaks/</guid>
+      <description>An illustration of a planet rotating to show various cartoon figures waving. At the top is the text &quot;AI Quests&quot;</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
     </item>
     <item>
-      <title>[Vision] VeriCUA: Verification as Agentic Exploration for Computer-Using Agents</title>
-      <link>https://arxiv.org/abs/2610.40578v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.40578v1</guid>
-      <description>Building and scaling computer-using agents (CUAs) across desktop, mobile, and web environments requires reliable task-completion verification for data curation, evaluation, and reinforcement learning. Typical automated approaches prompt vision-language models (VLMs) to judge traj</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <title>[Vision] VFlash: Fast, Accurate Visual Planning via Flash Primitive Decoding</title>
+      <link>https://arxiv.org/abs/2611.08449v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2611.08449v1</guid>
+      <description>Models for physical AI tasks, such as robotics and autonomous driving, need not reason solely in language. They can use visual plans--points, bounding boxes, and trajectories--to represent spatial goals and anticipate motion. However, autoregressive vision-language models generat</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Safety] ShallowDefend: Harnessing Shallow Safety Alignment for Multi-Turn Defender</title>
-      <link>https://arxiv.org/abs/2610.40627v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.40627v1</guid>
-      <description>Safety alignment has enabled large language models to reliably refuse harmful requests directly, yet the same request distributed across a multi-turn conversation still succeeds far too often. This brittleness has a mechanistic root: Alignment is shallow, with safety behavior con</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
-      <category>Safety</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
@@ -140,86 +131,95 @@
       <link>https://blog.fal.ai/introducing-h3-max-by-fal/</link>
       <guid isPermaLink="true">https://blog.fal.ai/introducing-h3-max-by-fal/</guid>
       <description>Announcing H3 Max, a post-trained version of MiniMax H3 developed by fal Research and optimized for maximum speed by fal s inference team. In our human preference evaluations, H3 Max ranks #1 across overall quality, prompt understanding, an</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Infra</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
     </item>
     <item>
-      <title>[LLM] Introducing Playground: Create and play custom games</title>
-      <link>https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/</guid>
-      <description>Overview of Playground</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
-      <category>LLM</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
-    </item>
-    <item>
-      <title>[Vision] Propose-Filter-Release: Scaling Noise to Typical Sensitivity via Private Filtering</title>
-      <link>https://arxiv.org/abs/2610.40654v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.40654v1</guid>
-      <description>An estimator can be accurate and stable on typical data, yet sensitive to a few possible records. Differentially private mechanisms commonly scale their noise to the worst-case influence of a single record, which lets these records dictate the noise even when the remaining data w</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
-      <category>Vision</category>
-      <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
-    </item>
-    <item>
-      <title>[Robotics] SymAnt: Grounding Long-Horizon Action Anticipation with Adaptable Symbolic Priors</title>
-      <link>https://arxiv.org/abs/2610.40632v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.40632v1</guid>
-      <description>As robots and intelligent systems increasingly interact with humans, they must anticipate long sequences of future actions from only brief observations. While purely neural models typically require extensive observations to predict future actions and remain difficult to interpret</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <title>[Robotics] Latent RL Priors for Data-Efficient Dexterous Manipulation</title>
+      <link>https://arxiv.org/abs/2611.08458v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2611.08458v1</guid>
+      <description>Learning dexterous manipulation from limited visual demonstrations is challenging because policies must acquire both perceptual grounding and precise control, while reinforcement learning (RL) in simulation can acquire rich control behaviors from large-scale interaction with priv</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Robotics</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Infra] Multi-View MoE: Letting Every Router Shape Expert Computation</title>
-      <link>https://arxiv.org/abs/2610.40577v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.40577v1</guid>
-      <description>Sparse mixture-of-experts (MoE) models expand parameter capacity by activating a small subset of experts per token. Expert selection directly affects model capabilities under a fixed active-expert budget. Dense evaluation of all experts reveals weak agreement between single-route</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
-      <category>Infra</category>
+      <title>[Agent] Cities Worldwide Build and Scale AI Services With NVIDIA Physical and Agentic AI</title>
+      <link>https://blogs.nvidia.com/blog/cities-physical-agentic-ai-applications/</link>
+      <guid isPermaLink="true">https://blogs.nvidia.com/blog/cities-physical-agentic-ai-applications/</guid>
+      <description>Cities generate enormous amounts of data from cameras, sensors and operational systems, but turning it into useful action — for planning, maintenance and public services — remains a challenge. Physical and agentic AI offer new ways to close</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
+      <category>Agent</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">NVIDIA</source>
+    </item>
+    <item>
+      <title>[LLM] Benchmarking Large Language Models on Heterogeneous Cognitive and Biomedical Knowledge Graphs: The Role of Graph Grounding in Multi-Hop Reasoning and Hallucination Mitigation</title>
+      <link>https://arxiv.org/abs/2611.08315v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2611.08315v1</guid>
+      <description>Large language models (LLMs) are increasingly used in biomedical and cognitive neuroscience, but their ability to reason reliably over heterogeneous knowledge graphs (KGs) remains unclear. We benchmark five LLMs (GPT-5.1, Gemini 2.0 Pro, Llama 3, Qwen, and BioGPT) across five KGs</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
+      <category>LLM</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
+    </item>
+    <item>
+      <title>[Vision] Gemini Omni 1.2 Flash: Fast and cost-effective with longer clips</title>
+      <link>https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-omni-1-2-flash/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-omni-1-2-flash/</guid>
+      <description>Text &quot;Gemini Introducing Gemini Omni 1.2 Flash&quot; surroudned by images of a beehive, animals in conversation, a squid, and a woman walking down a street</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
+      <category>Vision</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">Google AI</source>
+    </item>
+    <item>
+      <title>[Infra] Paper page - SAE Interprets MoE: Sparse AutoEncoders Reveal That MoE Experts Exhibit Human-Interpretable Fine-Grained Specialization</title>
+      <link>https://arxiv.org/abs/2611.08089</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2611.08089</guid>
+      <description>HuggingFace Daily Papers에 큐레이션된 주목받는 논문.</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
+      <category>Infra</category>
+      <source url="https://juns9990.github.io/vela/vela-prototype.html">HF Daily</source>
     </item>
     <item>
       <title>[Tool] EAGLE-4 Technical Deepdive</title>
       <link>https://blog.fal.ai/eagle-4-technical-deepdive/</link>
       <guid isPermaLink="true">https://blog.fal.ai/eagle-4-technical-deepdive/</guid>
       <description>In collaboration with Fireworks and fal, we are releasing a technical analysis of EAGLE-4 alongside a public dataset for benchmarking speculative decoding on creative tasks. Why Speculative Decoding? LLMs generate text auto-regressively, pr</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Tool</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">fal</source>
     </item>
     <item>
-      <title>[Agent] From extreme weather to agricultural consequences with agentic AI</title>
-      <link>https://arxiv.org/abs/2610.40641v1</link>
-      <guid isPermaLink="true">https://arxiv.org/abs/2610.40641v1</guid>
-      <description>Extreme weather is forecast days ahead, yet its consequences for agriculture remain hard to predict: a forecast says where a storm will strike, not which crops will suffer or how much is at risk, and the records that could tell span many sources. We present WxCrop, the first agen</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <title>[Agent] ReproBridge: Building Reproducibility into ML Research Artifacts</title>
+      <link>https://arxiv.org/abs/2611.08452v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2611.08452v1</guid>
+      <description>Reproducing machine learning experiments requires reconstructing procedures from information scattered across papers, released code, and supporting artifacts. For coding agents, reproduction success can therefore depend on their ability to fill in missing details, rather than on </description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Agent</category>
       <source url="https://juns9990.github.io/vela/vela-prototype.html">ArXiv</source>
     </item>
     <item>
-      <title>[Featured] Agent Lightning v1.0: A 3,500-Line Lightweight Agentic RL Framework for Training</title>
-      <link>https://www.microsoft.com/en-us/research/blog/agent-lightning-v1-0-a-3500-line-lightweight-agentic-rl-framework-for-training-agents-with-real-harnesses/</link>
-      <guid isPermaLink="true">https://www.microsoft.com/en-us/research/blog/agent-lightning-v1-0-a-3500-line-lightweight-agentic-rl-framework-for-training-agents-with-real-harnesses/</guid>
-      <description>Training AI agents with reinforcement learning can be challenging because their tools, context, and decision-making are managed by complex f</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <title>[Featured] Introducing Playground: Create and play custom games</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/</guid>
+      <description>Overview of Playground</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] Google Beam expands with new regions, partners, and customers</title>
-      <link>https://blog.google/innovation-and-ai/technology/research/google-beam-expansion/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/research/google-beam-expansion/</guid>
-      <description>Google Beam promotional animation</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <title>[Featured] StepBack: Step-Level Error-Localized Resampling for Efficient Test-Time Reasonin</title>
+      <link>https://arxiv.org/abs/2611.08403v1</link>
+      <guid isPermaLink="true">https://arxiv.org/abs/2611.08403v1</guid>
+      <description>Self-consistency (SC) is a widely used decoding strategy for improving chain-of-thought reasoning, but it requires sampling many complete re</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] Southeast Asia’s digital economy to hit $368 billion</title>
-      <link>https://blog.google/company-news/inside-google/around-the-globe/google-asia/e-conomy-sea-report-2026/</link>
-      <guid isPermaLink="true">https://blog.google/company-news/inside-google/around-the-globe/google-asia/e-conomy-sea-report-2026/</guid>
-      <description>Cover image for the e-Conomy SEA 2026 report titled Building the intelligent economy by Google, Temasek, and Bain and Company. A 3D illustra</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <title>[Featured] The latest AI news we announced in October 2026</title>
+      <link>https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-october-2026/</link>
+      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-october-2026/</guid>
+      <description>Animated carousel of images from AI posts in October</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
@@ -227,15 +227,15 @@
       <link>https://machinelearning.apple.com/research/selection-structured-reasoning</link>
       <guid isPermaLink="true">https://machinelearning.apple.com/research/selection-structured-reasoning</guid>
       <description>Multimodal agents commonly generate freeform reasoning before each action. For small models, limited model capacity can result in lengthy re</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Featured</category>
     </item>
     <item>
-      <title>[Featured] Watch the winning trailer from the Future Vision XPRIZE, The Gifted.</title>
-      <link>https://blog.google/innovation-and-ai/technology/ai/winner-future-vision-xprize/</link>
-      <guid isPermaLink="true">https://blog.google/innovation-and-ai/technology/ai/winner-future-vision-xprize/</guid>
-      <description>Watch the winning trailer from the Future Vision XPRIZE, The Gifted.</description>
-      <pubDate>Mon, 02 Nov 2026 09:04:20 +0900</pubDate>
+      <title>[Featured] Our newest AI Quest: Mapping the human brain</title>
+      <link>https://blog.google/products-and-platforms/products/education/ai-quests-polar-peaks/</link>
+      <guid isPermaLink="true">https://blog.google/products-and-platforms/products/education/ai-quests-polar-peaks/</guid>
+      <description>An illustration of a planet rotating to show various cartoon figures waving. At the top is the text &quot;AI Quests&quot;</description>
+      <pubDate>Mon, 09 Nov 2026 09:21:44 +0900</pubDate>
       <category>Featured</category>
     </item>
   </channel>

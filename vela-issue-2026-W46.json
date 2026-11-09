@@ -1,0 +1,574 @@
+{
+  "version": "v0.23.0",
+  "meta": {
+    "issue_year": 2026,
+    "issue_week": 46,
+    "monday": "2026-11-09",
+    "next_monday": "2026-11-16",
+    "generated_at": "2026-11-09T09:18:43.816080+09:00"
+  },
+  "domains": [
+    {
+      "key": "Generative",
+      "label": "Generative AI",
+      "desc": "이미지·영상·음성 생성과 멀티모달"
+    },
+    {
+      "key": "Agentic",
+      "label": "Agents & Reasoning",
+      "desc": "자율 에이전트와 추론 능력"
+    },
+    {
+      "key": "Models",
+      "label": "Models & Infra",
+      "desc": "언어모델·학습·서빙 인프라"
+    },
+    {
+      "key": "Applied",
+      "label": "Applied & Safety",
+      "desc": "로보틱스·응용·정렬과 안전"
+    }
+  ],
+  "editorsNote": "이번 주 AI는 H3 Max처럼 초고속 추론·학습으로 효율성을 앞세운다.",
+  "trends": null,
+  "numbers": {
+    "raw_collected": 129,
+    "academic_count": 30,
+    "industry_count": 15,
+    "fresh_this_week": 32,
+    "top_category": "Vision",
+    "top_score_title": "Watch the winning trailer from…",
+    "blog_sources": 48,
+    "news_sources": 17
+  },
+  "cover": {
+    "label": "Cover Story · Week 46",
+    "headline": "Attention in transformers, visually explained",
+    "deck": "이번 주 Vela가 추천하는 깊이 있는 강의. 3Blue1Brown의 시그니처.",
+    "byline": [
+      "By 3BLUE1BROWN",
+      "26:10",
+      "Curated"
+    ],
+    "image": "https://images.unsplash.com/photo-1620207418302-439b387441b0?w=1600&q=80",
+    "videoId": "eMlx5fFNoYc",
+    "credit": "Click image to play"
+  },
+  "thisMonth": [
+    {
+      "date": "SEP 28",
+      "category": "LLM",
+      "title": "Watch the winning trailer from the Future Vision XPRIZE, The Gifted.",
+      "deck": "Watch the winning trailer from the Future Vision XPRIZE, The Gifted.",
+      "why": "",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/futurevisionxprize_social.max-1440x810.png",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/winner-future-vision-xprize/"
+    },
+    {
+      "date": "OCT 02",
+      "category": "Tool",
+      "title": "The latest AI news we announced in September 2026",
+      "deck": "A video showing the September AI updates",
+      "why": "",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/September_AI_Recap_hero.width-1300.png",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/"
+    },
+    {
+      "date": "OCT 21",
+      "category": "Vision",
+      "title": "Southeast Asia’s digital economy to hit $368 billion",
+      "deck": "Cover image for the e-Conomy SEA 2026 report titled Building the intelligent economy by Google, Temasek, and Bain and Company. A 3D illustra",
+      "why": "",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Hero_Image_e-Conomy_SEA_2026.width-1300.png",
+      "url": "https://blog.google/company-news/inside-google/around-the-globe/google-asia/e-conomy-sea-report-2026/"
+    },
+    {
+      "date": "SEP 17",
+      "category": "Infra",
+      "title": "H3 Max: Built with fal Inference and Training",
+      "deck": "H3 Max generates a 5-second video in under 3 seconds. In our human preference evaluations against twelve leading video models, it ranks firs",
+      "why": "",
+      "image": "https://storage.ghost.io/c/0e/15/0e15ee8a-bd95-4b71-9258-950f77f4d196/content/images/size/w1200/2026/09/Luma---Template-04---Happy-Hour---Brown.png",
+      "url": "https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/"
+    },
+    {
+      "date": "OCT 14",
+      "category": "Audio",
+      "title": "Code-Switching Detection via Language-Selective Dimensions in Speech Foundation ",
+      "deck": "Code-switching (CS), the alternation between languages within an utterance, is common in multilingual speech but underrepresented in pretrai",
+      "why": "",
+      "image": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "url": "https://machinelearning.apple.com/research/code-switching-detection"
+    },
+    {
+      "date": "NOV 05",
+      "category": "Robotics",
+      "title": "Social Humanoid: Socially Responsive Human-Humanoid Interaction",
+      "deck": "Humanoid robots are typically trained as solitary agents, leaving them unable to coordinate physically with human partners who naturally ant",
+      "why": "",
+      "image": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "url": "https://arxiv.org/abs/2611.08407v1"
+    }
+  ],
+  "featured": [
+    {
+      "label": "LLM",
+      "title": "Introducing Playground: Create and play custom games",
+      "deck": "Overview of Playground",
+      "why": "",
+      "byline": "GOOGLE AI · Google AI",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/THUMBNAIL_BLOG.width-1300.png",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/"
+    },
+    {
+      "label": "Tool",
+      "title": "StepBack: Step-Level Error-Localized Resampling for Efficient Test-Time Reasonin",
+      "deck": "Self-consistency (SC) is a widely used decoding strategy for improving chain-of-thought reasoning, but it requires sampling many complete re",
+      "why": "",
+      "byline": "ARXIV · Yang Ouyang et al.",
+      "image": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "url": "https://arxiv.org/abs/2611.08403v1"
+    },
+    {
+      "label": "Vision",
+      "title": "The latest AI news we announced in October 2026",
+      "deck": "Animated carousel of images from AI posts in October",
+      "why": "",
+      "byline": "GOOGLE AI · Google AI",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Oct_AI_Recap_social.width-1300.png",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-october-2026/"
+    },
+    {
+      "label": "Agent",
+      "title": "Selection-Based Structured Reasoning: Toward Efficient Multimodal Search Agents",
+      "deck": "Multimodal agents commonly generate freeform reasoning before each action. For small models, limited model capacity can result in lengthy re",
+      "why": "",
+      "byline": "APPLE ML · Apple ML",
+      "image": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "url": "https://machinelearning.apple.com/research/selection-structured-reasoning"
+    },
+    {
+      "label": "LLM",
+      "title": "Our newest AI Quest: Mapping the human brain",
+      "deck": "An illustration of a planet rotating to show various cartoon figures waving. At the top is the text \"AI Quests\"",
+      "why": "",
+      "byline": "GOOGLE AI · Google AI",
+      "image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/social_sharing_updated.width-1300.png",
+      "url": "https://blog.google/products-and-platforms/products/education/ai-quests-polar-peaks/"
+    }
+  ],
+  "videos": [
+    {
+      "title": "Let's build GPT — 처음부터 만드는 GPT",
+      "byline": "Andrej Karpathy",
+      "duration": "1:56:20",
+      "videoId": "kCc8FmEb1nY",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/kCc8FmEb1nY/hqdefault.jpg"
+    },
+    {
+      "title": "[1시간] LLM 입문 강의",
+      "byline": "Andrej Karpathy",
+      "duration": "59:48",
+      "videoId": "zjkBMFhNj_g",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/zjkBMFhNj_g/hqdefault.jpg"
+    },
+    {
+      "title": "But what is a GPT? — 트랜스포머 시각 입문",
+      "byline": "3Blue1Brown",
+      "duration": "27:14",
+      "videoId": "wjZofJX0v4M",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/wjZofJX0v4M/hqdefault.jpg"
+    },
+    {
+      "title": "신경망의 본질 — Deep Learning Chapter 1",
+      "byline": "3Blue1Brown",
+      "duration": "18:40",
+      "videoId": "aircAruvnKk",
+      "source": "YouTube",
+      "thumb": "https://i.ytimg.com/vi/aircAruvnKk/hqdefault.jpg"
+    }
+  ],
+  "industry": [
+    {
+      "date": "NOV 04",
+      "source": "Hacker News",
+      "title": "Declarative Dragging",
+      "deck": "Hacker News 인기글. 296점 · 34개 댓글.",
+      "url": "https://declarative-dragging.github.io/"
+    },
+    {
+      "date": "NOV 07",
+      "source": "Hacker News",
+      "title": "Claude Code's \"Don't Ask Again\" exposes passwords in 1,122 public GitHub files",
+      "deck": "Hacker News 인기글. 580점 · 393개 댓글.",
+      "url": "https://apiiro.com/blog/coding-agents-leaking-secrets-github-dont-ask-again"
+    },
+    {
+      "date": "NOV 08",
+      "source": "Hacker News",
+      "title": "Goodbye Claude, hello Pi",
+      "deck": "Hacker News 인기글. 681점 · 424개 댓글.",
+      "url": "https://caleb.software/posts/claude-to-pi.html"
+    },
+    {
+      "date": "NOV 08",
+      "source": "Hacker News",
+      "title": "Goldman Sachs is pulling Claude Code from its bankers and traders",
+      "deck": "Hacker News 인기글. 556점 · 328개 댓글.",
+      "url": "https://www.thestateofai.com/news/goldman-sachs-claude-code-traders-bankers"
+    },
+    {
+      "date": "NOV 08",
+      "source": "Hacker News",
+      "title": "Llama-modchip: 284B DeepSeek on 64GB RAM, no GPU",
+      "deck": "Hacker News 인기글. 346점 · 144개 댓글.",
+      "url": "https://github.com/synchopate/llama-modchip"
+    },
+    {
+      "date": "NOV 05",
+      "source": "Wired AI",
+      "title": "Ads in Chatbots Have Arrived. Here’s What’s Working—and What’s Not",
+      "deck": "As Anthropic maintains its vow to keep ads out of Claude, the rest of the AI chatbot industry is racing to win over advertisers without antagonizing users.",
+      "url": "https://www.wired.com/story/ads-in-chatbots-have-arrived-heres-whats-working-and-whats-not/"
+    },
+    {
+      "date": "NOV 05",
+      "source": "Wired AI",
+      "title": "Exclusive: Aina’s Smart Ring Wants to Be a Remote Control for Your AI Agent",
+      "deck": "The startup Aina bets you won’t need to rely on your phone to control virtual assistants. It’s making a smart ring that lets you control the actions of your aut",
+      "url": "https://www.wired.com/story/aina-smart-ring/"
+    },
+    {
+      "date": "NOV 06",
+      "source": "TechCrunch",
+      "title": "Meta introduces Spaces, a new way to collaborate with your Muse agent",
+      "deck": "Meta's Muse agents continue to get new features and integrations. Spaces promises to be a new way to interact with the AI helpers.",
+      "url": "https://techcrunch.com/2026/11/06/meta-introduces-spaces-a-new-way-to-collaborate-with-your-muse-agent/"
+    }
+  ],
+  "signals": [
+    {
+      "id": "googai-c5edbf46",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "Watch the winning trailer from the Future Vision XPRIZE, The Gifted.",
+      "abstract": "Watch the winning trailer from the Future Vision XPRIZE, The Gifted.",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/winner-future-vision-xprize/",
+      "published": "2026-09-28",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/futurevisionxprize_social.max-1440x810.png",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "googai-bfe2b156",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "The latest AI news we announced in September 2026",
+      "abstract": "A video showing the September AI updates",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/",
+      "published": "2026-10-02",
+      "tags": [
+        "Tool"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/September_AI_Recap_hero.width-1300.png",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "googai-aec1886e",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "Southeast Asia’s digital economy to hit $368 billion",
+      "abstract": "Cover image for the e-Conomy SEA 2026 report titled Building the intelligent economy by Google, Temasek, and Bain and Company. A 3D illustration features a glowing yellow star surrounded by miniature scenes representing digital sectors, inc",
+      "url": "https://blog.google/company-news/inside-google/around-the-globe/google-asia/e-conomy-sea-report-2026/",
+      "published": "2026-10-21",
+      "tags": [
+        "Vision"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Hero_Image_e-Conomy_SEA_2026.width-1300.png",
+      "score": 4,
+      "domain": "Generative"
+    },
+    {
+      "id": "fal-60a4e256",
+      "source": "blog",
+      "sourceLabel": "fal",
+      "title": "H3 Max: Built with fal Inference and Training",
+      "abstract": "H3 Max generates a 5-second video in under 3 seconds. In our human preference evaluations against twelve leading video models, it ranks first on quality, prompt understanding, and aesthetics. Independent benchmarks from Artificial Analysis ",
+      "url": "https://blog.fal.ai/h3-max-built-with-fal-inference-and-training/",
+      "published": "2026-09-17",
+      "tags": [
+        "Infra"
+      ],
+      "authors": "fal",
+      "thumb": "https://storage.ghost.io/c/0e/15/0e15ee8a-bd95-4b71-9258-950f77f4d196/content/images/size/w1200/2026/09/Luma---Template-04---Happy-Hour---Brown.png",
+      "score": 3,
+      "domain": "Models"
+    },
+    {
+      "id": "apple-ddb57e17",
+      "source": "blog",
+      "sourceLabel": "Apple ML",
+      "title": "Code-Switching Detection via Language-Selective Dimensions in Speech Foundation Models",
+      "abstract": "Code-switching (CS), the alternation between languages within an utterance, is common in multilingual speech but underrepresented in pretraining corpora. Increasing CS coverage requires finding relevant utterances in large speech collection",
+      "url": "https://machinelearning.apple.com/research/code-switching-detection",
+      "published": "2026-10-14",
+      "tags": [
+        "Audio"
+      ],
+      "authors": "Apple ML",
+      "thumb": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "score": 3,
+      "domain": "Generative"
+    },
+    {
+      "id": "arxiv-2611.08407",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "Social Humanoid: Socially Responsive Human-Humanoid Interaction",
+      "abstract": "Humanoid robots are typically trained as solitary agents, leaving them unable to coordinate physically with human partners who naturally anticipate and adjust to one another. To bridge this gap, we present Social Humanoid, a hierarchical system that generates and executes sociall",
+      "url": "https://arxiv.org/abs/2611.08407v1",
+      "published": "2026-11-05",
+      "tags": [
+        "Robotics"
+      ],
+      "authors": "Vongani H. Maluleke et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 3,
+      "domain": "Applied"
+    },
+    {
+      "id": "googai-cf7f1b75",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "Introducing Playground: Create and play custom games",
+      "abstract": "Overview of Playground",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/",
+      "published": "2026-10-07",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/THUMBNAIL_BLOG.width-1300.png",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "arxiv-2611.08403",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "StepBack: Step-Level Error-Localized Resampling for Efficient Test-Time Reasoning",
+      "abstract": "Self-consistency (SC) is a widely used decoding strategy for improving chain-of-thought reasoning, but it requires sampling many complete reasoning trajectories with a preset budget. Its efficient variants reduce the cost mainly by stopping full-trajectory sampling early or distr",
+      "url": "https://arxiv.org/abs/2611.08403v1",
+      "published": "2026-11-05",
+      "tags": [
+        "Tool"
+      ],
+      "authors": "Yang Ouyang et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Agentic"
+    },
+    {
+      "id": "googai-ff01b8b9",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "The latest AI news we announced in October 2026",
+      "abstract": "Animated carousel of images from AI posts in October",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-october-2026/",
+      "published": "2026-11-02",
+      "tags": [
+        "Vision"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Oct_AI_Recap_social.width-1300.png",
+      "score": 4,
+      "domain": "Generative"
+    },
+    {
+      "id": "apple-3e97135f",
+      "source": "blog",
+      "sourceLabel": "Apple ML",
+      "title": "Selection-Based Structured Reasoning: Toward Efficient Multimodal Search Agents",
+      "abstract": "Multimodal agents commonly generate freeform reasoning before each action. For small models, limited model capacity can result in lengthy reasoning that provides little useful guidance for action generation while incurring substantial infer",
+      "url": "https://machinelearning.apple.com/research/selection-structured-reasoning",
+      "published": "2026-10-15",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Apple ML",
+      "thumb": "https://mlr.cdn-apple.com/media/Home_1200x630_48225d82e9.png",
+      "score": 4,
+      "domain": "Agentic"
+    },
+    {
+      "id": "googai-0e0e0521",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "Our newest AI Quest: Mapping the human brain",
+      "abstract": "An illustration of a planet rotating to show various cartoon figures waving. At the top is the text \"AI Quests\"",
+      "url": "https://blog.google/products-and-platforms/products/education/ai-quests-polar-peaks/",
+      "published": "2026-10-26",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/social_sharing_updated.width-1300.png",
+      "score": 4,
+      "domain": "Models"
+    },
+    {
+      "id": "arxiv-2611.08449",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "VFlash: Fast, Accurate Visual Planning via Flash Primitive Decoding",
+      "abstract": "Models for physical AI tasks, such as robotics and autonomous driving, need not reason solely in language. They can use visual plans--points, bounding boxes, and trajectories--to represent spatial goals and anticipate motion. However, autoregressive vision-language models generat",
+      "url": "https://arxiv.org/abs/2611.08449v1",
+      "published": "2026-11-05",
+      "tags": [
+        "Vision"
+      ],
+      "authors": "Yu-Cheng Chou et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Generative"
+    },
+    {
+      "id": "fal-c7076821",
+      "source": "blog",
+      "sourceLabel": "fal",
+      "title": "Introducing H3 Max by fal",
+      "abstract": "Announcing H3 Max, a post-trained version of MiniMax H3 developed by fal Research and optimized for maximum speed by fal s inference team. In our human preference evaluations, H3 Max ranks #1 across overall quality, prompt understanding, an",
+      "url": "https://blog.fal.ai/introducing-h3-max-by-fal/",
+      "published": "2026-08-27",
+      "tags": [
+        "Infra"
+      ],
+      "authors": "fal",
+      "thumb": "https://storage.ghost.io/c/0e/15/0e15ee8a-bd95-4b71-9258-950f77f4d196/content/images/2026/08/fal-glitch-dust-1080x1080-1787861178159.png",
+      "score": 2,
+      "domain": "Models"
+    },
+    {
+      "id": "arxiv-2611.08458",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "Latent RL Priors for Data-Efficient Dexterous Manipulation",
+      "abstract": "Learning dexterous manipulation from limited visual demonstrations is challenging because policies must acquire both perceptual grounding and precise control, while reinforcement learning (RL) in simulation can acquire rich control behaviors from large-scale interaction with priv",
+      "url": "https://arxiv.org/abs/2611.08458v1",
+      "published": "2026-11-05",
+      "tags": [
+        "Robotics"
+      ],
+      "authors": "Yixiao Wang et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 2,
+      "domain": "Applied"
+    },
+    {
+      "id": "nvid-2425dfb6",
+      "source": "blog",
+      "sourceLabel": "NVIDIA",
+      "title": "Cities Worldwide Build and Scale AI Services With NVIDIA Physical and Agentic AI",
+      "abstract": "Cities generate enormous amounts of data from cameras, sensors and operational systems, but turning it into useful action — for planning, maintenance and public services — remains a challenge. Physical and agentic AI offer new ways to close",
+      "url": "https://blogs.nvidia.com/blog/cities-physical-agentic-ai-applications/",
+      "published": "2026-11-03",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "NVIDIA",
+      "thumb": "https://blogs.nvidia.com/wp-content/uploads/2026/11/smart-city-blog-1920x1080-1.jpeg",
+      "score": 4,
+      "domain": "Agentic"
+    },
+    {
+      "id": "arxiv-2611.08315",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "Benchmarking Large Language Models on Heterogeneous Cognitive and Biomedical Knowledge Graphs: The Role of Graph Grounding in Multi-Hop Reasoning and Hallucination Mitigation",
+      "abstract": "Large language models (LLMs) are increasingly used in biomedical and cognitive neuroscience, but their ability to reason reliably over heterogeneous knowledge graphs (KGs) remains unclear. We benchmark five LLMs (GPT-5.1, Gemini 2.0 Pro, Llama 3, Qwen, and BioGPT) across five KGs",
+      "url": "https://arxiv.org/abs/2611.08315v1",
+      "published": "2026-11-05",
+      "tags": [
+        "LLM"
+      ],
+      "authors": "Ali Sarabadani et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Agentic"
+    },
+    {
+      "id": "googai-4eabb5f2",
+      "source": "blog",
+      "sourceLabel": "Google AI",
+      "title": "Gemini Omni 1.2 Flash: Fast and cost-effective with longer clips",
+      "abstract": "Text \"Gemini Introducing Gemini Omni 1.2 Flash\" surroudned by images of a beehive, animals in conversation, a squid, and a woman walking down a street",
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-omni-1-2-flash/",
+      "published": "2026-11-05",
+      "tags": [
+        "Vision"
+      ],
+      "authors": "Google AI",
+      "thumb": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/gemini-omni-1.2_FZLql41.width-1300.png",
+      "score": 4,
+      "domain": "Generative"
+    },
+    {
+      "id": "arxiv-2611.08089",
+      "source": "arxiv",
+      "sourceLabel": "HF Daily",
+      "title": "Paper page - SAE Interprets MoE: Sparse AutoEncoders Reveal That MoE Experts Exhibit Human-Interpretable Fine-Grained Specialization",
+      "abstract": "HuggingFace Daily Papers에 큐레이션된 주목받는 논문.",
+      "url": "https://arxiv.org/abs/2611.08089",
+      "published": "2026-11-09",
+      "tags": [
+        "Infra"
+      ],
+      "authors": "Daily Papers",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 2,
+      "domain": "Models"
+    },
+    {
+      "id": "fal-86b3391f",
+      "source": "blog",
+      "sourceLabel": "fal",
+      "title": "EAGLE-4 Technical Deepdive",
+      "abstract": "In collaboration with Fireworks and fal, we are releasing a technical analysis of EAGLE-4 alongside a public dataset for benchmarking speculative decoding on creative tasks. Why Speculative Decoding? LLMs generate text auto-regressively, pr",
+      "url": "https://blog.fal.ai/eagle-4-technical-deepdive/",
+      "published": "2026-10-20",
+      "tags": [
+        "Tool"
+      ],
+      "authors": "fal",
+      "thumb": "https://storage.ghost.io/c/0e/15/0e15ee8a-bd95-4b71-9258-950f77f4d196/content/images/2026/10/image--8--1.png",
+      "score": 3,
+      "domain": "Models"
+    },
+    {
+      "id": "arxiv-2611.08452",
+      "source": "arxiv",
+      "sourceLabel": "ArXiv",
+      "title": "ReproBridge: Building Reproducibility into ML Research Artifacts",
+      "abstract": "Reproducing machine learning experiments requires reconstructing procedures from information scattered across papers, released code, and supporting artifacts. For coding agents, reproduction success can therefore depend on their ability to fill in missing details, rather than on ",
+      "url": "https://arxiv.org/abs/2611.08452v1",
+      "published": "2026-11-05",
+      "tags": [
+        "Agent"
+      ],
+      "authors": "Yubo Wang et al.",
+      "thumb": "https://arxiv.org/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "score": 4,
+      "domain": "Agentic"
+    }
+  ]
+}
